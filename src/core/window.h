@@ -1,6 +1,8 @@
 #ifndef __MOTORET_WINDOW_H__
 #define __MOTORET_WINDOW_H__ 1
 
+#include <stdint.h>
+
 namespace motoret {
 	class Window {
 	public:
@@ -8,8 +10,8 @@ namespace motoret {
 		~Window();
 		bool createWindow(uint16_t w, uint16_t h, bool limit_framerate = true);
 		bool windowShouldClose();
-		int32 width() const;
-		int32 height() const;
+		int32_t width() const;
+		int32_t height() const;
 		void swap();
 		void pollEvents();
 
