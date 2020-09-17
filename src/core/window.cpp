@@ -1,4 +1,5 @@
 #include "window.h"
+#include "glad/glad.h"
 #include "GLFW/glfw3.h"
 
 using namespace motoret;
@@ -40,6 +41,9 @@ bool Window::createWindow(uint16_t w, uint16_t h, bool limit_framerate)
 
 	// I call this function here because motoret only supports one window
 	glfwMakeContextCurrent(data_->window);
+
+	gladLoadGLLoader((GLADloadproc) glfwGetProcAddress);
+
 	if (!limit_framerate)
 		glfwSwapInterval(0);
 

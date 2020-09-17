@@ -13,6 +13,10 @@ int main()
 
     while (!window.windowShouldClose())
     {
+        Clear clear;
+        clear.set_clear_color(1.0f, 0.0f, 0.0f, 1.0f);
+        clear.executeCommand();
+
         window.swap();
         window.pollEvents();
     }

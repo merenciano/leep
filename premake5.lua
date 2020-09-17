@@ -34,10 +34,13 @@ project "motoret"
         "./extern/src/GLFW/egl_context.c",
         "./extern/src/GLFW/osmesa_context.c",
 
+        --glad
+        "./extern/src/glad.c",
+
     }
     
     configuration "vs2019"
-        defines {"_CRT_SECURE_NO_WARNINGS", "_GLFW_WIN32", }
+        defines {"_CRT_SECURE_NO_WARNINGS", "_GLFW_WIN32", "MOTORET_OPENGL", }
 
         files {
             "./extern/src/GLFW/win32_platform.h",

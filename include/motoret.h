@@ -1,2 +1,6 @@
+#include "../src/core/common-defs.h"
 #include "../src/core/window.h"
 #include "../src/core/logger.h"
+#include "../src/render/display-list.h"
+#include "../src/render/display-list-command.h"
+#include "../src/render/clear.h"
