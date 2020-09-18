@@ -16,6 +16,13 @@ namespace motoret
             DisplayList(DisplayList &&other);
             ~DisplayList();
 
+            template<typename T>
+            T& addCommand()
+            {
+                command_list_.push_back(std::make_unique<T>());
+                return command_list_.back();
+            }
+
         private:
             std::list<std::unique_ptr<DisplayListCommand>> command_list_;
     };
