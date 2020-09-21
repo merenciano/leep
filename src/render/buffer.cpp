@@ -22,6 +22,7 @@ namespace motoret
     {
         handler_ = other.handler_;
         type_ = other.type_;
+        return *this;
     }
 
     void Buffer::create(BufferType type)
@@ -69,8 +70,8 @@ namespace motoret
 
     void Buffer::release()
     {
-        MOTORET_
         handler_ = ConstantValues::DELETED_HANDLER;
         type_ = BufferType::NONE;
     }
 }
+

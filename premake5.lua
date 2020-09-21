@@ -10,6 +10,7 @@ project "motoret"
     objdir "build/"
     includedirs {
         "include/",
+        "src/",
         "extern/include/",
     }
 
@@ -56,9 +57,25 @@ project "motoret"
         }
 
     configuration "gmake"
-        defines {}
+        defines { "_GLFW_X11", "MOTORET_OPENGL", }
+        links { "X11", "dl", "pthread"  }
 
-        files {}
+        files {
+            "./extern/src/GLFW/x11_platform.h",
+            "./extern/src/GLFW/xkb_unicode.h",
+            "./extern/src/GLFW/posix_time.h",
+            "./extern/src/GLFW/posix_thread.h",
+            "./extern/src/GLFW/glx_context.h",
+            "./extern/src/GLFW/linux_joystick.h",
+            "./extern/src/GLFW/x11_init.c",
+            "./extern/src/GLFW/x11_monitor.c",
+            "./extern/src/GLFW/x11_window.c",
+            "./extern/src/GLFW/xkb_unicode.c",
+            "./extern/src/GLFW/posix_time.c",
+            "./extern/src/GLFW/posix_thread.c",
+            "./extern/src/GLFW/glx_context.c",
+            "./extern/src/GLFW/linux_joystick.c",
+        }
 
     filter "configurations:Debug"
         defines "MOTORET_DEBUG"

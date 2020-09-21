@@ -12,8 +12,8 @@ namespace motoret
     class Renderer
     {
     public:
-        Renderer();
-        ~Renderer();
+        Renderer() {}
+        ~Renderer() {}
 
         std::vector<InternalBuffer> buffers_;
         std::list<uint32_t> aviable_buffer_vector_positions_;

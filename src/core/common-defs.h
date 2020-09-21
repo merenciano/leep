@@ -1,9 +1,11 @@
 #ifndef __MOTORET_CORE_COMMON_DEFS_H__
 #define __MOTORET_CORE_COMMON_DEFS_H__ 1
 
+#include "core/logger.h"
+
 #ifdef MOTORET_DEBUG 
-    #define MOTORET_ASSERT(x, ...)      { if(!(x)) { MEREN_ERROR("Assertion failed: {0}",__VA_ARGS__); abort(); }}
-    #define MOTORET_CORE_ASSERT(x, ...) { if(!(x)) { MEREN_CORE_ERROR("Assertion failed: {0}",__VA_ARGS__); abort(); }}
+    #define MOTORET_ASSERT(x, ...)      { if(!(x)) { MOTORET_ERROR("Assertion failed: {0}",__VA_ARGS__); abort(); }}
+    #define MOTORET_CORE_ASSERT(x, ...) { if(!(x)) { MOTORET_CORE_ERROR("Assertion failed: {0}",__VA_ARGS__); abort(); }}
 #else
     #define MOTORET_ASSERT(x, ...) 
     #define MOTORET_CORE_ASSERT(x, ...) 

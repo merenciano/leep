@@ -13,8 +13,8 @@ namespace motoret
 
         ~Manager() {}
 
-        Window&   window()   const;
-        Renderer& renderer() const;
+        Window&   window() { return window_; }
+        Renderer& renderer() { return renderer_; }
 
     private:
         Window   window_;
