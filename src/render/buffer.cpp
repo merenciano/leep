@@ -51,6 +51,13 @@ namespace motoret
         data.clear();
     }
 
+    void Buffer::set_data(std::vector<float> &data)
+    {
+        Manager::instance().renderer().buffers_[handler_].data_.vertices.swap(data);
+        Manager::instance().renderer().buffers_[handler_].version_++;
+        data.clear();
+    }
+
     void Buffer::set_data(std::vector<uint32_t> &data)
     {
         Manager::instance().renderer().buffers_[handler_].data_.indices.swap(data);

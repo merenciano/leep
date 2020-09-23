@@ -27,6 +27,7 @@ namespace motoret
 
         void create(BufferType type);
         void set_data(std::vector<Vertex> &data);
+        void set_data(std::vector<float> &data);
         void set_data(std::vector<uint32_t> &data);
         BufferType type() const;
         int32_t handler() const;

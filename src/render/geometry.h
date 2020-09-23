@@ -9,9 +9,13 @@ namespace motoret
     {
     public:
         Geometry();
-        Geometry(const Geometry &other) = delete;
+        Geometry(const Geometry &other);
         Geometry(Geometry &&other) = delete;
         ~Geometry();
+
+        Geometry& operator=(const Geometry &other);
+
+        void createCube();
     
     private:
         Buffer vertex_buffer_;
