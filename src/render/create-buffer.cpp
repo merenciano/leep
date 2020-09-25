@@ -7,13 +7,14 @@ namespace motoret
     {
     }
 
-    CreateBuffer::CreateBuffer(Buffer b)
-    {
-        buffer_ = b;
-    }
-
     CreateBuffer::~CreateBuffer()
     {
+    }
+
+    CreateBuffer& CreateBuffer::set_buffer(const Buffer &buffer)
+    {
+        buffer_ = buffer;
+        return *this;
     }
 
 }

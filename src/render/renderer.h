@@ -2,6 +2,7 @@
 #define __MOTORET_RENDER_RENDERER_H__ 1
 
 #include "render/internal-buffer.h"
+#include "render/internal-material.h"
 
 #include <stdint.h>
 #include <vector>
@@ -17,6 +18,7 @@ namespace motoret
 
         std::vector<InternalBuffer> buffers_;
         std::list<uint32_t> aviable_buffer_vector_positions_;
+        InternalMaterial materials_[MaterialTypes::MAX];
     };
 }
 

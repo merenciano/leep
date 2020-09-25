@@ -10,10 +10,11 @@ namespace motoret
     {
     public:
         CreateBuffer();
-        CreateBuffer(Buffer b);
         CreateBuffer(const CreateBuffer &other) = delete;
         CreateBuffer(CreateBuffer &&other) = delete;
         ~CreateBuffer();
+
+        CreateBuffer& set_buffer(const Buffer &buffer);
 
         virtual void executeCommand() const override;
 
