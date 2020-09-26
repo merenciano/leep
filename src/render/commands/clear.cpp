@@ -1,4 +1,4 @@
-#include "render/clear.h"
+#include "render/commands/clear.h"
 
 namespace motoret
 {
@@ -19,19 +19,21 @@ namespace motoret
 
     }
 
-    void Clear::set_clear_color(float r, float g, float b, float a)
+    Clear& Clear::set_clear_color(float r, float g, float b, float a)
     {
         clear_color_[0] = r;
         clear_color_[1] = g;
         clear_color_[2] = b;
         clear_color_[3] = a;
+        return *this;
     }
 
-    void Clear::set_clear_buffer(bool color, bool depth, bool stencil)
+    Clear& Clear::set_clear_buffer(bool color, bool depth, bool stencil)
     {
         color_ = color;
         depth_ = depth;
         stencil_ = stencil;
+        return *this;
     }
 }
 

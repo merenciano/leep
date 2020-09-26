@@ -13,8 +13,8 @@ namespace motoret
 
         virtual void executeCommand() const override;
 
-        void set_clear_color(float r, float g, float b, float a);
-        void set_clear_buffer(bool color, bool depth, bool stencil);
+        Clear& set_clear_color(float r, float g, float b, float a);
+        Clear& set_clear_buffer(bool color, bool depth, bool stencil);
 
     private:
         float clear_color_[4];

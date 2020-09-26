@@ -5,19 +5,14 @@
 
 namespace motoret
 {
-    enum MaterialTypes
+    class InternalMaterial
     {
-        NONE = -1,
-        PBR = 0,
-
-        MAX
-    };
-
-    struct InternalMaterial
-    {
-        uint32_t vertex_shader;
-        uint32_t fragment_shader;
-        uint32_t program;
+    public:
+        virtual ~InternalMaterial() {}
+        virtual void init() = 0;
+        virtual uint32_t internal_id() const = 0;
+    protected:
+        uint32_t internal_id_;
     };
 }
 #endif // __MOTORET_RENDER_INTERNAL_MATERIAL_H__

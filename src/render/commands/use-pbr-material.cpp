@@ -20,5 +20,5 @@ namespace motoret
 }
 
 #ifdef MOTORET_OPENGL
-    #include "opengl/opengl-set-pbr-scene.cpp"
+    #include "opengl/opengl-use-pbr-material.cpp"
 #endif

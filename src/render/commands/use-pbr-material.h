@@ -1,5 +1,5 @@
-#ifndef __MOTORET_RENDER_USE_PBR_MATERIAL_COMMAND_H__
-#define __MOTORET_RENDER_USE_PBR_MATERIAL_COMMAND_H__ 1
+#ifndef __MOTORET_RENDER_COMMANDS_USE_PBR_MATERIAL_H__
+#define __MOTORET_RENDER_COMMANDS_USE_PBR_MATERIAL_H__ 1
 
 #include "render/display-list-command.h"
 #include "glm/mat4x4.hpp"
@@ -11,7 +11,7 @@ namespace motoret
     // with each entity, like camera and lights
     struct PbrSceneData
     {
-        glm::mat4x4 view_projection_;
+        glm::mat4x4 view_projection;
     };
 
     class UsePbrMaterial: public DisplayListCommand
@@ -35,4 +35,4 @@ namespace motoret
     };
 };
 
-#endif // __MOTORET_RENDER_USE_PBR_MATERIAL_COMMAND_H__
+#endif // __MOTORET_RENDER_COMMANDS_USE_PBR_MATERIAL_H__

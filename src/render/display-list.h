@@ -23,6 +23,8 @@ namespace motoret
                 return command_list_.back();
             }
 
+            void submit();
+
         private:
             std::list<std::unique_ptr<DisplayListCommand>> command_list_;
     };

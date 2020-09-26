@@ -1,4 +1,5 @@
 #include "display-list.h"
+#include "manager.h"
 
 namespace motoret
 {
@@ -17,5 +18,8 @@ namespace motoret
         command_list_.clear();
     }
 
-
+    void DisplayList::submit()
+    {
+        Manager::instance().renderer().addDisplayListToQueue(std::move(*this));
+    }
 }

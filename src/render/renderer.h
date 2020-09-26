@@ -3,10 +3,14 @@
 
 #include "render/internal-buffer.h"
 #include "render/internal-material.h"
+#include "render/material-types.h"
+#include "render/display-list.h"
 
 #include <stdint.h>
 #include <vector>
 #include <list>
+#include <memory>
+#include <mutex>
 
 namespace motoret
 {
@@ -16,9 +20,18 @@ namespace motoret
         Renderer() {}
         ~Renderer() {}
 
+        void init();
+        void addDisplayListToQueue(DisplayList &&dl);
+
         std::vector<InternalBuffer> buffers_;
         std::list<uint32_t> aviable_buffer_vector_positions_;
-        InternalMaterial materials_[MaterialTypes::MAX];
+        std::unique_ptr<InternalMaterial> materials_[MaterialType::MAX];
+
+        std::list<DisplayList> next_frame_command_queue_;
+        std::list<DisplayList> current_frame_commands_;
+
+        std::mutex next_frame_command_queue_mtx_;
+        std::mutex current_frame_commands_mtx_;
     };
 }
 
