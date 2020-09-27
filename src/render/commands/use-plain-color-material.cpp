@@ -1,4 +1,4 @@
-#include "render/commands/use-plain-color-material.h"
+#include "use-plain-color-material.h"
 
 namespace motoret
 {
@@ -14,5 +14,5 @@ namespace motoret
 }
 
 #ifdef MOTORET_OPENGL
-    #include "opengl/opengl-use-pbr-material.cpp"
+    #include "render/commands/opengl/opengl-use-pbr-material.cpp"
 #endif

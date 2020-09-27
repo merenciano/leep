@@ -38,5 +38,5 @@ namespace motoret
 }
 
 #ifdef MOTORET_OPENGL
-    #include "opengl/opengl-clear.cpp"
+    #include "render/commands/opengl/opengl-clear.cpp"
 #endif

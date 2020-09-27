@@ -25,6 +25,16 @@ namespace motoret
         return *this;
     }
 
+    Buffer Geometry::vertex_buffer() const
+    {
+        return vertex_buffer_;
+    }
+
+    Buffer Geometry::index_buffer() const
+    {
+        return index_buffer_;
+    }
+
     void Geometry::createCube()
     {
         float vertices[] = {

@@ -35,6 +35,12 @@ namespace motoret
             data_.vertices.clear();
         }
 
+        void markAsDeleted()
+        {
+            version_ = ConstantValues::INVALID_VERSION;
+            gpu_version_ = ConstantValues::INVALID_GPU_VERSION;
+        }
+
         uint32_t internal_id_;
         int32_t version_;
         int32_t gpu_version_;

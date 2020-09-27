@@ -20,5 +20,5 @@ namespace motoret
 }
 
 #ifdef MOTORET_OPENGL
-    #include "opengl/opengl-create-buffer.cpp"
+    #include "render/commands/opengl/opengl-create-buffer.cpp"
 #endif 

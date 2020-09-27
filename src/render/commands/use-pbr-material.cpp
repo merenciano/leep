@@ -1,4 +1,4 @@
-#include "render/use-pbr-material.h"
+#include "use-pbr-material.h"
 
 namespace motoret
 {
@@ -20,5 +20,5 @@ namespace motoret
 }
 
 #ifdef MOTORET_OPENGL
-    #include "opengl/opengl-use-pbr-material.cpp"
+    #include "render/commands/opengl/opengl-use-pbr-material.cpp"
 #endif

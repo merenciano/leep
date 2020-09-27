@@ -14,6 +14,8 @@ namespace motoret
         ~Geometry();
 
         Geometry& operator=(const Geometry &other);
+        Buffer vertex_buffer() const;
+        Buffer index_buffer() const;
 
         void createCube();
     

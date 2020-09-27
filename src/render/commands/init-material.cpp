@@ -23,6 +23,6 @@ namespace motoret
     void InitMaterial::executeCommand() const
     {
         Renderer &r = Manager::instance().renderer();
-        r.materials_[material_]->init();
+        r.materials_[material_]->init(); // TODO init content should be inside an executeCommand
     }
 }
