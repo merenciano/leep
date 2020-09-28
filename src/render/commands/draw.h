@@ -16,6 +16,7 @@ namespace motoret
         Draw& set_geometry(const Geometry &geometry);
         Draw& set_material(const Material &material);
 
+    protected:
         virtual void executeCommand() const override;
 
     private:

@@ -50,4 +50,9 @@ namespace motoret
         MOTORET_CORE_ASSERT(type_ == MaterialType::PLAIN_COLOR, "The material has not the correct type yet.");
         data_.plain_color = data;
     }
+
+    const Material::MaterialData& Material::data() const
+    {
+        return data_;
+    }
 }

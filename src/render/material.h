@@ -9,6 +9,12 @@ namespace motoret
     class Material
     {
     public:
+        union MaterialData
+        {
+            PbrData pbr;
+            PlainColorData plain_color;
+        };
+
         Material();
         Material(const Material&) = delete;
         Material(Material&&) = delete;
@@ -19,16 +25,12 @@ namespace motoret
         void set_type(MaterialType type);
         void set_data(const PbrData &data);
         void set_data(const PlainColorData &data);
+        const MaterialData& data() const;
 
         MaterialType type();
 
     protected:
-        union MaterialData
-        {
-            PbrData pbr;
-            PlainColorData plain_color;
-        } data_;
-        
+        MaterialData data_; 
         MaterialType type_;
     };
 }

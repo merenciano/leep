@@ -23,11 +23,9 @@ void Logic()
 
     test_dl.addCommand<Clear>()
         .set_clear_buffer(true, true, true)
-        .set_clear_color(1.0f, 0.0f, 0.0f, 1.0f)
-        .executeCommand();
+        .set_clear_color(1.0f, 0.0f, 0.0f, 1.0f);
 
-    test_dl.addCommand<UsePlainColorMaterial>()
-        .executeCommand();
+    test_dl.addCommand<UsePlainColorMaterial>();
 
     /*test_dl.addCommand<Draw>()
         .set_geometry(Geometry)
