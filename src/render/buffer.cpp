@@ -40,27 +40,20 @@ namespace motoret
         {
             InternalBuffer temp;
             Manager::instance().renderer().buffers_.push_back(std::move(temp));
-            handler_ = Manager::instance().renderer().buffers_.size() - 1;
+            handler_ = (int32_t)Manager::instance().renderer().buffers_.size() - 1;
         }
     }
 
     void Buffer::set_data(std::vector<Vertex> &data)
     {
-        Manager::instance().renderer().buffers_[handler_].data_.vertices.swap(data);
-        Manager::instance().renderer().buffers_[handler_].version_++;
-        data.clear();
-    }
-
-    void Buffer::set_data(std::vector<float> &data)
-    {
-        Manager::instance().renderer().buffers_[handler_].data_.vertices.swap(data);
+        Manager::instance().renderer().buffers_[handler_].vertices_data_.swap(data);
         Manager::instance().renderer().buffers_[handler_].version_++;
         data.clear();
     }
 
     void Buffer::set_data(std::vector<uint32_t> &data)
     {
-        Manager::instance().renderer().buffers_[handler_].data_.indices.swap(data);
+        Manager::instance().renderer().buffers_[handler_].indices_data_.swap(data);
         Manager::instance().renderer().buffers_[handler_].version_++;
         data.clear();
     }

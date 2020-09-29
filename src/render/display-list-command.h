@@ -1,8 +1,6 @@
 #ifndef __MOTORET_DISPLAY_LIST_COMMAND_H__
 #define __MOTORET_DISPLAY_LIST_COMMAND_H__ 1
 
-#include "render/renderer.h"
-
 namespace motoret
 {
     class DisplayListCommand

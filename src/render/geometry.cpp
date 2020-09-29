@@ -37,7 +37,7 @@ namespace motoret
 
     void Geometry::createCube()
     {
-        float vertices[] = {
+        float vertices_f[] = {
             // positions          // normals           // uv 
             -0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  0.0f,  0.0f,
              0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  1.0f,  0.0f,
@@ -70,6 +70,16 @@ namespace motoret
             -0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,  0.0f,  0.0f,
         };
 
+        //  I've done this ugly thing in order to not spend time writing the
+        //  cube data filling the Vertex struct (I copy-pasted from another project
+        //  of mine and I was using array of floats).
+
+        //  Actually trying to figure out how to cast to Vertex 
+        //  without the void* temp has made me waste more time.
+        void *ugly_temp = (void*)vertices_f;
+        Vertex *vertex_ptr = (Vertex*)ugly_temp;
+        std::vector<Vertex> vertex_vector(vertex_ptr, 24 + vertex_ptr);
+
         uint32_t indices[] = {
              0,  2,  1,  2,  0,  3,
              4,  5,  6,  6,  7,  4,
@@ -79,7 +89,6 @@ namespace motoret
             23, 22, 20, 22, 21, 20,
         };
 
-        std::vector<float> vertex_vector(std::begin(vertices), std::end(vertices));
         std::vector<uint32_t> index_vector(std::begin(indices), std::end(indices));
 
         vertex_buffer_.create(BufferType::VERTEX_BUFFER);

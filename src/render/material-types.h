@@ -3,13 +3,14 @@
 
 namespace motoret
 {
+    // Not enum class because its values are used as array indexes for the renderer materials
     enum MaterialType
     {
-        NONE = -1,
-        PBR = 0,
-        PLAIN_COLOR = 1,
+        MT_NONE = -1,
+        MT_PBR = 0,
+        MT_PLAIN_COLOR = 1,
 
-        MAX
+        MT_MAX
     };
 
     struct PbrData

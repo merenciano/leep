@@ -17,8 +17,8 @@ namespace motoret
         {
             glBindBuffer(GL_ARRAY_BUFFER, r.buffers_[buffer_.handler()].internal_id_);
             glBufferData(GL_ARRAY_BUFFER,
-                        r.buffers_[buffer_.handler()].data_.vertices.size() * sizeof(Vertex),
-                        (const void*)r.buffers_[buffer_.handler()].data_.vertices.data(),
+                        r.buffers_[buffer_.handler()].vertices_data_.size() * sizeof(Vertex),
+                        (const void*)r.buffers_[buffer_.handler()].vertices_data_.data(),
                         GL_STATIC_DRAW);
             glBindBuffer(GL_ARRAY_BUFFER, 0);
         }
@@ -26,8 +26,8 @@ namespace motoret
         {
             glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, r.buffers_[buffer_.handler()].internal_id_);
             glBufferData(GL_ELEMENT_ARRAY_BUFFER,
-                        r.buffers_[buffer_.handler()].data_.indices.size() * sizeof(uint32_t),
-                        (const void*)r.buffers_[buffer_.handler()].data_.indices.data(),
+                        r.buffers_[buffer_.handler()].indices_data_.size() * sizeof(uint32_t),
+                        (const void*)r.buffers_[buffer_.handler()].indices_data_.data(),
                         GL_STATIC_DRAW);
             glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
         }

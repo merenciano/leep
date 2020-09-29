@@ -1,5 +1,5 @@
 #include "display-list.h"
-#include "manager.h"
+#include "core/manager.h"
 
 namespace motoret
 {
@@ -16,6 +16,11 @@ namespace motoret
     DisplayList::~DisplayList()
     {
         command_list_.clear();
+    }
+
+    const std::list<std::unique_ptr<DisplayListCommand>>& DisplayList::command_list() const
+    {
+        return command_list_;
     }
 
     void DisplayList::submit()

@@ -12,6 +12,7 @@ namespace motoret
         ~Pbr();
 
         virtual void init() override;
+        virtual void useMaterialData(const Material &material) const override;
         virtual uint32_t internal_id() const override;
     };
 }

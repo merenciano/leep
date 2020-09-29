@@ -7,7 +7,7 @@
 
 namespace motoret
 {
-    enum BufferType
+    enum class BufferType
     {
         NONE = 0,
         VERTEX_BUFFER,

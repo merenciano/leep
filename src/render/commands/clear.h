@@ -1,7 +1,7 @@
 #ifndef __MOTORET_RENDER_CLEAR_H__
 #define __MOTORET_RENDER_CLEAR_H__ 1
 
-#include "display-list-command.h"
+#include "render/display-list-command.h"
 
 namespace motoret
 {

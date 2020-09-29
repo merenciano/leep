@@ -21,5 +21,5 @@ namespace motoret
 }
 
 #ifdef MOTORET_OPENGL
-    #include "render/materials/opengl/opengl-plain-color.h"
+    #include "render/materials/opengl/opengl-plain-color.cpp"
 #endif

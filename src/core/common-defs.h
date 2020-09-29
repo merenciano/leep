@@ -15,7 +15,7 @@
 
 namespace motoret
 {
-    enum ConstantValues
+    enum ConstantValues     // Not an enum class because it is used to assign int32_t handlers
     {
         UNINITIALIZED_HANDLER     = -5000,
         DELETED_HANDLER           = -5001,

@@ -3,6 +3,8 @@
 
 #include "render/material.h"
 
+#include "render/display-list-command.h"
+
 #include <stdint.h>
 
 namespace motoret
@@ -11,12 +13,12 @@ namespace motoret
     {
     public:
         virtual ~InternalMaterial() {}
+
+        virtual void init() = 0;
+        virtual void useMaterialData(const Material &material) const = 0;
         virtual uint32_t internal_id() const = 0;
 
     protected:
-        virtual void init() = 0;
-        virtual void useMaterialData(Material material) const = 0;
-
         uint32_t internal_id_;
     };
 }

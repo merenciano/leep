@@ -20,6 +20,8 @@ project "motoret"
 		"src/*.cpp",
         "src/*/*.h",
         "src/*/*.cpp",
+        "src/*/*/*.h",
+        "src/*/*/*.cpp",
 
         --GLFW
         "./extern/src/GLFW/internal.h",

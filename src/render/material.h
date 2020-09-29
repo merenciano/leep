@@ -1,7 +1,6 @@
 #ifndef __MOTORET_RENDER_MATERIAL_H__
 #define __MOTORET_RENDER_MATERIAL_H__ 1
 
-#include "render/internal-material.h"
 #include "render/material-types.h"
 
 namespace motoret
@@ -27,7 +26,7 @@ namespace motoret
         void set_data(const PlainColorData &data);
         const MaterialData& data() const;
 
-        MaterialType type();
+        const MaterialType type() const;
 
     protected:
         MaterialData data_; 

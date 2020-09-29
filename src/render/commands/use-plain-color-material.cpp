@@ -14,5 +14,5 @@ namespace motoret
 }
 
 #ifdef MOTORET_OPENGL
-    #include "render/commands/opengl/opengl-use-pbr-material.cpp"
+    #include "render/commands/opengl/opengl-use-plain-color-material.cpp"
 #endif

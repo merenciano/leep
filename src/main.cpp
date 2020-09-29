@@ -4,17 +4,32 @@
 
 using namespace motoret;
 
-void init()
+struct DrawableObject
+{
+    Geometry geometry;
+    Material material;
+} cube;
+
+void Init()
 {
     Manager::instance().renderer().init();
     DisplayList init_dl;
 
     init_dl.addCommand<InitMaterial>()
-        .set_material(MaterialType::PLAIN_COLOR)
+        .set_material(MaterialType::MT_PLAIN_COLOR)
         .executeCommand();
     
     init_dl.submit();
 
+    PlainColorData pcd;
+    pcd.r = 1.0f;
+    pcd.g = 0.0f;
+    pcd.b = 0.0f;
+    pcd.a = 1.0f;
+    
+    cube.geometry.createCube();
+    cube.material.set_type(MaterialType::MT_PLAIN_COLOR);
+    cube.material.set_data(pcd);
 }
 
 void Logic()
@@ -23,22 +38,20 @@ void Logic()
 
     test_dl.addCommand<Clear>()
         .set_clear_buffer(true, true, true)
-        .set_clear_color(1.0f, 0.0f, 0.0f, 1.0f);
+        .set_clear_color(0.2f, 0.2f, 0.2f, 1.0f);
 
     test_dl.addCommand<UsePlainColorMaterial>();
 
-    /*test_dl.addCommand<Draw>()
-        .set_geometry(Geometry)
-        .set_material(Material)
-        .executeCommand();*/
+    test_dl.addCommand<Draw>()
+        .set_geometry(cube.geometry)
+        .set_material(cube.material);
 
     test_dl.submit();
-    
 }
 
 void Render()
 {
-
+    Manager::instance().renderer().renderFrame();
 }
 
 int main()
@@ -48,11 +61,13 @@ int main()
     Logger::init();
     MOTORET_CORE_INFO("Hello World!");
 
+    Init();
+
     while (!window.windowShouldClose())
     {
-        Clear clear;
-        clear.set_clear_color(1.0f, 0.0f, 0.0f, 1.0f);
-        clear.executeCommand();
+        Logic();
+        Manager::instance().renderer().submitFrame();
+        Render();
 
         window.swap();
         window.pollEvents();

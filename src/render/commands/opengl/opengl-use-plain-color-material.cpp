@@ -8,7 +8,7 @@ namespace motoret
 {
     void UsePlainColorMaterial::executeCommand() const
     {
-        GLuint program = Manager::instance().renderer().materials_[MaterialType::PLAIN_COLOR].internal_id();
+        GLuint program = Manager::instance().renderer().materials_[MaterialType::MT_PLAIN_COLOR]->internal_id();
         glUseProgram(program);
     }
 }

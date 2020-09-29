@@ -1,10 +1,10 @@
 #ifndef __MOTORET_RENDER_RENDERER_H__
 #define __MOTORET_RENDER_RENDERER_H__ 1
 
+#include "render/display-list.h"
 #include "render/internal-buffer.h"
 #include "render/internal-material.h"
 #include "render/material-types.h"
-#include "render/display-list.h"
 
 #include <stdint.h>
 #include <vector>
@@ -17,15 +17,18 @@ namespace motoret
     class Renderer
     {
     public:
-        Renderer() {}
-        ~Renderer() {}
+        Renderer();
+        ~Renderer();
 
         void init();
         void addDisplayListToQueue(DisplayList &&dl);
 
+        void renderFrame();
+        void submitFrame();
+
         std::vector<InternalBuffer> buffers_;
         std::list<uint32_t> aviable_buffer_vector_positions_;
-        std::unique_ptr<InternalMaterial> materials_[MaterialType::MAX];
+        std::unique_ptr<InternalMaterial> materials_[MaterialType::MT_MAX];
 
         std::list<DisplayList> next_frame_command_queue_;
         std::list<DisplayList> current_frame_commands_;

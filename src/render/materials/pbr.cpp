@@ -17,6 +17,11 @@ namespace motoret
 
     }
 
+    void Pbr::useMaterialData(const Material& material) const
+    {
+
+    }
+
     uint32_t Pbr::internal_id() const
     {
         return internal_id_;

@@ -20,9 +20,10 @@ namespace motoret
             T& addCommand()
             {
                 command_list_.push_back(std::make_unique<T>());
-                return command_list_.back();
+                return *(static_cast<T*>(command_list_.back().get()));
             }
 
+            const std::list<std::unique_ptr<DisplayListCommand>>& command_list() const;
             void submit();
 
         private:

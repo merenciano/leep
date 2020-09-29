@@ -18,7 +18,7 @@ namespace motoret
 
         InternalBuffer(const InternalBuffer& other) = delete;
 
-        InternalBuffer(InternalBuffer&& other)
+        InternalBuffer(InternalBuffer&& other) noexcept
         {
             internal_id_ = other.internal_id_;
             other.internal_id_ = ConstantValues::UNINITIALIZED_INTERNAL_ID;
@@ -26,13 +26,13 @@ namespace motoret
             other.version_ = 0;
             gpu_version_ = other.gpu_version_;
             other.gpu_version_ = 0;
-            std::swap(data_.vertices, other.data_.vertices);
+            vertices_data_.swap(other.vertices_data_);
+            indices_data_.swap(other.indices_data_);
         }
 
         ~InternalBuffer()
         {
             MOTORET_CORE_INFO("InternalBuffer data freed");
-            data_.vertices.clear();
         }
 
         void markAsDeleted()
@@ -44,13 +44,13 @@ namespace motoret
         uint32_t internal_id_;
         int32_t version_;
         int32_t gpu_version_;
-        union Data
-        {
-            Data() {}
-            ~Data() {}
-            std::vector<Vertex> vertices;
-            std::vector<uint32_t> indices;
-        } data_;
+
+        //  TODO: I don't like having one unused vector in every buffer
+        //  but I didn't be able to make it work with unions because
+        //  of the exceptions it threw, I whink multiple std::vectors
+        //  inside an union does not work well, but I need some research on this
+        std::vector<Vertex> vertices_data_;
+        std::vector<uint32_t> indices_data_;
     };
 }
 

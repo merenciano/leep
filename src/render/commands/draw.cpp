@@ -26,5 +26,5 @@ namespace motoret
 }
 
 #ifdef MOTORET_OPENGL
-    #include "render/commands/opengl/opengl-draw.h"
+    #include "render/commands/opengl/opengl-draw.cpp"
 #endif
