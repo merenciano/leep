@@ -18,7 +18,7 @@ namespace motoret
     {
     public:
         Buffer();
-        Buffer(BufferType t) : type_(t) {}
+        Buffer(BufferType t) : type_(t) { handler_ = ConstantValues::UNINITIALIZED_HANDLER; }
         Buffer(const Buffer &other);
         Buffer(Buffer &&other) = delete;
         ~Buffer() {}

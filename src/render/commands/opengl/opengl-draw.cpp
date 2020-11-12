@@ -28,6 +28,9 @@ namespace motoret
         MOTORET_CORE_ASSERT(material_.type() != MaterialType::MT_NONE,
             "Material type not setted");
 
+        // Set the uniforms
+        r.materials_[material_.type()]->useMaterialData(material_);
+
         // Create the OpenGL vertex buffer if it has not been created yet
         if (r.buffers_[vertex_handler].gpu_version_ == 0)
         {
@@ -38,6 +41,11 @@ namespace motoret
                 (const void*)r.buffers_[vertex_handler].vertices_data_.data(),
                 GL_STATIC_DRAW);
             r.buffers_[vertex_handler].gpu_version_ = r.buffers_[vertex_handler].version_; 
+        }
+        else
+        {
+            glBindBuffer(GL_ARRAY_BUFFER,
+                r.buffers_[geometry_.vertex_buffer().handler()].internal_id_);
         }
 
         // Create the OpenGL index buffer if it has not been created yet
@@ -51,15 +59,11 @@ namespace motoret
                 GL_STATIC_DRAW);
             r.buffers_[index_handler].gpu_version_ = r.buffers_[index_handler].version_; 
         }
-
-        // Set the uniforms
-        r.materials_[material_.type()]->useMaterialData(material_);
-
-        glBindBuffer(GL_ARRAY_BUFFER,
-            r.buffers_[geometry_.vertex_buffer().handler()].internal_id_);
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,
-            r.buffers_[geometry_.index_buffer().handler()].internal_id_);
-
+        else
+        {
+            glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,
+                r.buffers_[geometry_.index_buffer().handler()].internal_id_);
+        }
 
         // In order to keep things simple, at this moment the engine
         // only supports 3P, 3N, 2UV vertices

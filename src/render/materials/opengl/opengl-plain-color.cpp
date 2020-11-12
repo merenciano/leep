@@ -8,24 +8,33 @@
 static const char* kPlainColorVertex = R"(
     #version 330 core 
 
+    uniform vec4 u_entity_data[5];
+    uniform vec4 u_scene_data[4];
+
     layout (location = 0) in vec3 a_position;
     layout (location = 1) in vec3 a_normal;
     layout (location = 2) in vec2 a_uv;
 
+    out vec4 color;
+
     void main() {
-        gl_Position = vec4(a_position, 1.0);
+        mat4 world = mat4(u_entity_data[0], u_entity_data[1], u_entity_data[2], u_entity_data[3]);
+        mat4 vp = mat4(u_scene_data[0], u_scene_data[1], u_scene_data[2], u_scene_data[3]);
+        vec4 world_position = world * vec4(a_position, 1.0);
+        color = u_entity_data[4];
+        gl_Position = vp * world_position;
     }
 )";
 
 static const char* kPlainColorFragment = R"(
     #version 330 core 
 
-    uniform vec4 u_color;
 
+    in vec4 color;
     out vec4 FragColor;
 
     void main() {
-        FragColor = u_color; 
+        FragColor = color; 
     }
 )";
 
@@ -75,11 +84,7 @@ namespace motoret
         MOTORET_ASSERT(material.type() == MaterialType::MT_PLAIN_COLOR,
             "Wrong material type");
         
-        GLint uniform_location = glGetUniformLocation(internal_id_, "u_color");
-        glUniform4f(uniform_location,
-            material.data().plain_color.r,
-            material.data().plain_color.g,
-            material.data().plain_color.b,
-            material.data().plain_color.a);
+        GLint uniform_location = glGetUniformLocation(internal_id_, "u_entity_data");
+        glUniform4fv(uniform_location, 5, (const GLfloat*)&(material.data()));
     }
 }

@@ -1,6 +1,8 @@
 #ifndef __MOTORET_RENDER_MATERIAL_TYPES_H__
 #define __MOTORET_RENDER_MATERIAL_TYPES_H__ 1
 
+#include "glm/mat4x4.hpp"
+
 namespace motoret
 {
     // Not enum class because its values are used as array indexes for the renderer materials
@@ -20,6 +22,7 @@ namespace motoret
 
     struct PlainColorData
     {
+        glm::mat4 world;
         float r;
         float g;
         float b;

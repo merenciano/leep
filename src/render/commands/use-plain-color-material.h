@@ -7,6 +7,11 @@
 
 namespace motoret
 {
+    struct PlainColorSceneData
+    {
+        glm::mat4x4 view_projection;
+    };
+    
     class UsePlainColorMaterial: public DisplayListCommand
     {
     public:
@@ -15,7 +20,12 @@ namespace motoret
         UsePlainColorMaterial(UsePlainColorMaterial&&) = delete;
         ~UsePlainColorMaterial();
 
+        UsePlainColorMaterial& set_scene_data(const PlainColorSceneData &scene_data);
+
         virtual void executeCommand() const override;
+    
+    private:
+        PlainColorSceneData data_;
     };
 };
 
