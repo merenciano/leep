@@ -10,26 +10,32 @@
 
 namespace motoret
 {
-    class InternalEntity
+    struct InternalEntity
     {
-    public:
         InternalEntity() = default;
+        InternalEntity(std::string name) : name_(name) {}
         ~InternalEntity() = default;
 
         uint64_t componentMask() const
         {
             uint64_t mask = 0;
-            for (const std::unique_ptr<Component> &c : components_)
+            for (const std::shared_ptr<Component> &c : components_)
             {
                 mask |= (1LL << c.get()->type());
             }
             return mask;
         }
+
+        void swap(InternalEntity *ie)
+        {
+            std::swap(name_, ie->name_);
+            std::swap(components_, ie->components_);
+        }
     
         template<typename T>
         T* getComponent()
         {
-            for (const std::unique_ptr<Component> &c : components_)
+            for (const std::shared_ptr<Component> &c : components_)
             {
                 if (c.get()->type() == T::type)
                 {
@@ -40,7 +46,7 @@ namespace motoret
         }
 
         std::string name_;
-        std::vector<std::unique_ptr<Component>> components_;
+        std::vector<std::shared_ptr<Component>> components_;
     };
 }
 #endif // __MOTORET_ECS_INTERNAL_ENTITY_H__

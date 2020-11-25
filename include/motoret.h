@@ -20,3 +20,9 @@
 #include "../src/render/commands/use-pbr-material.h"
 #include "../src/render/commands/use-plain-color-material.h"
 #include "../src/render/commands/draw.h"
+
+
+// Utility functions
+namespace motoret
+{
+}
