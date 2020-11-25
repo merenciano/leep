@@ -6,6 +6,7 @@ workspace "Motoret"
 project "motoret"
 	kind "ConsoleApp"
     language "C++"
+    cppdialect "C++17"
     targetdir "bin/"
     objdir "build/"
     includedirs {
@@ -78,7 +79,7 @@ project "motoret"
             "./extern/src/GLFW/glx_context.c",
             "./extern/src/GLFW/linux_joystick.c",
         }
-
+    
     filter "configurations:Debug"
         defines "MOTORET_DEBUG"
         symbols "On"

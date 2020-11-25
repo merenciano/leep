@@ -12,7 +12,6 @@ struct DrawableObject
     Material material;
 } cube;
 
-
 void Init()
 {
     Manager::instance().renderer().init();

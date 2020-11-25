@@ -3,6 +3,7 @@
 
 #include "core/window.h"
 #include "render/renderer.h"
+#include "ecs/internal-entity.h"
 
 namespace motoret
 {
@@ -15,6 +16,9 @@ namespace motoret
 
         Window&   window() { return window_; }
         Renderer& renderer() { return renderer_; }
+
+
+        std::vector<InternalEntity> entities_;
 
     private:
         Window   window_;
