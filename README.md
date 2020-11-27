@@ -1,2 +1,2 @@
-# motoret
-Engine for fun
+# LEEP
+Lucas Extensible Engine Project
