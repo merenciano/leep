@@ -5,9 +5,13 @@
 #include "../src/core/logger.h"
 
 // ECS
-#include "../src/ecs/component.h"
 #include "../src/ecs/entity.h"
+#include "../src/ecs/component.h"
+#include "../src/ecs/system.h"
 #include "../src/ecs/internal-entity.h"
+#include "../src/ecs/components/drawable.h"
+#include "../src/ecs/components/transform.h"
+#include "../src/ecs/systems/render.h"
 
 // RENDER
 #include "../src/render/renderer.h" // Inside manager.h, not needed here

@@ -22,7 +22,7 @@ namespace motoret
         void addComponent()
         {
             MOTORET_CORE_ASSERT(index_ >= 0, "Invalid entity");
-            std::unique_ptr<Component> comp;
+            std::shared_ptr<Component> comp;
             comp = std::make_shared<T>();
             GM.entities_[index_].components_.push_back(std::move(comp));
         }
@@ -36,11 +36,11 @@ namespace motoret
             
         }
         
-        bool hasComponents(uint64_t mask)
+        /*bool hasComponents(uint64_t mask)
         {
             MOTORET_CORE_ASSERT(index_ >= 0, "Invalid entity");
             return (mask & GM.entities_[index_].componentMask()) == mask;
-        }
+        }*/
 
 
     private:

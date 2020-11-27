@@ -15,9 +15,14 @@ namespace motoret
         MT_MAX
     };
 
+    struct WorldData
+    {
+        glm::mat4 world;
+    };
+
     struct PbrData
     {
-
+        glm::mat4 world;
     };
 
     struct PlainColorData

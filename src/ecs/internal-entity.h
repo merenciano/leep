@@ -26,6 +26,11 @@ namespace motoret
             return mask;
         }
 
+        bool hasComponents(uint64_t mask) const
+        {
+            return (mask & componentMask()) == mask;
+        }
+
         void swap(InternalEntity *ie)
         {
             std::swap(name_, ie->name_);
