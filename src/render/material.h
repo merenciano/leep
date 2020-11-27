@@ -10,6 +10,7 @@ namespace motoret
     public:
         union MaterialData
         {
+            glm::mat4 world;
             PbrData pbr;
             PlainColorData plain_color;
         };
@@ -22,6 +23,7 @@ namespace motoret
         Material& operator=(const Material &other);
 
         void set_type(MaterialType type);
+        void set_world(const glm::mat4 &world);
         void set_data(const PbrData &data);
         void set_data(const PlainColorData &data);
         const MaterialData& data() const;

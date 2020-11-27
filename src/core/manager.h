@@ -2,6 +2,7 @@
 #define __MOTORET_CORE_MANAGER_H__ 1
 
 #include "core/window.h"
+#include "ecs/internal-entity.h"
 #include "render/renderer.h"
 
 namespace motoret
@@ -15,6 +16,9 @@ namespace motoret
 
         Window&   window() { return window_; }
         Renderer& renderer() { return renderer_; }
+
+        std::vector<InternalEntity> entities_;
+        std::unordered_map<std::string, int32_t> entity_map_;
 
     private:
         Window   window_;

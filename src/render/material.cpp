@@ -40,6 +40,11 @@ namespace motoret
         type_ = type;
     }
 
+    void Material::set_world(const glm::mat4 &world)
+    {
+        data_.world = world;    
+    }
+
     void Material::set_data(const PbrData &data)
     {
         MOTORET_CORE_ASSERT(type_ == MaterialType::MT_PBR, "The material has not the correct type yet.");
