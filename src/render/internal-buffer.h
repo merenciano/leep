@@ -1,11 +1,13 @@
-#ifndef __MOTORET_RENDER_INTERNAL_BUFFER_H__
-#define __MOTORET_RENDER_INTERNAL_BUFFER_H__ 1
+// Lucas Merenciano Martinez <lucasmermar@gmail.com>
+
+#ifndef __LEEP_RENDER_INTERNAL_BUFFER_H__
+#define __LEEP_RENDER_INTERNAL_BUFFER_H__ 1
 
 #include "core/common-defs.h"
 #include "core/logger.h"
 #include <stdint.h>
 
-namespace motoret
+namespace leep
 {
     struct InternalBuffer
     {
@@ -32,7 +34,7 @@ namespace motoret
 
         ~InternalBuffer()
         {
-            MOTORET_CORE_INFO("InternalBuffer data freed");
+            LEEP_CORE_INFO("InternalBuffer data freed");
         }
 
         void markAsDeleted()
@@ -54,4 +56,4 @@ namespace motoret
     };
 }
 
-#endif // __MOTORET_RENDER_INTERNAL_BUFFER_H__
+#endif // __LEEP_RENDER_INTERNAL_BUFFER_H__

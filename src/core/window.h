@@ -1,9 +1,10 @@
-#ifndef __MOTORET_WINDOW_H__
-#define __MOTORET_WINDOW_H__ 1
+#ifndef __LEEP_CORE_WINDOW_H__
+#define __LEEP_CORE_WINDOW_H__ 1
 
 #include <stdint.h>
 
-namespace motoret {
+namespace leep
+{
 	class Window {
 	public:
 		Window();
@@ -21,4 +22,4 @@ namespace motoret {
 	};
 }
 
-#endif // __MOTORET_WINDOW_H__
+#endif // __LEEP_CORE_WINDOW_H__

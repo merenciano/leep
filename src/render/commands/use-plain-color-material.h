@@ -1,11 +1,13 @@
-#ifndef __MOTORET_RENDER_COMMANDS_USE_PLAIN_COLOR_MATERIAL_H__
-#define __MOTORET_RENDER_COMMANDS_USE_PLAIN_COLOR_MATERIAL_H__ 1
+// Lucas Merenciano Martinez <lucasmermar@gmail.com>
+
+#ifndef __LEEP_RENDER_COMMANDS_USE_PLAIN_COLOR_MATERIAL_H__
+#define __LEEP_RENDER_COMMANDS_USE_PLAIN_COLOR_MATERIAL_H__ 1
 
 #include "render/display-list-command.h"
 #include "glm/mat4x4.hpp"
  
 
-namespace motoret
+namespace leep 
 {
     struct PlainColorSceneData
     {
@@ -29,4 +31,4 @@ namespace motoret
     };
 };
 
-#endif // __MOTORET_RENDER_COMMANDS_USE_PLAIN_COLOR_MATERIAL_H__
+#endif // __LEEP_RENDER_COMMANDS_USE_PLAIN_COLOR_MATERIAL_H__

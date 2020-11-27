@@ -1,6 +1,6 @@
 #include "render/geometry.h"
 
-namespace motoret
+namespace leep
 {
     Geometry::Geometry()
     {

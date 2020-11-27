@@ -1,10 +1,12 @@
-#ifndef __MOTORET_RENDER_CREATE_BUFFER_COMMAND_H__
-#define __MOTORET_RENDER_CREATE_BUFFER_COMMAND_H__ 1
+// Lucas Merenciano Martinez <lucasmermar@gmail.com>
+
+#ifndef __LEEP_RENDER_CREATE_BUFFER_COMMAND_H__
+#define __LEEP_RENDER_CREATE_BUFFER_COMMAND_H__ 1
 
 #include "render/buffer.h"
 #include "render/display-list-command.h"
 
-namespace motoret
+namespace leep
 {
     class CreateBuffer : public DisplayListCommand
     {
@@ -23,4 +25,4 @@ namespace motoret
     };
 }
 
-#endif // __MOTORET_RENDER_CREATE_BUFFER_COMMAND_H__
+#endif // __LEEP_RENDER_CREATE_BUFFER_COMMAND_H__

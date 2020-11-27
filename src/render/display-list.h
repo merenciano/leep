@@ -1,12 +1,14 @@
-#ifndef __MOTORET_DISPLAY_LIST_H__
-#define __MOTORET_DISPLAY_LIST_H__ 1
+// Lucas Merenciano Martinez <lucasmermar@gmail.com>
+
+#ifndef __LEEP_DISPLAY_LIST_H__
+#define __LEEP_DISPLAY_LIST_H__ 1
 
 #include "display-list-command.h"
 
 #include <memory>
 #include <list>
 
-namespace motoret
+namespace leep
 {
     class DisplayList
     {
@@ -31,4 +33,4 @@ namespace motoret
     };
 }
 
-#endif // __MOTORET_DISPLAY_LIST_H__
+#endif // __LEEP_DISPLAY_LIST_H__

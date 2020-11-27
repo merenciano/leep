@@ -1,11 +1,11 @@
-#ifndef __MOTORET_ECS_COMPONENTS_DRAWABLE_H__
-#define __MOTORET_ECS_COMPONENTS_DRAWABLE_H__ 1
+#ifndef __LEEP_ECS_COMPONENTS_DRAWABLE_H__
+#define __LEEP_ECS_COMPONENTS_DRAWABLE_H__ 1
 
 #include "ecs/component.h"
 #include "render/material.h"
 #include "render/geometry.h"
 
-namespace motoret
+namespace leep 
 {
     struct Drawable : public Component
     {
@@ -16,4 +16,4 @@ namespace motoret
     };
 }
 
-#endif // __MOTORET_ECS_COMPONENTS_DRAWABLE_H__
+#endif // __LEEP_ECS_COMPONENTS_DRAWABLE_H__

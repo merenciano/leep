@@ -2,7 +2,7 @@
 
 #include "core/common-defs.h"
 
-namespace motoret
+namespace leep
 {
     PlainColor::PlainColor()
     {
@@ -20,6 +20,6 @@ namespace motoret
     }
 }
 
-#ifdef MOTORET_OPENGL
+#ifdef LEEP_OPENGL
     #include "render/materials/opengl/opengl-plain-color.cpp"
 #endif

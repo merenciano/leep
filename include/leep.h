@@ -27,6 +27,6 @@
 
 
 // Utility functions
-namespace motoret
+namespace leep 
 {
 }

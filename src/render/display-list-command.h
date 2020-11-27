@@ -1,7 +1,9 @@
-#ifndef __MOTORET_DISPLAY_LIST_COMMAND_H__
-#define __MOTORET_DISPLAY_LIST_COMMAND_H__ 1
+// Lucas Merenciano Martinez <lucasmermar@gmail.com>
 
-namespace motoret
+#ifndef __LEEP_DISPLAY_LIST_COMMAND_H__
+#define __LEEP_DISPLAY_LIST_COMMAND_H__ 1
+
+namespace leep
 {
     class DisplayListCommand
     {
@@ -15,4 +17,4 @@ namespace motoret
     };
 }
 
-#endif // __MOTORET_DISPLAY_LIST_COMMAND_H__
+#endif // __LEEP_DISPLAY_LIST_COMMAND_H__

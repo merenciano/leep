@@ -4,7 +4,7 @@
 
 #include <stdint.h>
 
-namespace motoret
+namespace leep 
 {
     void UsePbrMaterial::executeCommand() const
     {

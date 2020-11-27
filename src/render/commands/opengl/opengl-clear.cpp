@@ -3,7 +3,7 @@
 
 #include "glad/glad.h"
 
-namespace motoret
+namespace leep
 {
     void Clear::executeCommand() const
     {

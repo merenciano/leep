@@ -1,10 +1,10 @@
 #include <stdio.h>
 
-#include "motoret.h"
+#include "leep.h"
 #include "glm/glm.hpp"
 #include "glm/gtc/matrix_transform.hpp"
 
-using namespace motoret;
+using namespace leep;
 
 void Init()
 {
@@ -52,7 +52,7 @@ int main()
     Window window;
     window.createWindow(1280, 720, true);
     Logger::init();
-    MOTORET_CORE_INFO("Hello World!");
+    LEEP_CORE_INFO("Hello World!");
 
     Init();
 

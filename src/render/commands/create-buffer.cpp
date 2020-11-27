@@ -1,7 +1,7 @@
 #include "create-buffer.h"
 #include "core/common-defs.h"
 
-namespace motoret
+namespace leep 
 {
     CreateBuffer::CreateBuffer()
     {
@@ -19,6 +19,6 @@ namespace motoret
 
 }
 
-#ifdef MOTORET_OPENGL
+#ifdef LEEP_OPENGL
     #include "render/commands/opengl/opengl-create-buffer.cpp"
 #endif 

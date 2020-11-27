@@ -1,15 +1,15 @@
 #include "entity.h"
 
-namespace motoret
+namespace leep
 {
     Entity Entity::CreateEntity(std::string name)
     {
         InternalEntity ie(name);
         int32_t index = 0;
 
-        MOTORET_CORE_ASSERT(GM.entity_map_.find(name) == GM.entity_map_.end(), "An entity with that name already exists.");
+        LEEP_CORE_ASSERT(GM.entity_map_.find(name) == GM.entity_map_.end(), "An entity with that name already exists.");
         GM.entities_.push_back(std::move(ie));
-        MOTORET_CORE_ASSERT(!GM.entities_.empty(), "Entity creation error.");
+        LEEP_CORE_ASSERT(!GM.entities_.empty(), "Entity creation error.");
         index = GM.entities_.size() - 1;
         GM.entity_map_[name] = index;
         return Entity(index);

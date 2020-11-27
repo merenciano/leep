@@ -38,7 +38,7 @@ static const char* kPlainColorFragment = R"(
     }
 )";
 
-namespace motoret
+namespace leep
 {
     void PlainColor::init()
     {
@@ -52,7 +52,7 @@ namespace motoret
         if (!err)
         {
             glGetShaderInfoLog(vert_shader, 512, nullptr, output_log);
-            MOTORET_CORE_ERROR("PlainColor vertex shader compilation failed:\n{0}\n", output_log);
+            LEEP_CORE_ERROR("PlainColor vertex shader compilation failed:\n{0}\n", output_log);
         }
         //  Create and compile fragment shader and print if compilation errors
         GLuint frag_shader = glCreateShader(GL_FRAGMENT_SHADER);
@@ -62,7 +62,7 @@ namespace motoret
         if (!err)
         {
             glGetShaderInfoLog(frag_shader, 512, nullptr, output_log);
-            MOTORET_CORE_ERROR("PlainColor fragment shader compilation failed:\n{0}\n", output_log);
+            LEEP_CORE_ERROR("PlainColor fragment shader compilation failed:\n{0}\n", output_log);
         }
         //  Create the program with both shaders
         GLuint program = glCreateProgram();
@@ -73,7 +73,7 @@ namespace motoret
         if (!err)
         {
             glGetProgramInfoLog(program, 512, nullptr, output_log);
-            MOTORET_CORE_ERROR("PlainColor program error:\n{0}\n", output_log);
+            LEEP_CORE_ERROR("PlainColor program error:\n{0}\n", output_log);
         }
 
         internal_id_ = (uint32_t)program;
@@ -81,7 +81,7 @@ namespace motoret
 
     void PlainColor::useMaterialData(const Material &material) const
     {
-        MOTORET_ASSERT(material.type() == MaterialType::MT_PLAIN_COLOR,
+        LEEP_ASSERT(material.type() == MaterialType::MT_PLAIN_COLOR,
             "Wrong material type");
         
         GLint uniform_location = glGetUniformLocation(internal_id_, "u_entity_data");

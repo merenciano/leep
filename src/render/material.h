@@ -1,9 +1,11 @@
-#ifndef __MOTORET_RENDER_MATERIAL_H__
-#define __MOTORET_RENDER_MATERIAL_H__ 1
+// Lucas Merenciano Martinez <lucasmermar@gmail.com>
+
+#ifndef __LEEP_RENDER_MATERIAL_H__
+#define __LEEP_RENDER_MATERIAL_H__ 1
 
 #include "render/material-types.h"
 
-namespace motoret
+namespace leep
 {
     class Material
     {
@@ -35,4 +37,4 @@ namespace motoret
         MaterialType type_;
     };
 }
-#endif // __MOTORET_RENDER_MATERIAL_H__
+#endif // __LEEP_RENDER_MATERIAL_H__

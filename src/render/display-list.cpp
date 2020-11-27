@@ -1,7 +1,7 @@
 #include "display-list.h"
 #include "core/manager.h"
 
-namespace motoret
+namespace leep
 {
     DisplayList::DisplayList()
     {

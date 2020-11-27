@@ -4,7 +4,7 @@
 #include "core/common-defs.h"
 #include "render/internal-buffer.h"
 
-namespace motoret
+namespace leep
 {
     Buffer::Buffer()
     {
@@ -27,7 +27,7 @@ namespace motoret
 
     void Buffer::create(BufferType type)
     {
-        MOTORET_ASSERT(handler_ == ConstantValues::UNINITIALIZED_HANDLER, "This handler has been created before");
+        LEEP_ASSERT(handler_ == ConstantValues::UNINITIALIZED_HANDLER, "This handler has been created before");
 
         type_ = type;
         if (!Manager::instance().renderer().aviable_buffer_vector_positions_.empty())

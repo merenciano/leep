@@ -1,11 +1,13 @@
-#ifndef __MOTORET_RENDER_COMMANDS_DRAW_H__
-#define __MOTORET_RENDER_COMMANDS_DRAW_H__ 1
+// Lucas Merenciano Martinez <lucasmermar@gmail.com>
+
+#ifndef __LEEP_RENDER_COMMANDS_DRAW_H__
+#define __LEEP_RENDER_COMMANDS_DRAW_H__ 1
 
 #include "render/display-list-command.h"
 #include "render/geometry.h"
 #include "render/material.h"
 
-namespace motoret
+namespace leep
 {
     class Draw : public DisplayListCommand
     {
@@ -26,4 +28,4 @@ namespace motoret
 
 }
 
-#endif // __MOTORET_RENDER_COMMANDS_DRAW_H__
+#endif // __LEEP_RENDER_COMMANDS_DRAW_H__

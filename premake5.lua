@@ -1,9 +1,9 @@
-workspace "Motoret"
+workspace "Leep"
 	configurations {"Debug", "Release"}
     location "build"
     architecture "x86_64"
 
-project "motoret"
+project "leep"
 	kind "ConsoleApp"
     language "C++"
     cppdialect "C++17"
@@ -44,7 +44,7 @@ project "motoret"
     }
     
     configuration "vs2019"
-        defines {"_CRT_SECURE_NO_WARNINGS", "_GLFW_WIN32", "MOTORET_OPENGL", }
+        defines {"_CRT_SECURE_NO_WARNINGS", "_GLFW_WIN32", "LEEP_OPENGL", }
 
         files {
             "./extern/src/GLFW/win32_platform.h",
@@ -60,7 +60,7 @@ project "motoret"
         }
 
     configuration "gmake"
-        defines { "_GLFW_X11", "MOTORET_OPENGL", }
+        defines { "_GLFW_X11", "LEEP_OPENGL", }
         links { "X11", "dl", "pthread"  }
 
         files {
@@ -81,11 +81,11 @@ project "motoret"
         }
     
     filter "configurations:Debug"
-        defines "MOTORET_DEBUG"
+        defines "LEEP_DEBUG"
         symbols "On"
     
     filter "configurations:Release"
-        defines "MOTORET_RELEASE"
+        defines "LEEP_RELEASE"
         optimize "On"
 
 

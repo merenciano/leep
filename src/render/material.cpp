@@ -2,7 +2,7 @@
 
 #include "core/common-defs.h"
 
-namespace motoret
+namespace leep
 {
     Material::Material()
     {
@@ -16,7 +16,7 @@ namespace motoret
 
     Material& Material::operator=(const Material &other)
     {
-        MOTORET_CORE_ASSERT(other.type_ != MaterialType::MT_NONE, "You are trying to copy an uninitialized material");
+        LEEP_CORE_ASSERT(other.type_ != MaterialType::MT_NONE, "You are trying to copy an uninitialized material");
         type_ = other.type_;
         switch(type_)
         {
@@ -29,7 +29,7 @@ namespace motoret
             break;
 
         default:
-            MOTORET_CORE_ERROR("Operator '=' of material default case.");
+            LEEP_CORE_ERROR("Operator '=' of material default case.");
             break;
         }
         return *this;
@@ -47,13 +47,13 @@ namespace motoret
 
     void Material::set_data(const PbrData &data)
     {
-        MOTORET_CORE_ASSERT(type_ == MaterialType::MT_PBR, "The material has not the correct type yet.");
+        LEEP_CORE_ASSERT(type_ == MaterialType::MT_PBR, "The material has not the correct type yet.");
         data_.pbr = data;
     }
 
     void Material::set_data(const PlainColorData &data)
     {
-        MOTORET_CORE_ASSERT(type_ == MaterialType::MT_PLAIN_COLOR, "The material has not the correct type yet.");
+        LEEP_CORE_ASSERT(type_ == MaterialType::MT_PLAIN_COLOR, "The material has not the correct type yet.");
         data_.plain_color = data;
     }
 

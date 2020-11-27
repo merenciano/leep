@@ -1,5 +1,7 @@
-#ifndef __MOTORET_RENDER_RENDERER_H__
-#define __MOTORET_RENDER_RENDERER_H__ 1
+// Lucas Merenciano Martinez <lucasmermar@gmail.com>
+
+#ifndef __LEEP_RENDER_RENDERER_H__
+#define __LEEP_RENDER_RENDERER_H__ 1
 
 #include "render/display-list.h"
 #include "render/internal-buffer.h"
@@ -12,7 +14,7 @@
 #include <memory>
 #include <mutex>
 
-namespace motoret
+namespace leep
 {
     class Renderer
     {
@@ -38,4 +40,4 @@ namespace motoret
     };
 }
 
-#endif // __MOTORET_RENDER_RENDERER_H__
+#endif // __LEEP_RENDER_RENDERER_H__

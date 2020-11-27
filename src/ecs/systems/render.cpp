@@ -11,7 +11,7 @@
 
 #include "glm/gtc/matrix_transform.hpp"
 
-namespace motoret
+namespace leep 
 {
     void Render::executeSystem() const
     {

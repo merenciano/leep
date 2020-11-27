@@ -1,9 +1,11 @@
-#ifndef __MOTORET_RENDER_MATERIAL_TYPES_H__
-#define __MOTORET_RENDER_MATERIAL_TYPES_H__ 1
+// Lucas Merenciano Martinez <lucasmermar@gmail.com>
+
+#ifndef __LEEP_RENDER_MATERIAL_TYPES_H__
+#define __LEEP_RENDER_MATERIAL_TYPES_H__ 1
 
 #include "glm/mat4x4.hpp"
 
-namespace motoret
+namespace leep
 {
     // Not enum class because its values are used as array indexes for the renderer materials
     enum MaterialType
@@ -34,4 +36,4 @@ namespace motoret
         float a;
     };
 }
-#endif // __MOTORET_RENDER_MATERIAL_TYPES_H__
+#endif // __LEEP_RENDER_MATERIAL_TYPES_H__

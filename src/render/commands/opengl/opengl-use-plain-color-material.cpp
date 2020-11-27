@@ -4,7 +4,7 @@
 
 #include <stdint.h>
 
-namespace motoret
+namespace leep
 {
     UsePlainColorMaterial& UsePlainColorMaterial::set_scene_data(const PlainColorSceneData &scene_data)
     {

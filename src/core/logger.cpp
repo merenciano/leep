@@ -7,7 +7,7 @@
 #include <spdlog/sinks/stdout_color_sinks.h>
 #include <spdlog/sinks/basic_file_sink.h>
 
-namespace motoret
+namespace leep 
 {
 	std::shared_ptr<spdlog::logger> Logger::s_core_logger;
 	std::shared_ptr<spdlog::logger> Logger::s_app_logger;
@@ -16,7 +16,7 @@ namespace motoret
 	{
 		std::vector<spdlog::sink_ptr> sinks;
 		sinks.emplace_back(std::make_shared<spdlog::sinks::stdout_color_sink_mt>());
-		sinks.emplace_back(std::make_shared<spdlog::sinks::basic_file_sink_mt>("motoret.log", true));
+		sinks.emplace_back(std::make_shared<spdlog::sinks::basic_file_sink_mt>("leep.log", true));
 
 		sinks[0]->set_pattern("%^[%T] %n: %v%$");
 		sinks[1]->set_pattern("[%T] [%l] %n: %v");

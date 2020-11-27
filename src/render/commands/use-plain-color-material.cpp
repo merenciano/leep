@@ -1,6 +1,6 @@
 #include "use-plain-color-material.h"
 
-namespace motoret
+namespace leep
 {
     UsePlainColorMaterial::UsePlainColorMaterial()
     {
@@ -13,6 +13,6 @@ namespace motoret
     }
 }
 
-#ifdef MOTORET_OPENGL
+#ifdef LEEP_OPENGL
     #include "render/commands/opengl/opengl-use-plain-color-material.cpp"
 #endif

@@ -3,13 +3,13 @@
 
 #include "core/manager.h"
 
-namespace motoret
+namespace leep 
 {
     void CreateBuffer::executeCommand() const
     {
         Renderer &r = Manager::instance().renderer();
 
-        MOTORET_CORE_ASSERT(r.buffers_[buffer_.handler()].version_ > 0, "This buffer hasn't got any data yet");
+        LEEP_CORE_ASSERT(r.buffers_[buffer_.handler()].version_ > 0, "This buffer hasn't got any data yet");
 
         glGenBuffers(1, &(r.buffers_[buffer_.handler()].internal_id_));
 

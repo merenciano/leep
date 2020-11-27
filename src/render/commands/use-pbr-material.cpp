@@ -1,6 +1,6 @@
 #include "use-pbr-material.h"
 
-namespace motoret
+namespace leep
 {
     UsePbrMaterial::UsePbrMaterial()
     {
@@ -19,6 +19,6 @@ namespace motoret
     }
 }
 
-#ifdef MOTORET_OPENGL
+#ifdef LEEP_OPENGL
     #include "render/commands/opengl/opengl-use-pbr-material.cpp"
 #endif

@@ -1,9 +1,11 @@
-#ifndef __MOTORET_ECS_SYSTEMS_RENDER_H__
-#define __MOTORET_ECS_SYSTEMS_RENDER_H__ 1
+// Lucas Merenciano Martinez <lucasmermar@gmail.com>
+
+#ifndef __LEEP_ECS_SYSTEMS_RENDER_H__
+#define __LEEP_ECS_SYSTEMS_RENDER_H__ 1
 
 #include "ecs/system.h"
 
-namespace motoret
+namespace leep
 {
     class Render : public System
     {
@@ -12,4 +14,4 @@ namespace motoret
     };
 }
 
-#endif // __MOTORET_ECS_SYSTEMS_RENDER_H__
+#endif // __LEEP_ECS_SYSTEMS_RENDER_H__

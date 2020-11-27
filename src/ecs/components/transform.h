@@ -1,10 +1,12 @@
-#ifndef __MOTORET_ECS_COMPONENTS_TRANSFORM_H__
-#define __MOTORET_ECS_COMPONENTS_TRANSFORM_H__ 1
+// Lucas Merenciano Martinez <lucasmermar@gmail.com>
+
+#ifndef __LEEP_ECS_COMPONENTS_TRANSFORM_H__
+#define __LEEP_ECS_COMPONENTS_TRANSFORM_H__ 1
 
 #include "ecs/component.h"
 #include "glm/mat4x4.hpp"
 
-namespace motoret
+namespace leep 
 {
     struct Transform : public Component
     {
@@ -14,4 +16,4 @@ namespace motoret
     };
 }
 
-#endif // __MOTORET_ECS_COMPONENTS_TRANSFORM_H__
+#endif // __LEEP_ECS_COMPONENTS_TRANSFORM_H__

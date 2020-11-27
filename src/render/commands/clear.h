@@ -1,9 +1,11 @@
-#ifndef __MOTORET_RENDER_CLEAR_H__
-#define __MOTORET_RENDER_CLEAR_H__ 1
+// Lucas Merenciano Martinez <lucasmermar@gmail.com>
+
+#ifndef __LEEP_RENDER_CLEAR_H__
+#define __LEEP_RENDER_CLEAR_H__ 1
 
 #include "render/display-list-command.h"
 
-namespace motoret
+namespace leep 
 {
     class Clear : public DisplayListCommand
     {
@@ -24,4 +26,4 @@ namespace motoret
     };
 }
 
-#endif // __MOTORET_RENDER_CLEAR_H__
+#endif // __LEEP_RENDER_CLEAR_H__

@@ -2,7 +2,7 @@
 #include "render/materials/pbr.h"
 #include "render/materials/plain-color.h"
 
-namespace motoret
+namespace leep
 {
     Renderer::Renderer()
     {
@@ -50,7 +50,7 @@ namespace motoret
 
     void Renderer::submitFrame()
     {
-        MOTORET_CORE_ASSERT(current_frame_commands_.empty(), "The current frame command list is not empty!");
+        LEEP_CORE_ASSERT(current_frame_commands_.empty(), "The current frame command list is not empty!");
         next_frame_command_queue_.swap(current_frame_commands_);
     }
 }

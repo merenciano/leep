@@ -1,6 +1,6 @@
 #include "render/commands/clear.h"
 
-namespace motoret
+namespace leep 
 {
     Clear::Clear()
     {
@@ -37,6 +37,6 @@ namespace motoret
     }
 }
 
-#ifdef MOTORET_OPENGL
+#ifdef LEEP_OPENGL
     #include "render/commands/opengl/opengl-clear.cpp"
 #endif

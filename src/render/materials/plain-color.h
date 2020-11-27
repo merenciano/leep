@@ -1,9 +1,11 @@
-#ifndef __MOTORET_MATERIALS_PLAIN_COLOR_H__
-#define __MOTORET_MATERIALS_PLAIN_COLOR_H__ 1
+// Lucas Merenciano Martinez <lucasmermar@gmail.com>
+
+#ifndef __LEEP_MATERIALS_PLAIN_COLOR_H__
+#define __LEEP_MATERIALS_PLAIN_COLOR_H__ 1
 
 #include "render/internal-material.h"
 
-namespace motoret
+namespace leep
 {
     class PlainColor : public InternalMaterial
     {
@@ -19,4 +21,4 @@ namespace motoret
     };
 }
 
-#endif // __MOTORET_MATERIALS_PLAIN_COLOR_H__
+#endif // __LEEP_MATERIALS_PLAIN_COLOR_H__

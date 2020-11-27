@@ -1,5 +1,7 @@
-#ifndef __MOTORET_ECS_INTERNAL_ENTITY_H__
-#define __MOTORET_ECS_INTERNAL_ENTITY_H__ 1
+// Lucas Merenciano Martinez <lucasmermar@gmail.com>
+
+#ifndef __LEEP_ECS_INTERNAL_ENTITY_H__
+#define __LEEP_ECS_INTERNAL_ENTITY_H__ 1
 
 #include "ecs/component.h"
 
@@ -8,7 +10,7 @@
 #include <vector>
 #include <memory>
 
-namespace motoret
+namespace leep 
 {
     struct InternalEntity
     {
@@ -54,4 +56,4 @@ namespace motoret
         std::vector<std::shared_ptr<Component>> components_;
     };
 }
-#endif // __MOTORET_ECS_INTERNAL_ENTITY_H__
+#endif // __LEEP_ECS_INTERNAL_ENTITY_H__

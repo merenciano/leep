@@ -1,21 +1,21 @@
-#ifndef __MOTORET_CORE_COMMON_DEFS_H__
-#define __MOTORET_CORE_COMMON_DEFS_H__ 1
+#ifndef __LEEP_CORE_COMMON_DEFS_H__
+#define __LEEP_CORE_COMMON_DEFS_H__ 1
 
 #include "core/logger.h"
 
-#ifdef MOTORET_DEBUG 
-    #define MOTORET_ASSERT(x, ...)      { if(!(x)) { MOTORET_ERROR("Assertion failed: {0}",__VA_ARGS__); abort(); }}
-    #define MOTORET_CORE_ASSERT(x, ...) { if(!(x)) { MOTORET_CORE_ERROR("Assertion failed: {0}",__VA_ARGS__); abort(); }}
+#ifdef LEEP_DEBUG 
+    #define LEEP_ASSERT(x, ...)      { if(!(x)) { LEEP_ERROR("Assertion failed: {0}",__VA_ARGS__); abort(); }}
+    #define LEEP_CORE_ASSERT(x, ...) { if(!(x)) { LEEP_CORE_ERROR("Assertion failed: {0}",__VA_ARGS__); abort(); }}
 #else
-    #define MOTORET_ASSERT(x, ...) 
-    #define MOTORET_CORE_ASSERT(x, ...) 
+    #define LEEP_ASSERT(x, ...) 
+    #define LEEP_CORE_ASSERT(x, ...) 
 #endif 
 
 #define MAX_INT32_VALUE = 2147483647;
 
 #define GM Manager::instance()
 
-namespace motoret
+namespace leep 
 {
     enum ConstantValues     // Not an enum class because it is used to assign int32_t handlers
     {
@@ -43,4 +43,4 @@ namespace motoret
 }
 
 
-#endif // __MOTORET_CORE_COMMON_DEFS_H__
+#endif // __LEEP_CORE_COMMON_DEFS_H__

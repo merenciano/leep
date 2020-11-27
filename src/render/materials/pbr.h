@@ -1,9 +1,11 @@
-#ifndef __MOTORET_RENDER_MATERIALS_PBR_H__
-#define __MOTORET_RENDER_MATERIALS_PBR_H__ 1
+// Lucas Merenciano Martinez <lucasmermar@gmail.com>
+
+#ifndef __LEEP_RENDER_MATERIALS_PBR_H__
+#define __LEEP_RENDER_MATERIALS_PBR_H__ 1
 
 #include "render/internal-material.h"
 
-namespace motoret
+namespace leep
 {
     class Pbr : public InternalMaterial
     {
@@ -17,4 +19,4 @@ namespace motoret
     };
 }
 
-#endif // __MOTORET_RENDER_MATERIALS_PBR_H__
+#endif // __LEEP_RENDER_MATERIALS_PBR_H__

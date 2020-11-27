@@ -1,6 +1,6 @@
 #include "pbr.h"
 
-namespace motoret
+namespace leep
 {
     Pbr::Pbr()
     {

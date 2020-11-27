@@ -1,7 +1,9 @@
-#ifndef __MOTORET_ECS_COMPONENT_H__
-#define __MOTORET_ECS_COMPONENT_H__ 1
+// Lucas Merenciano Martinez <lucasmermar@gmail.com>
 
-namespace motoret
+#ifndef __LEEP_ECS_COMPONENT_H__
+#define __LEEP_ECS_COMPONENT_H__ 1
+
+namespace leep
 {
     enum CompType
     {
@@ -25,4 +27,4 @@ namespace motoret
     };
 }
 
-#endif // __MOTORET_ECS_COMPONENT_H__
+#endif // __LEEP_ECS_COMPONENT_H__

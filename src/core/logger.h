@@ -1,7 +1,7 @@
 //  Lucas Merenciano Martinez  <lucasmermar@gmail.com>
 
-#ifndef __MOTORET_LOG_H__
-#define __MOTORET_LOG_H__
+#ifndef __LEEP_CORE_LOGGER_H__
+#define __LEEP_CORE_LOGGER_H__
 
 #include <stdint.h>
 
@@ -10,7 +10,7 @@
 #include <spdlog/spdlog.h>
 #include <spdlog/fmt/ostr.h>
 
-namespace motoret 
+namespace leep
 {
 	class Logger
 	{
@@ -25,31 +25,31 @@ namespace motoret
 	};
 }
 
-#ifndef MOTORET_RELEASE
+#ifndef LEEP_RELEASE
 	// Engine macros
-	#define MOTORET_CORE_TRACE(...)    ::motoret::Logger::GetCoreLogger()->trace(__VA_ARGS__)
-	#define MOTORET_CORE_INFO(...)     ::motoret::Logger::GetCoreLogger()->info(__VA_ARGS__)
-	#define MOTORET_CORE_WARNING(...)  ::motoret::Logger::GetCoreLogger()->warn(__VA_ARGS__)
-	#define MOTORET_CORE_ERROR(...)    ::motoret::Logger::GetCoreLogger()->error(__VA_ARGS__)
-	#define MOTORET_CORE_CRITICAL(...) ::motoret::Logger::GetCoreLogger()->critical(__VA_ARGS__)
+	#define LEEP_CORE_TRACE(...)    ::leep::Logger::GetCoreLogger()->trace(__VA_ARGS__)
+	#define LEEP_CORE_INFO(...)     ::leep::Logger::GetCoreLogger()->info(__VA_ARGS__)
+	#define LEEP_CORE_WARNING(...)  ::leep::Logger::GetCoreLogger()->warn(__VA_ARGS__)
+	#define LEEP_CORE_ERROR(...)    ::leep::Logger::GetCoreLogger()->error(__VA_ARGS__)
+	#define LEEP_CORE_CRITICAL(...) ::leep::Logger::GetCoreLogger()->critical(__VA_ARGS__)
 
 	// App macros
-	#define MOTORET_TRACE(...)    ::motoret::Logger::GetAppLogger()->trace(__VA_ARGS__)
-	#define MOTORET_INFO(...)     ::motoret::Logger::GetAppLogger()->info(__VA_ARGS__)
-	#define MOTORET_WARNING(...)  ::motoret::Logger::GetAppLogger()->warn(__VA_ARGS__)
-	#define MOTORET_ERROR(...)    ::motoret::Logger::GetAppLogger()->error(__VA_ARGS__)
-	#define MOTORET_CRITICAL(...) ::motoret::Logger::GetAppLogger()->critical(__VA_ARGS__)
+	#define LEEP_TRACE(...)    ::leep::Logger::GetAppLogger()->trace(__VA_ARGS__)
+	#define LEEP_INFO(...)     ::leep::Logger::GetAppLogger()->info(__VA_ARGS__)
+	#define LEEP_WARNING(...)  ::leep::Logger::GetAppLogger()->warn(__VA_ARGS__)
+	#define LEEP_ERROR(...)    ::leep::Logger::GetAppLogger()->error(__VA_ARGS__)
+	#define LEEP_CRITICAL(...) ::leep::Logger::GetAppLogger()->critical(__VA_ARGS__)
 #else
-	#define MOTORET_CORE_TRACE(...)
-	#define MOTORET_CORE_INFO(...)
-	#define MOTORET_CORE_WARNING(...)
-	#define MOTORET_CORE_ERROR(...)
-	#define MOTORET_CORE_CRITICAL(...)
-	#define MOTORET_TRACE(...)
-	#define MOTORET_INFO(...)
-	#define MOTORET_WARNING(...)
-	#define MOTORET_ERROR(...)
-	#define MOTORET_CRITICAL(...)
+	#define LEEP_CORE_TRACE(...)
+	#define LEEP_CORE_INFO(...)
+	#define LEEP_CORE_WARNING(...)
+	#define LEEP_CORE_ERROR(...)
+	#define LEEP_CORE_CRITICAL(...)
+	#define LEEP_TRACE(...)
+	#define LEEP_INFO(...)
+	#define LEEP_WARNING(...)
+	#define LEEP_ERROR(...)
+	#define LEEP_CRITICAL(...)
 #endif
 
-#endif // __MOTORET_LOGGER_H__
+#endif // __LEEP_CORE_LOGGER_H__

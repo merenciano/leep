@@ -1,6 +1,6 @@
 #include "draw.h"
 
-namespace motoret
+namespace leep
 {
     Draw::Draw()
     {
@@ -25,6 +25,6 @@ namespace motoret
     }
 }
 
-#ifdef MOTORET_OPENGL
+#ifdef LEEP_OPENGL
     #include "render/commands/opengl/opengl-draw.cpp"
 #endif

@@ -2,7 +2,7 @@
 
 #include "core/manager.h"
 
-namespace motoret
+namespace leep
 {
     InitMaterial::InitMaterial()
     {

@@ -1,11 +1,11 @@
-#ifndef __MOTORET_CORE_MANAGER_H__
-#define __MOTORET_CORE_MANAGER_H__ 1
+#ifndef __LEEP_CORE_MANAGER_H__
+#define __LEEP_CORE_MANAGER_H__ 1
 
 #include "core/window.h"
 #include "ecs/internal-entity.h"
 #include "render/renderer.h"
 
-namespace motoret
+namespace leep 
 {
     class Manager
     {
@@ -31,4 +31,4 @@ namespace motoret
     };
 }
 
-#endif // __MOTORET_CORE_MANAGER_H__
+#endif // __LEEP_CORE_MANAGER_H__

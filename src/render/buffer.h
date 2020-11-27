@@ -1,11 +1,13 @@
-#ifndef __MOTORET_RENDER_BUFFER_H__
-#define __MOTORET_RENDER_BUFFER_H__ 1
+// Lucas Merenciano Martinez <lucasmermar@gmail.com>
+
+#ifndef __LEEP_RENDER_BUFFER_H__
+#define __LEEP_RENDER_BUFFER_H__ 1
 
 #include "core/common-defs.h"
 #include <stdint.h>
 #include <vector>
 
-namespace motoret
+namespace leep
 {
     enum class BufferType
     {
@@ -39,4 +41,4 @@ namespace motoret
     };
 }
 
-#endif // __MOTORET_RENDER_BUFFER_H__
+#endif // __LEEP_RENDER_BUFFER_H__
