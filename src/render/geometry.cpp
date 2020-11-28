@@ -1,5 +1,8 @@
 #include "render/geometry.h"
 
+#define TINYOBJLOADER_IMPLEMENTATION
+#include "tiny_obj_loader.h"
+
 namespace leep
 {
     Geometry::Geometry()
@@ -89,5 +92,51 @@ namespace leep
         vertex_buffer_.set_data(vertex_vector);
         index_buffer_.create(BufferType::INDEX_BUFFER);
         index_buffer_.set_data(index_vector);
+    }
+
+    void Geometry::loadObj(std::string path)
+    {
+        tinyobj::attrib_t attrib;
+        std::vector<tinyobj::shape_t> shapes;
+        std::vector<tinyobj::material_t> materials;
+        std::string warning;
+        std::string error;
+        std::vector<Vertex> vertices;
+        std::vector<uint32_t> indices;
+
+        bool ret = tinyobj::LoadObj(&attrib, &shapes, &materials, &warning, &error, path.c_str());
+        if (!warning.empty()) {
+            LEEP_CORE_WARNING("TinyObj Warning: {0}\n", warning.c_str());
+        }
+
+        if (!error.empty()) {
+            LEEP_CORE_ERROR("TinyObj Error: {0}\n", error.c_str());
+        }
+
+        LEEP_CORE_ASSERT(ret, "TinyObjLoader Failed");
+
+        for (const auto& shape : shapes) {
+            for (const auto& index : shape.mesh.indices) {
+                Vertex vertex;
+
+                vertex.px = attrib.vertices[3 * index.vertex_index + 0];
+                vertex.py = attrib.vertices[3 * index.vertex_index + 1];
+                vertex.pz = attrib.vertices[3 * index.vertex_index + 2];
+
+                vertex.nx = attrib.normals[3 * index.normal_index + 0];
+                vertex.ny = attrib.normals[3 * index.normal_index + 1];
+                vertex.nz = attrib.normals[3 * index.normal_index + 2];
+
+                vertex.tx = attrib.texcoords[2 * index.texcoord_index + 0];
+                vertex.ty = attrib.texcoords[2 * index.texcoord_index + 1];
+                vertices.push_back(vertex);
+                indices.push_back(indices.size());
+            }
+        }
+
+        vertex_buffer_.create(BufferType::VERTEX_BUFFER);
+        index_buffer_.create(BufferType::INDEX_BUFFER);
+        vertex_buffer_.set_data(vertices);
+        index_buffer_.set_data(indices);
     }
 }

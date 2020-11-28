@@ -15,6 +15,7 @@
 
 // RENDER
 #include "../src/render/renderer.h" // Inside manager.h, not needed here
+#include "../src/render/texture.h"
 #include "../src/render/display-list.h"
 #include "../src/render/display-list-command.h"
 
@@ -24,6 +25,7 @@
 #include "../src/render/commands/use-pbr-material.h"
 #include "../src/render/commands/use-plain-color-material.h"
 #include "../src/render/commands/draw.h"
+#include "../src/render/commands/create-texture.h"
 
 
 // Utility functions

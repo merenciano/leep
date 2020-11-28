@@ -20,6 +20,7 @@ namespace leep
         Buffer index_buffer() const;
 
         void createCube();
+        void loadObj(std::string path);
     
     private:
         Buffer vertex_buffer_;

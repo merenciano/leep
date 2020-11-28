@@ -10,9 +10,16 @@ void Init()
 {
     Manager::instance().renderer().init();
     DisplayList init_dl;
+    Texture trex_texture;
+
+    trex_texture.create("../assets/tex/trex.jpg");
 
     init_dl.addCommand<InitMaterial>()
         .set_material(MaterialType::MT_PLAIN_COLOR)
+        .executeCommand();
+
+    init_dl.addCommand<CreateTexture>()
+        .set_texture(trex_texture)
         .executeCommand();
     
     init_dl.submit();
@@ -32,7 +39,7 @@ void Init()
     cube_tr->transform_ = glm::rotate(cube_tr->transform_, glm::radians(45.0f), glm::vec3(0.0f, 1.0f, 0.0f));
 
     Drawable* cube_dw = &(cube.getComponent<Drawable>());
-    cube_dw->geometry_.createCube();
+    cube_dw->geometry_.loadObj("../assets/obj/trex.obj");
     cube_dw->material_.set_type(MaterialType::MT_PLAIN_COLOR);
     cube_dw->material_.set_data(pcd);
 }
