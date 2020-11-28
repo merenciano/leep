@@ -1,6 +1,6 @@
 # This file uses centimeters as units for non-parametric coordinates.
 
-mtllib dinosaur.mtl
+mtllib ../assets/obj/trex.mtl
 g default
 v -0.307724 14.520399 16.047899
 v -0.322643 14.563229 16.092400

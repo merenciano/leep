@@ -4,6 +4,7 @@
 #define __LEEP_RENDER_MATERIAL_H__ 1
 
 #include "render/material-types.h"
+#include "render/texture.h"
 
 namespace leep
 {
@@ -18,7 +19,7 @@ namespace leep
         };
 
         Material();
-        Material(const Material&) = delete;
+        Material(const Material &other);
         Material(Material&&) = delete;
         ~Material();
 
@@ -28,13 +29,15 @@ namespace leep
         void set_world(const glm::mat4 &world);
         void set_data(const PbrData &data);
         void set_data(const PlainColorData &data);
+        void set_texture(Texture tex);
         const MaterialData& data() const;
-
         const MaterialType type() const;
+        Texture texture() const;
 
-    protected:
+    private:
         MaterialData data_; 
         MaterialType type_;
+        Texture texture_;
     };
 }
 #endif // __LEEP_RENDER_MATERIAL_H__

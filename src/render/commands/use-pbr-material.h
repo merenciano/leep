@@ -23,7 +23,7 @@ namespace leep
         UsePbrMaterial(UsePbrMaterial&&) = delete;
         ~UsePbrMaterial();
 
-        UsePbrMaterial& set_data(const PbrSceneData &data);
+        UsePbrMaterial& set_scene_data(const PbrSceneData &data);
 
         virtual void executeCommand() const override;
 

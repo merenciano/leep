@@ -10,6 +10,11 @@ namespace leep
         id_ = -1;
     }
 
+    Texture::Texture(const Texture &t)
+    {
+        id_ = t.id_;
+    }
+
     Texture::~Texture()
     {
 
@@ -43,8 +48,6 @@ namespace leep
         r.textures_[id_].version_ = 0;
         r.textures_[id_].width_ = 0;
         r.textures_[id_].height_ = 0;
-        r.textures_[id_].tiling_x_ = 1.0f;
-        r.textures_[id_].tiling_y_ = 1.0f;
     }
 
     void Texture::createEmpty(float width, float height)
@@ -81,8 +84,6 @@ namespace leep
         r.textures_[id_].id_ = 0;
         r.textures_[id_].path_ = "";
         r.textures_[id_].version_ = 0;
-        r.textures_[id_].tiling_x_ = 1.0f;
-        r.textures_[id_].tiling_y_ = 1.0f;
     }
 
     void Texture::release()

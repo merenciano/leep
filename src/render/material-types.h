@@ -17,14 +17,12 @@ namespace leep
         MT_MAX
     };
 
-    struct WorldData
-    {
-        glm::mat4 world;
-    };
-
     struct PbrData
     {
         glm::mat4 world;
+        float tiling_x_;
+        float tiling_y_;
+        float padding[2];
     };
 
     struct PlainColorData

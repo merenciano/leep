@@ -9,6 +9,7 @@ namespace leep
     {
     public:
         Texture();
+        Texture(const Texture &t);
         ~Texture();
 
         Texture& operator=(const Texture &t);

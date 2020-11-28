@@ -12,7 +12,7 @@ namespace leep
 
     }
 
-    UsePbrMaterial& UsePbrMaterial::set_data(const PbrSceneData &data)
+    UsePbrMaterial& UsePbrMaterial::set_scene_data(const PbrSceneData &data)
     {
         data_ = data;
         return *this;

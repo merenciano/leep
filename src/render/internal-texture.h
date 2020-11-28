@@ -13,8 +13,6 @@ namespace leep
         std::string path_ = "";
         uint32_t width_;
         uint32_t height_;
-        float tiling_x_;
-        float tiling_y_;
     };
 }
 

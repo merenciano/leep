@@ -21,7 +21,7 @@ namespace leep
 
     private:
         Texture texture_;
-    }
+    };
 }
 
 #endif // __LEEP_RENDER_COMMANDS_CREATE_TEXTURE_H__

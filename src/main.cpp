@@ -1,5 +1,3 @@
-#include <stdio.h>
-
 #include "leep.h"
 #include "glm/glm.hpp"
 #include "glm/gtc/matrix_transform.hpp"
@@ -15,33 +13,27 @@ void Init()
     trex_texture.create("../assets/tex/trex.jpg");
 
     init_dl.addCommand<InitMaterial>()
-        .set_material(MaterialType::MT_PLAIN_COLOR)
-        .executeCommand();
+        .set_material(MaterialType::MT_PBR);
 
-    init_dl.addCommand<CreateTexture>()
-        .set_texture(trex_texture)
-        .executeCommand();
-    
     init_dl.submit();
 
-    PlainColorData pcd;
-    pcd.r = 1.0f;
-    pcd.g = 1.0f;
-    pcd.b = 0.0f;
-    pcd.a = 1.0f;
+    PbrData pbr;
+    pbr.tiling_x_ = 1.0f;
+    pbr.tiling_y_ = 1.0f;
 
     Entity cube = Entity::CreateEntity("Cube");
     cube.addComponent<Transform>();
     cube.addComponent<Drawable>();
     Transform* cube_tr = &(cube.getComponent<Transform>());
-    cube_tr->transform_ = glm::scale(cube_tr->transform_, glm::vec3(0.2f, 0.2f, 0.2f));
-    cube_tr->transform_ = glm::translate(cube_tr->transform_, glm::vec3(0.0f, 0.0f, -5.0f));
+    cube_tr->transform_ = glm::scale(cube_tr->transform_, glm::vec3(0.02f, 0.02f, 0.02f));
+    cube_tr->transform_ = glm::translate(cube_tr->transform_, glm::vec3(0.0f, -3.0f, -5.0f));
     cube_tr->transform_ = glm::rotate(cube_tr->transform_, glm::radians(45.0f), glm::vec3(0.0f, 1.0f, 0.0f));
 
     Drawable* cube_dw = &(cube.getComponent<Drawable>());
     cube_dw->geometry_.loadObj("../assets/obj/trex.obj");
-    cube_dw->material_.set_type(MaterialType::MT_PLAIN_COLOR);
-    cube_dw->material_.set_data(pcd);
+    cube_dw->material_.set_type(MaterialType::MT_PBR);
+    cube_dw->material_.set_data(pbr);
+    cube_dw->material_.set_texture(trex_texture);
 }
 
 void Logic()
