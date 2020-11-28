@@ -14,10 +14,32 @@ namespace leep
 
     }
 
+    Material::Material(const Material &other)
+    {
+        LEEP_CORE_ASSERT(other.type_ != MaterialType::MT_NONE, "You are trying to copy an uninitialized material");
+        type_ = other.type_;
+        texture_ = other.texture_;
+        switch(type_)
+        {
+        case MaterialType::MT_PBR:
+            data_.pbr = other.data_.pbr;
+            break;
+        
+        case MaterialType::MT_PLAIN_COLOR:
+            data_.plain_color = other.data_.plain_color;
+            break;
+
+        default:
+            LEEP_CORE_WARNING("Copy constructor of material default case.");
+            break;
+        }
+    }
+
     Material& Material::operator=(const Material &other)
     {
         LEEP_CORE_ASSERT(other.type_ != MaterialType::MT_NONE, "You are trying to copy an uninitialized material");
         type_ = other.type_;
+        texture_ = other.texture_;
         switch(type_)
         {
         case MaterialType::MT_PBR:
@@ -57,6 +79,11 @@ namespace leep
         data_.plain_color = data;
     }
 
+    void Material::set_texture(Texture texture)
+    {
+        texture_ = texture;
+    }
+
     const Material::MaterialData& Material::data() const
     {
         return data_;
@@ -65,5 +92,10 @@ namespace leep
     const MaterialType Material::type() const
     {
         return type_;
+    }
+
+    Texture Material::texture() const
+    {
+        return texture_;
     }
 }

@@ -6,6 +6,7 @@
 #include "render/display-list.h"
 #include "render/internal-buffer.h"
 #include "render/internal-material.h"
+#include "render/internal-texture.h"
 #include "render/material-types.h"
 
 #include <stdint.h>
@@ -27,6 +28,9 @@ namespace leep
 
         void renderFrame();
         void submitFrame();
+
+        std::list<int32_t> aviable_tex_pos_;
+        std::vector<InternalTexture> textures_;
 
         std::vector<InternalBuffer> buffers_;
         std::list<uint32_t> aviable_buffer_vector_positions_;
