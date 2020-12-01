@@ -2,8 +2,10 @@
 #define __LEEP_CORE_MANAGER_H__ 1
 
 #include "core/window.h"
+#include "core/input.h"
 #include "ecs/internal-entity.h"
 #include "render/renderer.h"
+#include "render/camera.h"
 
 namespace leep 
 {
@@ -14,8 +16,10 @@ namespace leep
 
         ~Manager() {}
 
-        Window&   window() { return window_; }
+        Window&   window()   { return window_; }
         Renderer& renderer() { return renderer_; }
+        Camera&   camera()   { return camera_; }
+        Input&    input()    { return input_; }
 
         std::vector<InternalEntity> entities_;
         std::unordered_map<std::string, int32_t> entity_map_;
@@ -23,6 +27,8 @@ namespace leep
     private:
         Window   window_;
         Renderer renderer_;
+        Camera   camera_;
+        Input    input_;
     
     private:
         Manager() {}

@@ -1,4 +1,6 @@
 #include "window.h"
+#include "core/common-defs.h"
+#include "core/manager.h"
 #include "glad/glad.h"
 #include "GLFW/glfw3.h"
 
@@ -46,6 +48,8 @@ namespace leep
 
 		if (!limit_framerate)
 			glfwSwapInterval(0);
+
+		GM.input().init(data_->window);
 
 		return true;
 	}

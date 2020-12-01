@@ -9,8 +9,6 @@
 #include "render/commands/draw.h"
 #include "render/commands/use-pbr-material.h"
 
-#include "glm/gtc/matrix_transform.hpp"
-
 namespace leep 
 {
     void Render::executeSystem() const
@@ -18,7 +16,7 @@ namespace leep
         DisplayList displayl;
         uint64_t mask = ((1 << COMP_DRAWABLE) | (1 << COMP_TRANSFORM));
         PbrSceneData pbr_sd;
-        pbr_sd.view_projection = glm::perspective(glm::radians(70.0f), 1280.0f / 720.0f, 0.1f, 50.0f);
+        pbr_sd.view_projection = GM.camera().view_projection();
 
         displayl.addCommand<Clear>()
             .set_clear_buffer(true, true, true)

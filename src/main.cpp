@@ -38,6 +38,8 @@ void Init()
 
 void Logic()
 {
+    GM.input().updateInput();
+    CameraMovement(1.0f, 1.0f).executeSystem();
     Render().executeSystem();
 }
 
