@@ -65,6 +65,9 @@ namespace leep
                 r.buffers_[geometry_.index_buffer().handler()].internal_id_);
         }
 
+        // Remove from here
+        glEnable(GL_DEPTH_TEST);
+
         // In order to keep things simple, at this moment the engine
         // only supports 3P, 3N, 2UV vertices
         GLint attrib_pos = glGetAttribLocation(

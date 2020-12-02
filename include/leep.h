@@ -12,6 +12,7 @@
 #include "../src/ecs/components/drawable.h"
 #include "../src/ecs/components/transform.h"
 #include "../src/ecs/systems/render.h"
+#include "../src/ecs/systems/camera-movement.h"
 
 // RENDER
 #include "../src/render/renderer.h" // Inside manager.h, not needed here

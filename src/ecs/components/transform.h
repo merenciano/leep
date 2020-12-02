@@ -12,6 +12,8 @@ namespace leep
     {
         static const CompType type = COMP_TRANSFORM;
         Transform() : Component(COMP_TRANSFORM) { transform_ = glm::mat4(1.0f); }
+        Transform& operator=(const Transform &tr);
+        Transform& rotateYWorld(float radians);
         glm::mat4 transform_;
     };
 }
