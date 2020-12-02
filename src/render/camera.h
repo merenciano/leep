@@ -17,8 +17,9 @@ namespace leep
         Camera();
         ~Camera();
 
+        void init();
         void set_view(const glm::mat4 &view);
-        void set_perspective(float fovy, float aspect, float near, float far);
+        void set_projection(float fovy, float aspect, float near, float far);
         const glm::mat4& view() const;
         const glm::mat4& projection() const;
         glm::mat4 view_projection() const;

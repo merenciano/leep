@@ -83,7 +83,7 @@ namespace leep
         {
             fov -= GM.input().scroll() * 5.0f;
             fov = glm::clamp(fov, 1.0f, 70.0f);
-            GM.camera().set_perspective(fov, GM.window().width() / GM.window().height(), 0.1f, 80.0f);
+            GM.camera().set_projection(glm::radians(fov), (float)GM.window().width() / GM.window().height(), 0.1f, 80.0f);
         }
 
         GM.camera().set_view(glm::inverse(tr.transform_));

@@ -40,7 +40,9 @@ namespace leep
 
     Input::~Input()
     {
-        delete data_;
+        // The lifetime of this class is the same as the entire program,
+        // so I'm not going to slow down the closing process deleting pointers.
+        //delete data_;
     }
 
     void Input::init(void *window)

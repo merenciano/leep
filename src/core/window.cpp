@@ -17,8 +17,11 @@ namespace leep
 
 	Window::~Window()
 	{
-		glfwTerminate();
-		delete data_;
+		// The window class lifetime will be the same as the entire program
+		// so all of this will be freed anyway when the program closes.
+		
+		//glfwTerminate();
+		//delete data_;
 	}
 
 	bool Window::createWindow(uint16_t w, uint16_t h, bool limit_framerate)
@@ -72,7 +75,7 @@ namespace leep
 	int32_t Window::width() const
 	{
 		int32_t width;
-		glfwGetWindowSize(data_->window, &width, nullptr);
+		glfwGetWindowSize(data_->window, &width, NULL);
 		return width;
 	}
 

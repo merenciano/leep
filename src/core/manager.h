@@ -16,6 +16,8 @@ namespace leep
 
         ~Manager() {}
 
+        void init();
+
         Window&   window()   { return window_; }
         Renderer& renderer() { return renderer_; }
         Camera&   camera()   { return camera_; }
