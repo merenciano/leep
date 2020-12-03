@@ -47,7 +47,7 @@ namespace leep
         virtual void executeCommand() const override;
 
     private:
-        static Options s_current_options;
+        inline static Options s_current_options;
     };
 }
 
