@@ -12,6 +12,11 @@ void Init()
 
     trex_texture.create("../assets/tex/trex.jpg");
 
+    init_dl.addCommand<RenderOptions>()
+        .set_depth(true, true)
+        .set_cull_face(CullFace::BACK)
+        .set_blend(BlendFunc::ONE, BlendFunc::ZERO);
+
     init_dl.addCommand<InitMaterial>()
         .set_material(MaterialType::MT_PBR);
 

@@ -27,6 +27,7 @@
 #include "../src/render/commands/use-plain-color-material.h"
 #include "../src/render/commands/draw.h"
 #include "../src/render/commands/create-texture.h"
+#include "../src/render/commands/render-options.h"
 
 
 // Utility functions
