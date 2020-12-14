@@ -10,6 +10,7 @@ namespace leep
         COMP_INVALID = 0,
         COMP_TRANSFORM,
         COMP_DRAWABLE,
+        COMP_FALL_SPEED,
 
 
         COMP_MAX_VALUE = 63

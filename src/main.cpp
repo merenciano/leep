@@ -27,6 +27,9 @@ void Init()
     pbr.tiling_y_ = 1.0f;
 
     Entity cube = Entity::CreateEntity("Cube");
+    cube.addComponent<FallSpeed>();
+    FallSpeed& fall_speed = cube.getComponent<FallSpeed>();
+    fall_speed.speed_ = 1.0f;
     cube.addComponent<Transform>();
     cube.addComponent<Drawable>();
     Transform* cube_tr = &(cube.getComponent<Transform>());
@@ -46,6 +49,7 @@ void Logic()
 {
     GM.input().updateInput();
     CameraMovement(1.0f, 1.0f).executeSystem();
+    Fall().executeSystem();
     Render().executeSystem();
 }
 
