@@ -19,6 +19,9 @@ namespace leep
 
         static Entity CreateEntity(std::string name);
         static void RemoveEntity(std::string name);
+        static Entity GetEntity(std::string name);
+
+        bool isValid() const;
 
         template<typename T>
         void addComponent()

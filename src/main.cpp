@@ -30,6 +30,9 @@ void Init()
     cube.addComponent<FallSpeed>();
     FallSpeed& fall_speed = cube.getComponent<FallSpeed>();
     fall_speed.speed_ = 1.0f;
+    cube.addComponent<InfiniteFallingLimits>();
+    cube.getComponent<InfiniteFallingLimits>().limit_down_ = -1.0f;
+    cube.getComponent<InfiniteFallingLimits>().limit_up_ = 1.0f;
     cube.addComponent<Transform>();
     cube.addComponent<Drawable>();
     Transform* cube_tr = &(cube.getComponent<Transform>());
@@ -50,7 +53,10 @@ void Logic()
     GM.input().updateInput();
     CameraMovement(1.0f, 1.0f).executeSystem();
     Fall().executeSystem();
+    InfiniteFalling().executeSystem();
     Render().executeSystem();
+    
+    LEEP_INFO("{0}", Entity::GetEntity("Cube").getComponent<Transform>().localLocation().y);
 }
 
 void RenderScene()

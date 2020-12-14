@@ -11,6 +11,7 @@ namespace leep
         COMP_TRANSFORM,
         COMP_DRAWABLE,
         COMP_FALL_SPEED,
+        COMP_INFINITE_FALLING_LIMITS,
 
 
         COMP_MAX_VALUE = 63

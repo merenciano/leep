@@ -12,9 +12,11 @@
 #include "../src/ecs/components/drawable.h"
 #include "../src/ecs/components/transform.h"
 #include "../src/ecs/components/fall-speed.h"
+#include "../src/ecs/components/infinite-falling-limits.h"
 #include "../src/ecs/systems/render.h"
 #include "../src/ecs/systems/camera-movement.h"
 #include "../src/ecs/systems/fall.h"
+#include "../src/ecs/systems/infinite-falling.h"
 
 // RENDER
 #include "../src/render/renderer.h" // Inside manager.h, not needed here

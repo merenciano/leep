@@ -26,4 +26,9 @@ namespace leep
         transform_ = temp;
         return *this;
     }
+
+    glm::vec3 Transform::localLocation() const
+    {
+        return glm::vec3(transform_[3][0], transform_[3][1], transform_[3][2]);
+    }
 }

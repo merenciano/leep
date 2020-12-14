@@ -33,4 +33,20 @@ namespace leep
         // Set the correct index for the swapped entity
         GM.entity_map_[GM.entities_[index].name_] = index;
     }
+
+    Entity Entity::GetEntity(std::string name)
+    {
+        if (GM.entity_map_.find(name) == GM.entity_map_.end())
+        {
+            // Entity already removed or never created
+            // in any case the job is done
+            return Entity();
+        }
+        return Entity(GM.entity_map_[name]);
+    }
+
+    bool Entity::isValid() const
+    {
+        return index_ >= 0 ? true : false;
+    }
 }
