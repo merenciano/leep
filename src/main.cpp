@@ -50,13 +50,15 @@ void Init()
 
 void Logic()
 {
+    Chrono logic_timer;
+    logic_timer.start();
     GM.input().updateInput();
     CameraMovement(1.0f, 1.0f).executeSystem();
     Fall().executeSystem();
     InfiniteFalling().executeSystem();
     Render().executeSystem();
-    
-    LEEP_INFO("{0}", Entity::GetEntity("Cube").getComponent<Transform>().localLocation().y);
+    logic_timer.end();
+    LEEP_INFO("Logic time in microseconds: {0}", logic_timer.duration());
 }
 
 void RenderScene()
