@@ -11,18 +11,21 @@ namespace leep
     void InfiniteFalling::executeSystem() const
     {
         uint64_t mask = ((1 << COMP_INFINITE_FALLING_LIMITS) | (1 << COMP_TRANSFORM));
+        memory::FallingCubeEntities &entity_chunk = GM.stack_memory_.falling_cube_entities_;
 
-        for (auto &e : GM.entities_)
+        if ((mask & entity_chunk.mask) == mask)
         {
-            if (e.hasComponents(mask))
+            for (int32_t i = 0; i < 10000; ++i)
             {
-                Transform *tr = e.getComponent<Transform>();
-                InfiniteFallingLimits *ifl = e.getComponent<InfiniteFallingLimits>();
+                glm::mat4 &tr = entity_chunk.transform[i].transform_;
+                float location_y = entity_chunk.transform[i].localLocation().y;
+                float limit_down = entity_chunk.infinite_falling_limits[i].limit_down_;
+                float limit_up = entity_chunk.infinite_falling_limits[i].limit_up_;
 
-                if (tr->localLocation().y < ifl->limit_down_)
+                if (location_y < limit_down)
                 {
-                    float distance = glm::abs(ifl->limit_down_ - ifl->limit_up_) / tr->transform_[1][1];
-                    tr->transform_ = glm::translate(tr->transform_, glm::vec3(0.0f, distance, 0.0f));
+                    float distance = glm::abs(limit_down - limit_up) / tr[1][1];
+                    tr = glm::translate(tr, glm::vec3(0.0f, distance, 0.0f));
                 }
             }
         }

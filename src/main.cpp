@@ -32,22 +32,21 @@ void Init()
     {
         for(int32_t j = 0; j < 100; ++j)
         {
-            Entity cube = Entity::CreateEntity("Cube_" + std::to_string(i) + "_" + std::to_string(j));
-            cube.addComponent<FallSpeed>().speed_ = 0.1f;
+            int32_t entity_index = i * 100 + j;
 
-            InfiniteFallingLimits& ifl = cube.addComponent<InfiniteFallingLimits>();
-            ifl.limit_down_ = -10.0f;
-            ifl.limit_up_   =  10.0f;
+            Transform& tr = GM.stack_memory_.falling_cube_entities_.transform[entity_index];
+            tr.transform_ = glm::scale(tr.transform_, glm::vec3(0.3f, 0.3f, 0.3f));
+            tr.transform_ = glm::translate(tr.transform_, glm::vec3(1.1f * i, -1.1f * j, -5.0f));
 
-            Transform& cube_tr = cube.addComponent<Transform>();
-            cube_tr.transform_ = glm::scale(cube_tr.transform_, glm::vec3(0.3f, 0.3f, 0.3f));
-            cube_tr.transform_ = glm::translate(cube_tr.transform_, glm::vec3(1.1f * i, -1.1f * j, -5.0f));
-
-            Drawable &cube_dw = cube.addComponent<Drawable>();
+            Drawable &cube_dw = GM.stack_memory_.falling_cube_entities_.drawable[entity_index];
             cube_dw.geometry_ = cube_geo;
             cube_dw.material_.set_type(MaterialType::MT_PBR);
             cube_dw.material_.set_data(pbr);
             cube_dw.material_.set_texture(trex_texture);
+
+            GM.stack_memory_.falling_cube_entities_.fall_speed[entity_index].speed_ = 0.1f;
+            GM.stack_memory_.falling_cube_entities_.infinite_falling_limits[entity_index].limit_down_ = -10.0f;
+            GM.stack_memory_.falling_cube_entities_.infinite_falling_limits[entity_index].limit_up_ = 10.0f;
         }
     }
 }
