@@ -4,6 +4,7 @@
 #include "../src/core/window.h"  // Inside manager.h, not needed here
 #include "../src/core/logger.h"
 #include "../src/core/chrono.h"
+#include "../src/core/memory.h"
 
 // ECS
 #include "../src/ecs/entity.h"
