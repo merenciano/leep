@@ -30,18 +30,18 @@ void Init()
     
     for (int32_t i = 0; i < 50; ++i)
     {
-        for(int32_t j = 0; j < 50; ++i)
+        for(int32_t j = 0; j < 50; ++j)
         {
             Entity cube = Entity::CreateEntity("Cube_" + std::to_string(i) + "_" + std::to_string(j));
-            cube.addComponent<FallSpeed>().speed_ = 1.0f;
+            cube.addComponent<FallSpeed>().speed_ = 0.1f;
 
             InfiniteFallingLimits& ifl = cube.addComponent<InfiniteFallingLimits>();
-            ifl.limit_down_ = -1.0f;
-            ifl.limit_up_   =  1.0f;
+            ifl.limit_down_ = -10.0f;
+            ifl.limit_up_   =  10.0f;
 
             Transform& cube_tr = cube.addComponent<Transform>();
             cube_tr.transform_ = glm::scale(cube_tr.transform_, glm::vec3(0.3f, 0.3f, 0.3f));
-            cube_tr.transform_ = glm::translate(cube_tr.transform_, glm::vec3(0.3f * i, -0.3f * j, -5.0f));
+            cube_tr.transform_ = glm::translate(cube_tr.transform_, glm::vec3(1.1f * i, -1.1f * j, -5.0f));
 
             Drawable &cube_dw = cube.addComponent<Drawable>();
             cube_dw.geometry_ = cube_geo;

@@ -19,7 +19,7 @@ namespace leep
 
         void init();
         void set_view(const glm::mat4 &view);
-        void set_projection(float fovy, float aspect, float near, float far);
+        void set_projection(float fovy, float aspect, float near_value, float far_value);
         const glm::mat4& view() const;
         const glm::mat4& projection() const;
         glm::mat4 view_projection() const;
