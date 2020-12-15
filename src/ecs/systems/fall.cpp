@@ -15,7 +15,7 @@ namespace leep
 
         if ((mask & entity_chunk.mask) == mask) 
         {
-            for(int32_t i = 0; i < 10000; ++i)
+            for(int32_t i = 0; i < kEntitiesPerChunk; ++i)
             {
                 float fall_speed = entity_chunk.fall_speed[i].speed_;
                 glm::mat4 &tr = entity_chunk.transform[i].transform_;

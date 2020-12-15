@@ -15,7 +15,7 @@ namespace leep
 
         if ((mask & entity_chunk.mask) == mask)
         {
-            for (int32_t i = 0; i < 10000; ++i)
+            for (int32_t i = 0; i < kEntitiesPerChunk; ++i)
             {
                 glm::mat4 &tr = entity_chunk.transform[i].transform_;
                 float location_y = entity_chunk.transform[i].localLocation().y;

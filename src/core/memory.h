@@ -10,6 +10,7 @@
 
 namespace leep
 {
+    const uint32_t kEntitiesPerChunk = 10000; 
     namespace memory
     {
         // Entity Chunk
@@ -17,10 +18,10 @@ namespace leep
         {
             uint64_t mask = (1 << COMP_TRANSFORM) | (1 << COMP_DRAWABLE) | (1 << COMP_FALL_SPEED) | (1 << COMP_INFINITE_FALLING_LIMITS);
             //bool hasComponents(uint64_t comp_mask) { return (comp_mask & mask) == comp_mask; }
-            Transform               transform               [10000];
-            Drawable                drawable                [10000];
-            FallSpeed               fall_speed              [10000];
-            InfiniteFallingLimits   infinite_falling_limits [10000];
+            Transform               transform               [kEntitiesPerChunk];
+            Drawable                drawable                [kEntitiesPerChunk];
+            FallSpeed               fall_speed              [kEntitiesPerChunk];
+            InfiniteFallingLimits   infinite_falling_limits [kEntitiesPerChunk];
         };
 
         struct StackMemory
