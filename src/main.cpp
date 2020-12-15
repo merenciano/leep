@@ -9,8 +9,10 @@ void Init()
     GM.init();
     DisplayList init_dl;
     Texture trex_texture;
+    Geometry cube_geo;
 
     trex_texture.create("../assets/tex/trex.jpg");
+    cube_geo.createCube();
 
     init_dl.addCommand<RenderOptions>()
         .set_depth(true, true)
@@ -25,35 +27,37 @@ void Init()
     PbrData pbr;
     pbr.tiling_x_ = 1.0f;
     pbr.tiling_y_ = 1.0f;
+    
+    for (int32_t i = 0; i < 50; ++i)
+    {
+        for(int32_t j = 0; j < 50; ++i)
+        {
+            Entity cube = Entity::CreateEntity("Cube_" + std::to_string(i) + "_" + std::to_string(j));
+            cube.addComponent<FallSpeed>().speed_ = 1.0f;
 
-    Entity cube = Entity::CreateEntity("Cube");
-    cube.addComponent<FallSpeed>();
-    FallSpeed& fall_speed = cube.getComponent<FallSpeed>();
-    fall_speed.speed_ = 1.0f;
-    cube.addComponent<InfiniteFallingLimits>();
-    cube.getComponent<InfiniteFallingLimits>().limit_down_ = -1.0f;
-    cube.getComponent<InfiniteFallingLimits>().limit_up_ = 1.0f;
-    cube.addComponent<Transform>();
-    cube.addComponent<Drawable>();
-    Transform* cube_tr = &(cube.getComponent<Transform>());
-    cube_tr->transform_ = glm::scale(cube_tr->transform_, glm::vec3(0.03f, 0.03f, 0.03f));
-    cube_tr->transform_ = glm::translate(cube_tr->transform_, glm::vec3(0.0f, -3.0f, -5.0f));
-    //cube_tr->transform_ = glm::rotate(cube_tr->transform_, glm::radians(45.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+            InfiniteFallingLimits& ifl = cube.addComponent<InfiniteFallingLimits>();
+            ifl.limit_down_ = -1.0f;
+            ifl.limit_up_   =  1.0f;
 
-    Drawable* cube_dw = &(cube.getComponent<Drawable>());
-    //cube_dw->geometry_.createCube();
-    cube_dw->geometry_.loadObj("../assets/obj/trex.obj");
-    cube_dw->material_.set_type(MaterialType::MT_PBR);
-    cube_dw->material_.set_data(pbr);
-    cube_dw->material_.set_texture(trex_texture);
+            Transform& cube_tr = cube.addComponent<Transform>();
+            cube_tr.transform_ = glm::scale(cube_tr.transform_, glm::vec3(0.3f, 0.3f, 0.3f));
+            cube_tr.transform_ = glm::translate(cube_tr.transform_, glm::vec3(0.3f * i, -0.3f * j, -5.0f));
+
+            Drawable &cube_dw = cube.addComponent<Drawable>();
+            cube_dw.geometry_ = cube_geo;
+            cube_dw.material_.set_type(MaterialType::MT_PBR);
+            cube_dw.material_.set_data(pbr);
+            cube_dw.material_.set_texture(trex_texture);
+        }
+    }
 }
 
 void Logic()
 {
     Chrono logic_timer;
-    logic_timer.start();
     GM.input().updateInput();
     CameraMovement(1.0f, 1.0f).executeSystem();
+    logic_timer.start();
     Fall().executeSystem();
     InfiniteFalling().executeSystem();
     Render().executeSystem();
