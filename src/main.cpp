@@ -28,9 +28,9 @@ void Init()
     pbr.tiling_x_ = 1.0f;
     pbr.tiling_y_ = 1.0f;
     
-    for (int32_t i = 0; i < 50; ++i)
+    for (int32_t i = 0; i < 100; ++i)
     {
-        for(int32_t j = 0; j < 50; ++j)
+        for(int32_t j = 0; j < 100; ++j)
         {
             Entity cube = Entity::CreateEntity("Cube_" + std::to_string(i) + "_" + std::to_string(j));
             cube.addComponent<FallSpeed>().speed_ = 0.1f;
@@ -62,7 +62,9 @@ void Logic()
     InfiniteFalling().executeSystem();
     Render().executeSystem();
     logic_timer.end();
-    LEEP_INFO("Logic time in microseconds: {0}", logic_timer.duration());
+    int64_t duration = logic_timer.duration();
+    printf("Logic time in microseconds: %d\n", duration);
+    LEEP_INFO("Logic time in microseconds: {0}", duration);
 }
 
 void RenderScene()
