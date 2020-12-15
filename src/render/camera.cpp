@@ -26,9 +26,9 @@ namespace leep
         view_matrix_ = view;
     }
 
-    void Camera::set_projection(float fovy_rad, float aspect, float near, float far)
+    void Camera::set_projection(float fovy_rad, float aspect, float near_value, float far_value)
     {
-        projection_matrix_ = glm::perspective(fovy_rad, aspect, near, far);
+        projection_matrix_ = glm::perspective(fovy_rad, aspect, near_value, far_value);
     }
 
     const glm::mat4& Camera::view() const

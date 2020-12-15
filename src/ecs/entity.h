@@ -24,12 +24,13 @@ namespace leep
         bool isValid() const;
 
         template<typename T>
-        void addComponent()
+        T& addComponent()
         {
             LEEP_CORE_ASSERT(index_ >= 0, "Invalid entity");
             std::shared_ptr<Component> comp;
             comp = std::make_shared<T>();
             GM.entities_[index_].components_.push_back(std::move(comp));
+            return *(GM.entities_[index_].getComponent<T>());
         }
 
         template<typename T>
@@ -38,7 +39,6 @@ namespace leep
             LEEP_CORE_ASSERT(index_ >= 0, "Invalid entity");
             LEEP_CORE_ASSERT(GM.entities_[index_].getComponent<T>(), "The entity doesn't have this component");
             return *(GM.entities_[index_].getComponent<T>());
-            
         }
         
         /*bool hasComponents(uint64_t mask)
