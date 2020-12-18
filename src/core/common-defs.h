@@ -40,6 +40,16 @@ namespace leep
         float tx;
         float ty;
     };
+
+    constexpr bool isPow2(uint32_t n) 
+    { 
+        uint8_t count = 0; 
+        while (n) { 
+            count += n & 1; 
+            n >>= 1; 
+        } 
+        return count == 1; 
+    } 
 }
 
 

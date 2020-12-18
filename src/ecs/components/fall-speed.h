@@ -11,6 +11,7 @@ namespace leep
     {
         static const CompType type = COMP_FALL_SPEED;
         FallSpeed() : Component(COMP_FALL_SPEED) { speed_ = 1.0f; }
+        FallSpeed& operator=(const FallSpeed &other) { speed_ = other.speed_; return *this; }
         float speed_;
     };
 }

@@ -6,7 +6,7 @@ namespace leep
 {
     Material::Material()
     {
-
+        type_ = MaterialType::MT_NONE;
     }
 
     Material::~Material()
@@ -16,11 +16,14 @@ namespace leep
 
     Material::Material(const Material &other)
     {
-        LEEP_CORE_ASSERT(other.type_ != MaterialType::MT_NONE, "You are trying to copy an uninitialized material");
         type_ = other.type_;
         texture_ = other.texture_;
         switch(type_)
         {
+        case MaterialType::MT_NONE:
+            LEEP_CORE_WARNING("You are copying an uninitialized material");
+            break;
+
         case MaterialType::MT_PBR:
             data_.pbr = other.data_.pbr;
             break;

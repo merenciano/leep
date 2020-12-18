@@ -23,16 +23,17 @@ namespace leep
         Renderer& renderer() { return renderer_; }
         Camera&   camera()   { return camera_; }
         Input&    input()    { return input_; }
+        Memory&   memory()   { return memory_; }
 
         std::vector<InternalEntity> entities_;
         std::unordered_map<std::string, int32_t> entity_map_;
-        memory::StackMemory stack_memory_;
 
     private:
         Window   window_;
         Renderer renderer_;
         Camera   camera_;
         Input    input_;
+        Memory   memory_;
     
     private:
         Manager() {}

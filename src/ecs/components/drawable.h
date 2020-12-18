@@ -11,6 +11,12 @@ namespace leep
     {
         static const CompType type = COMP_DRAWABLE;
         Drawable() : Component(COMP_DRAWABLE) { }
+        Drawable& operator=(const Drawable &other)
+        {
+            material_ = other.material_;
+            geometry_ = other.geometry_;
+            return *this;
+        }
         Material material_;
         Geometry geometry_;
     };

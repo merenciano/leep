@@ -6,6 +6,7 @@ using namespace leep;
 
 void Init()
 {
+    Logger::init();
     GM.init();
     DisplayList init_dl;
     Texture trex_texture;
@@ -32,21 +33,23 @@ void Init()
     {
         for(int32_t j = 0; j < 100; ++j)
         {
-            int32_t entity_index = i * 100 + j;
+            EntityContainer<FallingCubeEntities> &c = GM.memory().ec_falling_;
+            Entity<FallingCubeEntities> e = Entity<FallingCubeEntities>::CreateEntity(
+                "Cube_" + std::to_string(i) + "_" + std::to_string(j), c);
 
-            Transform& tr = GM.stack_memory_.falling_cube_entities_.transform[entity_index];
+            Transform& tr = c.chunks_.at(ChunkI(e.index_)).transform[EntityI(e.index_)];
             tr.transform_ = glm::scale(tr.transform_, glm::vec3(0.3f, 0.3f, 0.3f));
             tr.transform_ = glm::translate(tr.transform_, glm::vec3(1.1f * i, -1.1f * j, -5.0f));
 
-            Drawable &cube_dw = GM.stack_memory_.falling_cube_entities_.drawable[entity_index];
+            Drawable &cube_dw = c.chunks_.at(ChunkI(e.index_)).drawable[EntityI(e.index_)];
             cube_dw.geometry_ = cube_geo;
             cube_dw.material_.set_type(MaterialType::MT_PBR);
             cube_dw.material_.set_data(pbr);
             cube_dw.material_.set_texture(trex_texture);
 
-            GM.stack_memory_.falling_cube_entities_.fall_speed[entity_index].speed_ = 0.1f;
-            GM.stack_memory_.falling_cube_entities_.infinite_falling_limits[entity_index].limit_down_ = -10.0f;
-            GM.stack_memory_.falling_cube_entities_.infinite_falling_limits[entity_index].limit_up_ = 10.0f;
+            c.chunks_.at(ChunkI(e.index_)).fall_speed[EntityI(e.index_)].speed_ = 0.1f;
+            c.chunks_.at(ChunkI(e.index_)).infinite_falling_limits[EntityI(e.index_)].limit_down_ = -10.0f;
+            c.chunks_.at(ChunkI(e.index_)).infinite_falling_limits[EntityI(e.index_)].limit_up_ = 10.0f;
         }
     }
 }
@@ -57,9 +60,9 @@ void Logic()
     GM.input().updateInput();
     CameraMovement(1.0f, 1.0f).executeSystem();
     logic_timer.start();
-    Fall().executeSystem();
-    InfiniteFalling().executeSystem();
-    Render().executeSystem();
+    Fall<FallingCubeEntities>(GM.memory().ec_falling_).executeSystem();
+    InfiniteFalling<FallingCubeEntities>(GM.memory().ec_falling_).executeSystem();
+    Render<FallingCubeEntities>(GM.memory().ec_falling_).executeSystem();
     logic_timer.end();
     int64_t duration = logic_timer.duration();
     printf("Logic time in microseconds: %d\n", duration);
