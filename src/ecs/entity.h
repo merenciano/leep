@@ -43,18 +43,20 @@ namespace leep
                 // in any case the job is done
                 return;
             }
-
             int32_t index = cont.dictionary_[name];
-            cont.dictionary_.erase(name);
             int32_t chunk_id = ChunkI(index);
             int32_t entity_id = EntityI(index);
             
             // Copy the last entity to the place of the removed one
-            int32_t last_id = cont.chunks_.size() * kEntitiesPerChunk + (cont.chunks_.back().last_ - 1);
-            cont.chunks_.back().relocateLast(cont.chunks_.at(chunk_id), entity_id);
+            int32_t last_id = (cont.chunks_.size()-1) * kEntitiesPerChunk + (cont.chunks_.back().last_ - 1);
+            if (last_id != index)
+            {
+                cont.chunks_.back().relocateLast(&(cont.chunks_[chunk_id]), entity_id);
+                cont.reverse_dictionary_[index] = cont.reverse_dictionary_[last_id];
+                cont.dictionary_[cont.reverse_dictionary_[last_id]] = index;
+            }
             cont.removeLastEntity();
-            cont.reverse_dictionary_[index] = cont.reverse_dictionary_[last_id];
-            cont.dictionary_[cont.reverse_dictionary_[last_id]] = index;
+            cont.dictionary_.erase(name);
             cont.reverse_dictionary_.erase(last_id);
         }
 

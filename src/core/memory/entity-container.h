@@ -17,12 +17,25 @@ namespace leep
         EntityContainer() { chunks_.emplace_back(); chunks_.back().index_ = 0; }
         void removeLastEntity()
         {
-            chunks_.back().last_--;
-            if (chunks_.back().last_ >= 0 && !chunks_.empty())
+            if (isEmpty())
             {
-                chunks_.pop_back();
+                return;
+            }
+
+            chunks_.back().last_--;
+            if (chunks_.back().last_ <= 0)
+            {
+                if (chunks_.size() == 1)
+                {
+                    chunks_.back().last_ = 0;
+                }
+                else
+                {
+                    chunks_.pop_back();
+                }
             }
         }
+        bool isEmpty() const { return chunks_.size() == 1 && chunks_.back().last_ == 0; }
         std::deque<T> chunks_;
         std::unordered_map<std::string, uint32_t> dictionary_;
         std::unordered_map<uint32_t, std::string> reverse_dictionary_;

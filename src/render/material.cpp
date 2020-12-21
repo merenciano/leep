@@ -40,7 +40,7 @@ namespace leep
 
     Material& Material::operator=(const Material &other)
     {
-        LEEP_CORE_ASSERT(other.type_ != MaterialType::MT_NONE, "You are trying to copy an uninitialized material");
+        //LEEP_CORE_ASSERT(other.type_ != MaterialType::MT_NONE, "You are trying to copy an uninitialized material");
         type_ = other.type_;
         texture_ = other.texture_;
         switch(type_)
@@ -54,7 +54,7 @@ namespace leep
             break;
 
         default:
-            LEEP_CORE_ERROR("Operator '=' of material default case.");
+            //LEEP_CORE_ERROR("Operator '=' of material default case.");
             break;
         }
         return *this;

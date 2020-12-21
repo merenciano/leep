@@ -39,7 +39,7 @@ void Init()
 
             Transform &tr = e.getComponent<Transform>();
             tr.transform_ = glm::scale(tr.transform_, glm::vec3(0.3f, 0.3f, 0.3f));
-            tr.transform_ = glm::translate(tr.transform_, glm::vec3(1.1f * i, -1.1f * j, -5.0f));
+            tr.transform_ = glm::translate(tr.transform_, glm::vec3(1.5f * i, -1.1f * j, -5.0f));
 
             Drawable &cube_dw = e.getComponent<Drawable>();
             cube_dw.geometry_ = cube_geo;
