@@ -39,14 +39,4 @@
 // Utility functions
 namespace leep 
 {
-    inline int32_t EntityI(int32_t entity_id)
-    {
-        // %kEntitiesPerChunk
-        return entity_id&(kEntitiesPerChunk - 1);
-    }
-
-    inline int32_t ChunkI(int32_t entity_id)
-    {
-        return entity_id/kEntitiesPerChunk;
-    }
 }

@@ -15,6 +15,14 @@ namespace leep
     struct EntityContainer
     {
         EntityContainer() { chunks_.emplace_back(); chunks_.back().index_ = 0; }
+        void removeLastEntity()
+        {
+            chunks_.back().last_--;
+            if (chunks_.back().last_ >= 0 && !chunks_.empty())
+            {
+                chunks_.pop_back();
+            }
+        }
         std::deque<T> chunks_;
         std::unordered_map<std::string, uint32_t> dictionary_;
         std::unordered_map<uint32_t, std::string> reverse_dictionary_;

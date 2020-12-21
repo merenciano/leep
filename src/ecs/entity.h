@@ -46,26 +46,35 @@ namespace leep
 
             int32_t index = cont.dictionary_[name];
             cont.dictionary_.erase(name);
-            // Check the assembly generated. The constant must be power of 2
-            // so the first operation should be done with bit shifting
-            // and the second operation with AND mask.
-            // I leave it this way for readability
-            int32_t chunk_id = index / kEntitiesPerChunk;
-            int32_t entity_id = index % kEntitiesPerChunk; 
+            int32_t chunk_id = ChunkI(index);
+            int32_t entity_id = EntityI(index);
             
             // Copy the last entity to the place of the removed one
             int32_t last_id = cont.chunks_.size() * kEntitiesPerChunk + (cont.chunks_.back().last_ - 1);
             cont.chunks_.back().relocateLast(cont.chunks_.at(chunk_id), entity_id);
+            cont.removeLastEntity();
             cont.reverse_dictionary_[index] = cont.reverse_dictionary_[last_id];
             cont.dictionary_[cont.reverse_dictionary_[last_id]] = index;
             cont.reverse_dictionary_.erase(last_id);
-            // Que me ahorquen si me he entendido...
         }
 
         static Entity GetEntity(std::string name, EntityContainer<T> &cont)
         {
             LEEP_ASSERT(cont.dictionary_.find(name) != cont.dictionary_.end(), "There isn't any entity with this name in this container.");
             return Entity(cont.dictionary_[name], cont);
+        }
+
+        template<typename C>
+        C& getComponent()
+        {
+            for (int32_t i = 0; i < container_.chunks_.at(ChunkI(index_)).comps_.size(); ++i)
+            {
+                if (C::type == container_.chunks_.at(ChunkI(index_)).comps_[i][0].type())
+                {
+                    return static_cast<C*>(container_.chunks_.at(ChunkI(index_)).comps_[i])[EntityI(index_)];
+                }
+            }
+            LEEP_ASSERT(false, "The entity does not have this component");
         }
 
         bool isValid() const { return index_ >= 0 ? true : false; }

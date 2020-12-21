@@ -37,19 +37,19 @@ void Init()
             Entity<FallingCubeEntities> e = Entity<FallingCubeEntities>::CreateEntity(
                 "Cube_" + std::to_string(i) + "_" + std::to_string(j), c);
 
-            Transform& tr = c.chunks_.at(ChunkI(e.index_)).transform[EntityI(e.index_)];
+            Transform &tr = e.getComponent<Transform>();
             tr.transform_ = glm::scale(tr.transform_, glm::vec3(0.3f, 0.3f, 0.3f));
             tr.transform_ = glm::translate(tr.transform_, glm::vec3(1.1f * i, -1.1f * j, -5.0f));
 
-            Drawable &cube_dw = c.chunks_.at(ChunkI(e.index_)).drawable[EntityI(e.index_)];
+            Drawable &cube_dw = e.getComponent<Drawable>();
             cube_dw.geometry_ = cube_geo;
             cube_dw.material_.set_type(MaterialType::MT_PBR);
             cube_dw.material_.set_data(pbr);
             cube_dw.material_.set_texture(trex_texture);
 
-            c.chunks_.at(ChunkI(e.index_)).fall_speed[EntityI(e.index_)].speed_ = 0.1f;
-            c.chunks_.at(ChunkI(e.index_)).infinite_falling_limits[EntityI(e.index_)].limit_down_ = -10.0f;
-            c.chunks_.at(ChunkI(e.index_)).infinite_falling_limits[EntityI(e.index_)].limit_up_ = 10.0f;
+            e.getComponent<FallSpeed>().speed_ = 0.1f;
+            e.getComponent<InfiniteFallingLimits>().limit_down_ = -15.0f;
+            e.getComponent<InfiniteFallingLimits>().limit_up_= 15.0f;
         }
     }
 }
@@ -65,8 +65,11 @@ void Logic()
     Render<FallingCubeEntities>(GM.memory().ec_falling_).executeSystem();
     logic_timer.end();
     int64_t duration = logic_timer.duration();
-    printf("Logic time in microseconds: %d\n", duration);
+#ifdef LEEP_DEBUG
     LEEP_INFO("Logic time in microseconds: {0}", duration);
+#else
+    printf("Logic time in microseconds: %d\n", duration);
+#endif
 }
 
 void RenderScene()
