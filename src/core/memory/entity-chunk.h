@@ -26,7 +26,7 @@ namespace leep
         explicit EntityChunk(EntityType t) : type_(t) { last_ = 0; index_ = -1; }
         virtual ~EntityChunk() {}
         EntityType type() const { return type_; }
-        virtual void relocateLast(EntityChunk *a, int32_t i) = 0;
+        virtual void relocateLast(EntityChunk *a, uint32_t i) = 0;
 
         std::vector<Component*> comps_;
         const EntityType type_;
@@ -71,7 +71,7 @@ namespace leep
             }
         }
 
-        virtual void relocateLast(EntityChunk *a, int32_t i) override
+        virtual void relocateLast(EntityChunk *a, uint32_t i) override
         {
             LEEP_ASSERT(a && i < kEntitiesPerChunk, "Wrong parameters");
             FallingCubeEntities *chunk = static_cast<FallingCubeEntities*>(a);

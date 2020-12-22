@@ -1,1 +1,0 @@
-*For the memory manager, create chunks of memory for the entities and separathe them by components. Each chunk will store entities with the same components and will have the necessary logic to know the components of the entities he stores.

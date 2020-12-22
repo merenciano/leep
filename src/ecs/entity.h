@@ -69,7 +69,7 @@ namespace leep
         template<typename C>
         C& getComponent()
         {
-            for (int32_t i = 0; i < container_.chunks_.at(ChunkI(index_)).comps_.size(); ++i)
+            for (size_t i = 0; i < container_.chunks_.at(ChunkI(index_)).comps_.size(); ++i)
             {
                 if (C::type == container_.chunks_.at(ChunkI(index_)).comps_[i][0].type())
                 {
@@ -77,6 +77,11 @@ namespace leep
                 }
             }
             LEEP_ASSERT(false, "The entity does not have this component");
+            // Maybe this function should return a pointer but I think it's better to
+            // set the assert here instead of checking the return value each time anyone calls this function.
+            // This return exists only to remove the compiler warnings. It's after the assert so the method
+            // will never return this in debug. In release it will crash (I hope)
+            return *static_cast<C*>(nullptr);
         }
 
         bool isValid() const { return index_ >= 0 ? true : false; }

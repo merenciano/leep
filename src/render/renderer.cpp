@@ -18,11 +18,14 @@ namespace leep
     {
         // I dont mind them not being together in memory
         // since the correct usage of this engine will be
-        // using the diferent materials in order, so there 
-        // should be hardly any cache misses
-        // (only one each time we change the material)
+        // using the diferent materials in order
         materials_[MaterialType::MT_PBR] = std::make_unique<Pbr>();
         materials_[MaterialType::MT_PLAIN_COLOR] = std::make_unique<PlainColor>();
+        
+        for (int32_t i = 0; i < MaterialType::MT_MAX; ++i)
+        {
+            materials_[i]->init();
+        }
     }
 
     void Renderer::addDisplayListToQueue(DisplayList &&dl)

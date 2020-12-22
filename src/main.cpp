@@ -20,9 +20,6 @@ void Init()
         .set_cull_face(CullFace::BACK)
         .set_blend(BlendFunc::ONE, BlendFunc::ZERO);
 
-    init_dl.addCommand<InitMaterial>()
-        .set_material(MaterialType::MT_PBR);
-
     init_dl.submit();
 
     PbrData pbr;
@@ -68,6 +65,7 @@ void Logic()
 #ifdef LEEP_DEBUG
     LEEP_INFO("Logic time in microseconds: {0}", duration);
 #else
+    // Logger works only on debug
     printf("Logic time in microseconds: %d\n", duration);
 #endif
 }

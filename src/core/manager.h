@@ -4,7 +4,6 @@
 #include "core/window.h"
 #include "core/input.h"
 #include "core/memory.h"
-#include "ecs/internal-entity.h"
 #include "render/renderer.h"
 #include "render/camera.h"
 
@@ -24,9 +23,6 @@ namespace leep
         Camera&   camera()   { return camera_; }
         Input&    input()    { return input_; }
         Memory&   memory()   { return memory_; }
-
-        std::vector<InternalEntity> entities_;
-        std::unordered_map<std::string, int32_t> entity_map_;
 
     private:
         Window   window_;
