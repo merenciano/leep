@@ -29,6 +29,6 @@ namespace leep
     private:
         PlainColorSceneData data_;
     };
-};
+}
 
 #endif // __LEEP_RENDER_COMMANDS_USE_PLAIN_COLOR_MATERIAL_H__

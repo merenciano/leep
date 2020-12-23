@@ -34,6 +34,6 @@ namespace leep
         // the command.
         PbrSceneData data_;
     };
-};
+}
 
 #endif // __LEEP_RENDER_COMMANDS_USE_PBR_MATERIAL_H__

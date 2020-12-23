@@ -40,6 +40,30 @@ namespace leep
         float tx;
         float ty;
     };
+
+    const uint32_t kEntitiesPerChunk = 128; 
+
+    constexpr bool IsPow2(uint32_t n) 
+    { 
+        uint8_t count = 0; 
+        while (n) { 
+            count += n & 1; 
+            n >>= 1; 
+        } 
+        return count == 1; 
+    } 
+
+    constexpr int32_t EntityI(int32_t entity_id)
+    {
+        // %kEntitiesPerChunk
+        return entity_id&(kEntitiesPerChunk - 1);
+    }
+
+    constexpr int32_t ChunkI(int32_t entity_id)
+    {
+        return entity_id/kEntitiesPerChunk;
+    }
+
 }
 
 

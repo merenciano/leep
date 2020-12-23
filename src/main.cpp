@@ -6,6 +6,7 @@ using namespace leep;
 
 void Init()
 {
+    Logger::init();
     GM.init();
     DisplayList init_dl;
     Texture trex_texture;
@@ -19,9 +20,6 @@ void Init()
         .set_cull_face(CullFace::BACK)
         .set_blend(BlendFunc::ONE, BlendFunc::ZERO);
 
-    init_dl.addCommand<InitMaterial>()
-        .set_material(MaterialType::MT_PBR);
-
     init_dl.submit();
 
     PbrData pbr;
@@ -32,21 +30,23 @@ void Init()
     {
         for(int32_t j = 0; j < 100; ++j)
         {
-            int32_t entity_index = i * 100 + j;
+            EntityContainer<FallingCubeEntities> &c = GM.memory().ec_falling_;
+            Entity<FallingCubeEntities> e = Entity<FallingCubeEntities>::CreateEntity(
+                "Cube_" + std::to_string(i) + "_" + std::to_string(j), c);
 
-            Transform& tr = GM.stack_memory_.falling_cube_entities_.transform[entity_index];
+            Transform &tr = e.getComponent<Transform>();
             tr.transform_ = glm::scale(tr.transform_, glm::vec3(0.3f, 0.3f, 0.3f));
-            tr.transform_ = glm::translate(tr.transform_, glm::vec3(1.1f * i, -1.1f * j, -5.0f));
+            tr.transform_ = glm::translate(tr.transform_, glm::vec3(1.5f * i, -1.1f * j, -5.0f));
 
-            Drawable &cube_dw = GM.stack_memory_.falling_cube_entities_.drawable[entity_index];
+            Drawable &cube_dw = e.getComponent<Drawable>();
             cube_dw.geometry_ = cube_geo;
             cube_dw.material_.set_type(MaterialType::MT_PBR);
             cube_dw.material_.set_data(pbr);
             cube_dw.material_.set_texture(trex_texture);
 
-            GM.stack_memory_.falling_cube_entities_.fall_speed[entity_index].speed_ = 0.1f;
-            GM.stack_memory_.falling_cube_entities_.infinite_falling_limits[entity_index].limit_down_ = -10.0f;
-            GM.stack_memory_.falling_cube_entities_.infinite_falling_limits[entity_index].limit_up_ = 10.0f;
+            e.getComponent<FallSpeed>().speed_ = 0.1f;
+            e.getComponent<InfiniteFallingLimits>().limit_down_ = -15.0f;
+            e.getComponent<InfiniteFallingLimits>().limit_up_= 15.0f;
         }
     }
 }
@@ -57,13 +57,17 @@ void Logic()
     GM.input().updateInput();
     CameraMovement(1.0f, 1.0f).executeSystem();
     logic_timer.start();
-    Fall().executeSystem();
-    InfiniteFalling().executeSystem();
-    Render().executeSystem();
+    Fall<FallingCubeEntities>(GM.memory().ec_falling_).executeSystem();
+    InfiniteFalling<FallingCubeEntities>(GM.memory().ec_falling_).executeSystem();
+    Render<FallingCubeEntities>(GM.memory().ec_falling_).executeSystem();
     logic_timer.end();
     int64_t duration = logic_timer.duration();
-    printf("Logic time in microseconds: %d\n", duration);
+#ifdef LEEP_DEBUG
     LEEP_INFO("Logic time in microseconds: {0}", duration);
+#else
+    // Logger works only on debug
+    printf("Logic time in microseconds: %d\n", duration);
+#endif
 }
 
 void RenderScene()
