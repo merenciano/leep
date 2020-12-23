@@ -1,10 +1,10 @@
 workspace "Leep"
-	configurations {"Debug", "Release"}
+    configurations {"Debug", "Release"}
     location "build"
     architecture "x86_64"
 
 project "leep"
-	kind "ConsoleApp"
+    kind "ConsoleApp"
     language "C++"
     cppdialect "C++17"
     targetdir "bin/"
@@ -15,10 +15,10 @@ project "leep"
         "extern/include/",
     }
 
-	files {
+    files {
         "include/*.h",
-		"src/*.h",
-		"src/*.cpp",
+        "src/*.h",
+        "src/*.cpp",
         "src/*/*.h",
         "src/*/*.cpp",
         "src/*/*/*.h",
