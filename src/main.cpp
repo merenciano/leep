@@ -73,6 +73,7 @@ void Logic()
 void RenderScene()
 {
     Manager::instance().renderer().renderFrame();
+    GM.ui_tools().update(GM.window().delta_time(), GM.window().width(), GM.window().height());
 }
 
 int main()

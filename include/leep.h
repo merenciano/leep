@@ -35,6 +35,9 @@
 #include "../src/render/commands/create-texture.h"
 #include "../src/render/commands/render-options.h"
 
+// TOOLS
+#include "../src/tools/imgui-tools.h"
+
 
 // Utility functions
 namespace leep 

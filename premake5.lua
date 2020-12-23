@@ -41,6 +41,10 @@ project "leep"
         --glad
         "./extern/src/glad.c",
 
+        --imgui
+        "./extern/src/imgui/*.cpp",
+
+
     }
     
     configuration "vs2019"

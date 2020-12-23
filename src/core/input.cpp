@@ -5,9 +5,11 @@
 
 namespace leep
 {
-    struct Input::WindowData
+    struct Input::InputData
     {
         GLFWwindow *window;
+        InputState current;
+        InputState previous;
     };
 
     static int32_t ToGLFW(Button b)
@@ -42,7 +44,9 @@ namespace leep
     {
         // The lifetime of this class is the same as the entire program,
         // so I'm not going to slow down the closing process deleting pointers.
-        //delete data_;
+#ifdef LEEP_DEBUG
+        delete data_;
+#endif
     }
 
     void Input::init(void *window)
@@ -53,118 +57,128 @@ namespace leep
         if (data_)
             return;
 
-        data_ = new WindowData();
+        data_ = new InputData();
         data_->window = (GLFWwindow*)window;
         glfwSetScrollCallback(data_->window, ScrollCallback);
     }
 
     void Input::set_scroll(float offset)
     {
-        current_.scroll = offset;
+        LEEP_ASSERT(data_, "A window is needed");
+        data_->current.scroll = offset;
     }
 
     float Input::scroll() const
     {
-        return previous_.scroll;
+        LEEP_ASSERT(data_, "A window is needed");
+        return data_->previous.scroll;
     }
 
     bool Input::isButtonPressed(Button b) const
     {
+        LEEP_ASSERT(data_, "A window is needed");
         switch (b)
         {
-            case Button::UP: return current_.up;
-            case Button::DOWN: return current_.down;
-            case Button::LEFT: return current_.left;
-            case Button::RIGHT: return current_.right;
-            case Button::B1: return current_.button_1;
-            case Button::B2: return current_.button_2;
-            case Button::B3: return current_.button_3;
-            case Button::B4: return current_.button_4;
-            case Button::MOUSE_LEFT: return current_.mouse_left;
-            case Button::MOUSE_RIGHT: return current_.mouse_right;
+            case Button::UP: return data_->current.up;
+            case Button::DOWN: return data_->current.down;
+            case Button::LEFT: return data_->current.left;
+            case Button::RIGHT: return data_->current.right;
+            case Button::B1: return data_->current.button_1;
+            case Button::B2: return data_->current.button_2;
+            case Button::B3: return data_->current.button_3;
+            case Button::B4: return data_->current.button_4;
+            case Button::MOUSE_LEFT: return data_->current.mouse_left;
+            case Button::MOUSE_RIGHT: return data_->current.mouse_right;
             default: LEEP_CORE_ERROR("isButtonPressed swich default.\n"); return false;
         }
     }
 
     bool Input::isButtonDown(Button b) const
     {
+        LEEP_ASSERT(data_, "A window is needed");
         if (!isButtonPressed(b))
             return false;
 
         switch(b)
         {
-            case Button::UP: return !previous_.up;
-            case Button::DOWN: return !previous_.down;
-            case Button::LEFT: return !previous_.left;
-            case Button::RIGHT: return !previous_.right;
-            case Button::B1: return !previous_.button_1;
-            case Button::B2: return !previous_.button_2;
-            case Button::B3: return !previous_.button_3;
-            case Button::B4: return !previous_.button_4;
-            case Button::MOUSE_LEFT: return !previous_.mouse_left;
-            case Button::MOUSE_RIGHT: return !previous_.mouse_right;
+            case Button::UP: return !data_->previous.up;
+            case Button::DOWN: return !data_->previous.down;
+            case Button::LEFT: return !data_->previous.left;
+            case Button::RIGHT: return !data_->previous.right;
+            case Button::B1: return !data_->previous.button_1;
+            case Button::B2: return !data_->previous.button_2;
+            case Button::B3: return !data_->previous.button_3;
+            case Button::B4: return !data_->previous.button_4;
+            case Button::MOUSE_LEFT: return !data_->previous.mouse_left;
+            case Button::MOUSE_RIGHT: return !data_->previous.mouse_right;
             default: LEEP_CORE_ERROR("isButtonDown swich default.\n"); return false;
         }
     }
 
     bool Input::isButtonUp(Button b) const
     {
+        LEEP_ASSERT(data_, "A window is needed");
         if (isButtonPressed(b))
             return false;
 
         switch(b)
         {
-            case Button::UP: return previous_.up;
-            case Button::DOWN: return previous_.down;
-            case Button::LEFT: return previous_.left;
-            case Button::RIGHT: return previous_.right;
-            case Button::B1: return previous_.button_1;
-            case Button::B2: return previous_.button_2;
-            case Button::B3: return previous_.button_3;
-            case Button::B4: return previous_.button_4;
-            case Button::MOUSE_LEFT: return previous_.mouse_left;
-            case Button::MOUSE_RIGHT: return previous_.mouse_right;
+            case Button::UP: return data_->previous.up;
+            case Button::DOWN: return data_->previous.down;
+            case Button::LEFT: return data_->previous.left;
+            case Button::RIGHT: return data_->previous.right;
+            case Button::B1: return data_->previous.button_1;
+            case Button::B2: return data_->previous.button_2;
+            case Button::B3: return data_->previous.button_3;
+            case Button::B4: return data_->previous.button_4;
+            case Button::MOUSE_LEFT: return data_->previous.mouse_left;
+            case Button::MOUSE_RIGHT: return data_->previous.mouse_right;
             default: LEEP_CORE_ERROR("isButtonUp swich default.\n"); return false;
         }
     }
 
     float Input::mouseX() const
     {
-        return current_.mouse_position_x;
+        LEEP_ASSERT(data_, "A window is needed");
+        return data_->current.mouse_position_x;
     }
 
     float Input::mouseY() const
     {
-        return current_.mouse_position_y;
+        LEEP_ASSERT(data_, "A window is needed");
+        return data_->current.mouse_position_y;
     }
 
     void Input::updateInput()
     {
+        LEEP_ASSERT(data_, "A window is needed");
         double x, y;
-        previous_ = current_;
-        current_.up = glfwGetKey(data_->window, ToGLFW(Button::UP));
-        current_.down = glfwGetKey(data_->window, ToGLFW(Button::DOWN));
-        current_.left = glfwGetKey(data_->window, ToGLFW(Button::LEFT));
-        current_.right = glfwGetKey(data_->window, ToGLFW(Button::RIGHT));
-        current_.button_1 = glfwGetKey(data_->window, ToGLFW(Button::B1));
-        current_.button_2 = glfwGetKey(data_->window, ToGLFW(Button::B2));
-        current_.button_3 = glfwGetKey(data_->window, ToGLFW(Button::B3));
-        current_.button_4 = glfwGetKey(data_->window, ToGLFW(Button::B4));
-        current_.mouse_left = glfwGetMouseButton(data_->window, ToGLFW(Button::MOUSE_LEFT));
-        current_.mouse_right = glfwGetMouseButton(data_->window, ToGLFW(Button::MOUSE_RIGHT));
+        data_->previous = data_->current;
+        data_->current.up = glfwGetKey(data_->window, ToGLFW(Button::UP));
+        data_->current.down = glfwGetKey(data_->window, ToGLFW(Button::DOWN));
+        data_->current.left = glfwGetKey(data_->window, ToGLFW(Button::LEFT));
+        data_->current.right = glfwGetKey(data_->window, ToGLFW(Button::RIGHT));
+        data_->current.button_1 = glfwGetKey(data_->window, ToGLFW(Button::B1));
+        data_->current.button_2 = glfwGetKey(data_->window, ToGLFW(Button::B2));
+        data_->current.button_3 = glfwGetKey(data_->window, ToGLFW(Button::B3));
+        data_->current.button_4 = glfwGetKey(data_->window, ToGLFW(Button::B4));
+        data_->current.mouse_left = glfwGetMouseButton(data_->window, ToGLFW(Button::MOUSE_LEFT));
+        data_->current.mouse_right = glfwGetMouseButton(data_->window, ToGLFW(Button::MOUSE_RIGHT));
         glfwGetCursorPos(data_->window, &x, &y);
-        current_.mouse_position_x = (float)x;
-        current_.mouse_position_y = (float)y;
-        current_.scroll = 0.0f;
+        data_->current.mouse_position_x = (float)x;
+        data_->current.mouse_position_y = (float)y;
+        data_->current.scroll = 0.0f;
     }
 
     void Input::disableCursor() const
     {
+        LEEP_ASSERT(data_, "A window is needed");
         glfwSetInputMode(data_->window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
     }
 
     void Input::enableCursor() const
     {
+        LEEP_ASSERT(data_, "A window is needed");
         glfwSetInputMode(data_->window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
     }
 }
