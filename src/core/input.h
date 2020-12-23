@@ -41,10 +41,8 @@ namespace leep
         float scroll() const;
 
     private:
-        struct WindowData;
-        WindowData *data_;
-        InputState current_;
-        InputState previous_;
+        struct InputData;
+        InputData *data_;
     };
 }
 

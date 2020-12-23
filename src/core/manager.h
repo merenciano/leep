@@ -6,6 +6,7 @@
 #include "core/memory.h"
 #include "render/renderer.h"
 #include "render/camera.h"
+#include "tools/imgui-tools.h"
 
 namespace leep 
 {
@@ -18,18 +19,20 @@ namespace leep
 
         void init();
 
-        Window&   window()   { return window_; }
-        Renderer& renderer() { return renderer_; }
-        Camera&   camera()   { return camera_; }
-        Input&    input()    { return input_; }
-        Memory&   memory()   { return memory_; }
+        Window&     window()   { return window_; }
+        Renderer&   renderer() { return renderer_; }
+        Camera&     camera()   { return camera_; }
+        Input&      input()    { return input_; }
+        Memory&     memory()   { return memory_; }
+        ImguiTools& ui_tools() {return ui_tools_; }
 
     private:
-        Window   window_;
-        Renderer renderer_;
-        Camera   camera_;
-        Input    input_;
-        Memory   memory_;
+        Window      window_;
+        Renderer    renderer_;
+        Camera      camera_;
+        Input       input_;
+        Memory      memory_;
+        ImguiTools  ui_tools_;
     
     private:
         Manager() {}
