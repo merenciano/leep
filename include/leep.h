@@ -6,6 +6,7 @@
 #include "../src/core/chrono.h"
 #include "../src/core/input.h"
 #include "../src/core/memory.h"
+#include "../src/core/thread.h"
 
 // ECS
 #include "../src/ecs/entity.h"

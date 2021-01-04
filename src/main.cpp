@@ -78,13 +78,18 @@ void RenderScene()
 
 int main()
 {
+    Function logic = Logic;
     Init();
+
+    Logic();
+    GM.renderer().submitFrame();
 
     while (!GM.window().windowShouldClose())
     {
-        Logic();
-        GM.renderer().submitFrame();
+        Thread l(logic);
         RenderScene();
+        l.join();
+        GM.renderer().submitFrame();
 
         GM.window().swap();
         GM.window().pollEvents();
