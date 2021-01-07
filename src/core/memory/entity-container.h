@@ -21,8 +21,8 @@ namespace leep
         void removeLastEntity();
 
         std::deque<T> chunks_;
-        std::unordered_map<std::string, uint32_t> dictionary_;
-        std::unordered_map<uint32_t, std::string> reverse_dictionary_;
+        //std::unordered_map<std::string, uint32_t> dictionary_;
+        //std::unordered_map<uint32_t, std::string> reverse_dictionary_;
     };
 
 
@@ -38,8 +38,8 @@ namespace leep
     {
 #ifdef LEEP_DEBUG
         chunks_.clear();
-        dictionary_.clear();
-        reverse_dictionary_.clear();
+        //dictionary_.clear();
+        //reverse_dictionary_.clear();
 #endif
     }
 
