@@ -24,7 +24,7 @@ namespace leep
         Camera&     camera()   { return camera_; }
         Input&      input()    { return input_; }
         Memory&     memory()   { return memory_; }
-        ImguiTools& ui_tools() {return ui_tools_; }
+        ImguiTools& ui_tools() { return ui_tools_; }
 
     private:
         Window      window_;

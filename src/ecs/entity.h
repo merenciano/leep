@@ -6,11 +6,13 @@
 #include "core/common-defs.h"
 #include "core/manager.h"
 #include "core/memory/entity-container.h"
+#include "ecs/entity-map.h"
 
 #include <stdint.h>
 
 namespace leep
 {
+    static EntityMap s_map_;
     template<typename T>
     class Entity
     {
@@ -19,9 +21,10 @@ namespace leep
         Entity(int32_t index, const EntityContainer<T> &container) : index_(index), container_(container) {}
         ~Entity() = default;
 
+
         static Entity CreateEntity(std::string name, EntityContainer<T> &cont)
         {
-            LEEP_CORE_ASSERT(cont.dictionary_.find(name) == cont.dictionary_.end(), "An entity with that name already exists.");
+            LEEP_CORE_ASSERT(!s_map_.exists(name), "An entity with that name already exists.");
             if (cont.chunks_.back().last_ == kEntitiesPerChunk)
             {
                 int32_t idx = cont.chunks_.back().index_;
@@ -30,20 +33,21 @@ namespace leep
             }
             int32_t entity_id = cont.chunks_.back().index_ * kEntitiesPerChunk + cont.chunks_.back().last_;
             cont.chunks_.back().last_++;
-            cont.dictionary_[name] = entity_id;
-            cont.reverse_dictionary_[entity_id] = name;
+            s_map_.addEntry(name, entity_id, (void*)&cont);
+            //cont.dictionary_[name] = entity_id;
+            //cont.reverse_dictionary_[entity_id] = name;
             return Entity(entity_id, cont);
         }
 
         static void RemoveEntity(std::string name, EntityContainer<T> &cont)
         {
-            if (cont.dictionary_.find(name) == cont.dictionary_.end())
+            if (!s_map_.exists(name))
             {
                 // Entity already removed or never created
                 // in any case the job is done
                 return;
             }
-            int32_t index = cont.dictionary_[name];
+            int32_t index = s_map_.getEntity(name).index;
             int32_t chunk_id = ChunkI(index);
             int32_t entity_id = EntityI(index);
             
@@ -52,18 +56,21 @@ namespace leep
             if (last_id != index)
             {
                 cont.chunks_.back().relocateLast(&(cont.chunks_[chunk_id]), entity_id);
-                cont.reverse_dictionary_[index] = cont.reverse_dictionary_[last_id];
-                cont.dictionary_[cont.reverse_dictionary_[last_id]] = index;
+                s_map_.swap(index, last_id, (void*)&cont);
+                //cont.reverse_dictionary_[index] = cont.reverse_dictionary_[last_id];
+                //cont.dictionary_[cont.reverse_dictionary_[last_id]] = index;
             }
             cont.removeLastEntity();
-            cont.dictionary_.erase(name);
-            cont.reverse_dictionary_.erase(last_id);
+            s_map_.removeEntry(name, last_id, (void*)&cont);
+            //cont.dictionary_.erase(name);
+            //cont.reverse_dictionary_.erase(last_id);
         }
 
         static Entity GetEntity(std::string name, EntityContainer<T> &cont)
         {
-            LEEP_ASSERT(cont.dictionary_.find(name) != cont.dictionary_.end(), "There isn't any entity with this name in this container.");
-            return Entity(cont.dictionary_[name], cont);
+            LEEP_ASSERT(s_map_.exists(name), "There isn't any entity with this name in this container.");
+            LEEP_ASSERT(s_map_.getEntity(name).container == (void*)&cont, "The entity isn't in this container.");
+            return Entity(s_map_.getEntity(name).index, cont);
         }
 
         template<typename C>
