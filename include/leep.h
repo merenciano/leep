@@ -41,6 +41,8 @@
 
 // TOOLS
 #include "../src/tools/imgui-tools.h"
+#include "../src/tools/lua-scripting.h"
+
 
 
 // Utility functions

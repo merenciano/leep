@@ -6,8 +6,9 @@ using namespace leep;
 
 void Init()
 {
-    Logger::init();
+    Logger::Init();
     GM.init();
+    LuaScripting::Init();
     DisplayList init_dl;
     Texture trex_texture;
     Geometry cube_geo;
@@ -80,6 +81,8 @@ void Init()
 
     GM.scene_graph().createNode(&child.getComponent<LTransform>(), &child.getComponent<GTransform>());
     GM.scene_graph().setParent(&child.getComponent<LTransform>(), &e.getComponent<LTransform>());
+
+    LuaScripting::ExecuteScript("../assets/scripts/init.lua");
 }
 
 void Logic()
