@@ -21,6 +21,17 @@ namespace leep
         Entity(int32_t index, const EntityContainer<T> &container) : index_(index), container_(container) {}
         ~Entity() = default;
 
+        Entity(const Entity &e) {
+            index_ = e.index_;
+            container_ = e.container_;
+        }
+
+        Entity& operator=(const Entity &e)
+        {
+            LEEP_ASSERT(container_ == e.container_, "To be able to copy an entity, the container has to be the same");
+            index_ = e.index_;
+            return *this;
+        }
 
         static Entity CreateEntity(std::string name, EntityContainer<T> &cont)
         {

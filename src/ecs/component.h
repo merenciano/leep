@@ -8,10 +8,11 @@ namespace leep
     enum CompType
     {
         COMP_INVALID = 0,
-        COMP_TRANSFORM,
+        COMP_LTRANSFORM,
         COMP_DRAWABLE,
         COMP_FALL_SPEED,
         COMP_INFINITE_FALLING_LIMITS,
+        COMP_GTRANSFORM,
 
 
         COMP_MAX_VALUE = 63

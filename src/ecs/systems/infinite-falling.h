@@ -17,12 +17,12 @@ namespace leep
         virtual void executeSystem() const override
         {
 #ifdef LEEP_DEBUG
-            uint64_t mask = ((1 << COMP_INFINITE_FALLING_LIMITS) | (1 << COMP_TRANSFORM));
+            uint64_t mask = ((1 << COMP_INFINITE_FALLING_LIMITS) | (1 << COMP_LTRANSFORM));
             LEEP_ASSERT((T::mask & mask) == mask, "This container is not valid for this system");
 #endif
             for (auto &chunk : container_.chunks_)
             {
-                Transform *tr_array = chunk.template component<Transform>();
+                LTransform *tr_array = chunk.template component<LTransform>();
                 InfiniteFallingLimits *ifl_array = chunk.template component<InfiniteFallingLimits>();
                 for (int32_t i = 0; i < chunk.last_; ++i)
                 {

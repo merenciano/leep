@@ -4,9 +4,12 @@
 #include "core/window.h"
 #include "core/input.h"
 #include "core/memory.h"
+#include "core/scene-graph.h"
 #include "render/renderer.h"
 #include "render/camera.h"
 #include "tools/imgui-tools.h"
+
+#define GM Manager::instance()
 
 namespace leep 
 {
@@ -19,12 +22,13 @@ namespace leep
 
         void init();
 
-        Window&     window()   { return window_; }
-        Renderer&   renderer() { return renderer_; }
-        Camera&     camera()   { return camera_; }
-        Input&      input()    { return input_; }
-        Memory&     memory()   { return memory_; }
-        ImguiTools& ui_tools() { return ui_tools_; }
+        Window&     window()        { return window_; }
+        Renderer&   renderer()      { return renderer_; }
+        Camera&     camera()        { return camera_; }
+        Input&      input()         { return input_; }
+        Memory&     memory()        { return memory_; }
+        ImguiTools& ui_tools()      { return ui_tools_; }
+        SceneGraph& scene_graph()   { return scene_graph_; }
 
     private:
         Window      window_;
@@ -33,6 +37,7 @@ namespace leep
         Input       input_;
         Memory      memory_;
         ImguiTools  ui_tools_;
+        SceneGraph  scene_graph_;
     
     private:
         Manager() {}

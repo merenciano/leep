@@ -8,13 +8,13 @@
 
 namespace leep 
 {
-    struct Transform : public Component
+    struct LTransform : public Component
     {
-        static const CompType type = COMP_TRANSFORM;
-        Transform() : Component(COMP_TRANSFORM) { transform_ = glm::mat4(1.0f); }
-        ~Transform() {}
-        Transform& operator=(const Transform &tr);
-        Transform& rotateYWorld(float radians);
+        static const CompType type = COMP_LTRANSFORM;
+        LTransform() : Component(COMP_LTRANSFORM) { transform_ = glm::mat4(1.0f); }
+        ~LTransform() {}
+        LTransform& operator=(const LTransform &tr);
+        LTransform& rotateYWorld(float radians);
         glm::vec3 localLocation() const;
         glm::mat4 transform_;
     };

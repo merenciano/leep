@@ -13,8 +13,6 @@
 
 #define MAX_INT32_VALUE = 2147483647;
 
-#define GM Manager::instance()
-
 namespace leep 
 {
     enum ConstantValues     // Not an enum class because it is used to assign int32_t handlers

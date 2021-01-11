@@ -24,7 +24,7 @@ namespace leep
         virtual void executeSystem() const override
         {
 #ifdef LEEP_DEBUG
-            uint64_t mask = ((1 << COMP_DRAWABLE) | (1 << COMP_TRANSFORM));
+            uint64_t mask = ((1 << COMP_DRAWABLE) | (1 << COMP_GTRANSFORM));
             LEEP_ASSERT((T::mask & mask) == mask, "This type of entity is not valid for this system");
 #endif
             DisplayList displayl;
@@ -40,11 +40,11 @@ namespace leep
 
             for (T &chunk : container_.chunks_)
             {
-                Transform *tr_array = chunk.template component<Transform>();
+                GTransform *tr_array = chunk.template component<GTransform>();
                 Drawable *dw_array = chunk.template component<Drawable>();
                 for(int32_t i = 0; i < chunk.last_; ++i)
                 {
-                    const glm::mat4 &tr = tr_array[i].transform_;
+                    const glm::mat4 &tr = tr_array[i].gtr_;
 
                     dw_array[i].material_.set_world(tr);
                     displayl.addCommand<Draw>()

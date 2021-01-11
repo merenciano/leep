@@ -1,4 +1,4 @@
-#include "render/commands/clear.h"
+#include "clear.h"
 
 namespace leep 
 {
