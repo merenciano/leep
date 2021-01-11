@@ -12,7 +12,7 @@ namespace leep
 	std::shared_ptr<spdlog::logger> Logger::s_core_logger;
 	std::shared_ptr<spdlog::logger> Logger::s_app_logger;
 
-	void Logger::init()
+	void Logger::Init()
 	{
 		std::vector<spdlog::sink_ptr> sinks;
 		sinks.emplace_back(std::make_shared<spdlog::sinks::stdout_color_sink_mt>());

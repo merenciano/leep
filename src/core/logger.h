@@ -4,7 +4,6 @@
 #define __LEEP_CORE_LOGGER_H__
 
 #include <stdint.h>
-
 #include <string>
 
 #include <spdlog/spdlog.h>
@@ -15,7 +14,7 @@ namespace leep
 	class Logger
 	{
 	public:
-		static void init();
+		static void Init();
 		static std::shared_ptr<spdlog::logger>& GetCoreLogger() { return s_core_logger; }
 		static std::shared_ptr<spdlog::logger>& GetAppLogger()  { return s_app_logger; }
 		

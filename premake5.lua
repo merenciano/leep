@@ -44,6 +44,9 @@ project "leep"
         --imgui
         "./extern/src/imgui/*.cpp",
 
+        --lua
+        "./extern/src/lua/**",
+
 
     }
     
