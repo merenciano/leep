@@ -1,16 +1,15 @@
-#include "transform.h"
-//#include "glm/gtc/matrix_transform.hpp"
+#include "ltransform.h"
 #include "glm/gtx/transform.hpp"
 
 namespace leep
 {
-    Transform& Transform::operator=(const Transform& tr)
+    LTransform& LTransform::operator=(const LTransform& tr)
     {
         transform_ = tr.transform_;
         return *this;
     }
 
-    Transform& Transform::rotateYWorld(float radians)
+    LTransform& LTransform::rotateYWorld(float radians)
     {
         // Back to position 0,0,0
         glm::mat4 temp = transform_;
@@ -27,7 +26,7 @@ namespace leep
         return *this;
     }
 
-    glm::vec3 Transform::localLocation() const
+    glm::vec3 LTransform::localLocation() const
     {
         return glm::vec3(transform_[3][0], transform_[3][1], transform_[3][2]);
     }

@@ -1,4 +1,4 @@
-#include "render/materials/plain-color.h"
+#include "plain-color.h"
 
 #include "core/common-defs.h"
 

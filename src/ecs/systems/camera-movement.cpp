@@ -1,7 +1,7 @@
 #include "camera-movement.h"
 #include "core/common-defs.h"
 #include "core/manager.h"
-#include "ecs/components/transform.h"
+#include "ecs/components/ltransform.h"
 #include "glm/mat4x4.hpp"
 #include "glm/gtc/matrix_transform.hpp"
 
@@ -23,7 +23,7 @@ namespace leep
     {
         static float mouse_down_pos[2] = { 0.0, 0.0 };
         static float fov = 70.0f;
-        Transform tr;
+        LTransform tr;
         tr.transform_ = glm::inverse(GM.camera().view());
 
         // Rotation

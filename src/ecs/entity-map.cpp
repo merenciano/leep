@@ -1,4 +1,4 @@
-#include "ecs/entity-map.h"
+#include "entity-map.h"
 
 namespace leep
 {

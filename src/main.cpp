@@ -34,7 +34,7 @@ void Init()
             Entity<FallingCubeEntities> e = Entity<FallingCubeEntities>::CreateEntity(
                 "Cube_" + std::to_string(i) + "_" + std::to_string(j), c);
 
-            Transform &tr = e.getComponent<Transform>();
+            LTransform &tr = e.getComponent<LTransform>();
             tr.transform_ = glm::scale(tr.transform_, glm::vec3(0.3f, 0.3f, 0.3f));
             tr.transform_ = glm::translate(tr.transform_, glm::vec3(1.5f * i, -1.1f * j, -5.0f));
 
@@ -57,6 +57,7 @@ void Logic()
     GM.input().updateInput();
     CameraMovement(1.0f, 1.0f).executeSystem();
     logic_timer.start();
+    UpdateTransform<FallingCubeEntities>(GM.memory().ec_falling_).executeSystem();
     Fall<FallingCubeEntities>(GM.memory().ec_falling_).executeSystem();
     InfiniteFalling<FallingCubeEntities>(GM.memory().ec_falling_).executeSystem();
     Render<FallingCubeEntities>(GM.memory().ec_falling_).executeSystem();
