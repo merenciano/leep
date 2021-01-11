@@ -4,8 +4,8 @@
 #define __LEEP_ECS_SYSTEMS_UPDATE_TRANSFORM_H__
 
 #include "ecs/system.h"
-#include "common-defs.h"
-#include "manager.h"
+#include "core/common-defs.h"
+#include "core/manager.h"
 
 namespace leep
 {
@@ -27,18 +27,7 @@ namespace leep
             {
                 LTransform *ltr_array = chunk.template component<LTransform>();
                 GTransform *gtr_array = chunk.template component<GTransform>();
-                std::memcpy(gtr_array, ltr_array, kEntitiesPerChunk*sizeof(LTransform));
-            }
-
-            for (auto &chunk : container_.chunks_)
-            {
-                for(int32_t i = 0; i < chunk.last_; ++i)
-                {
-                    //gtr_array[i].gtr_ = ltr_array[i].transform_;
-                    //GM.scene_graph().
-                    TODO: Ver como hacer esto... tiene que ser fuera de este sistema porque
-                          los containers deben poder mezclarse en el grafo
-                }
+                std::memcpy((void*)gtr_array, ltr_array, kEntitiesPerChunk*sizeof(LTransform));
             }
         }
     };

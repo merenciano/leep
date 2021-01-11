@@ -22,6 +22,7 @@
 #include "../src/ecs/systems/fall.h"
 #include "../src/ecs/systems/infinite-falling.h"
 #include "../src/ecs/systems/update-transform.h"
+#include "../src/ecs/systems/update-scene-graph.h"
 
 // RENDER
 #include "../src/render/renderer.h"

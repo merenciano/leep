@@ -1,5 +1,4 @@
 #include "input.h"
-#include "core/common-defs.h"
 #include "core/manager.h"
 #include "GLFW/glfw3.h"
 

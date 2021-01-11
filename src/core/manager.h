@@ -9,6 +9,8 @@
 #include "render/camera.h"
 #include "tools/imgui-tools.h"
 
+#define GM Manager::instance()
+
 namespace leep 
 {
     class Manager
