@@ -20,7 +20,11 @@ namespace leep
     class EntityChunk 
     {
     public:
-        explicit EntityChunk(EntityType t) : type_(t) { last_ = 0; index_ = -1; }
+        explicit EntityChunk(EntityType t) : type_(t) 
+        {
+            last_ = 0;
+            index_ = -1;
+        }
         virtual ~EntityChunk() {}
         EntityType type() const { return type_; }
         virtual void relocateLast(EntityChunk *a, uint32_t i) = 0;

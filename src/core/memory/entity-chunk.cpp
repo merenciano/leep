@@ -9,7 +9,7 @@
 
 namespace leep
 {
-    FallingCubeEntities::FallingCubeEntities() : EntityChunk(type) 
+    FallingCubeEntities::FallingCubeEntities() : EntityChunk(type)
     {
         comps_.emplace_back(new LTransform[kEntitiesPerChunk]());
         comps_.emplace_back(new Drawable[kEntitiesPerChunk]());

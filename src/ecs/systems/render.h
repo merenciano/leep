@@ -19,8 +19,8 @@ namespace leep
     {
     public:
         Render() = delete;
-        Render(EntityContainer<T> &container) : container_(container) {}
-        EntityContainer<T> &container_;
+        Render(EntityContainer &container) : container_(container) {}
+        EntityContainer &container_;
         virtual void executeSystem() const override
         {
 #ifdef LEEP_DEBUG
@@ -38,11 +38,13 @@ namespace leep
             displayl.addCommand<UsePbrMaterial>()
                 .set_scene_data(pbr_sd);
 
-            for (T &chunk : container_.chunks_)
+            for (auto &chunk : container_.chunks_)
             {
-                GTransform *tr_array = chunk.template component<GTransform>();
-                Drawable *dw_array = chunk.template component<Drawable>();
-                for(int32_t i = 0; i < chunk.last_; ++i)
+                GTransform *tr_array = static_cast<T*>(chunk)
+                    ->template component<GTransform>();
+                Drawable *dw_array = static_cast<T*>(chunk)
+                    ->template component<Drawable>();
+                for(int32_t i = 0; i < chunk->last_; ++i)
                 {
                     const glm::mat4 &tr = tr_array[i].gtr_;
 

@@ -51,8 +51,8 @@ void Init()
         }
     }*/
 
-    EntityContainer<FallingCubeEntities> &c = GM.memory().ec_falling_;
-    Entity<FallingCubeEntities> e = Entity<FallingCubeEntities>::CreateEntity("1", c);
+    EntityContainer &c = GM.memory().ec_falling_;
+    Entity e = Entity::CreateEntity("1", c);
     LTransform &tr = e.getComponent<LTransform>();
     tr.transform_ = glm::scale(tr.transform_, glm::vec3(0.3f, 0.3f, 0.3f));
     Drawable &cube_dw = e.getComponent<Drawable>();
@@ -66,7 +66,7 @@ void Init()
 
     GM.scene_graph().createNode(&e.getComponent<LTransform>(), &e.getComponent<GTransform>());
 
-    Entity<FallingCubeEntities> child = Entity<FallingCubeEntities>::CreateEntity("2", c);
+    Entity child = Entity::CreateEntity("2", c);
     LTransform &child_tr = child.getComponent<LTransform>();
     child_tr.transform_ = glm::scale(child_tr.transform_, glm::vec3(1.0f, 1.0f, 1.0f));
     child_tr.transform_ = glm::translate(child_tr.transform_, glm::vec3(3.0f, 0.0f, 0.0f));
@@ -91,9 +91,9 @@ void Logic()
     logic_timer.start();
     GM.input().updateInput();
     CameraMovement(1.0f, 1.0f).executeSystem();
-    Fall<FallingCubeEntities>(GM.memory().ec_falling_).executeSystem();
-    InfiniteFalling<FallingCubeEntities>(GM.memory().ec_falling_).executeSystem();
-    UpdateTransform<FallingCubeEntities>(GM.memory().ec_falling_).executeSystem();
+    Fall(GM.memory().ec_falling_).executeSystem();
+    InfiniteFalling(GM.memory().ec_falling_).executeSystem();
+    UpdateTransform(GM.memory().ec_falling_).executeSystem();
     UpdateSceneGraph().executeSystem();
     Render<FallingCubeEntities>(GM.memory().ec_falling_).executeSystem();
     logic_timer.end();

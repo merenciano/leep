@@ -9,7 +9,7 @@ namespace leep
 {
     struct Memory
     {
-        EntityContainer<FallingCubeEntities> ec_falling_;
+        EntityContainer ec_falling_ = EntityContainer(EntityType::FALLING_CUBE);
     };
 }
 

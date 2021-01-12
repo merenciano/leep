@@ -7,24 +7,32 @@
 
 namespace leep
 {
-    template <typename T>
     class Fall : public System
     {
     public:
         Fall() = delete;
-        Fall(EntityContainer<T> &container) : container_(container) {}
-        EntityContainer<T> &container_;
+        Fall(EntityContainer &container) : container_(container) {}
+        EntityContainer &container_;
         virtual void executeSystem() const override
         {
-#ifdef LEEP_DEBUG
-            uint64_t mask = ((1 << COMP_FALL_SPEED) | (1 << COMP_LTRANSFORM));
-            LEEP_ASSERT((T::mask & mask) == mask, "This container is not valid for this system.");
-#endif
             for (auto &chunk : container_.chunks_)
             {
-                LTransform *tr_array = chunk.template component<LTransform>();
-                FallSpeed *fs_array = chunk.template component<FallSpeed>();
-                for(int32_t i = 0; i < chunk.last_; ++i)
+                LTransform *tr_array;
+                FallSpeed *fs_array;
+                switch(container_.type())
+                {
+                    case EntityType::FALLING_CUBE:
+#ifdef LEEP_DEBUG
+                        uint64_t mask = ((1 << COMP_FALL_SPEED) | (1 << COMP_LTRANSFORM));
+                        LEEP_ASSERT((FallingCubeEntities::mask & mask) == mask, "This container is not valid for this system.");
+#endif
+                        tr_array = static_cast<FallingCubeEntities*>(chunk)
+                            ->template component<LTransform>();
+                        fs_array = static_cast<FallingCubeEntities*>(chunk)
+                            ->template component<FallSpeed>();
+                        break;
+                }
+                for(int32_t i = 0; i < chunk->last_; ++i)
                 {
                     float fall_speed = fs_array[i].speed_;
                     glm::mat4 &tr = tr_array[i].transform_;
