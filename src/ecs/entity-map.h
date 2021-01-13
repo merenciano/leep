@@ -11,7 +11,9 @@
 
 namespace leep
 {
-    struct EntityContainer;
+    // Using this struct instead of Entity directly because I dont want to
+    // do to the class Entity all the necesary things to make it work
+    // in the unordered_map, like having a default constructor
     struct EntityIndex
     {
         EntityType type;
