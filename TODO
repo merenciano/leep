@@ -1,0 +1,7 @@
+TODO:
+    - Cambiar en EntityMap el EntityChunk* por el enum EntityType y pedir eso
+    - Para crear entidades pedir el tipo y manejar automaticamente el container
+    - Revisar la API y ver que cosas pueden mejorar ahora
+    - Lista de containers?
+    - GetEntity usable?? Quizas cambiando el void* del container por Container* y viendo el tipo
+    - Tool que muestre las entidades que hay en memoria visualmente mostrando el nombre
