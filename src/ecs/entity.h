@@ -5,6 +5,7 @@
 
 #include "core/common-defs.h"
 #include "core/manager.h"
+#include "core/memory/memory.h"
 #include "core/memory/entity-container.h"
 #include "ecs/entity-map.h"
 
@@ -17,21 +18,23 @@ namespace leep
     {
     public:
         Entity() = delete;
-        Entity(int32_t index, const EntityContainer &container) : index_(index), container_(container) {}
+        Entity(int32_t index, EntityType t) : index_(index), type_(t) {}
+        Entity(const Entity& e) { index_ = e.index_; type_ = e.type_; }
         ~Entity() = default;
 
-        static Entity CreateEntity(std::string name, EntityContainer &cont);
+        static Entity CreateEntity(std::string name, EntityType t);
         static void RemoveEntity(std::string name);
         static Entity GetEntity(std::string name);
 
         template<typename C>
         C& getComponent()
         {
-            for (size_t i = 0; i < container_.chunks_.at(ChunkI(index_))->comps_.size(); ++i)
+            EntityContainer &c = GM.memory().container(type_);
+            for (size_t i = 0; i < c.chunks_.at(ChunkI(index_))->comps_.size(); ++i)
             {
-                if (C::s_type == container_.chunks_.at(ChunkI(index_))->comps_[i][0].type())
+                if (C::s_type == c.chunks_.at(ChunkI(index_))->comps_[i][0].type())
                 {
-                    return static_cast<C*>(container_.chunks_.at(ChunkI(index_))->comps_[i])[EntityI(index_)];
+                    return static_cast<C*>(c.chunks_.at(ChunkI(index_))->comps_[i])[EntityI(index_)];
                 }
             }
             LEEP_ASSERT(false, "The entity does not have this component");
@@ -43,10 +46,11 @@ namespace leep
         }
 
         bool isValid() const;
+        Entity& operator=(const Entity& e);
 
     private:
         int32_t index_;
-        const EntityContainer &container_;
+        EntityType type_;
     };
 }
 

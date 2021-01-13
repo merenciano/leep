@@ -3,6 +3,8 @@
 #ifndef __LEEP_ECS_ENTITY_MAP_H__
 #define __LEEP_ECS_ENTITY_MAP_H__
 
+#include "core/common-defs.h"
+
 #include <stdint.h>
 #include <unordered_map>
 #include <string>
@@ -12,7 +14,7 @@ namespace leep
     struct EntityContainer;
     struct EntityIndex
     {
-        EntityContainer *container;
+        EntityType type;
         int32_t index;
         bool operator==(const EntityIndex &other) const;
         struct HashFunction
@@ -27,9 +29,9 @@ namespace leep
         EntityMap();
         ~EntityMap();
 
-        void addEntry(std::string name, int32_t id, EntityContainer *container_ptr);
-        void swap(int32_t i, int32_t last, EntityContainer *container_ptr);
-        void removeEntry(std::string name, int32_t id, EntityContainer *container_ptr);
+        void addEntry(std::string name, int32_t id, EntityType t);
+        void swap(int32_t i, int32_t last, EntityType t);
+        void removeEntry(std::string name, int32_t id, EntityType t);
         bool exists(std::string name);
         EntityIndex getEntity(std::string name);
 

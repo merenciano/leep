@@ -2,13 +2,14 @@
 
 namespace leep
 {
-    Entity Entity::CreateEntity(std::string name, EntityContainer &cont)
+    Entity Entity::CreateEntity(std::string name, EntityType t)
     {
         LEEP_CORE_ASSERT(!s_map_.exists(name), "An entity with that name already exists.");
+        EntityContainer &cont = GM.memory().container(t);
         if (cont.chunks_.back()->last_ == kEntitiesPerChunk)
         {
             int32_t idx = cont.chunks_.back()->index_;
-            switch (cont.type())
+            switch (t)
             {
                 case EntityType::RENDERABLE:
                     cont.chunks_.emplace_back(new RenderableEC());
@@ -24,8 +25,8 @@ namespace leep
         }
         int32_t entity_id = cont.chunks_.back()->index_ * kEntitiesPerChunk + cont.chunks_.back()->last_;
         cont.chunks_.back()->last_++;
-        s_map_.addEntry(name, entity_id, &cont);
-        return Entity(entity_id, cont);
+        s_map_.addEntry(name, entity_id, t);
+        return Entity(entity_id, t);
     }
 
     void Entity::RemoveEntity(std::string name)
@@ -36,7 +37,7 @@ namespace leep
             // in any case the job is done
             return;
         }
-        EntityContainer &cont = *(s_map_.getEntity(name).container);
+        EntityContainer &cont = GM.memory().container(s_map_.getEntity(name).type);
         int32_t index = s_map_.getEntity(name).index;
         int32_t chunk_id = ChunkI(index);
         int32_t entity_id = EntityI(index);
@@ -61,20 +62,27 @@ namespace leep
                         ->relocateLast(cont.chunks_[chunk_id], entity_id);
 
             }
-            s_map_.swap(index, last_id, &cont);
+            s_map_.swap(index, last_id, s_map_.getEntity(name).type);
         }
         cont.removeLastEntity();
-        s_map_.removeEntry(name, last_id, &cont);
+        s_map_.removeEntry(name, last_id, s_map_.getEntity(name).type);
     }
 
     Entity Entity::GetEntity(std::string name)
     {
         LEEP_ASSERT(s_map_.exists(name), "There isn't any entity with that name");
-        return Entity(s_map_.getEntity(name).index, *(s_map_.getEntity(name).container));
+        return Entity(s_map_.getEntity(name).index, s_map_.getEntity(name).type);
     }
 
     bool Entity::isValid() const
     {
         return index_ >= 0 ? true : false;
+    }
+
+    Entity& Entity::operator=(const Entity& e)
+    {
+        index_ = e.index_;
+        type_ = e.type_;
+        return *this;
     }
 }

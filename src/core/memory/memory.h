@@ -15,8 +15,8 @@ namespace leep
         Memory();
 
         EntityContainer& container(EntityType t);
-        EntityContainer ec_falling_ = EntityContainer(EntityType::FALLING_CUBE);
-        EntityContainer ec_renderable_ = EntityContainer(EntityType::RENDERABLE);
+        void createContainer(EntityType t);
+    private:
         std::unordered_map<EntityType, EntityContainer> entities_;
     };
 }

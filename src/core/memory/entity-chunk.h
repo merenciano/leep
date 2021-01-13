@@ -10,13 +10,6 @@
 
 namespace leep
 {
-    enum class EntityType
-    {
-        NONE,
-        RENDERABLE,
-        FALLING_CUBE,
-    };
-
     class EntityChunk 
     {
     public:
