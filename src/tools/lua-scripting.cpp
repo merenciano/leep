@@ -1,5 +1,6 @@
 #include "lua-scripting.h"
 #include "core/common-defs.h"
+#include "tools/lua-functions.h"
 
 namespace leep
 {
@@ -8,6 +9,12 @@ namespace leep
     {
         L = luaL_newstate();
         luaL_openlibs(L);
+        
+        lua_register(L, "CreateRenderable", LUA_CreateRenderable);
+        lua_register(L, "RemoveEntity", LUA_RemoveEntity);
+        lua_register(L, "SetParent", LUA_SetParent);
+        lua_register(L, "DetachFromParent", LUA_DetachFromParent);
+        lua_register(L, "SetLocation", LUA_SetLocation);
     }
 
     void LuaScripting::ExecuteScript(std::string path)
@@ -17,8 +24,8 @@ namespace leep
 #ifdef LEEP_DEBUG
             const char *err = lua_tostring(L, -1);
             LEEP_CORE_ERROR("{0}", err);
-            lua_pop(L, 1);
 #endif
+            lua_pop(L, 1);
         }
     }
 }

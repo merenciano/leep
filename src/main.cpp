@@ -88,6 +88,8 @@ void Logic()
     DisplayList dl;
     Entity::GetEntity("2").getComponent<LTransform>().rotateYWorld(0.01f);
 
+    LuaScripting::ExecuteScript("../assets/scripts/update.lua");
+
     Chrono logic_timer;
     GM.input().updateInput();
     CameraMovement(1.0f, 1.0f).executeSystem();
