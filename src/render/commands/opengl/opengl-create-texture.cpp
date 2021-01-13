@@ -1,6 +1,7 @@
 #include "render/commands/create-texture.h"
-#include "glad/glad.h"
 #include "core/manager.h"
+#include "render/renderer.h"
+#include <glad/glad.h>
 
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"

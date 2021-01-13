@@ -26,14 +26,16 @@ void Init()
     PbrData pbr;
     pbr.tiling_x_ = 1.0f;
     pbr.tiling_y_ = 1.0f;
-    
-    /*for (int32_t i = 0; i < 0; ++i)
+
+    GM.memory().createContainer(EntityType::FALLING_CUBE);
+    GM.memory().createContainer(EntityType::RENDERABLE);
+
+    for (int32_t i = 0; i < 3; ++i)
     {
-        for(int32_t j = 0; j < 0; ++j)
+        for(int32_t j = 0; j < 3; ++j)
         {
-            EntityContainer<FallingCubeEntities> &c = GM.memory().ec_falling_;
-            Entity<FallingCubeEntities> e = Entity<FallingCubeEntities>::CreateEntity(
-                "Cube_" + std::to_string(i) + "_" + std::to_string(j), c);
+            Entity e = Entity::CreateEntity(
+                "Cube_" + std::to_string(i) + "_" + std::to_string(j), EntityType::FALLING_CUBE);
 
             LTransform &tr = e.getComponent<LTransform>();
             tr.transform_ = glm::scale(tr.transform_, glm::vec3(0.3f, 0.3f, 0.3f));
@@ -49,10 +51,9 @@ void Init()
             e.getComponent<InfiniteFallingLimits>().limit_down_ = -15.0f;
             e.getComponent<InfiniteFallingLimits>().limit_up_= 15.0f;
         }
-    }*/
+    }
 
-    EntityContainer<FallingCubeEntities> &c = GM.memory().ec_falling_;
-    Entity<FallingCubeEntities> e = Entity<FallingCubeEntities>::CreateEntity("1", c);
+    Entity e = Entity::CreateEntity("1", EntityType::RENDERABLE);
     LTransform &tr = e.getComponent<LTransform>();
     tr.transform_ = glm::scale(tr.transform_, glm::vec3(0.3f, 0.3f, 0.3f));
     Drawable &cube_dw = e.getComponent<Drawable>();
@@ -60,13 +61,10 @@ void Init()
     cube_dw.material_.set_type(MaterialType::MT_PBR);
     cube_dw.material_.set_data(pbr);
     cube_dw.material_.set_texture(trex_texture);
-    e.getComponent<FallSpeed>().speed_ = 0.1f;
-    e.getComponent<InfiniteFallingLimits>().limit_down_ = -5.0f;
-    e.getComponent<InfiniteFallingLimits>().limit_up_= 5.0f;
 
     GM.scene_graph().createNode(&e.getComponent<LTransform>(), &e.getComponent<GTransform>());
 
-    Entity<FallingCubeEntities> child = Entity<FallingCubeEntities>::CreateEntity("2", c);
+    Entity child = Entity::CreateEntity("2", EntityType::RENDERABLE);
     LTransform &child_tr = child.getComponent<LTransform>();
     child_tr.transform_ = glm::scale(child_tr.transform_, glm::vec3(1.0f, 1.0f, 1.0f));
     child_tr.transform_ = glm::translate(child_tr.transform_, glm::vec3(3.0f, 0.0f, 0.0f));
@@ -75,27 +73,38 @@ void Init()
     child_dw.material_.set_type(MaterialType::MT_PBR);
     child_dw.material_.set_data(pbr);
     child_dw.material_.set_texture(trex_texture);
-    child.getComponent<FallSpeed>().speed_ = 0.0f;
-    child.getComponent<InfiniteFallingLimits>().limit_down_ = -150.0f;
-    child.getComponent<InfiniteFallingLimits>().limit_up_= 150.0f;
 
     GM.scene_graph().createNode(&child.getComponent<LTransform>(), &child.getComponent<GTransform>());
     GM.scene_graph().setParent(&child.getComponent<LTransform>(), &e.getComponent<LTransform>());
 
     LuaScripting::ExecuteScript("../assets/scripts/init.lua");
+
+    Entity::RemoveEntity("Cube_1_1");
+    Entity::RemoveEntity("1");
 }
 
 void Logic()
 {
+    DisplayList dl;
+    Entity::GetEntity("2").getComponent<LTransform>().rotateYWorld(0.01f);
+
     Chrono logic_timer;
-    logic_timer.start();
     GM.input().updateInput();
     CameraMovement(1.0f, 1.0f).executeSystem();
-    Fall<FallingCubeEntities>(GM.memory().ec_falling_).executeSystem();
-    InfiniteFalling<FallingCubeEntities>(GM.memory().ec_falling_).executeSystem();
-    UpdateTransform<FallingCubeEntities>(GM.memory().ec_falling_).executeSystem();
+    logic_timer.start();
+    Fall(GM.memory().container(EntityType::FALLING_CUBE)).executeSystem();
+    InfiniteFalling(GM.memory().container(EntityType::FALLING_CUBE)).executeSystem();
+    UpdateTransform(GM.memory().container(EntityType::FALLING_CUBE)).executeSystem();
+    UpdateTransform(GM.memory().container(EntityType::RENDERABLE)).executeSystem();
     UpdateSceneGraph().executeSystem();
-    Render<FallingCubeEntities>(GM.memory().ec_falling_).executeSystem();
+
+    dl.addCommand<Clear>()
+        .set_clear_buffer(true, true, true)
+        .set_clear_color(0.2f, 0.2f, 0.2f, 1.0f);
+    dl.submit();
+
+    Render(GM.memory().container(EntityType::FALLING_CUBE)).executeSystem();
+    Render(GM.memory().container(EntityType::RENDERABLE)).executeSystem();
     logic_timer.end();
     int64_t duration = logic_timer.duration();
 #ifdef LEEP_DEBUG

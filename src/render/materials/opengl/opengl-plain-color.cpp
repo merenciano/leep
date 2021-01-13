@@ -3,7 +3,7 @@
 #include "core/logger.h"
 #include "core/common-defs.h"
 
-#include "glad/glad.h"
+#include <glad/glad.h>
 
 static const char* kPlainColorVertex = R"(
     #version 330 core 

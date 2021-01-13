@@ -1,6 +1,7 @@
 #include "camera.h"
 #include "core/common-defs.h"
 #include "core/manager.h"
+#include "core/window.h"
 
 #include "glm/gtc/matrix_transform.hpp"
 

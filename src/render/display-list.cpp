@@ -1,5 +1,6 @@
 #include "display-list.h"
 #include "core/manager.h"
+#include "render/renderer.h"
 
 namespace leep
 {

@@ -9,7 +9,7 @@ namespace leep
 {
     struct Drawable : public Component
     {
-        static const CompType type = COMP_DRAWABLE;
+        static const CompType s_type = COMP_DRAWABLE;
         Drawable() : Component(COMP_DRAWABLE) { }
         ~Drawable() {}
         Drawable& operator=(const Drawable &other)
