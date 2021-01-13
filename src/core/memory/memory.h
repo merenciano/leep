@@ -5,11 +5,19 @@
 
 #include "core/memory/entity-container.h"
 
+#include <unordered_map>
+
 namespace leep
 {
-    struct Memory
+    class Memory
     {
+    public:
+        Memory();
+
+        EntityContainer& container(EntityType t);
         EntityContainer ec_falling_ = EntityContainer(EntityType::FALLING_CUBE);
+        EntityContainer ec_renderable_ = EntityContainer(EntityType::RENDERABLE);
+        std::unordered_map<EntityType, EntityContainer> entities_;
     };
 }
 

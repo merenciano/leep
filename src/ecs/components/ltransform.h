@@ -10,7 +10,7 @@ namespace leep
 {
     struct LTransform : public Component
     {
-        static const CompType type = COMP_LTRANSFORM;
+        static const CompType s_type = COMP_LTRANSFORM;
         LTransform() : Component(COMP_LTRANSFORM) { transform_ = glm::mat4(1.0f); }
         ~LTransform() {}
         LTransform& operator=(const LTransform &tr);

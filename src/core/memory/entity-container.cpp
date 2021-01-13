@@ -2,12 +2,25 @@
 
 namespace leep
 {
+    EntityContainer::EntityContainer() : type_(EntityType::NONE)
+    {
+
+    }
+
     EntityContainer::EntityContainer(EntityType t) : type_(t)
     {
         switch (type_)
         {
+            case EntityType::NONE:
+                LEEP_ASSERT(false, "Invalid entity type");
+                break;
             case EntityType::FALLING_CUBE:
-                chunks_.push_back(new FallingCubeEntities());
+                chunks_.emplace_back(new FallingCubeEntities());
+                break;
+
+            case EntityType::RENDERABLE:
+                chunks_.emplace_back(new RenderableEC());
+                break;
         }
         chunks_.back()->index_ = 0;
     }
@@ -51,4 +64,11 @@ namespace leep
             }
         }
     }
+
+#ifdef LEEP_DEBUG
+    uint64_t EntityContainer::mask() const
+    {
+        return chunks_.front()->mask();
+    }
+#endif
 }

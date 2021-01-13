@@ -12,12 +12,16 @@ namespace leep
     class EntityContainer
     {
     public:
+        EntityContainer();
         EntityContainer(EntityType t);
         ~EntityContainer();
 
         bool isEmpty() const;
         void removeLastEntity();
         EntityType type() const;
+#ifdef LEEP_DEBUG
+        uint64_t mask() const;
+#endif
 
         std::deque<EntityChunk*> chunks_;
     private:

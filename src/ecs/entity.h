@@ -20,64 +20,16 @@ namespace leep
         Entity(int32_t index, const EntityContainer &container) : index_(index), container_(container) {}
         ~Entity() = default;
 
-        static Entity CreateEntity(std::string name, EntityContainer &cont)
-        {
-            LEEP_CORE_ASSERT(!s_map_.exists(name), "An entity with that name already exists.");
-            if (cont.chunks_.back()->last_ == kEntitiesPerChunk)
-            {
-                int32_t idx = cont.chunks_.back()->index_;
-                cont.chunks_.emplace_back();
-                cont.chunks_.back()->index_ = idx + 1;
-            }
-            int32_t entity_id = cont.chunks_.back()->index_ * kEntitiesPerChunk + cont.chunks_.back()->last_;
-            cont.chunks_.back()->last_++;
-            s_map_.addEntry(name, entity_id, (void*)&cont);
-            return Entity(entity_id, cont);
-        }
-
-        static void RemoveEntity(std::string name, EntityContainer &cont)
-        {
-            if (!s_map_.exists(name))
-            {
-                // Entity already removed or never created
-                // in any case the job is done
-                return;
-            }
-            int32_t index = s_map_.getEntity(name).index;
-            int32_t chunk_id = ChunkI(index);
-            int32_t entity_id = EntityI(index);
-            
-            // Copy the last entity to the place of the removed one
-            int32_t last_id = (cont.chunks_.size()-1) * kEntitiesPerChunk + (cont.chunks_.back()->last_ - 1);
-            if (last_id != index)
-            {
-                switch (cont.type())
-                {
-                    case EntityType::FALLING_CUBE:
-                        static_cast<FallingCubeEntities*>(cont.chunks_.back())
-                            ->relocateLast(cont.chunks_[chunk_id], entity_id);
-                        break;
-
-                }
-                s_map_.swap(index, last_id, (void*)&cont);
-            }
-            cont.removeLastEntity();
-            s_map_.removeEntry(name, last_id, (void*)&cont);
-        }
-
-        static Entity GetEntity(std::string name, EntityContainer &cont)
-        {
-            LEEP_ASSERT(s_map_.exists(name), "There isn't any entity with this name in this container.");
-            LEEP_ASSERT(s_map_.getEntity(name).container == (void*)&cont, "The entity isn't in this container.");
-            return Entity(s_map_.getEntity(name).index, cont);
-        }
+        static Entity CreateEntity(std::string name, EntityContainer &cont);
+        static void RemoveEntity(std::string name);
+        static Entity GetEntity(std::string name);
 
         template<typename C>
         C& getComponent()
         {
             for (size_t i = 0; i < container_.chunks_.at(ChunkI(index_))->comps_.size(); ++i)
             {
-                if (C::type == container_.chunks_.at(ChunkI(index_))->comps_[i][0].type())
+                if (C::s_type == container_.chunks_.at(ChunkI(index_))->comps_[i][0].type())
                 {
                     return static_cast<C*>(container_.chunks_.at(ChunkI(index_))->comps_[i])[EntityI(index_)];
                 }
@@ -90,8 +42,9 @@ namespace leep
             return *static_cast<C*>(nullptr);
         }
 
-        bool isValid() const { return index_ >= 0 ? true : false; }
+        bool isValid() const;
 
+    private:
         int32_t index_;
         const EntityContainer &container_;
     };

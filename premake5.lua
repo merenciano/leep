@@ -67,9 +67,9 @@ project "leep"
         }
 
     configuration "gmake"
-        defines { "_GLFW_X11", "LEEP_OPENGL", }
+        defines { "_GLFW_X11", "LEEP_OPENGL", "LUA_USE_POSIX", }
         links { "X11", "dl", "pthread"  }
-        buildoptions { "-Wall" }
+        buildoptions { "-Wall",  }
 
         files {
             "./extern/src/GLFW/x11_platform.h",

@@ -12,14 +12,14 @@ namespace leep
 
     }
 
-    void EntityMap::addEntry(std::string name, int32_t id, void *container_ptr)
+    void EntityMap::addEntry(std::string name, int32_t id, EntityContainer *container_ptr)
     {
         EntityIndex eid = { container_ptr, id };
         map_[name] = eid;
         rmap_[eid] = name;
     }
 
-    void EntityMap::swap(int32_t i, int32_t last, void *container_ptr)
+    void EntityMap::swap(int32_t i, int32_t last, EntityContainer *container_ptr)
     {
         EntityIndex ei = { container_ptr, i };
         EntityIndex elast = { container_ptr, last };
@@ -28,7 +28,7 @@ namespace leep
         map_[rmap_[elast]] = ei;
     }
 
-    void EntityMap::removeEntry(std::string name, int32_t id, void *container_ptr)
+    void EntityMap::removeEntry(std::string name, int32_t id, EntityContainer *container_ptr)
     {
         EntityIndex ei = { container_ptr, id };
         map_.erase(name);

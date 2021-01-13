@@ -9,9 +9,10 @@
 
 namespace leep
 {
+    struct EntityContainer;
     struct EntityIndex
     {
-        void *container;
+        EntityContainer *container;
         int32_t index;
         bool operator==(const EntityIndex &other) const;
         struct HashFunction
@@ -26,9 +27,9 @@ namespace leep
         EntityMap();
         ~EntityMap();
 
-        void addEntry(std::string name, int32_t id, void *container_ptr);
-        void swap(int32_t i, int32_t last, void *container_ptr);
-        void removeEntry(std::string name, int32_t id, void *container_ptr);
+        void addEntry(std::string name, int32_t id, EntityContainer *container_ptr);
+        void swap(int32_t i, int32_t last, EntityContainer *container_ptr);
+        void removeEntry(std::string name, int32_t id, EntityContainer *container_ptr);
         bool exists(std::string name);
         EntityIndex getEntity(std::string name);
 

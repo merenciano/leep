@@ -4,7 +4,7 @@
 #define __LEEP_CORE_MEMORY_ENTITY_CHUNK_H__ 1
 
 #include "ecs/component.h"
-
+#include "core/common-defs.h"
 #include <stdint.h>
 #include <vector>
 
@@ -12,8 +12,8 @@ namespace leep
 {
     enum class EntityType
     {
-        NONE = 0,
-        STANDARD,
+        NONE,
+        RENDERABLE,
         FALLING_CUBE,
     };
 
@@ -28,6 +28,22 @@ namespace leep
         virtual ~EntityChunk() {}
         EntityType type() const { return type_; }
         virtual void relocateLast(EntityChunk *a, uint32_t i) = 0;
+        template<typename C>
+        C* component()
+        {
+            for (Component *comp : comps_)
+            {
+                if (comp->type() == C::s_type)
+                {
+                    return static_cast<C*>(comp);
+                }
+            }
+            return nullptr;
+        }
+
+#ifdef LEEP_DEBUG
+        virtual uint64_t mask() const = 0;
+#endif
 
         std::vector<Component*> comps_;
         const EntityType type_;
@@ -35,31 +51,40 @@ namespace leep
         int32_t index_; // index of the chunk in the chunk container
     };
 
+/*
+ *      FALLING CUBE ENTITY CHUNK
+ */
     struct FallingCubeEntities : public EntityChunk
     {
-        static const EntityType type = EntityType::FALLING_CUBE;
+        static const EntityType s_type = EntityType::FALLING_CUBE;
 #ifdef LEEP_DEBUG
-        static const uint64_t mask = (1 << COMP_LTRANSFORM) |
+        static const uint64_t s_mask = (1 << COMP_LTRANSFORM) |
                                      (1 << COMP_GTRANSFORM) |
                                      (1 << COMP_DRAWABLE)   |
                                      (1 << COMP_FALL_SPEED) |
                                      (1 << COMP_INFINITE_FALLING_LIMITS);
+        virtual uint64_t mask() const override { return s_mask; }
 #endif
         FallingCubeEntities();
         ~FallingCubeEntities();
 
-        template<typename C>
-        C* component()
-        {
-            switch(C::type)
-            {
-                case COMP_LTRANSFORM: return static_cast<C*>(comps_[0]);
-                case COMP_DRAWABLE: return static_cast<C*>(comps_[1]);
-                case COMP_FALL_SPEED: return static_cast<C*>(comps_[2]);
-                case COMP_INFINITE_FALLING_LIMITS: return static_cast<C*>(comps_[3]);
-                case COMP_GTRANSFORM: return static_cast<C*>(comps_[4]);
-            }
-        }
+        virtual void relocateLast(EntityChunk *a, uint32_t i) override;
+    };
+
+/*
+ *      RENDERABLE ENTITY CHUNK
+ */
+    struct RenderableEC : public EntityChunk
+    {
+        static const EntityType s_type = EntityType::RENDERABLE;
+#ifdef LEEP_DEBUG
+        static const uint64_t s_mask = (1 << COMP_LTRANSFORM) |
+                                     (1 << COMP_GTRANSFORM) |
+                                     (1 << COMP_DRAWABLE);
+        virtual uint64_t mask() const override { return s_mask; }
+#endif
+        RenderableEC();
+        ~RenderableEC();
 
         virtual void relocateLast(EntityChunk *a, uint32_t i) override;
     };
