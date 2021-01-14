@@ -42,6 +42,7 @@
 // TOOLS
 #include "../src/tools/imgui-tools.h"
 #include "../src/tools/lua-scripting.h"
+#include "../src/tools/resource-map.h"
 
 
 

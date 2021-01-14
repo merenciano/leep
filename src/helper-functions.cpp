@@ -3,10 +3,22 @@
 #include "core/manager.h"
 #include "core/scene-graph.h"
 #include "ecs/entity.h"
+#include "ecs/components/drawable.h"
+#include "tools/resource-map.h"
 
-void leep::CreateRenderable(std::string entity_name)
+void leep::CreateRenderable(std::string entity_name,
+                            std::string geometry_name,
+                            std::string texture_name)
 {
     Entity e = Entity::CreateEntity(entity_name, EntityType::RENDERABLE);
+    Drawable &d = e.getComponent<Drawable>();
+    PbrData pbr;
+    pbr.tiling_x_ = 1.0f;
+    pbr.tiling_y_ = 1.0f;
+    d.geometry_ = GM.resource_map().getGeometry(geometry_name);
+    d.material_.set_type(MaterialType::MT_PBR);
+    d.material_.set_data(pbr);
+    d.material_.set_texture(GM.resource_map().getTexture(texture_name));
 }
 
 void leep::RemoveEntity(std::string entity_name)

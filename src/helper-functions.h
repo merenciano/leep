@@ -7,7 +7,9 @@
 
 namespace leep
 {
-    void CreateRenderable(std::string entity_name);
+    void CreateRenderable(std::string entity_name,
+                          std::string geometry_name,
+                          std::string texture_name);
     void RemoveEntity(std::string entity_name);
     void SetParent(std::string entity_name, std::string parent_name);
     void DetachFromParent(std::string entity_name);

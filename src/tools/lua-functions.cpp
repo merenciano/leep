@@ -6,13 +6,15 @@
 int32_t leep::LUA_CreateRenderable(lua_State *L)
 {
     int32_t args = lua_gettop(L);
-    if (args != 1)
+    if (args != 3)
     {
         return luaL_error(L, "Invalid call, expecting one argument");
     }
 
     std::string entity_name = lua_tostring(L, 1);
-    CreateRenderable(entity_name);
+    std::string geometry_name = lua_tostring(L, 2);
+    std::string texture_name = lua_tostring(L, 3);
+    CreateRenderable(entity_name, geometry_name, texture_name);
     lua_pop(L, 1);
     return 0;
 }

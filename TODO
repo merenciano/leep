@@ -1,3 +1,3 @@
 TODO:
-    - Revisar la API y ver que cosas pueden mejorar ahora
     - Tool que muestre las entidades que hay en memoria visualmente mostrando el nombre
+    - Add more helper functions to lua scripting.

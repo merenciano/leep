@@ -15,13 +15,14 @@ namespace leep
 
         void init();
 
-        struct Window&     window();
-        struct Renderer&   renderer();
-        struct Camera&     camera();
-        struct Input&      input();
-        struct Memory&     memory();
-        struct ImguiTools& ui_tools();
-        struct SceneGraph& scene_graph();
+        struct Window&      window();
+        struct Renderer&    renderer();
+        struct Camera&      camera();
+        struct Input&       input();
+        struct Memory&      memory();
+        struct ImguiTools&  ui_tools();
+        struct SceneGraph&  scene_graph();
+        struct ResourceMap& resource_map();
 
     private:
     
