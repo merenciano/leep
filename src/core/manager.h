@@ -23,6 +23,7 @@ namespace leep
         struct ImguiTools&  ui_tools();
         struct SceneGraph&  scene_graph();
         struct ResourceMap& resource_map();
+        struct ToolsData&   tools_data();
 
     private:
     

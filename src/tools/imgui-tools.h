@@ -5,6 +5,12 @@
 
 namespace leep
 {
+    struct ToolsData
+    {
+        float duration_ms_;
+        uint64_t duration_micro_;
+    };
+
     class ImguiTools
     {
     public:

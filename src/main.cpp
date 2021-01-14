@@ -122,14 +122,19 @@ void RenderScene()
 
 int main()
 {
+    Chrono init_timer;
+    Chrono frame_timer;
     Function logic = Logic;
+    init_timer.start();
     Init();
+    init_timer.end();
+    LEEP_CORE_INFO("Init time: {0} ms", init_timer.durationMs());
 
     Logic();
     GM.renderer().submitFrame();
-
     while (!GM.window().windowShouldClose())
     {
+        frame_timer.start();
         Thread l(logic);
         RenderScene();
         l.join();
@@ -137,6 +142,9 @@ int main()
 
         GM.window().swap();
         GM.window().pollEvents();
+        frame_timer.end();
+        GM.tools_data().duration_ms_ = frame_timer.durationMs();
+        GM.tools_data().duration_micro_ = frame_timer.duration();
     }
 
     return 0;

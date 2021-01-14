@@ -1,12 +1,14 @@
 #include "imgui-tools.h"
+#include "core/manager.h"
 
-#include "ImGui/imgui.h"
-#include "ImGui/imgui_impl_opengl3.h" // TODO(Lucas): implement myself
-#include "ImGui/imgui_impl_glfw.h"
-#include "GLFW/glfw3.h" // remove this when implementing input
+#include <ImGui/imgui.h>
+#include <ImGui/imgui_impl_opengl3.h> // TODO(Lucas): implement myself
+#include <ImGui/imgui_impl_glfw.h>
+#include <GLFW/glfw3.h> // remove this when implementing input
 
 namespace leep
 {
+    static void BasicAppInfo();
     ImguiTools::ImguiTools()
     {
 
@@ -39,7 +41,23 @@ namespace leep
         static bool show = true;
         ImGui::ShowDemoWindow(&show);
 
+        BasicAppInfo();
+
+
         ImGui::Render();
         ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+    }
+
+    static void BasicAppInfo()
+    {
+        static bool show = true;
+        if (!ImGui::Begin("Basic APP Info", &show, 0))
+        {
+            // Early out if the window is collapsed, as an optimization.
+            ImGui::End();
+            return;
+        }
+        ImGui::Text("Frame time: %f", GM.tools_data().duration_ms_);
+        ImGui::End();
     }
 }

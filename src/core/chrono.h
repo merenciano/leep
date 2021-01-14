@@ -13,6 +13,7 @@ namespace leep
         void start() { start_ = std::chrono::high_resolution_clock::now(); }
         void end() { end_ = std::chrono::high_resolution_clock::now(); }
         int64_t duration() { return std::chrono::duration_cast<std::chrono::microseconds>(end_ - start_).count(); }
+        float durationMs() { return std::chrono::duration<float, std::milli>(end_ - start_).count(); }
         std::chrono::time_point<std::chrono::high_resolution_clock> start_;
         std::chrono::time_point<std::chrono::high_resolution_clock> end_;
     };

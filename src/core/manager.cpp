@@ -22,11 +22,13 @@ namespace leep
         ImguiTools  ui_tools_;
         SceneGraph  scene_graph_;
         ResourceMap resource_map_;
+        ToolsData   tools_data_;
     };
 
     void Manager::init()
     {
         LEEP_ASSERT(IsPow2(kEntitiesPerChunk), "This constant value must be power of 2");
+        // Manager has the same life as the app, so I don't care of deleting this
         data_ = new ManagerData();
         data_->window_.createWindow(1280, 720, true);
         data_->renderer_.init();
@@ -41,4 +43,5 @@ namespace leep
     ImguiTools&  Manager::ui_tools()      { return data_->ui_tools_; }
     SceneGraph&  Manager::scene_graph()   { return data_->scene_graph_; }
     ResourceMap& Manager::resource_map()  { return data_->resource_map_; }
+    ToolsData&   Manager::tools_data()    { return data_->tools_data_; }
 }
