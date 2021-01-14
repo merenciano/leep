@@ -28,4 +28,22 @@ namespace leep
             lua_pop(L, 1);
         }
     }
+
+    void LuaScripting::ExecuteCommand(std::string command)
+    {
+        if (luaL_dostring(L, command.c_str()))
+        {
+#ifdef LEEP_DEBUG
+            const char *err = lua_tostring(L, -1);
+            LEEP_CORE_ERROR("{0}", err);
+#endif
+            lua_pop(L, 1);
+        }
+    }
+
+    void LuaScripting::SetGlobal(std::string name, float value)
+    {
+        lua_pushnumber(L, value);
+        lua_setglobal(L, name.c_str());
+    }
 }

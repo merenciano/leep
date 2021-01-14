@@ -1,7 +1,6 @@
 #ifndef __LEEP_CORE_MANAGER_H__
 #define __LEEP_CORE_MANAGER_H__ 1
 
-
 #define GM Manager::instance()
 
 namespace leep 
@@ -14,6 +13,8 @@ namespace leep
         ~Manager() {}
 
         void init();
+        void nextFrame();
+        void startFrameTimer();
 
         struct Window&      window();
         struct Renderer&    renderer();
@@ -24,9 +25,8 @@ namespace leep
         struct SceneGraph&  scene_graph();
         struct ResourceMap& resource_map();
         struct ToolsData&   tools_data();
+        float delta_time() const;
 
-    private:
-    
     private:
         Manager() {}
         Manager(const Manager&) {}

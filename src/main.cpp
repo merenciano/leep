@@ -44,9 +44,9 @@ void Init()
             cube_dw.material_.set_data(pbr);
             cube_dw.material_.set_texture(GM.resource_map().getTexture("T-Rex"));
 
-            e.getComponent<FallSpeed>().speed_ = 0.1f;
-            e.getComponent<InfiniteFallingLimits>().limit_down_ = -15.0f;
-            e.getComponent<InfiniteFallingLimits>().limit_up_= 15.0f;
+            e.getComponent<FallSpeed>().speed_ = 2.0f;
+            e.getComponent<InfiniteFallingLimits>().limit_down_ = -10.0f;
+            e.getComponent<InfiniteFallingLimits>().limit_up_= 10.0f;
         }
     }
 
@@ -75,22 +75,17 @@ void Init()
     GM.scene_graph().setParent(&child.getComponent<LTransform>(), &e.getComponent<LTransform>());
 
     LuaScripting::ExecuteScript("../assets/scripts/init.lua");
-
-    //Entity::RemoveEntity("Cube_1_1");
-    //Entity::RemoveEntity("1");
 }
 
 void Logic()
 {
     DisplayList dl;
-    Entity::GetEntity("2").getComponent<LTransform>().rotateYWorld(0.01f);
+    Entity::GetEntity("2").getComponent<LTransform>().rotateYWorld(1.0f * GM.delta_time());
 
     LuaScripting::ExecuteScript("../assets/scripts/update.lua");
 
-    Chrono logic_timer;
     GM.input().updateInput();
     CameraMovement(1.0f, 1.0f).executeSystem();
-    logic_timer.start();
     Fall(GM.memory().container(EntityType::FALLING_CUBE)).executeSystem();
     InfiniteFalling(GM.memory().container(EntityType::FALLING_CUBE)).executeSystem();
     UpdateTransform(GM.memory().container(EntityType::FALLING_CUBE)).executeSystem();
@@ -104,14 +99,6 @@ void Logic()
 
     Render(GM.memory().container(EntityType::FALLING_CUBE)).executeSystem();
     Render(GM.memory().container(EntityType::RENDERABLE)).executeSystem();
-    logic_timer.end();
-    int64_t duration = logic_timer.duration();
-#ifdef LEEP_DEBUG
-    LEEP_INFO("Logic time in microseconds: {0}", duration);
-#else
-    // Logger works only on debug
-    printf("Logic time in microseconds: %d\n", duration);
-#endif
 }
 
 void RenderScene()
@@ -123,28 +110,20 @@ void RenderScene()
 int main()
 {
     Chrono init_timer;
-    Chrono frame_timer;
     Function logic = Logic;
     init_timer.start();
     Init();
     init_timer.end();
-    LEEP_CORE_INFO("Init time: {0} ms", init_timer.durationMs());
+    LEEP_CORE_INFO("Init time: {0} ms", init_timer.duration());
 
-    Logic();
-    GM.renderer().submitFrame();
+    GM.startFrameTimer();
     while (!GM.window().windowShouldClose())
     {
-        frame_timer.start();
         Thread l(logic);
         RenderScene();
         l.join();
-        GM.renderer().submitFrame();
 
-        GM.window().swap();
-        GM.window().pollEvents();
-        frame_timer.end();
-        GM.tools_data().duration_ms_ = frame_timer.durationMs();
-        GM.tools_data().duration_micro_ = frame_timer.duration();
+        GM.nextFrame();
     }
 
     return 0;

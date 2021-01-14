@@ -1,5 +1,6 @@
 #include "imgui-tools.h"
 #include "core/manager.h"
+#include "tools/lua-scripting.h"
 
 #include <ImGui/imgui.h>
 #include <ImGui/imgui_impl_opengl3.h> // TODO(Lucas): implement myself
@@ -9,6 +10,7 @@
 namespace leep
 {
     static void BasicAppInfo();
+    static void LuaCommands();
     ImguiTools::ImguiTools()
     {
 
@@ -42,6 +44,7 @@ namespace leep
         ImGui::ShowDemoWindow(&show);
 
         BasicAppInfo();
+        LuaCommands();
 
 
         ImGui::Render();
@@ -57,7 +60,26 @@ namespace leep
             ImGui::End();
             return;
         }
-        ImGui::Text("Frame time: %f", GM.tools_data().duration_ms_);
+        ImGui::Text("Frame time: %f", GM.delta_time() * 1000.0f);
+        ImGui::Text("FPS: %f", 1.0f / GM.delta_time());
+        ImGui::End();
+    }
+
+    static void LuaCommands()
+    {
+        static bool show = true;
+        if (!ImGui::Begin("Insert Lua Commands", &show, 0))
+        {
+            // Early out if the window is collapsed, as an optimization.
+            ImGui::End();
+            return;
+        }
+        static char buffer[64];
+        ImGui::InputText("Command input", buffer, IM_ARRAYSIZE(buffer));
+        if (ImGui::Button("Execute"))
+        {
+            LuaScripting::ExecuteCommand(std::string(buffer));
+        }
         ImGui::End();
     }
 }
