@@ -1,1 +1,1 @@
-print "Hola"
+CreateRenderable("Created", "Cube", "T-Rex")

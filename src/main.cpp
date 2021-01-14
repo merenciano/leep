@@ -10,11 +10,8 @@ void Init()
     GM.init();
     LuaScripting::Init();
     DisplayList init_dl;
-    Texture trex_texture;
-    Geometry cube_geo;
-
-    trex_texture.create("../assets/tex/trex.jpg");
-    cube_geo.createCube();
+    GM.resource_map().addGeometry("Cube", "");
+    GM.resource_map().addTexture("T-Rex", "../assets/tex/trex.jpg");
 
     init_dl.addCommand<RenderOptions>()
         .set_depth(true, true)
@@ -42,10 +39,10 @@ void Init()
             tr.transform_ = glm::translate(tr.transform_, glm::vec3(1.5f * i, -1.1f * j, -5.0f));
 
             Drawable &cube_dw = e.getComponent<Drawable>();
-            cube_dw.geometry_ = cube_geo;
+            cube_dw.geometry_ = GM.resource_map().getGeometry("Cube");
             cube_dw.material_.set_type(MaterialType::MT_PBR);
             cube_dw.material_.set_data(pbr);
-            cube_dw.material_.set_texture(trex_texture);
+            cube_dw.material_.set_texture(GM.resource_map().getTexture("T-Rex"));
 
             e.getComponent<FallSpeed>().speed_ = 0.1f;
             e.getComponent<InfiniteFallingLimits>().limit_down_ = -15.0f;
@@ -57,10 +54,10 @@ void Init()
     LTransform &tr = e.getComponent<LTransform>();
     tr.transform_ = glm::scale(tr.transform_, glm::vec3(0.3f, 0.3f, 0.3f));
     Drawable &cube_dw = e.getComponent<Drawable>();
-    cube_dw.geometry_ = cube_geo;
+    cube_dw.geometry_ = GM.resource_map().getGeometry("Cube");
     cube_dw.material_.set_type(MaterialType::MT_PBR);
     cube_dw.material_.set_data(pbr);
-    cube_dw.material_.set_texture(trex_texture);
+    cube_dw.material_.set_texture(GM.resource_map().getTexture("T-Rex"));
 
     GM.scene_graph().createNode(&e.getComponent<LTransform>(), &e.getComponent<GTransform>());
 
@@ -69,24 +66,26 @@ void Init()
     child_tr.transform_ = glm::scale(child_tr.transform_, glm::vec3(1.0f, 1.0f, 1.0f));
     child_tr.transform_ = glm::translate(child_tr.transform_, glm::vec3(3.0f, 0.0f, 0.0f));
     Drawable &child_dw = child.getComponent<Drawable>();
-    child_dw.geometry_ = cube_geo;
+    child_dw.geometry_ = GM.resource_map().getGeometry("Cube");
     child_dw.material_.set_type(MaterialType::MT_PBR);
     child_dw.material_.set_data(pbr);
-    child_dw.material_.set_texture(trex_texture);
+    child_dw.material_.set_texture(GM.resource_map().getTexture("T-Rex"));
 
     GM.scene_graph().createNode(&child.getComponent<LTransform>(), &child.getComponent<GTransform>());
     GM.scene_graph().setParent(&child.getComponent<LTransform>(), &e.getComponent<LTransform>());
 
     LuaScripting::ExecuteScript("../assets/scripts/init.lua");
 
-    Entity::RemoveEntity("Cube_1_1");
-    Entity::RemoveEntity("1");
+    //Entity::RemoveEntity("Cube_1_1");
+    //Entity::RemoveEntity("1");
 }
 
 void Logic()
 {
     DisplayList dl;
     Entity::GetEntity("2").getComponent<LTransform>().rotateYWorld(0.01f);
+
+    LuaScripting::ExecuteScript("../assets/scripts/update.lua");
 
     Chrono logic_timer;
     GM.input().updateInput();

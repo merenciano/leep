@@ -8,6 +8,7 @@
 #include "render/renderer.h"
 #include "render/camera.h"
 #include "tools/imgui-tools.h"
+#include "tools/resource-map.h"
 
 namespace leep
 {
@@ -20,6 +21,7 @@ namespace leep
         Memory      memory_;
         ImguiTools  ui_tools_;
         SceneGraph  scene_graph_;
+        ResourceMap resource_map_;
     };
 
     void Manager::init()
@@ -31,11 +33,12 @@ namespace leep
         data_->camera_.init();
     }
 
-    Window&     Manager::window()        { return data_->window_; }
-    Renderer&   Manager::renderer()      { return data_->renderer_; }
-    Camera&     Manager::camera()        { return data_->camera_; }
-    Input&      Manager::input()         { return data_->input_; }
-    Memory&     Manager::memory()        { return data_->memory_; }
-    ImguiTools& Manager::ui_tools()      { return data_->ui_tools_; }
-    SceneGraph& Manager::scene_graph()   { return data_->scene_graph_; }
+    Window&      Manager::window()        { return data_->window_; }
+    Renderer&    Manager::renderer()      { return data_->renderer_; }
+    Camera&      Manager::camera()        { return data_->camera_; }
+    Input&       Manager::input()         { return data_->input_; }
+    Memory&      Manager::memory()        { return data_->memory_; }
+    ImguiTools&  Manager::ui_tools()      { return data_->ui_tools_; }
+    SceneGraph&  Manager::scene_graph()   { return data_->scene_graph_; }
+    ResourceMap& Manager::resource_map()  { return data_->resource_map_; }
 }

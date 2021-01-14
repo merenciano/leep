@@ -16,6 +16,7 @@ namespace leep
         LTransform& operator=(const LTransform &tr);
         LTransform& rotateYWorld(float radians);
         glm::vec3 localLocation() const;
+        void setLocation(glm::vec3 new_location);
         glm::mat4 transform_;
     };
 }
