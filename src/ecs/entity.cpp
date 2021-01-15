@@ -1,5 +1,9 @@
 #include "entity.h"
 
+#include "core/manager.h"
+#include "core/scene-graph.h"
+#include "ecs/components/ltransform.h"
+
 namespace leep
 {
     Entity Entity::CreateEntity(std::string name, EntityType t)
@@ -41,6 +45,13 @@ namespace leep
         int32_t index = s_map_.getEntity(name).index;
         int32_t chunk_id = ChunkI(index);
         int32_t entity_id = EntityI(index);
+
+        // Remove the hierarchy of this entity if it had a node.
+        LTransform *ltr = GetEntity(name).componentPtr<LTransform>();
+        if (ltr)
+        {
+            GM.scene_graph().removeNode(ltr);
+        }
         
         // Copy the last entity to the place of the removed one
         int32_t last_id = (cont.chunks_.size()-1) * kEntitiesPerChunk + (cont.chunks_.back()->last_ - 1);

@@ -2,6 +2,9 @@
 #include "core/manager.h"
 #include "tools/lua-scripting.h"
 
+#include <vector>
+#include <deque>
+
 #include <ImGui/imgui.h>
 #include <ImGui/imgui_impl_opengl3.h> // TODO(Lucas): implement myself
 #include <ImGui/imgui_impl_glfw.h>
@@ -94,4 +97,5 @@ namespace leep
         }
         ImGui::End();
     }
+
 }

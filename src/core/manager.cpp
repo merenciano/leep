@@ -35,7 +35,7 @@ namespace leep
         LEEP_ASSERT(IsPow2(kEntitiesPerChunk), "This constant value must be power of 2");
         // Manager has the same life as the app, so I don't care of deleting this
         data_ = new ManagerData();
-        data_->window_.createWindow(1280, 720, false);
+        data_->window_.createWindow(1280, 720, true);
         data_->renderer_.init();
         data_->camera_.init();
         data_->delta_time_ = 0.16;
