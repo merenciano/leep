@@ -1,7 +1,10 @@
 #include "input.h"
+
 #include "core/common-defs.h"
 #include "core/manager.h"
-#include "GLFW/glfw3.h"
+#include "tools/imgui-tools.h"
+
+#include <GLFW/glfw3.h>
 
 namespace leep
 {
@@ -77,6 +80,11 @@ namespace leep
     bool Input::isButtonPressed(Button b) const
     {
         LEEP_ASSERT(data_, "A window is needed");
+        if (GM.ui_tools().wantKeyboard())
+        {
+            return false;
+        }
+
         switch (b)
         {
             case Button::UP: return data_->current.up;
@@ -96,6 +104,11 @@ namespace leep
     bool Input::isButtonDown(Button b) const
     {
         LEEP_ASSERT(data_, "A window is needed");
+        if (GM.ui_tools().wantKeyboard())
+        {
+            return false;
+        }
+
         if (!isButtonPressed(b))
             return false;
 
@@ -118,6 +131,11 @@ namespace leep
     bool Input::isButtonUp(Button b) const
     {
         LEEP_ASSERT(data_, "A window is needed");
+        if (GM.ui_tools().wantKeyboard())
+        {
+            return false;
+        }
+
         if (isButtonPressed(b))
             return false;
 

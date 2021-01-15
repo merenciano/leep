@@ -30,7 +30,7 @@ namespace leep
         static float fov = 70.0f;
         //float sensibility = sensibility_;
         float speed = speed_ * GM.delta_time();
-        float scroll_sensibility = sensibility_ * 5.0f;
+        float scroll_sensibility = 1.0f;
         LTransform tr;
         tr.transform_ = glm::inverse(GM.camera().view());
 

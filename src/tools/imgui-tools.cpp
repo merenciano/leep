@@ -30,25 +30,37 @@ namespace leep
         ImGui_ImplOpenGL3_Init("#version 330");
     }
 
-    void ImguiTools::update(float delta_time, int32_t width, int32_t height)
+    void ImguiTools::update()
     {
-        ImGuiIO &io = ImGui::GetIO();
-        io.DisplaySize = ImVec2(width, height);
-        io.DeltaTime = delta_time;
-
         ImGui_ImplOpenGL3_NewFrame();
         ImGui_ImplGlfw_NewFrame();
         ImGui::NewFrame();
-
         static bool show = true;
-        ImGui::ShowDemoWindow(&show);
+        if (show)
+            ImGui::ShowDemoWindow(&show);
 
         BasicAppInfo();
         LuaCommands();
 
-
         ImGui::Render();
         ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+    }
+
+    void ImguiTools::render()
+    {
+
+    }
+
+    bool ImguiTools::wantKeyboard() const
+    {
+        ImGuiIO &io = ImGui::GetIO();
+        return io.WantCaptureKeyboard;
+    }
+
+    bool ImguiTools::wantMouse() const
+    {
+        ImGuiIO &io = ImGui::GetIO();
+        return io.WantCaptureMouse;
     }
 
     static void BasicAppInfo()

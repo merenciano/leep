@@ -17,7 +17,11 @@ namespace leep
         ImguiTools();
         ~ImguiTools();
         void init(void *raw_window);
-        void update(float delta_time, int32_t width, int32_t height);
+        void update();
+        void render();
+
+        bool wantMouse() const;
+        bool wantKeyboard() const;
     };
 }
 
