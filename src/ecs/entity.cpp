@@ -85,6 +85,11 @@ namespace leep
         return Entity(s_map_.getEntity(name).index, s_map_.getEntity(name).type);
     }
 
+    std::string Entity::name() const
+    {
+        return s_map_.getEntityName(index_, type_);
+    }
+
     bool Entity::isValid() const
     {
         return index_ >= 0 ? true : false;

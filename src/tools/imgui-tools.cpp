@@ -1,5 +1,7 @@
 #include "imgui-tools.h"
 #include "core/manager.h"
+#include "core/memory/memory.h"
+#include "ecs/entity.h"
 #include "tools/lua-scripting.h"
 
 #include <vector>
@@ -14,6 +16,8 @@ namespace leep
 {
     static void BasicAppInfo();
     static void LuaCommands();
+    static void EntityInspector();
+
     ImguiTools::ImguiTools()
     {
 
@@ -44,6 +48,7 @@ namespace leep
 
         BasicAppInfo();
         LuaCommands();
+        EntityInspector();
 
         ImGui::Render();
         ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
@@ -98,4 +103,70 @@ namespace leep
         ImGui::End();
     }
 
+    static void EntityInspector()
+    {
+        static bool show = true;
+        if (!ImGui::Begin("Entity inspector", &show, 0))
+        {
+            // Early out if the window is collapsed, as an optimization.
+            ImGui::End();
+            return;
+        }
+
+        auto it = GM.memory().entities_.begin();
+        while(it != GM.memory().entities_.end())
+        {
+            std::string header_name;
+            switch(it->first)
+            {
+                default:
+                    LEEP_ASSERT(false, "EntityInspector: EntityType not implemented")
+                    break;
+
+                case EntityType::NONE:
+                    header_name = "";
+                    break;
+
+                case EntityType::RENDERABLE:
+                    header_name = "Renderable";
+                    break;
+
+                case EntityType::FALLING_CUBE:
+                    header_name = "InfiniteFalling";
+                    break;
+            }
+            if (ImGui::CollapsingHeader(header_name.c_str()))
+            {
+                for (uint32_t i = 0; i < it->second.chunks_.size(); ++i)
+                {
+                    std::string tree_name = "Chunk " + std::to_string(i);
+                    if (ImGui::TreeNode(tree_name.c_str()))
+                    {
+                        static ImGuiTableFlags flags = ImGuiTableFlags_ScrollY | ImGuiTableFlags_RowBg | ImGuiTableFlags_BordersOuter | ImGuiTableFlags_BordersV | ImGuiTableFlags_Resizable | ImGuiTableFlags_Reorderable | ImGuiTableFlags_Hideable;
+                        ImVec2 size = ImVec2(-FLT_MIN, ImGui::GetTextLineHeightWithSpacing() * 12);
+                        if (ImGui::BeginTable("##table1", 2, flags, size))
+                        {
+                            ImGui::TableSetupScrollFreeze(0, 1); // Make top row always visible
+                            ImGui::TableSetupColumn("Index", ImGuiTableColumnFlags_None);
+                            ImGui::TableSetupColumn("Entity name", ImGuiTableColumnFlags_None);
+                            ImGui::TableHeadersRow();
+
+                            for (int32_t j = 0; j < it->second.chunks_[i]->last_; ++j)
+                            {
+                                ImGui::TableNextRow();
+                                ImGui::TableSetColumnIndex(0);
+                                ImGui::Text("%d", j);
+                                ImGui::TableSetColumnIndex(1);
+                                ImGui::Text("%s", Entity(j, it->first).name().c_str());
+                            }
+                            ImGui::EndTable();
+                        }
+                        ImGui::TreePop();
+                    }
+                }
+            }
+            ++it;
+        }
+        ImGui::End();
+    }
 }

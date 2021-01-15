@@ -68,6 +68,7 @@ namespace leep
             return componentPtr<C>();
         }
 
+        std::string name() const;
         bool isValid() const;
         Entity& operator=(const Entity& e);
 

@@ -36,6 +36,7 @@ namespace leep
         void removeEntry(std::string name, int32_t id, EntityType t);
         bool exists(std::string name);
         EntityIndex getEntity(std::string name);
+        std::string getEntityName(int32_t i, EntityType t);
 
     private:
         std::unordered_map<std::string, EntityIndex> map_;

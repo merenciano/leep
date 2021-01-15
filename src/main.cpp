@@ -2,6 +2,8 @@
 #include "glm/glm.hpp"
 #include "glm/gtc/matrix_transform.hpp"
 
+#define LEEP_SINGLE_THREAD 1
+
 using namespace leep;
 
 void Init()
@@ -120,9 +122,14 @@ int main()
     GM.startFrameTimer();
     while (!GM.window().windowShouldClose())
     {
+#if LEEP_SINGLE_THREAD == 0
         Thread l(logic);
         RenderScene();
         l.join();
+#elif LEEP_SINGLE_THREAD == 1
+        Logic();
+        RenderScene();
+#endif
 
         GM.nextFrame();
     }
