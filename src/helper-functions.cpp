@@ -11,6 +11,12 @@ void leep::CreateRenderable(std::string entity_name,
                             std::string texture_name)
 {
     Entity e = Entity::CreateEntity(entity_name, EntityType::RENDERABLE);
+    // If it fails
+    if (!e.isValid())
+    {
+        LEEP_CORE_WARNING("CreateRenderable: The entity couldn't be created");
+        return;
+    }
     Drawable &d = e.getComponent<Drawable>();
     PbrData pbr;
     pbr.tiling_x_ = 1.0f;

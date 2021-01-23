@@ -2,7 +2,7 @@
 #include "glm/glm.hpp"
 #include "glm/gtc/matrix_transform.hpp"
 
-#define LEEP_SINGLE_THREAD 1
+#define LEEP_SINGLE_THREAD 0
 
 using namespace leep;
 
@@ -81,7 +81,10 @@ void Init()
 
 void Logic()
 {
+    Chrono logic_timer;
     DisplayList dl;
+
+    logic_timer.start();
     Entity::GetEntity("2").getComponent<LTransform>().rotateYWorld(1.0f * GM.delta_time());
 
     LuaScripting::ExecuteScript("../assets/scripts/update.lua");
@@ -101,13 +104,19 @@ void Logic()
 
     Render(GM.memory().container(EntityType::FALLING_CUBE)).executeSystem();
     Render(GM.memory().container(EntityType::RENDERABLE)).executeSystem();
+
+    logic_timer.end();
+    GM.ui_tools().calcLogicAverage(logic_timer.duration());
 }
 
 void RenderScene()
 {
+    Chrono render_timer;
+    render_timer.start();
     Manager::instance().renderer().renderFrame();
     GM.ui_tools().update();
-    //GM.ui_tools().render();
+    render_timer.end();
+    GM.ui_tools().calcRenderAverage(render_timer.duration());
 }
 
 int main()
@@ -117,6 +126,7 @@ int main()
     init_timer.start();
     Init();
     init_timer.end();
+    GM.tools_data().init_time_ms_ = init_timer.duration();
     LEEP_CORE_INFO("Init time: {0} ms", init_timer.duration());
 
     GM.startFrameTimer();

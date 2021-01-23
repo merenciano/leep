@@ -8,7 +8,12 @@ namespace leep
 {
     Entity Entity::CreateEntity(std::string name, EntityType t)
     {
-        LEEP_CORE_ASSERT(!s_map_.exists(name), "An entity with that name already exists.");
+        //LEEP_CORE_ASSERT(!s_map_.exists(name), "An entity with that name already exists.");
+        if (s_map_.exists(name))
+        {
+            LEEP_CORE_ERROR("CreateEntity: An entity with that name already exists.");
+            return Entity(-1, EntityType::NONE);
+        }
         EntityContainer &cont = GM.memory().container(t);
         if (cont.chunks_.back()->last_ == kEntitiesPerChunk)
         {

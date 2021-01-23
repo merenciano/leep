@@ -59,6 +59,40 @@ namespace leep
 
     }
 
+    void ImguiTools::calcLogicAverage(float frame) const
+    {
+        static int32_t i = 0;
+        static float previous[32];
+        previous[i++] = frame;
+        if (i == 32)
+        {
+            float avg = 0.0f;
+            i = 0;
+            for (int j = 0; j < 32; ++j)
+            {
+                avg += previous[j];
+            }
+            GM.tools_data().logic_average_ms_ = avg / 32.0f;
+        }
+    }
+
+    void ImguiTools::calcRenderAverage(float frame) const
+    {
+        static int32_t i = 0;
+        static float previous[32];
+        previous[i++] = frame;
+        if (i == 32)
+        {
+            float avg = 0.0f;
+            i = 0;
+            for (int j = 0; j < 32; ++j)
+            {
+                avg += previous[j];
+            }
+            GM.tools_data().render_average_ms_ = avg / 32.0f;
+        }
+    }
+
     bool ImguiTools::wantKeyboard() const
     {
         ImGuiIO &io = ImGui::GetIO();
@@ -82,6 +116,9 @@ namespace leep
         }
         ImGui::Text("Frame time: %f", GM.delta_time() * 1000.0f);
         ImGui::Text("FPS: %f", 1.0f / GM.delta_time());
+        ImGui::Text("Init time (ms): %f", GM.tools_data().init_time_ms_);
+        ImGui::Text("Logic average (ms): %f", GM.tools_data().logic_average_ms_);
+        ImGui::Text("Render average (ms): %f", GM.tools_data().render_average_ms_);
         ImGui::End();
     }
 
