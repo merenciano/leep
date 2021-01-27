@@ -140,7 +140,6 @@ int main()
         Logic();
         RenderScene();
 #endif
-
         GM.nextFrame();
     }
 
