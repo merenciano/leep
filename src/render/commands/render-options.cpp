@@ -36,3 +36,7 @@ namespace leep
 #ifdef LEEP_OPENGL
     #include "render/commands/opengl/opengl-render-options.cpp"
 #endif
+
+#ifdef LEEP_OPENGL_ES
+    #include "render/commands/opengl/opengl-render-options.cpp"
+#endif

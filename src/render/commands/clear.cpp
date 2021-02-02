@@ -40,3 +40,7 @@ namespace leep
 #ifdef LEEP_OPENGL
     #include "render/commands/opengl/opengl-clear.cpp"
 #endif
+
+#ifdef LEEP_OPENGL_ES
+    #include "render/commands/opengl/opengl-clear.cpp"
+#endif

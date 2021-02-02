@@ -1,3 +1,13 @@
+newoption {
+    trigger = "opengl",
+    description = "Uses OpenGL 3.3 for rendering"
+}
+
+newoption {
+    trigger = "opengl-es",
+    description = "Uses OpenGL ES 3.0 for rendering"
+}
+
 workspace "Leep"
     configurations {"Debug", "Release"}
     location "build"
@@ -51,7 +61,7 @@ project "leep"
     }
     
     configuration "vs2019"
-        defines {"_CRT_SECURE_NO_WARNINGS", "_GLFW_WIN32", "LEEP_OPENGL", }
+        defines {"_CRT_SECURE_NO_WARNINGS", "_GLFW_WIN32", }
 
         files {
             "./extern/src/GLFW/win32_platform.h",
@@ -67,7 +77,7 @@ project "leep"
         }
 
     configuration "gmake"
-        defines { "_GLFW_X11", "LEEP_OPENGL", "LUA_USE_POSIX", }
+        defines { "_GLFW_X11", "LUA_USE_POSIX",}
         links { "X11", "dl", "pthread"  }
         buildoptions { "-Wall",  }
 
@@ -87,6 +97,12 @@ project "leep"
             "./extern/src/GLFW/glx_context.c",
             "./extern/src/GLFW/linux_joystick.c",
         }
+
+    filter "options:opengl"
+        defines "LEEP_OPENGL"
+    
+    filter "options:opengl-es"
+        defines "LEEP_OPENGL_ES"
     
     filter "configurations:Debug"
         defines "LEEP_DEBUG"

@@ -22,3 +22,7 @@ namespace leep
 #ifdef LEEP_OPENGL
     #include "render/materials/opengl/opengl-pbr.cpp"
 #endif
+
+#ifdef LEEP_OPENGL_ES
+    #include "render/materials/opengl-es/opengl-es-pbr.cpp"
+#endif
