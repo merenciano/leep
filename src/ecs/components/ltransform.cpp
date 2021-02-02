@@ -30,4 +30,11 @@ namespace leep
     {
         return glm::vec3(transform_[3][0], transform_[3][1], transform_[3][2]);
     }
+
+    void LTransform::setLocation(glm::vec3 new_location)
+    {
+        transform_[3][0] = new_location.x;
+        transform_[3][1] = new_location.y;
+        transform_[3][2] = new_location.z;
+    }
 }

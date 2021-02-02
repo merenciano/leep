@@ -16,11 +16,13 @@ namespace leep
 
     void SceneGraph::createNode(LTransform *tr, GTransform *gtr)
     {
-        LEEP_ASSERT(!exists(tr), "That node exists already");
-        SceneGraphNode new_node;
-        new_node.self = tr;
-        new_node.global = gtr;
-        map_[tr] = new_node;
+        if (!exists(tr))
+        {
+            SceneGraphNode new_node;
+            new_node.self = tr;
+            new_node.global = gtr;
+            map_[tr] = new_node;
+        }
     }
 
     void SceneGraph::setParent(LTransform *tr, LTransform *parent)

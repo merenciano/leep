@@ -15,8 +15,6 @@ namespace leep
 		int32_t height() const;
 		void swap();
 		void pollEvents();
-		float time() const;
-		float delta_time() const;
 
 	private:
 		struct WindowData;

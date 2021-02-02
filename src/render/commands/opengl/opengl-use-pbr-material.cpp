@@ -1,6 +1,7 @@
 #include "render/commands/use-pbr-material.h"
 #include "core/manager.h"
-#include "glad/glad.h"
+#include "render/renderer.h"
+#include <glad/glad.h>
 
 #include <stdint.h>
 

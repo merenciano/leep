@@ -2,6 +2,8 @@
 
 #include "core/common-defs.h"
 #include "core/manager.h"
+#include "core/window.h"
+#include "render/renderer.h"
 
 namespace leep
 {

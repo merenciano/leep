@@ -1,14 +1,6 @@
 #ifndef __LEEP_CORE_MANAGER_H__
 #define __LEEP_CORE_MANAGER_H__ 1
 
-#include "core/window.h"
-#include "core/input.h"
-#include "core/memory.h"
-#include "core/scene-graph.h"
-#include "render/renderer.h"
-#include "render/camera.h"
-#include "tools/imgui-tools.h"
-
 #define GM Manager::instance()
 
 namespace leep 
@@ -21,28 +13,27 @@ namespace leep
         ~Manager() {}
 
         void init();
+        void nextFrame();
+        void startFrameTimer();
 
-        Window&     window()        { return window_; }
-        Renderer&   renderer()      { return renderer_; }
-        Camera&     camera()        { return camera_; }
-        Input&      input()         { return input_; }
-        Memory&     memory()        { return memory_; }
-        ImguiTools& ui_tools()      { return ui_tools_; }
-        SceneGraph& scene_graph()   { return scene_graph_; }
+        struct Window&      window();
+        struct Renderer&    renderer();
+        struct Camera&      camera();
+        struct Input&       input();
+        struct Memory&      memory();
+        struct ImguiTools&  ui_tools();
+        struct SceneGraph&  scene_graph();
+        struct ResourceMap& resource_map();
+        struct ToolsData&   tools_data();
+        float delta_time() const;
 
-    private:
-        Window      window_;
-        Renderer    renderer_;
-        Camera      camera_;
-        Input       input_;
-        Memory      memory_;
-        ImguiTools  ui_tools_;
-        SceneGraph  scene_graph_;
-    
     private:
         Manager() {}
         Manager(const Manager&) {}
         Manager& operator=(const Manager&) { return *this; }
+
+        struct ManagerData;
+        ManagerData *data_;
     };
 }
 

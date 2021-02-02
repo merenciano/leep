@@ -2,9 +2,10 @@
 #include "core/common-defs.h"
 #include "core/manager.h"
 #include "core/logger.h"
+#include "render/renderer.h"
 #include "render/commands/create-texture.h"
 
-#include "glad/glad.h"
+#include <glad/glad.h>
 
 static const char* kPbrVertex = R"(
     #version 330 core 

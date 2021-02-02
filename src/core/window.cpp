@@ -1,6 +1,8 @@
 #include "window.h"
 #include "core/common-defs.h"
 #include "core/manager.h"
+#include "tools/imgui-tools.h"
+#include "core/input.h"
 #include "glad/glad.h"
 #include "GLFW/glfw3.h"
 
@@ -8,8 +10,6 @@ namespace leep
 {
 	struct leep::Window::WindowData {
 		GLFWwindow *window;
-		float time;
-		float delta_time;
 	};
 
 	Window::Window()
@@ -40,8 +40,6 @@ namespace leep
 		}
 
 		data_ = new WindowData();
-		data_->time = (float)glfwGetTime();
-		data_->delta_time = 1.0f / 60.0f;
 		data_->window = glfwCreateWindow(w, h, "LEEP", NULL, NULL);
 		if (!data_->window)
 		{
@@ -73,9 +71,6 @@ namespace leep
 	{
 		LEEP_ASSERT(data_, "The window has not been created yet");
 		glfwSwapBuffers(data_->window);
-		float time = (float)glfwGetTime();
-		data_->delta_time = time - data_->time;
-		data_->time = time;
 	}
 
 	void Window::pollEvents()
@@ -97,17 +92,5 @@ namespace leep
 		int32_t height;
 		glfwGetWindowSize(data_->window, nullptr, &height);
 		return height;
-	}
-
-	float Window::time() const
-	{
-		LEEP_ASSERT(data_, "The window has not been created yet");
-		return data_->time;
-	}
-
-	float Window::delta_time() const
-	{
-		LEEP_ASSERT(data_, "The window has not been created yet");
-		return data_->delta_time;
 	}
 }

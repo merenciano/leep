@@ -22,7 +22,7 @@ namespace leep
     {
     public:
         explicit Component(CompType t) : type_(t) {}
-        virtual ~Component() {};
+        ~Component() {};
         CompType type() const { return type_; }
 
     protected:

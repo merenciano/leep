@@ -27,6 +27,13 @@ namespace leep
         DELETED_INTERNAL_ID       = 900000001,
     };
 
+    enum class EntityType
+    {
+        NONE,
+        RENDERABLE,
+        FALLING_CUBE,
+    };
+
     struct Vertex
     {
         float px;
