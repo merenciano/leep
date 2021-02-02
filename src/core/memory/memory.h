@@ -16,7 +16,7 @@ namespace leep
 
         EntityContainer& container(EntityType t);
         void createContainer(EntityType t);
-    private:
+    //private:
         std::unordered_map<EntityType, EntityContainer> entities_;
     };
 }

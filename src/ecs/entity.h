@@ -45,6 +45,30 @@ namespace leep
             return *static_cast<C*>(nullptr);
         }
 
+        template<typename C>
+        C* componentPtr()
+        {
+            EntityContainer &c = GM.memory().container(type_);
+            for (size_t i = 0; i < c.chunks_.at(ChunkI(index_))->comps_.size(); ++i)
+            {
+                if (C::s_type == c.chunks_.at(ChunkI(index_))->comps_[i][0].type())
+                {
+                    return static_cast<C*>(c.chunks_.at(ChunkI(index_))->comps_[i]) + EntityI(index_);
+                }
+            }
+            return nullptr;
+        }
+
+        template<typename C>
+        bool hasComponent()
+        {
+            // Maybe checking the component mask in the container of the type_
+            // is faster but I dont care... this method is not going to be
+            // inside any inner loop.
+            return componentPtr<C>();
+        }
+
+        std::string name() const;
         bool isValid() const;
         Entity& operator=(const Entity& e);
 

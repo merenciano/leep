@@ -5,13 +5,31 @@
 
 namespace leep
 {
+    struct ToolsData
+    {
+        float duration_ms_;
+        uint64_t duration_micro_;
+        float init_time_ms_;
+        float logic_average_ms_;
+        float render_average_ms_;
+    };
+
     class ImguiTools
     {
     public:
         ImguiTools();
         ~ImguiTools();
         void init(void *raw_window);
-        void update(float delta_time, int32_t width, int32_t height);
+        void update();
+        void render();
+
+        // Without the average the number change so often
+        // that it's impossible to read it 
+        void calcLogicAverage(float frame) const;
+        void calcRenderAverage(float frame) const;
+
+        bool wantMouse() const;
+        bool wantKeyboard() const;
     };
 }
 
