@@ -13,7 +13,7 @@ namespace leep
         ~Texture();
 
         Texture& operator=(const Texture &t);
-        void create(std::string path = "");
+        void create(std::string path = "", bool cube = false);
         void createEmpty(float width, float height);
         void release();
         int32_t id() const;

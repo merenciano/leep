@@ -31,7 +31,7 @@ namespace leep
                 r.textures_[id].path_.c_str(),
                 &width, &height, &nchannels, STBI_rgb);
             LEEP_CORE_ASSERT(img_data, "Can not load the image to the texture");
-            glTexImage2D(GL_TEXTURE_2D, 0, GL_SRGB, width, height,
+            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height,
                         0, GL_RGB, GL_UNSIGNED_BYTE, img_data);
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);

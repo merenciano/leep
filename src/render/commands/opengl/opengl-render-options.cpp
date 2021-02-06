@@ -9,8 +9,13 @@ namespace leep
     {
         // Blend options
         GLuint sfac, dfac;
+        bool disable_blend = false;
         switch(s_current_options.sfactor)
         {
+            case BlendFunc::DISABLED:
+                disable_blend = true;
+                break;
+
             case BlendFunc::ONE:
                 sfac = GL_ONE;
                 break;
@@ -34,6 +39,10 @@ namespace leep
 
         switch(s_current_options.dfactor)
         {
+            case BlendFunc::DISABLED:
+                disable_blend = true;
+                break;
+
             case BlendFunc::ONE:
                 dfac = GL_ONE;
                 break;
@@ -55,30 +64,42 @@ namespace leep
                 break;
         }
 
-        glBlendFunc(sfac, dfac);
+        if (disable_blend)
+        {
+            glDisable(GL_BLEND);
+        }
+        else
+        {
+            glEnable(GL_BLEND);
+            glBlendFunc(sfac, dfac);
+        }
 
         // Cull options
-        GLuint cull;
         switch(s_current_options.cull_face)
         {
+            case CullFace::DISABLED:
+                glDisable(GL_CULL_FACE);
+                break;
+
             case CullFace::FRONT:
-                cull = GL_FRONT;
+                glEnable(GL_CULL_FACE);
+                glCullFace(GL_FRONT);
                 break;
             
             case CullFace::BACK:
-                cull = GL_BACK;
+                glEnable(GL_CULL_FACE);
+                glCullFace(GL_BACK);
                 break;
             
             case CullFace::FRONT_AND_BACK:
-                cull = GL_FRONT_AND_BACK;
+                glEnable(GL_CULL_FACE);
+                glCullFace(GL_FRONT_AND_BACK);
                 break;
             
             default:
                 LEEP_CORE_ASSERT(false, "RenderOption invalid CullFace value");
                 break;
         }
-
-        glCullFace(cull);
 
         // Depth options
         if (s_current_options.write == true) 

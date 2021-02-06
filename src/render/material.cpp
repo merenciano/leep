@@ -82,6 +82,12 @@ namespace leep
         data_.plain_color = data;
     }
 
+    void Material::set_data(const SkyboxData &data)
+    {
+        LEEP_CORE_ASSERT(type_ == MaterialType::MT_SKYBOX, "The material has not the correct type yet.");
+        data_.skybox = data;
+    }
+
     void Material::set_texture(Texture texture)
     {
         texture_ = texture;

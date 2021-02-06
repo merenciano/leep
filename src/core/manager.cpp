@@ -14,6 +14,7 @@
 
 namespace leep
 {
+    Geometry Renderer::s_cube;
     struct Manager::ManagerData
     {
         Window      window_;
@@ -39,6 +40,8 @@ namespace leep
         data_->renderer_.init();
         data_->camera_.init();
         data_->delta_time_ = 0.16;
+
+        Renderer::s_cube.createCube();
     }
 
     float Manager::delta_time() const

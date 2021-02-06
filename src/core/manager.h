@@ -18,7 +18,7 @@ namespace leep
 
         struct Window&      window();
         struct Renderer&    renderer();
-        struct Camera&      camera();
+        struct Camera&      camera(); // TODO: Move camera to renderer
         struct Input&       input();
         struct Memory&      memory();
         struct ImguiTools&  ui_tools();

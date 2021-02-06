@@ -19,11 +19,6 @@ namespace leep
         LEEP_ASSERT((container_.mask() & mask) == mask, "This type of entity is not valid for this system");
 #endif
         DisplayList displayl;
-        PbrSceneData pbr_sd;
-        pbr_sd.view_projection = GM.camera().view_projection();
-
-        displayl.addCommand<UsePbrMaterial>()
-            .set_scene_data(pbr_sd);
 
         for (auto &chunk : container_.chunks_)
         {
