@@ -12,6 +12,6 @@ namespace leep
         GLuint program = Manager::instance().renderer().materials_[MaterialType::MT_PBR]->internal_id();
         glUseProgram(program);
         uint32_t uniform_pos = glGetUniformLocation(program, "u_scene_data");
-        glUniform4fv(uniform_pos, sizeof(PbrSceneData) / sizeof(float) / 4, (float*)&data_); // QUESTION: "this" instead of "&data_" ??
+        glUniform4fv(uniform_pos, sizeof(PbrSceneData) / sizeof(float) / 4, (float*)&data_); // TODO QUESTION: "this" instead of "&data_" ??
     }
 }

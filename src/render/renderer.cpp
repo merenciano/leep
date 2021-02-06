@@ -1,6 +1,7 @@
 #include "renderer.h"
 #include "render/materials/pbr.h"
 #include "render/materials/plain-color.h"
+#include "render/materials/skybox.h"
 
 namespace leep
 {
@@ -21,6 +22,7 @@ namespace leep
         // using the diferent materials in order
         materials_[MaterialType::MT_PBR] = std::make_unique<Pbr>();
         materials_[MaterialType::MT_PLAIN_COLOR] = std::make_unique<PlainColor>();
+        materials_[MaterialType::MT_SKYBOX] = std::make_unique<Skybox>();
         
         for (int32_t i = 0; i < MaterialType::MT_MAX; ++i)
         {

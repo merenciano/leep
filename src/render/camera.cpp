@@ -46,4 +46,9 @@ namespace leep
     {
         return projection_matrix_ * view_matrix_;
     }
+
+    glm::mat4 Camera::static_view_projection() const
+    {
+        return projection_matrix_ * glm::mat4(glm::mat3(view_matrix_));
+    }
 }

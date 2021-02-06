@@ -1,20 +1,15 @@
 #include "resource-map.h"
+#include "render/renderer.h"
 
 namespace leep
 {
     void ResourceMap::addGeometry(std::string name, std::string path)
     {
+        LEEP_ASSERT(name != "Cube", "There is already a cube named Cube");
         bool inserted = geometries_.emplace(std::make_pair(name, Geometry())).second;
         if (inserted)
         {
-            if (path == "")
-            {
-                geometries_[name].createCube();
-            }
-            else
-            {
-                geometries_[name].loadObj(path);
-            }
+            geometries_[name].loadObj(path);
         }
         else
         {
@@ -22,12 +17,15 @@ namespace leep
         }
     }
 
-    void ResourceMap::addTexture(std::string name, std::string path)
+    void ResourceMap::addTexture(std::string name, std::string path, bool cube)
     {
         bool inserted = textures_.emplace(std::make_pair(name, Texture())).second;
         if (inserted)
         {
-            textures_[name].create(path);
+            if (cube)
+                textures_[name].create(path, true);
+            else
+                textures_[name].create(path, false);
         }
         else
         {
@@ -37,6 +35,8 @@ namespace leep
 
     Geometry ResourceMap::getGeometry(std::string name) const
     {
+        if (name == "Cube")
+            return Renderer::s_cube;
         return geometries_.at(name);
     }
 

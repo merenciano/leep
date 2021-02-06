@@ -11,16 +11,9 @@ void Init()
     Logger::Init();
     GM.init();
     LuaScripting::Init();
-    DisplayList init_dl;
-    GM.resource_map().addGeometry("Cube", "");
+    GM.resource_map().addTexture("Skybox", "../assets/tex/skybox", true);
     GM.resource_map().addTexture("T-Rex", "../assets/tex/trex.jpg");
 
-    init_dl.addCommand<RenderOptions>()
-        .set_depth(true, true)
-        .set_cull_face(CullFace::BACK)
-        .set_blend(BlendFunc::ONE, BlendFunc::ZERO);
-
-    init_dl.submit();
 
     PbrData pbr;
     pbr.tiling_x_ = 1.0f;
@@ -82,7 +75,6 @@ void Init()
 void Logic()
 {
     Chrono logic_timer;
-    DisplayList dl;
 
     logic_timer.start();
     Entity::GetEntity("2").getComponent<LTransform>().rotateYWorld(1.0f * GM.delta_time());
@@ -97,13 +89,33 @@ void Logic()
     UpdateTransform(GM.memory().container(EntityType::RENDERABLE)).executeSystem();
     UpdateSceneGraph().executeSystem();
 
+    // Render commands
+    DisplayList dl;
+    PbrSceneData pbr_sd;
+    pbr_sd.view_projection = GM.camera().view_projection();
+
+    // Dear ImGui overrides them so I call the command once per frame
+    dl.addCommand<RenderOptions>()
+        .set_depth(true, true)
+        .set_cull_face(CullFace::BACK)
+        .set_blend(BlendFunc::ONE, BlendFunc::ZERO);
+
     dl.addCommand<Clear>()
         .set_clear_buffer(true, true, true)
         .set_clear_color(0.2f, 0.2f, 0.2f, 1.0f);
+
+    dl.addCommand<UsePbrMaterial>()
+        .set_scene_data(pbr_sd);
+
     dl.submit();
 
     Render(GM.memory().container(EntityType::FALLING_CUBE)).executeSystem();
     Render(GM.memory().container(EntityType::RENDERABLE)).executeSystem();
+
+    dl.addCommand<UseSkyboxMaterial>();
+    dl.addCommand<DrawSkybox>()
+        .set_cubemap(GM.resource_map().getTexture("Skybox"));
+    dl.submit();
 
     logic_timer.end();
     GM.ui_tools().calcLogicAverage(logic_timer.duration());
@@ -114,6 +126,7 @@ void RenderScene()
     Chrono render_timer;
     render_timer.start();
     Manager::instance().renderer().renderFrame();
+
     GM.ui_tools().update();
     render_timer.end();
     GM.ui_tools().calcRenderAverage(render_timer.duration());

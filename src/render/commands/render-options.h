@@ -11,6 +11,7 @@ namespace leep
     enum class BlendFunc
     {
         NONE,
+        DISABLED,
         ONE,
         SRC_ALPHA,
         ONE_MINUS_SRC_ALPHA,
@@ -20,6 +21,7 @@ namespace leep
     enum class CullFace
     {
         NONE,
+        DISABLED,
         FRONT,
         BACK,
         FRONT_AND_BACK

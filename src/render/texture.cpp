@@ -28,8 +28,9 @@ namespace leep
         return *this;
     }
 
-    void Texture::create(std::string path)
+    void Texture::create(std::string path, bool cube)
     {
+        LEEP_ASSERT(path != "" || cube != true, "The cubemap needs a path to a directory");
         Renderer &r = GM.renderer();
         // texture mutex??
 
@@ -50,6 +51,7 @@ namespace leep
         r.textures_[id_].version_ = 0;
         r.textures_[id_].width_ = 0;
         r.textures_[id_].height_ = 0;
+        r.textures_[id_].cube_ = cube;
     }
 
     void Texture::createEmpty(float width, float height)

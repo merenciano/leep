@@ -23,6 +23,10 @@ namespace leep
         const glm::mat4& view() const;
         const glm::mat4& projection() const;
         glm::mat4 view_projection() const;
+        // Matrix without the translate values.
+        // Result from projection * vec4(vec3(view));
+        // Used for the skybox
+        glm::mat4 static_view_projection() const;
 
     private:
         glm::mat4 view_matrix_;

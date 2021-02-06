@@ -13,12 +13,12 @@ namespace leep
     {
     public:
         ResourceMap() = default;
-        ~ResourceMap() = default;
+        ~ResourceMap() = default; // TODO: Remove resources from the GPU
         ResourceMap(const ResourceMap &rm) = delete;
         ResourceMap(ResourceMap &&rm) = delete;
 
         void addGeometry(std::string name, std::string path);
-        void addTexture(std::string name, std::string path);
+        void addTexture(std::string name, std::string path, bool cube = false);
         Geometry getGeometry(std::string name) const;
         Texture getTexture(std::string name) const;
 

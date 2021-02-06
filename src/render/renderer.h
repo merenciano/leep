@@ -3,6 +3,7 @@
 #ifndef __LEEP_RENDER_RENDERER_H__
 #define __LEEP_RENDER_RENDERER_H__ 1
 
+#include "render/geometry.h"
 #include "render/display-list.h"
 #include "render/internal-buffer.h"
 #include "render/internal-material.h"
@@ -20,6 +21,8 @@ namespace leep
     class Renderer
     {
     public:
+        static Geometry s_cube;
+
         Renderer();
         ~Renderer();
 

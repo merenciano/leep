@@ -12,6 +12,7 @@ namespace leep
     {
         MT_PBR = 0,
         MT_PLAIN_COLOR = 1,
+        MT_SKYBOX = 2,
 
         MT_MAX,
         MT_NONE
@@ -32,6 +33,11 @@ namespace leep
         float g;
         float b;
         float a;
+    };
+
+    struct SkyboxData
+    {
+        glm::mat4 world;
     };
 }
 #endif // __LEEP_RENDER_MATERIAL_TYPES_H__
