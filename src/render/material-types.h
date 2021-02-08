@@ -20,24 +20,25 @@ namespace leep
 
     struct PbrData
     {
-        glm::mat4 world;
+	private:
+		// The model matrix is setted with set_model method of the material
+		float model_[16];
+	public:
         float tiling_x_;
         float tiling_y_;
-        float padding[2];
+		float roughness_;
+		float metallic_;
+		float reflectance_;
+		float padding[3];
     };
 
     struct PlainColorData
     {
-        glm::mat4 world;
-        float r;
-        float g;
-        float b;
-        float a;
-    };
-
-    struct SkyboxData
-    {
-        glm::mat4 world;
+        glm::mat4 model_;
+        float r_;
+        float g_;
+        float b_;
+        float a_;
     };
 }
 #endif // __LEEP_RENDER_MATERIAL_TYPES_H__

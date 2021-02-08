@@ -2,7 +2,7 @@
 #include "glm/glm.hpp"
 #include "glm/gtc/matrix_transform.hpp"
 
-#define LEEP_SINGLE_THREAD 0
+#define LEEP_SINGLE_THREAD 1
 
 using namespace leep;
 
@@ -18,11 +18,14 @@ void Init()
     PbrData pbr;
     pbr.tiling_x_ = 1.0f;
     pbr.tiling_y_ = 1.0f;
+	pbr.metallic_ = 0.0f;
+	pbr.roughness_ = 0.0f;
+	pbr.reflectance_ = 5.0f;
 
     GM.memory().createContainer(EntityType::FALLING_CUBE);
     GM.memory().createContainer(EntityType::RENDERABLE);
 
-    for (int32_t i = 0; i < 3; ++i)
+    for (int32_t i = 0; i < 0; ++i)
     {
         for(int32_t j = 0; j < 3; ++j)
         {
@@ -92,7 +95,9 @@ void Logic()
     // Render commands
     DisplayList dl;
     PbrSceneData pbr_sd;
-    pbr_sd.view_projection = GM.camera().view_projection();
+    pbr_sd.view_projection_ = GM.camera().view_projection();
+	pbr_sd.camera_position_ = GM.camera().position();
+    pbr_sd.light_direction_intensity_ = glm::vec4(-1.0f, 0.3f, 0.3f, 1.0f);
 
     // Dear ImGui overrides them so I call the command once per frame
     dl.addCommand<RenderOptions>()

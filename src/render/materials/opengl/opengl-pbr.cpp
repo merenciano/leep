@@ -10,20 +10,29 @@
 static const char* kPbrVertex = R"(
     #version 330 core 
 
-    uniform vec4 u_entity_data[5];
-    uniform vec4 u_scene_data[4];
+    uniform vec4 u_entity_data[6];
+    uniform vec4 u_scene_data[6];
 
     layout (location = 0) in vec3 a_position;
     layout (location = 1) in vec3 a_normal;
     layout (location = 2) in vec2 a_uv;
 
+	out vec4 world_position;
+	out vec3 normal;
+	out vec3 camera_position;
+	out vec3 light_direction;
+	out float light_intensity;
     out vec2 uv;
 
     void main() {
         mat4 world = mat4(u_entity_data[0], u_entity_data[1], u_entity_data[2], u_entity_data[3]);
         mat4 vp = mat4(u_scene_data[0], u_scene_data[1], u_scene_data[2], u_scene_data[3]);
-        vec4 world_position = world * vec4(a_position, 1.0);
+        world_position = world * vec4(a_position, 1.0);
+		normal = mat3(world) * a_normal;
         uv = a_uv;
+		light_direction = u_scene_data[5].xyz;
+		light_intensity = u_scene_data[5].w;
+		camera_position = vec3(u_scene_data[4]);
         gl_Position = vp * world_position;
     }
 )";
@@ -31,15 +40,94 @@ static const char* kPbrVertex = R"(
 static const char* kPbrFragment = R"(
     #version 330 core 
 
-    uniform vec4 u_entity_data[5];
+	#define PI 3.14159265359
+
+    uniform vec4 u_entity_data[6];
     uniform sampler2D u_texture;
 
+	in vec4 world_position;
+	in vec3 normal;
+	in vec3 camera_position;
+	in vec3 light_direction;
+	in float light_intensity;
     in vec2 uv;
     out vec4 FragColor;
 
+	struct Material
+	{
+		vec3 base_color;
+		float roughness;
+		float metallic;
+		float reflectance;
+	};
+
+	// Normal distribution function (specular D)
+	float D_GGX(float NoH, float roughness) {
+		float a = NoH * roughness;
+		float k = roughness / (1.0 - NoH * NoH + a * a);
+		return k * k * (1.0 / PI);
+	}
+
+	// Visibility (specular V)
+	float V_SmithGGXCorrelatedFast(float NoV, float NoL, float roughness) {
+		float a = roughness;
+		float GGXV = NoL * (NoV * (1.0 - a) + a);
+		float GGXL = NoV * (NoL * (1.0 - a) + a);
+		return 0.5 / (GGXV + GGXL);
+	}
+
+	// Fresnel
+	vec3 F_Schlick(float u, vec3 f0) {
+		float f = pow(1.0 - u, 5.0);
+		return f + f0 * (1.0 - f);
+	}
+
+	// Diffuse BRDF
+	float Fd_Lambert() {
+		return 1.0 / PI;
+	}
+
+	vec3 BRDF(Material mat, vec3 l, vec3 v) {
+		vec3 n = normalize(normal);
+		vec3 h = normalize(v + l);
+
+		vec3 diffuse_color = (1.0 - mat.metallic) * mat.base_color.rgb;
+		vec3 f0 = 0.16 * mat.reflectance * mat.reflectance * (1.0 - mat.metallic) + diffuse_color * mat.metallic;
+
+		float NoV = abs(dot(n, v)) + 1e-5;
+		float NoL = clamp(dot(n, l), 0.0, 1.0);
+		float NoH = clamp(dot(n, h), 0.0, 1.0);
+		float LoH = clamp(dot(l, h), 0.0, 1.0);
+
+		// perceptually linear roughness to roughness
+		float roughness = mat.roughness * mat.roughness;
+
+		float D = D_GGX(NoH, roughness);
+		vec3  F = F_Schlick(LoH, f0);
+		float V = V_SmithGGXCorrelatedFast(NoV, NoL, roughness);
+
+		// specular BRDF
+		vec3 Fr = (D * V) * F;
+
+		// diffuse BRDF
+		vec3 Fd = diffuse_color * Fd_Lambert();
+
+		// apply lighting...
+		return Fd + Fr;
+	}
+
     void main() {
-        vec3 color = texture(u_texture, vec2(uv.x * u_entity_data[4].x, uv.y * u_entity_data[4].y)).rgb;
-        FragColor = vec4(color, 1.0); 
+		Material material;
+		material.base_color = texture(u_texture, vec2(uv.x * u_entity_data[4].x, uv.y * u_entity_data[4].y)).rgb;
+		material.roughness = u_entity_data[4].z;
+		material.metallic = u_entity_data[4].w;
+		material.reflectance = u_entity_data[5].x;
+
+		vec3 l = normalize(light_direction);
+		float NoL = clamp(dot(normalize(normal), l), 0.0, 1.0);
+		float illuminance = light_intensity * NoL;
+		vec3 res = BRDF(material, l, normalize(camera_position - vec3(world_position)));
+        FragColor = vec4(res * illuminance, 1.0); 
     }
 )";
 

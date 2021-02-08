@@ -16,15 +16,15 @@ namespace leep
         void nextFrame();
         void startFrameTimer();
 
-        struct Window&      window();
-        struct Renderer&    renderer();
-        struct Camera&      camera(); // TODO: Move camera to renderer
-        struct Input&       input();
-        struct Memory&      memory();
-        struct ImguiTools&  ui_tools();
-        struct SceneGraph&  scene_graph();
-        struct ResourceMap& resource_map();
-        struct ToolsData&   tools_data();
+        class Window&      window();
+        class Renderer&    renderer();
+        class Camera&      camera(); // TODO: Move camera to renderer
+        class Input&       input();
+        class Memory&      memory();
+        class ImguiTools&  ui_tools();
+        class SceneGraph&  scene_graph();
+        class ResourceMap& resource_map();
+        struct ToolsData&  tools_data();
         float delta_time() const;
 
     private:

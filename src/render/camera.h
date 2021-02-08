@@ -27,6 +27,7 @@ namespace leep
         // Result from projection * vec4(vec3(view));
         // Used for the skybox
         glm::mat4 static_view_projection() const;
+		glm::vec3 position() const;
 
     private:
         glm::mat4 view_matrix_;
