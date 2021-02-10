@@ -44,7 +44,7 @@ namespace leep
         {
             InternalTexture tmp;
             r.textures_.push_back(tmp);
-            handler_ = r.textures_.size() - 1;
+            handler_ = (int32_t)r.textures_.size() - 1;
         }
 
         r.textures_[handler_].internal_id_ = 0;
@@ -68,7 +68,7 @@ namespace leep
         {
             InternalTexture tmp;
             r.textures_.push_back(tmp);
-            handler_ = r.textures_.size() - 1;
+            handler_ = (int32_t)r.textures_.size() - 1;
         }
 
         LEEP_CORE_ASSERT(((width > 1.0f && height > 1.0f) ||

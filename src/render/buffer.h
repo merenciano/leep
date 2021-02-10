@@ -20,7 +20,6 @@ namespace leep
     {
     public:
         Buffer();
-        Buffer(BufferType t) : type_(t) { handler_ = ConstantValues::UNINITIALIZED_HANDLER; }
         Buffer(const Buffer &other);
         Buffer(Buffer &&other) = delete;
         ~Buffer() {}
@@ -29,7 +28,6 @@ namespace leep
 
         void create(BufferType type);
         void set_data(std::vector<Vertex> &data);
-        void set_data(std::vector<float> &data);
         void set_data(std::vector<uint32_t> &data);
         BufferType type() const;
         int32_t handler() const;

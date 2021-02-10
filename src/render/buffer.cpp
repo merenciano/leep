@@ -3,7 +3,7 @@
 #include "core/manager.h"
 #include "core/common-defs.h"
 #include "render/renderer.h"
-#include "render/internal-buffer.h"
+#include "render/internal-resources.h"
 
 namespace leep
 {

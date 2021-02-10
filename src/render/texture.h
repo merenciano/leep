@@ -1,7 +1,7 @@
 #ifndef __LEEP_RENDER_TEXTURE_H__
 #define __LEEP_RENDER_TEXTURE_H__ 1
 
-#include "render/internal-texture.h"
+#include <string>
 
 namespace leep
 {

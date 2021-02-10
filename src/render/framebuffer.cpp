@@ -32,7 +32,7 @@ namespace leep
 		{
 			InternalFramebuffer ifb;
 			r.framebuffers_.push_back(ifb);
-			handler_ = r.framebuffers_.size() - 1;
+			handler_ = (int32_t)r.framebuffers_.size() - 1;
 		}
 
 		color_texture_.createEmpty(width, height);

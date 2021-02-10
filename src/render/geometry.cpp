@@ -115,8 +115,8 @@ namespace leep
 				v.ny = v.py;
 				v.nz = v.pz;
 
-				v.tx = x / x_segments;
-				v.ty = y / y_segments;
+				v.tx = x / (float)x_segments;
+				v.ty = y / (float)y_segments;
 
 				vertex_vector.push_back(v);
 			}
@@ -178,7 +178,7 @@ namespace leep
                 vertex.tx = attrib.texcoords[2 * index.texcoord_index + 0];
                 vertex.ty = attrib.texcoords[2 * index.texcoord_index + 1];
                 vertices.push_back(vertex);
-                indices.push_back(indices.size());
+                indices.push_back((uint32_t)indices.size());
             }
         }
 

@@ -5,10 +5,7 @@
 
 #include "render/geometry.h"
 #include "render/display-list.h"
-#include "render/internal-buffer.h"
-#include "render/internal-material.h"
-#include "render/internal-texture.h"
-#include "render/internal-framebuffer.h"
+#include "render/internal-resources.h"
 #include "render/material-types.h"
 
 #include <stdint.h>

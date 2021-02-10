@@ -14,7 +14,7 @@ namespace leep
         int32_t id = texture_.id();
 
         LEEP_CORE_ASSERT(r.textures_[id].version_ == 0, "Texture created before?");
-        LEEP_CORE_ASSERT(id < 60, "Start thinking about the max textures");
+        LEEP_CORE_ASSERT(id < 63, "Max texture units");
         LEEP_CORE_ASSERT(id >= 0, "Texture not initialized");
         LEEP_CORE_ASSERT(r.textures_[id].internal_id_ == 0, "Renderer::createTexture: Texture created before");
 
