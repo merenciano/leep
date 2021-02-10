@@ -12,8 +12,8 @@ namespace leep
     public:
         static bool s_frame_cleared;
         Render() = delete;
-        Render(struct EntityContainer &container) : container_(container) {}
-        struct EntityContainer &container_;
+        Render(class EntityContainer &container) : container_(container) {}
+        class EntityContainer &container_;
         virtual void executeSystem() const override;
     };
 }

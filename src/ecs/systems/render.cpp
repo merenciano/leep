@@ -28,7 +28,7 @@ namespace leep
             {
                 const glm::mat4 &tr = tr_array[i].gtr_;
 
-                dw_array[i].material_.set_world(tr);
+                dw_array[i].material_.set_model(tr);
                 displayl.addCommand<Draw>()
                     .set_geometry(dw_array[i].geometry_)
                     .set_material(dw_array[i].material_);

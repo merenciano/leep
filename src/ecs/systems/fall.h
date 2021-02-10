@@ -11,8 +11,8 @@ namespace leep
     {
     public:
         Fall() = delete;
-        Fall(struct EntityContainer &container) : container_(container) {}
-        struct EntityContainer &container_;
+        Fall(class EntityContainer &container) : container_(container) {}
+        class EntityContainer &container_;
         virtual void executeSystem() const override;
     };
 }

@@ -12,7 +12,10 @@ namespace leep
     // with each entity, like camera and lights
     struct PbrSceneData
     {
-        glm::mat4x4 view_projection;
+        glm::mat4x4 view_projection_;
+		glm::vec3 camera_position_;
+		float padding_;
+		glm::vec4 light_direction_intensity_;
     };
 
     class UsePbrMaterial: public DisplayListCommand

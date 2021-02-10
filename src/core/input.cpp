@@ -35,6 +35,8 @@ namespace leep
 
     static void ScrollCallback(GLFWwindow *window, double x_offset, double y_offset)
     {
+		if (GM.ui_tools().wantMouse())
+			return;
         GM.input().set_scroll((float)y_offset);
     }
 

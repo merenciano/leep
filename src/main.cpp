@@ -2,7 +2,7 @@
 #include "glm/glm.hpp"
 #include "glm/gtc/matrix_transform.hpp"
 
-#define LEEP_SINGLE_THREAD 0
+#define LEEP_SINGLE_THREAD 1
 
 using namespace leep;
 
@@ -18,38 +18,45 @@ void Init()
     PbrData pbr;
     pbr.tiling_x_ = 1.0f;
     pbr.tiling_y_ = 1.0f;
+	pbr.metallic_ = 0.5f;
+	pbr.roughness_ = 0.5f;
+	pbr.reflectance_ = 0.5f;
+	pbr.color_ = glm::vec3(1.0f, 0.0f, 0.0f);
+	pbr.use_albedo_map_ = 0.0f;
 
-    GM.memory().createContainer(EntityType::FALLING_CUBE);
     GM.memory().createContainer(EntityType::RENDERABLE);
 
-    for (int32_t i = 0; i < 3; ++i)
+    for (int32_t i = 0; i < 6; ++i)
     {
-        for(int32_t j = 0; j < 3; ++j)
+        for(int32_t j = 0; j < 6; ++j)
         {
-            Entity e = Entity::CreateEntity(
-                "Cube_" + std::to_string(i) + "_" + std::to_string(j), EntityType::FALLING_CUBE);
+			PbrData mat_data;
+			mat_data.color_ = glm::vec3(1.0f, 0.0f, 0.0f);
+			mat_data.use_albedo_map_ = 0.0f;
+			mat_data.tiling_x_ = 1.0f;
+			mat_data.tiling_y_ = 1.0f;
+			mat_data.metallic_ = i / 6.0f;
+			mat_data.roughness_ = j / 6.0f;
+			mat_data.reflectance_ = 0.5f;
 
-            LTransform &tr = e.getComponent<LTransform>();
-            tr.transform_ = glm::scale(tr.transform_, glm::vec3(0.3f, 0.3f, 0.3f));
-            tr.transform_ = glm::translate(tr.transform_, glm::vec3(1.5f * i, -1.1f * j, -5.0f));
-
-            Drawable &cube_dw = e.getComponent<Drawable>();
-            cube_dw.geometry_ = GM.resource_map().getGeometry("Cube");
-            cube_dw.material_.set_type(MaterialType::MT_PBR);
-            cube_dw.material_.set_data(pbr);
-            cube_dw.material_.set_texture(GM.resource_map().getTexture("T-Rex"));
-
-            e.getComponent<FallSpeed>().speed_ = 2.0f;
-            e.getComponent<InfiniteFallingLimits>().limit_down_ = -10.0f;
-            e.getComponent<InfiniteFallingLimits>().limit_up_= 10.0f;
+			Entity e = Entity::CreateEntity("Sph" + std::to_string(i) + "_" + std::to_string(j), 
+											EntityType::RENDERABLE);
+			LTransform &tr = e.getComponent<LTransform>();
+			tr.transform_ = glm::scale(tr.transform_, glm::vec3(0.2f, 0.2f, 0.2f));
+			tr.transform_ = glm::translate(tr.transform_, glm::vec3(i * 2.0f , 0.0f, j * 2.0f));
+			Drawable &dw = e.getComponent<Drawable>();
+			dw.geometry_ = GM.resource_map().getGeometry("Sphere");
+			dw.material_.set_type(MaterialType::MT_PBR);
+			dw.material_.set_data(mat_data);
+			dw.material_.set_texture(GM.resource_map().getTexture("T-Rex"));
         }
     }
 
-    Entity e = Entity::CreateEntity("1", EntityType::RENDERABLE);
+    /*Entity e = Entity::CreateEntity("1", EntityType::RENDERABLE);
     LTransform &tr = e.getComponent<LTransform>();
     tr.transform_ = glm::scale(tr.transform_, glm::vec3(0.3f, 0.3f, 0.3f));
     Drawable &cube_dw = e.getComponent<Drawable>();
-    cube_dw.geometry_ = GM.resource_map().getGeometry("Cube");
+    cube_dw.geometry_ = GM.resource_map().getGeometry("Sphere");
     cube_dw.material_.set_type(MaterialType::MT_PBR);
     cube_dw.material_.set_data(pbr);
     cube_dw.material_.set_texture(GM.resource_map().getTexture("T-Rex"));
@@ -61,13 +68,14 @@ void Init()
     child_tr.transform_ = glm::scale(child_tr.transform_, glm::vec3(1.0f, 1.0f, 1.0f));
     child_tr.transform_ = glm::translate(child_tr.transform_, glm::vec3(3.0f, 0.0f, 0.0f));
     Drawable &child_dw = child.getComponent<Drawable>();
-    child_dw.geometry_ = GM.resource_map().getGeometry("Cube");
+    child_dw.geometry_ = GM.resource_map().getGeometry("Sphere");
     child_dw.material_.set_type(MaterialType::MT_PBR);
     child_dw.material_.set_data(pbr);
     child_dw.material_.set_texture(GM.resource_map().getTexture("T-Rex"));
 
     GM.scene_graph().createNode(&child.getComponent<LTransform>(), &child.getComponent<GTransform>());
     GM.scene_graph().setParent(&child.getComponent<LTransform>(), &e.getComponent<LTransform>());
+	*/
 
     LuaScripting::ExecuteScript("../assets/scripts/init.lua");
 }
@@ -77,22 +85,21 @@ void Logic()
     Chrono logic_timer;
 
     logic_timer.start();
-    Entity::GetEntity("2").getComponent<LTransform>().rotateYWorld(1.0f * GM.delta_time());
+    //Entity::GetEntity("2").getComponent<LTransform>().rotateYWorld(1.0f * GM.delta_time());
 
     LuaScripting::ExecuteScript("../assets/scripts/update.lua");
 
     GM.input().updateInput();
     CameraMovement(1.0f, 1.0f).executeSystem();
-    Fall(GM.memory().container(EntityType::FALLING_CUBE)).executeSystem();
-    InfiniteFalling(GM.memory().container(EntityType::FALLING_CUBE)).executeSystem();
-    UpdateTransform(GM.memory().container(EntityType::FALLING_CUBE)).executeSystem();
     UpdateTransform(GM.memory().container(EntityType::RENDERABLE)).executeSystem();
     UpdateSceneGraph().executeSystem();
 
     // Render commands
     DisplayList dl;
     PbrSceneData pbr_sd;
-    pbr_sd.view_projection = GM.camera().view_projection();
+    pbr_sd.view_projection_ = GM.camera().view_projection();
+	pbr_sd.camera_position_ = GM.camera().position();
+    pbr_sd.light_direction_intensity_ = glm::vec4(0.0f, 1.0f, 0.0f, 2.0f);
 
     // Dear ImGui overrides them so I call the command once per frame
     dl.addCommand<RenderOptions>()
@@ -109,7 +116,6 @@ void Logic()
 
     dl.submit();
 
-    Render(GM.memory().container(EntityType::FALLING_CUBE)).executeSystem();
     Render(GM.memory().container(EntityType::RENDERABLE)).executeSystem();
 
     dl.addCommand<UseSkyboxMaterial>();

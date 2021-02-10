@@ -21,6 +21,9 @@ void leep::CreateRenderable(std::string entity_name,
     PbrData pbr;
     pbr.tiling_x_ = 1.0f;
     pbr.tiling_y_ = 1.0f;
+    pbr.metallic_ = 0.0f;
+    pbr.roughness_ = 0.0f;
+    pbr.reflectance_ = 5.0f;
     d.geometry_ = GM.resource_map().getGeometry(geometry_name);
     d.material_.set_type(MaterialType::MT_PBR);
     d.material_.set_data(pbr);

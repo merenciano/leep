@@ -51,4 +51,10 @@ namespace leep
     {
         return projection_matrix_ * glm::mat4(glm::mat3(view_matrix_));
     }
+
+	glm::vec3 Camera::position() const
+	{
+		glm::mat4 inv = glm::inverse(view_matrix_);
+		return glm::vec3(inv[3][0], inv[3][1], inv[3][2]);
+	}
 }

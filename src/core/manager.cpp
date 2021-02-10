@@ -15,6 +15,7 @@
 namespace leep
 {
     Geometry Renderer::s_cube;
+    Geometry Renderer::s_sphere;
     struct Manager::ManagerData
     {
         Window      window_;
@@ -39,9 +40,10 @@ namespace leep
         data_->window_.createWindow(1280, 720, true);
         data_->renderer_.init();
         data_->camera_.init();
-        data_->delta_time_ = 0.16;
+        data_->delta_time_ = 0.16f;
 
         Renderer::s_cube.createCube();
+		Renderer::s_sphere.createSphere(50, 50);
     }
 
     float Manager::delta_time() const

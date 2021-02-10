@@ -13,7 +13,7 @@ namespace leep
         LEEP_CORE_ASSERT(r.textures_[id].version_ == 0, "Texture created before?");
         LEEP_CORE_ASSERT(id < 60, "Start thinking about the max textures");
         LEEP_CORE_ASSERT(id >= 0, "Texture not initialized");
-        LEEP_CORE_ASSERT(r.textures_[id].id_ == 0, "Renderer::createCubemap: Texture created before");
+        LEEP_CORE_ASSERT(r.textures_[id].internal_id_ == 0, "Renderer::createCubemap: Texture created before");
 
         // The path for cubemaps will be the directory where the skyboxfaces are
         // and inside the directory the faces must have these names
@@ -26,10 +26,10 @@ namespace leep
             r.textures_[id].path_ + "/back.jpg",
         };
 
-        glGenTextures(1, (GLuint*)&(r.textures_[id].id_));
+        glGenTextures(1, (GLuint*)&(r.textures_[id].internal_id_));
         r.textures_[id].texture_unit_ = id + 1;
         glActiveTexture(GL_TEXTURE0 + r.textures_[id].texture_unit_);
-        glBindTexture(GL_TEXTURE_CUBE_MAP, r.textures_[id].id_);
+        glBindTexture(GL_TEXTURE_CUBE_MAP, r.textures_[id].internal_id_);
         
         LEEP_ASSERT(r.textures_[id].path_ != "", "The cubemap needs a path to a directory");
         int32_t width, height, nchannels;

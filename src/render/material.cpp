@@ -25,11 +25,11 @@ namespace leep
             break;
 
         case MaterialType::MT_PBR:
-            data_.pbr = other.data_.pbr;
+            data_.pbr_ = other.data_.pbr_;
             break;
         
         case MaterialType::MT_PLAIN_COLOR:
-            data_.plain_color = other.data_.plain_color;
+            data_.plain_color_ = other.data_.plain_color_;
             break;
 
         default:
@@ -46,11 +46,11 @@ namespace leep
         switch(type_)
         {
         case MaterialType::MT_PBR:
-            data_.pbr = other.data_.pbr;
+            data_.pbr_ = other.data_.pbr_;
             break;
         
         case MaterialType::MT_PLAIN_COLOR:
-            data_.plain_color = other.data_.plain_color;
+            data_.plain_color_ = other.data_.plain_color_;
             break;
 
         default:
@@ -65,27 +65,21 @@ namespace leep
         type_ = type;
     }
 
-    void Material::set_world(const glm::mat4 &world)
+    void Material::set_model(const glm::mat4 &world)
     {
-        data_.world = world;    
+        data_.model_ = world;    
     }
 
     void Material::set_data(const PbrData &data)
     {
         LEEP_CORE_ASSERT(type_ == MaterialType::MT_PBR, "The material has not the correct type yet.");
-        data_.pbr = data;
+        data_.pbr_ = data;
     }
 
     void Material::set_data(const PlainColorData &data)
     {
         LEEP_CORE_ASSERT(type_ == MaterialType::MT_PLAIN_COLOR, "The material has not the correct type yet.");
-        data_.plain_color = data;
-    }
-
-    void Material::set_data(const SkyboxData &data)
-    {
-        LEEP_CORE_ASSERT(type_ == MaterialType::MT_SKYBOX, "The material has not the correct type yet.");
-        data_.skybox = data;
+        data_.plain_color_ = data;
     }
 
     void Material::set_texture(Texture texture)
