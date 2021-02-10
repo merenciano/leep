@@ -20,7 +20,7 @@ void Init()
     pbr.tiling_y_ = 1.0f;
 	pbr.metallic_ = 0.5f;
 	pbr.roughness_ = 0.5f;
-	pbr.reflectance_ = 0.4f;
+	pbr.reflectance_ = 0.5f;
 	pbr.color_ = glm::vec3(1.0f, 0.0f, 0.0f);
 	pbr.use_albedo_map_ = 0.0f;
 
@@ -37,7 +37,7 @@ void Init()
 			mat_data.tiling_y_ = 1.0f;
 			mat_data.metallic_ = i / 6.0f;
 			mat_data.roughness_ = j / 6.0f;
-			mat_data.reflectance_ = 0.9f;
+			mat_data.reflectance_ = 0.5f;
 
 			Entity e = Entity::CreateEntity("Sph" + std::to_string(i) + "_" + std::to_string(j), 
 											EntityType::RENDERABLE);

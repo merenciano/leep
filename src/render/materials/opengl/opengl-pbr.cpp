@@ -132,7 +132,7 @@ static const char* kPbrFragment = R"(
 
     void main() {
 		Material material;
-		material.roughness = ROUGHNESS;
+		material.roughness = max(ROUGHNESS, 0.05);
 		material.metallic = METALLIC;
 		material.reflectance = REFLECTANCE;
 
