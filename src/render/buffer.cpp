@@ -31,11 +31,11 @@ namespace leep
         LEEP_ASSERT(handler_ == ConstantValues::UNINITIALIZED_HANDLER, "This handler has been created before");
 
         type_ = type;
-        if (!Manager::instance().renderer().aviable_buffer_vector_positions_.empty())
+        if (!Manager::instance().renderer().aviable_buffer_pos_.empty())
         {
             // Getting the first element and removing it from the list
-            handler_ = Manager::instance().renderer().aviable_buffer_vector_positions_.front();
-            Manager::instance().renderer().aviable_buffer_vector_positions_.pop_front();
+            handler_ = Manager::instance().renderer().aviable_buffer_pos_.front();
+            Manager::instance().renderer().aviable_buffer_pos_.pop_front();
         }
         else
         {

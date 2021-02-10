@@ -19,7 +19,7 @@ namespace leep
         int32_t id() const;
 
     private:
-        int32_t id_;
+        int32_t handler_;
     };
 }
 

@@ -8,6 +8,7 @@
 #include "render/internal-buffer.h"
 #include "render/internal-material.h"
 #include "render/internal-texture.h"
+#include "render/internal-framebuffer.h"
 #include "render/material-types.h"
 
 #include <stdint.h>
@@ -36,15 +37,18 @@ namespace leep
         std::list<int32_t> aviable_tex_pos_;
         std::vector<InternalTexture> textures_;
 
+		std::list<int32_t> aviable_fb_pos_;
+		std::vector<InternalFramebuffer> framebuffers_;
+
+        std::list<uint32_t> aviable_buffer_pos_;
         std::vector<InternalBuffer> buffers_;
-        std::list<uint32_t> aviable_buffer_vector_positions_;
+
         std::unique_ptr<InternalMaterial> materials_[MaterialType::MT_MAX];
 
         std::list<DisplayList> next_frame_command_queue_;
         std::list<DisplayList> current_frame_commands_;
 
         std::mutex next_frame_command_queue_mtx_;
-        std::mutex current_frame_commands_mtx_;
     };
 }
 

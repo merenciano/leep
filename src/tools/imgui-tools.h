@@ -2,6 +2,7 @@
 #define __LEEP_TOOLS_IMGUI_TOOLS_H__ 1
 
 #include <stdint.h>
+#include <string>
 
 namespace leep
 {
@@ -23,6 +24,9 @@ namespace leep
         void update();
         void render();
 
+		void entityInspector();
+		void componentInspector();
+
         // Without the average the number change so often
         // that it's impossible to read it 
         void calcLogicAverage(float frame) const;
@@ -30,6 +34,10 @@ namespace leep
 
         bool wantMouse() const;
         bool wantKeyboard() const;
+		
+	private:
+		std::string selected_entity_;
+		bool show_components_;
     };
 }
 

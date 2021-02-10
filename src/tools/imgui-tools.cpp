@@ -2,11 +2,14 @@
 #include "core/manager.h"
 #include "core/memory/memory.h"
 #include "ecs/entity.h"
+#include "ecs/components/ltransform.h"
+#include "ecs/components/drawable.h"
 #include "tools/lua-scripting.h"
 
 #include <vector>
 #include <deque>
 
+#include <glm/gtc/type_ptr.hpp>
 #include <ImGui/imgui.h>
 #include <ImGui/imgui_impl_opengl3.h> // TODO(Lucas): implement myself
 #include <ImGui/imgui_impl_glfw.h>
@@ -16,11 +19,11 @@ namespace leep
 {
     static void BasicAppInfo();
     static void LuaCommands();
-    static void EntityInspector();
 
     ImguiTools::ImguiTools()
     {
-
+		selected_entity_ = "";
+        show_components_ = false;
     }
 
     ImguiTools::~ImguiTools()
@@ -48,7 +51,8 @@ namespace leep
 
         BasicAppInfo();
         LuaCommands();
-        EntityInspector();
+        entityInspector();
+		componentInspector();
 
         ImGui::Render();
         ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
@@ -140,7 +144,7 @@ namespace leep
         ImGui::End();
     }
 
-    static void EntityInspector()
+    void ImguiTools::entityInspector()
     {
         static bool show = true;
         if (!ImGui::Begin("Entity inspector", &show, 0))
@@ -194,7 +198,12 @@ namespace leep
                                 ImGui::TableSetColumnIndex(0);
                                 ImGui::Text("%d", j);
                                 ImGui::TableSetColumnIndex(1);
-                                ImGui::Text("%s", Entity(j, it->first).name().c_str());
+                                //ImGui::Text("%s", Entity(j, it->first).name().c_str());
+                                if (ImGui::Button(Entity(j, it->first).name().c_str()))
+                                {
+                                    show_components_  = true;
+                                    selected_entity_ = Entity(j, it->first).name();
+                                }
                             }
                             ImGui::EndTable();
                         }
@@ -206,4 +215,48 @@ namespace leep
         }
         ImGui::End();
     }
+
+	void ImguiTools::componentInspector()
+	{
+		char window_title[64];
+        if (selected_entity_ == "")
+        {
+            return;
+        }
+
+        snprintf(window_title, 64, "Components of %s", selected_entity_.c_str());
+		if (!ImGui::Begin(window_title, &show_components_, 0))
+		{
+			// Early out if the window is collapsed, as an optimization.
+			ImGui::End();
+			return;
+		}
+        // Generating the entity from the name because the Entity type
+        // can lose its reference if any entity is removed because
+        // when that happens the last entity of the container is relocated
+        // in order to fill the gap, so that last entity could be the one
+        // stored in the entity variable and Entity::index_ would cause a crash in the best case
+        Entity e = Entity::GetEntity(selected_entity_);
+        if (e.hasComponent<LTransform>())
+        {
+
+        }
+        if (e.hasComponent<Drawable>())
+        {
+            Drawable& dw = e.getComponent<Drawable>();
+            if (dw.material_.type() == MaterialType::MT_PBR)
+            {
+                PbrData data = dw.material_.data().pbr_;
+                ImGui::ColorEdit3   ("Color"            , glm::value_ptr(data.color_));
+                ImGui::InputFloat   ("Texture tiling X" , &data.tiling_x_);
+                ImGui::InputFloat   ("Texture tiling Y" , &data.tiling_y_);
+                ImGui::SliderFloat  ("Use albedo map"   , &data.use_albedo_map_ , 0.0f, 1.0f);
+                ImGui::SliderFloat  ("Roughness"        , &data.roughness_      , 0.0f, 1.0f);
+                ImGui::SliderFloat  ("Metallic"         , &data.metallic_       , 0.0f, 1.0f);
+                ImGui::SliderFloat  ("Reflectance"      , &data.reflectance_    , 0.0f, 1.0f);
+                dw.material_.set_data(data);
+            }
+        }
+		ImGui::End();
+	}
 }
