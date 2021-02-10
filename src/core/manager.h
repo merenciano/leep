@@ -10,6 +10,8 @@ namespace leep
     public:
         static Manager& instance() { static Manager m; return m; }
 
+        // Not deleting data because this the unique instance of this class
+        // will live until the end of the program
         ~Manager() {}
 
         void init();
@@ -28,7 +30,7 @@ namespace leep
         float delta_time() const;
 
     private:
-        Manager() {}
+        Manager() { data_ = nullptr; }
         Manager(const Manager&) {}
         Manager& operator=(const Manager&) { return *this; }
 

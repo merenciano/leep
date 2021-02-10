@@ -94,6 +94,54 @@ namespace leep
         index_buffer_.set_data(index_vector);
     }
 
+	void Geometry::createSphere(uint32_t x_segments, uint32_t y_segments)
+	{
+		const float PI = 3.14159265359f;
+		std::vector<Vertex> vertex_vector;
+		std::vector<uint32_t> index_vector;
+		
+		for (uint32_t y = 0; y <= y_segments; ++y)
+		{
+			for (uint32_t x = 0; x <= x_segments; ++x)
+			{
+				Vertex v;
+				float x_segment = (float)x / (float)x_segments;
+				float y_segment = (float)y / (float)y_segments;
+				v.px = std::cos(x_segment * (2.0f * PI)) * std::sin(y_segment * PI);
+				v.py = std::cos(y_segment * PI);
+				v.pz = std::sin(x_segment * (2.0f * PI)) * std::sin(y_segment * PI);
+
+				v.nx = v.px;
+				v.ny = v.py;
+				v.nz = v.pz;
+
+				v.tx = x / x_segments;
+				v.ty = y / y_segments;
+
+				vertex_vector.push_back(v);
+			}
+		}
+
+		for (uint32_t y = 0; y < y_segments; ++y)
+		{
+			for (uint32_t x = 0; x < x_segments; ++x)
+			{
+				index_vector.push_back((y + 1) * (x_segments + 1) + x);
+				index_vector.push_back(y       * (x_segments + 1) + x);
+				index_vector.push_back(y       * (x_segments + 1) + x + 1);
+
+				index_vector.push_back((y + 1) * (x_segments + 1) + x);
+				index_vector.push_back(y       * (x_segments + 1) + x + 1);
+				index_vector.push_back((y + 1) * (x_segments + 1) + x + 1);
+			}
+		}
+
+		vertex_buffer_.create(BufferType::VERTEX_BUFFER);
+		vertex_buffer_.set_data(vertex_vector);
+		index_buffer_.create(BufferType::INDEX_BUFFER);
+		index_buffer_.set_data(index_vector);
+	}
+
     void Geometry::loadObj(std::string path)
     {
         tinyobj::attrib_t attrib;

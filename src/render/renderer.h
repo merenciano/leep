@@ -22,6 +22,7 @@ namespace leep
     {
     public:
         static Geometry s_cube;
+        static Geometry s_sphere;
 
         Renderer();
         ~Renderer();

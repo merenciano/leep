@@ -13,9 +13,9 @@ namespace leep
     {
     public:
         UpdateTransform() = delete;
-        UpdateTransform(struct EntityContainer &container) : container_(container) {}
+        UpdateTransform(class EntityContainer &container) : container_(container) {}
         ~UpdateTransform() = default;
-        struct EntityContainer &container_;
+        class EntityContainer &container_;
         virtual void executeSystem() const override;
     };
 }

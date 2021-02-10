@@ -24,12 +24,16 @@ namespace leep
 		// The model matrix is setted with set_model method of the material
 		float model_[16];
 	public:
+		glm::vec3 color_;
+		float use_albedo_map_;
+		float paddinggg;
         float tiling_x_;
         float tiling_y_;
+		float padding;
 		float roughness_;
 		float metallic_;
 		float reflectance_;
-		float padding[3];
+		float paddingg;
     };
 
     struct PlainColorData

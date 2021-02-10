@@ -11,8 +11,8 @@ namespace leep
     {
     public:
         InfiniteFalling() = delete;
-        InfiniteFalling(struct EntityContainer &container) : container_(container) {}
-        struct EntityContainer &container_;
+        InfiniteFalling(class EntityContainer &container) : container_(container) {}
+        class EntityContainer &container_;
         virtual void executeSystem() const override;
     };
 }
