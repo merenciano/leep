@@ -28,7 +28,7 @@ namespace leep
         return *this;
     }
 
-    void Texture::create(std::string path, bool cube)
+    void Texture::create(std::string path, bool linear, bool cube)
     {
         LEEP_ASSERT(path != "" || cube != true, "The cubemap needs a path to a directory");
 		LEEP_ASSERT(handler_ == ConstantValues::UNINITIALIZED_HANDLER, "This texture has been created before");
@@ -53,11 +53,13 @@ namespace leep
         r.textures_[handler_].width_ = 0;
         r.textures_[handler_].height_ = 0;
         r.textures_[handler_].cube_ = cube;
+        r.textures_[handler_].linear_ = linear;
     }
 
     void Texture::createEmpty(float width, float height)
     {
         LEEP_ASSERT(handler_ == ConstantValues::UNINITIALIZED_HANDLER, "This texture has been created before");
+		LEEP_ASSERT(width > 0.0f && height > 0.0f, "Width and height of the texture must be greater than 0");
         Renderer &r = GM.renderer();
         if (!r.aviable_tex_pos_.empty())
         {
@@ -91,6 +93,7 @@ namespace leep
         r.textures_[handler_].path_ = "";
         r.textures_[handler_].version_ = 0;
 		r.textures_[handler_].cube_ = false; // TODO: Create empty cube tex if I add pointlight shadows
+		r.textures_[handler_].linear_ = false;
     }
 
     void Texture::release()

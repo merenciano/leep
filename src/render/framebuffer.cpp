@@ -62,4 +62,19 @@ namespace leep
 			handler_ = ConstantValues::DELETED_HANDLER;
 		}
 	}
+
+	Texture Framebuffer::color() const
+	{
+		return color_texture_;
+	}
+
+	Texture Framebuffer::depth() const
+	{
+		return depth_texture_;
+	}
+
+	int32_t Framebuffer::id() const
+	{
+		return handler_;
+	}
 }

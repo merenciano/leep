@@ -30,13 +30,14 @@ namespace leep
         uint32_t width_;
         uint32_t height_;
         std::string path_ = "";
+		bool linear_;
         bool cube_;
     };
 
 	struct InternalFramebuffer
 	{
-		int32_t internal_id_;
-		int32_t version_;
+		int32_t internal_id_ = -1;
+		int32_t version_ = 0;
 		float width_;
 		float height_;
 		bool color_;

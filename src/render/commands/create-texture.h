@@ -8,19 +8,37 @@
 
 namespace leep
 {
+	enum class TextureFormat
+	{
+		// Default enum for catch errors
+		NONE,
+
+		// Use for image textures (will make the image linear and then will need to be gamma corrected)
+		GAMMA,
+
+		// Use for already linear images (normap maps, ao, roughness...)
+		LINEAR,
+
+		// Framebuffer attachments
+		COLOR_BUFFER,
+		DEPTH_BUFFER,
+	};
+
     class CreateTexture : public DisplayListCommand
     {
     public:
-        CreateTexture() = default;
+        CreateTexture();
         CreateTexture(const CreateTexture &other) = delete;
         CreateTexture(CreateTexture &&other) = delete;
         ~CreateTexture() = default;
 
         CreateTexture& set_texture(const Texture &texture);
+        CreateTexture& set_format(TextureFormat format);
         virtual void executeCommand() const override;
 
     private:
         Texture texture_;
+		TextureFormat format_;
     };
 }
 

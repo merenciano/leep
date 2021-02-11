@@ -205,7 +205,20 @@ namespace leep
         if (r.textures_[tex_id].version_ == 0)
         {
             // Render commands can be executed without submiting any DisplayList
-            CreateTexture().set_texture(material.texture()).executeCommand();
+			if (r.textures_[tex_id].linear_)
+			{
+				CreateTexture()
+					.set_texture(material.texture())
+					.set_format(TextureFormat::LINEAR)
+					.executeCommand();
+			}
+			else
+			{
+				CreateTexture()
+					.set_texture(material.texture())
+					.set_format(TextureFormat::GAMMA)
+					.executeCommand();
+			}
         }
 
         GLint uniform_location = glGetUniformLocation(internal_id_, "u_albedo");
