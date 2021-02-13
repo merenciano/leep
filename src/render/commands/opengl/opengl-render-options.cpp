@@ -31,7 +31,7 @@ namespace leep
             case BlendFunc::ZERO:
                 sfac = GL_ZERO;
                 break;
-            
+
             default:
                 LEEP_CORE_ASSERT(false, "RenderOption invalid BlendCommand S value");
                 break;
@@ -58,7 +58,7 @@ namespace leep
             case BlendFunc::ZERO:
                 dfac = GL_ZERO;
                 break;
-            
+
             default:
                 LEEP_CORE_ASSERT(false, "RenderOption invalid BlendCommand D value");
                 break;
@@ -95,7 +95,7 @@ namespace leep
                 glEnable(GL_CULL_FACE);
                 glCullFace(GL_FRONT_AND_BACK);
                 break;
-            
+
             default:
                 LEEP_CORE_ASSERT(false, "RenderOption invalid CullFace value");
                 break;

@@ -1,6 +1,6 @@
 #include "renderer.h"
 #include "render/materials/pbr.h"
-#include "render/materials/plain-color.h"
+#include "render/materials/full-screen-image.h"
 #include "render/materials/skybox.h"
 
 namespace leep
@@ -21,7 +21,7 @@ namespace leep
         // since the correct usage of this engine will be
         // using the diferent materials in order
         materials_[MaterialType::MT_PBR] = std::make_unique<Pbr>();
-        materials_[MaterialType::MT_PLAIN_COLOR] = std::make_unique<PlainColor>();
+        materials_[MaterialType::MT_FULL_SCREEN_IMAGE] = std::make_unique<FullScreenImage>();
         materials_[MaterialType::MT_SKYBOX] = std::make_unique<Skybox>();
         
         for (int32_t i = 0; i < MaterialType::MT_MAX; ++i)

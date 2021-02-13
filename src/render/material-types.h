@@ -11,7 +11,7 @@ namespace leep
     enum MaterialType
     {
         MT_PBR = 0,
-        MT_PLAIN_COLOR = 1,
+        MT_FULL_SCREEN_IMAGE = 1,
         MT_SKYBOX = 2,
 
         MT_MAX,
@@ -34,15 +34,6 @@ namespace leep
 		float metallic_;
 		float reflectance_;
 		float paddingg;
-    };
-
-    struct PlainColorData
-    {
-        glm::mat4 model_;
-        float r_;
-        float g_;
-        float b_;
-        float a_;
     };
 }
 #endif // __LEEP_RENDER_MATERIAL_TYPES_H__

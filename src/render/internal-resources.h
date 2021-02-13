@@ -5,6 +5,7 @@
 
 #include "core/common-defs.h"
 #include "render/material.h"
+#include "render/texture.h"
 #include <string>
 
 namespace leep
@@ -24,22 +25,25 @@ namespace leep
 
     struct InternalTexture
     {
-        int32_t internal_id_ = -1;
-        uint32_t texture_unit_ = 0;
-        int32_t version_ = 0;
+        std::string path_;
+        int32_t internal_id_;
+        int32_t version_;
+        uint32_t texture_unit_;
         uint32_t width_;
         uint32_t height_;
-        std::string path_ = "";
 		bool linear_;
         bool cube_;
     };
 
 	struct InternalFramebuffer
 	{
-		int32_t internal_id_ = -1;
-		int32_t version_ = 0;
+		int32_t internal_id_;
+		int32_t cpu_version_;
+        int32_t gpu_version_;
 		float width_;
 		float height_;
+        Texture color_texture_;
+        Texture depth_texture_;
 		bool color_;
 		bool depth_;
 	};
@@ -61,16 +65,16 @@ namespace leep
             LEEP_CORE_INFO("InternalBuffer data freed");
         }
 
-        uint32_t internal_id_;
-        int32_t version_;
-        int32_t gpu_version_;
-
         //  TODO: I don't like having one unused vector in every buffer
         //  but I didn't be able to make it work with unions because
-        //  of the exceptions it threw, I whink multiple std::vectors
+        //  of the exceptions it threw, I think multiple std::vectors
         //  inside an union does not work well, but I need some research on this
         std::vector<Vertex> vertices_data_;
         std::vector<uint32_t> indices_data_;
+
+        uint32_t internal_id_;
+        int32_t version_; // TODO: Change the name to cpu_version_
+        int32_t gpu_version_;
     };
 }
 

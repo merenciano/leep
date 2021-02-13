@@ -23,6 +23,8 @@ namespace leep
         INVALID_VERSION           = -6000,
         INVALID_GPU_VERSION       = -6001,
 
+        MARKED_FOR_DELETE         = -181020,
+
         UNINITIALIZED_INTERNAL_ID = 900000000,
         DELETED_INTERNAL_ID       = 900000001,
     };

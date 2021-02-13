@@ -30,8 +30,8 @@ namespace leep
         float delta_time() const;
 
     private:
-        Manager() { data_ = nullptr; }
-        Manager(const Manager&) {}
+        Manager() = default;
+        Manager(const Manager&) = default;
         Manager& operator=(const Manager&) { return *this; }
 
         struct ManagerData;

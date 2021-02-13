@@ -1,4 +1,8 @@
 #include "render/commands/clear.h"
+#include "core/manager.h"
+#include "render/camera.h"
+//#include "render/renderer.h"
+#include "render/commands/use-framebuffer.h"
 #include <stdint.h>
 
 #include "glad/glad.h"

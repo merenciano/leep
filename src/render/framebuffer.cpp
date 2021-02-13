@@ -8,7 +8,7 @@ namespace leep
 {
 	Framebuffer::Framebuffer()
 	{
-		handler_ = -1;
+		handler_ = ConstantValues::UNINITIALIZED_HANDLER;
 	}
 
 	Framebuffer::~Framebuffer()
@@ -16,7 +16,7 @@ namespace leep
 
 	}
 	
-	void Framebuffer::create(float width, float height, bool depth)
+	void Framebuffer::create(float width, float height, bool color, bool depth)
 	{
 		LEEP_ASSERT((width > 1.0f && height > 1.0f) ||
 					(width <= 1.0f && height <= 1.0f),
@@ -35,8 +35,8 @@ namespace leep
 			handler_ = (int32_t)r.framebuffers_.size() - 1;
 		}
 
-		color_texture_.createEmpty(width, height);
-		depth_texture_.createEmpty(width, height);
+		r.framebuffers_[handler_].color_texture_.createEmpty(width, height);
+		r.framebuffers_[handler_].depth_texture_.createEmpty(width, height);
 
 		if (width <= 1.0f)
 		{
@@ -46,7 +46,9 @@ namespace leep
 		}
 
 		r.framebuffers_[handler_].internal_id_= -1;
-		r.framebuffers_[handler_].version_ = 0;
+		r.framebuffers_[handler_].cpu_version_ = 1;
+		r.framebuffers_[handler_].gpu_version_ = 0;
+		r.framebuffers_[handler_].color_ = color;
 		r.framebuffers_[handler_].depth_ = depth;
 		r.framebuffers_[handler_].width_  = width;
 		r.framebuffers_[handler_].height_ = height;
@@ -56,21 +58,38 @@ namespace leep
 	{
 		if (handler_ >= 0)
 		{
-			color_texture_.release();
-			depth_texture_.release();
-			GM.renderer().framebuffers_[handler_].version_ = ConstantValues::DELETED_INTERNAL_ID;
+			InternalFramebuffer ifb = GM.renderer().framebuffers_[handler_];
+			ifb.color_texture_.release();
+			ifb.depth_texture_.release();
+			ifb.cpu_version_ = ConstantValues::MARKED_FOR_DELETE;
 			handler_ = ConstantValues::DELETED_HANDLER;
 		}
 	}
 
+	void Framebuffer::set_color_texture(Texture color)
+	{
+		LEEP_CORE_ASSERT(handler_ >= 0, "Framebuffer::set_color_texture: Invalid framebuffer");
+		InternalFramebuffer ifb = GM.renderer().framebuffers_[handler_];
+		ifb.color_texture_ = color;
+		ifb.cpu_version_++;
+	}
+
+	void Framebuffer::set_depth_texture(Texture depth)
+	{
+		LEEP_CORE_ASSERT(handler_ >= 0, "Framebuffer::set_depth_texture: Invalid framebuffer");
+		InternalFramebuffer ifb = GM.renderer().framebuffers_[handler_];
+		ifb.depth_texture_ = depth;
+		ifb.cpu_version_++;
+	}
+
 	Texture Framebuffer::color() const
 	{
-		return color_texture_;
+		return GM.renderer().framebuffers_[handler_].color_texture_;
 	}
 
 	Texture Framebuffer::depth() const
 	{
-		return depth_texture_;
+		return GM.renderer().framebuffers_[handler_].depth_texture_;
 	}
 
 	int32_t Framebuffer::id() const

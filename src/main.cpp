@@ -101,6 +101,13 @@ void Logic()
 	pbr_sd.camera_position_ = GM.camera().position();
     pbr_sd.light_direction_intensity_ = glm::vec4(0.0f, 1.0f, 0.0f, 2.0f);
 
+    Material full_screen_img;
+    full_screen_img.set_type(MaterialType::MT_FULL_SCREEN_IMAGE);
+    full_screen_img.set_texture(GM.camera().framebuffer().color());
+
+    dl.addCommand<UseFramebuffer>()
+        .set_framebuffer(GM.camera().framebuffer());
+
     // Dear ImGui overrides them so I call the command once per frame
     dl.addCommand<RenderOptions>()
         .set_depth(true, true)
@@ -121,6 +128,17 @@ void Logic()
     dl.addCommand<UseSkyboxMaterial>();
     dl.addCommand<DrawSkybox>()
         .set_cubemap(GM.resource_map().getTexture("Skybox"));
+        
+    dl.addCommand<UseFramebuffer>();
+
+    dl.addCommand<Clear>()
+        .set_clear_buffer(true, true, true)
+        .set_clear_color(1.0f, 0.0f, 0.0f, 1.0f);
+
+    dl.addCommand<Draw>()
+        .set_geometry(GM.resource_map().getGeometry("Quad"))
+        .set_material(full_screen_img);
+
     dl.submit();
 
     logic_timer.end();

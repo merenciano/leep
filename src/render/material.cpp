@@ -28,8 +28,7 @@ namespace leep
             data_.pbr_ = other.data_.pbr_;
             break;
         
-        case MaterialType::MT_PLAIN_COLOR:
-            data_.plain_color_ = other.data_.plain_color_;
+        case MaterialType::MT_FULL_SCREEN_IMAGE:
             break;
 
         default:
@@ -49,8 +48,7 @@ namespace leep
             data_.pbr_ = other.data_.pbr_;
             break;
         
-        case MaterialType::MT_PLAIN_COLOR:
-            data_.plain_color_ = other.data_.plain_color_;
+        case MaterialType::MT_FULL_SCREEN_IMAGE:
             break;
 
         default:
@@ -74,12 +72,6 @@ namespace leep
     {
         LEEP_CORE_ASSERT(type_ == MaterialType::MT_PBR, "The material has not the correct type yet.");
         data_.pbr_ = data;
-    }
-
-    void Material::set_data(const PlainColorData &data)
-    {
-        LEEP_CORE_ASSERT(type_ == MaterialType::MT_PLAIN_COLOR, "The material has not the correct type yet.");
-        data_.plain_color_ = data;
     }
 
     void Material::set_texture(Texture texture)

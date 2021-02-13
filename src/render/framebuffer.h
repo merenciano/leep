@@ -11,9 +11,12 @@ namespace leep
 	{
 	public:
 		Framebuffer();
+		Framebuffer(const Framebuffer &other) = default;
 		~Framebuffer();
 
-		void create(float width, float height, bool depth);
+		Framebuffer& operator=(const Framebuffer &other) = default;
+
+		void create(float width, float height, bool color = true, bool depth = true);
 		void release();
 
 		void set_color_texture(Texture color);
@@ -23,8 +26,6 @@ namespace leep
 		int32_t id() const;
 
 	private:
-		Texture color_texture_;
-		Texture depth_texture_;
 		int32_t handler_;
 	};
 }

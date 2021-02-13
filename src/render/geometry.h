@@ -21,6 +21,7 @@ namespace leep
 
         void createCube();
 		void createSphere(uint32_t x_segments, uint32_t y_segments);
+        void createQuad();
         void loadObj(std::string path);
     
     private:

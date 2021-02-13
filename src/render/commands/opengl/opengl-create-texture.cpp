@@ -46,7 +46,7 @@ namespace leep
 				config.internal_format = GL_RGBA16F;
 				config.type = GL_FLOAT;
 				config.filter = GL_LINEAR;
-				config.filter = GL_CLAMP_TO_EDGE;
+				config.wrap = GL_CLAMP_TO_EDGE;
 				break;
 
 			case TextureFormat::DEPTH_BUFFER:

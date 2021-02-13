@@ -7,6 +7,7 @@ namespace leep
     {
         LEEP_ASSERT(name != "Cube", "There is already a cube named Cube");
         LEEP_ASSERT(name != "Sphere", "There is already a sphere named Sphere");
+        LEEP_ASSERT(name != "Quad", "There is already a quad named Quad");
         bool inserted = geometries_.emplace(std::make_pair(name, Geometry())).second;
         if (inserted)
         {
@@ -40,6 +41,9 @@ namespace leep
             return Renderer::s_cube;
 		if (name == "Sphere")
 			return Renderer::s_sphere;
+        if (name == "Quad")
+            return Renderer::s_quad;
+
         return geometries_.at(name);
     }
 

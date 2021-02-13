@@ -35,7 +35,7 @@
 #include "../src/render/commands/create-buffer.h"
 #include "../src/render/commands/use-pbr-material.h"
 #include "../src/render/commands/use-skybox-material.h"
-#include "../src/render/commands/use-plain-color-material.h"
+#include "../src/render/commands/use-framebuffer.h"
 #include "../src/render/commands/draw.h"
 #include "../src/render/commands/draw-skybox.h"
 #include "../src/render/commands/create-texture.h"

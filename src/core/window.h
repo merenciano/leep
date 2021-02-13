@@ -13,6 +13,8 @@ namespace leep
 		bool windowShouldClose();
 		int32_t width() const;
 		int32_t height() const;
+		float fwidth() const;
+		float fheight() const;
 		void swap();
 		void pollEvents();
 

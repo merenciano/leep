@@ -15,7 +15,7 @@ namespace leep
         ONE,
         SRC_ALPHA,
         ONE_MINUS_SRC_ALPHA,
-        ZERO
+        ZERO,
     };
 
     enum class CullFace
@@ -24,7 +24,7 @@ namespace leep
         DISABLED,
         FRONT,
         BACK,
-        FRONT_AND_BACK
+        FRONT_AND_BACK,
     };
 
     struct Options

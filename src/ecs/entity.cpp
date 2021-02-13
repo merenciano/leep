@@ -59,7 +59,7 @@ namespace leep
         }
         
         // Copy the last entity to the place of the removed one
-        int32_t last_id = (cont.chunks_.size()-1) * kEntitiesPerChunk + (cont.chunks_.back()->last_ - 1);
+        int32_t last_id = ((int32_t)cont.chunks_.size()-1) * kEntitiesPerChunk + (cont.chunks_.back()->last_ - 1);
         if (last_id != index)
         {
             switch (cont.type())

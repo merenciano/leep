@@ -8,6 +8,9 @@
 #include "core/scene-graph.h"
 #include "render/renderer.h"
 #include "render/camera.h"
+//#include "render/commands/draw.h"
+//#include "render/commands/clear.h"
+//#include "render/commands/render-options.h"
 #include "tools/imgui-tools.h"
 #include "tools/resource-map.h"
 #include "tools/lua-scripting.h"
@@ -16,6 +19,8 @@ namespace leep
 {
     Geometry Renderer::s_cube;
     Geometry Renderer::s_sphere;
+    Geometry Renderer::s_quad;
+
     struct Manager::ManagerData
     {
         Window      window_;
@@ -44,6 +49,7 @@ namespace leep
 
         Renderer::s_cube.createCube();
 		Renderer::s_sphere.createSphere(50, 50);
+		Renderer::s_quad.createQuad();
     }
 
     float Manager::delta_time() const
@@ -53,6 +59,24 @@ namespace leep
 
     void Manager::nextFrame()
     {
+        /*if (data_->renderer_.textures_[data_->camera_.framebuffer().color().id()].version_ > 0)
+        {
+            Material full_screen_img;
+            full_screen_img.set_type(MaterialType::MT_FULL_SCREEN_IMAGE);
+            full_screen_img.set_texture(data_->camera_.framebuffer().color());
+
+            Clear()
+                .set_clear_buffer(true, true, false)
+                .set_clear_color(0.1f, 0.0f, 0.0f, 1.0f)
+                .executeCommand();
+            RenderOptions()
+                .set_depth(false, false)
+                .executeCommand();
+            Draw()
+                .set_geometry(data_->resource_map_.getGeometry("Quad"))
+                .set_material(full_screen_img)
+                .executeCommand();
+        }*/
         renderer().submitFrame();
         window().swap();
         window().pollEvents();

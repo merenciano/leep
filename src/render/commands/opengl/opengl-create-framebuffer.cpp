@@ -12,7 +12,8 @@ namespace leep
         int32_t id = framebuffer_.id();
 		InternalFramebuffer &ifb = r.framebuffers_[id];
 
-        LEEP_CORE_ASSERT(ifb.version_ == 0, "Framebuffer created before?");
+        LEEP_CORE_ASSERT(ifb.gpu_version_ == 0, "Internal framebuffer created before");
+        LEEP_CORE_ASSERT(ifb.cpu_version_ > 0, "Framebuffer not created");
         LEEP_CORE_ASSERT(id >= 0, "Framebuffer not initialized");
 
         glGenFramebuffers(1, (GLuint*)&(ifb.internal_id_));
@@ -38,6 +39,6 @@ namespace leep
 			
 		}
 
-		r.framebuffers_[id].version_++;
+		ifb.gpu_version_ = ifb.cpu_version_;
     }
 }
