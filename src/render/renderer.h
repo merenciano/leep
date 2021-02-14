@@ -11,6 +11,7 @@
 #include <stdint.h>
 #include <vector>
 #include <list>
+#include <deque>
 #include <memory>
 #include <mutex>
 
@@ -33,13 +34,13 @@ namespace leep
         void submitFrame();
 
         std::list<int32_t> aviable_tex_pos_;
-        std::vector<InternalTexture> textures_;
+        std::deque<InternalTexture> textures_;
 
 		std::list<int32_t> aviable_fb_pos_;
-		std::vector<InternalFramebuffer> framebuffers_;
+		std::deque<InternalFramebuffer> framebuffers_;
 
         std::list<uint32_t> aviable_buffer_pos_;
-        std::vector<InternalBuffer> buffers_;
+        std::deque<InternalBuffer> buffers_;
 
         std::unique_ptr<InternalMaterial> materials_[MaterialType::MT_MAX];
 

@@ -2,7 +2,7 @@
 #include "glm/glm.hpp"
 #include "glm/gtc/matrix_transform.hpp"
 
-#define LEEP_SINGLE_THREAD 1
+#define LEEP_SINGLE_THREAD 0
 
 using namespace leep;
 

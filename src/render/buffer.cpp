@@ -39,8 +39,7 @@ namespace leep
         }
         else
         {
-            InternalBuffer temp;
-            Manager::instance().renderer().buffers_.push_back(std::move(temp));
+            Manager::instance().renderer().buffers_.emplace_back();
             handler_ = (int32_t)Manager::instance().renderer().buffers_.size() - 1;
         }
     }
