@@ -91,7 +91,7 @@ namespace leep
         LEEP_ASSERT(material.type() == MaterialType::MT_PBR, "Wrong material type");
 
         // Load texture
-        int32_t tex_id = material.texture().id();
+        int32_t tex_id = material.texture().handle();
         LEEP_ASSERT(tex_id != -1, "Texture not created");
         LEEP_ASSERT(r.textures_[tex_id].version_ != -1, "Texture released");
         if (r.textures_[tex_id].version_ == 0)

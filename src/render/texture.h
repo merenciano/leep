@@ -16,10 +16,10 @@ namespace leep
         void create(std::string path = "", bool linear = false, bool cube = false);
         void createEmpty(float width, float height);
         void release();
-        int32_t id() const;
+        int32_t handle() const;
 
     private:
-        int32_t handler_;
+        int32_t handle_;
     };
 }
 

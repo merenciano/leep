@@ -23,10 +23,10 @@ namespace leep
 		void set_depth_texture(Texture depth);
 		Texture color() const;
 		Texture depth() const;
-		int32_t id() const;
+		int32_t handle() const;
 
 	private:
-		int32_t handler_;
+		int32_t handle_;
 	};
 }
 

@@ -52,31 +52,6 @@ void Init()
         }
     }
 
-    /*Entity e = Entity::CreateEntity("1", EntityType::RENDERABLE);
-    LTransform &tr = e.getComponent<LTransform>();
-    tr.transform_ = glm::scale(tr.transform_, glm::vec3(0.3f, 0.3f, 0.3f));
-    Drawable &cube_dw = e.getComponent<Drawable>();
-    cube_dw.geometry_ = GM.resource_map().getGeometry("Sphere");
-    cube_dw.material_.set_type(MaterialType::MT_PBR);
-    cube_dw.material_.set_data(pbr);
-    cube_dw.material_.set_texture(GM.resource_map().getTexture("T-Rex"));
-
-    GM.scene_graph().createNode(&e.getComponent<LTransform>(), &e.getComponent<GTransform>());
-
-    Entity child = Entity::CreateEntity("2", EntityType::RENDERABLE);
-    LTransform &child_tr = child.getComponent<LTransform>();
-    child_tr.transform_ = glm::scale(child_tr.transform_, glm::vec3(1.0f, 1.0f, 1.0f));
-    child_tr.transform_ = glm::translate(child_tr.transform_, glm::vec3(3.0f, 0.0f, 0.0f));
-    Drawable &child_dw = child.getComponent<Drawable>();
-    child_dw.geometry_ = GM.resource_map().getGeometry("Sphere");
-    child_dw.material_.set_type(MaterialType::MT_PBR);
-    child_dw.material_.set_data(pbr);
-    child_dw.material_.set_texture(GM.resource_map().getTexture("T-Rex"));
-
-    GM.scene_graph().createNode(&child.getComponent<LTransform>(), &child.getComponent<GTransform>());
-    GM.scene_graph().setParent(&child.getComponent<LTransform>(), &e.getComponent<LTransform>());
-	*/
-
     LuaScripting::ExecuteScript("../assets/scripts/init.lua");
 }
 
@@ -88,6 +63,7 @@ void Logic()
     //Entity::GetEntity("2").getComponent<LTransform>().rotateYWorld(1.0f * GM.delta_time());
 
     LuaScripting::ExecuteScript("../assets/scripts/update.lua");
+    std::this_thread::sleep_for(std::chrono::milliseconds(15));
 
     GM.input().updateInput();
     CameraMovement(1.0f, 1.0f).executeSystem();
@@ -104,18 +80,19 @@ void Logic()
     Material full_screen_img;
     full_screen_img.set_type(MaterialType::MT_FULL_SCREEN_IMAGE);
     full_screen_img.set_texture(GM.camera().framebuffer().color());
-
+    
     dl.addCommand<UseFramebuffer>()
         .set_framebuffer(GM.camera().framebuffer());
 
-    // Dear ImGui overrides them so I call the command once per frame
     dl.addCommand<RenderOptions>()
-        .set_depth(true, true)
+        .enable_depth_test(true)
+        .enable_write_depth(true)
         .set_cull_face(CullFace::BACK)
-        .set_blend(BlendFunc::ONE, BlendFunc::ZERO);
+        .enable_blend(true)
+        .set_blend_func(BlendFunc::ONE, BlendFunc::ZERO);
 
     dl.addCommand<Clear>()
-        .set_clear_buffer(true, true, true)
+        .set_clear_buffer(true, true, false)
         .set_clear_color(0.2f, 0.2f, 0.2f, 1.0f);
 
     dl.addCommand<UsePbrMaterial>()
@@ -124,21 +101,25 @@ void Logic()
     dl.submit();
 
     Render(GM.memory().container(EntityType::RENDERABLE)).executeSystem();
-
+    
     dl.addCommand<UseSkyboxMaterial>();
     dl.addCommand<DrawSkybox>()
         .set_cubemap(GM.resource_map().getTexture("Skybox"));
-        
+   
     dl.addCommand<UseFramebuffer>();
 
+    dl.addCommand<RenderOptions>()
+        .enable_depth_test(false);
+
     dl.addCommand<Clear>()
-        .set_clear_buffer(true, true, true)
+        .set_clear_buffer(true, false, false)
         .set_clear_color(1.0f, 0.0f, 0.0f, 1.0f);
+
 
     dl.addCommand<Draw>()
         .set_geometry(GM.resource_map().getGeometry("Quad"))
         .set_material(full_screen_img);
-
+        
     dl.submit();
 
     logic_timer.end();
@@ -155,7 +136,7 @@ void RenderScene()
     render_timer.end();
     GM.ui_tools().calcRenderAverage(render_timer.duration());
 }
-
+#include <future>
 int main()
 {
     Chrono init_timer;
@@ -170,9 +151,11 @@ int main()
     while (!GM.window().windowShouldClose())
     {
 #if LEEP_SINGLE_THREAD == 0
-        Thread l(logic);
+        //Thread l(logic);
+        //std::thread l(Logic);
+        auto l = std::async(std::launch::async, Logic);
         RenderScene();
-        l.join();
+        //l.get();
 #elif LEEP_SINGLE_THREAD == 1
         Logic();
         RenderScene();

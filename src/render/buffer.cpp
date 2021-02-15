@@ -9,52 +9,52 @@ namespace leep
 {
     Buffer::Buffer()
     {
-        handler_ = ConstantValues::UNINITIALIZED_HANDLER;
+        handle_ = ConstantValues::UNINITIALIZED_HANDLER;
         type_ = BufferType::NONE;
     }
 
     Buffer::Buffer(const Buffer &other)
     {
-        handler_ = other.handler_;
+        handle_ = other.handle_;
         type_ = other.type_;
     }
 
     Buffer& Buffer::operator=(const Buffer &other)
     {
-        handler_ = other.handler_;
+        handle_ = other.handle_;
         type_ = other.type_;
         return *this;
     }
 
     void Buffer::create(BufferType type)
     {
-        LEEP_ASSERT(handler_ == ConstantValues::UNINITIALIZED_HANDLER, "This handler has been created before");
+        LEEP_ASSERT(handle_ == ConstantValues::UNINITIALIZED_HANDLER, "This handler has been created before");
 
         type_ = type;
         if (!Manager::instance().renderer().aviable_buffer_pos_.empty())
         {
             // Getting the first element and removing it from the list
-            handler_ = Manager::instance().renderer().aviable_buffer_pos_.front();
+            handle_ = Manager::instance().renderer().aviable_buffer_pos_.front();
             Manager::instance().renderer().aviable_buffer_pos_.pop_front();
         }
         else
         {
             Manager::instance().renderer().buffers_.emplace_back();
-            handler_ = (int32_t)Manager::instance().renderer().buffers_.size() - 1;
+            handle_ = (int32_t)Manager::instance().renderer().buffers_.size() - 1;
         }
     }
 
     void Buffer::set_data(std::vector<Vertex> &data)
     {
-        Manager::instance().renderer().buffers_[handler_].vertices_data_.swap(data);
-        Manager::instance().renderer().buffers_[handler_].version_++;
+        Manager::instance().renderer().buffers_[handle_].vertices_data_.swap(data);
+        Manager::instance().renderer().buffers_[handle_].version_++;
         data.clear();
     }
 
     void Buffer::set_data(std::vector<uint32_t> &data)
     {
-        Manager::instance().renderer().buffers_[handler_].indices_data_.swap(data);
-        Manager::instance().renderer().buffers_[handler_].version_++;
+        Manager::instance().renderer().buffers_[handle_].indices_data_.swap(data);
+        Manager::instance().renderer().buffers_[handle_].version_++;
         data.clear();
     }
 
@@ -63,14 +63,14 @@ namespace leep
         return type_;
     }
 
-    int32_t Buffer::handler() const
+    int32_t Buffer::handle() const
     {
-        return handler_;
+        return handle_;
     }
 
     void Buffer::release()
     {
-        handler_ = ConstantValues::DELETED_HANDLER;
+        handle_ = ConstantValues::DELETED_HANDLER;
         type_ = BufferType::NONE;
     }
 }

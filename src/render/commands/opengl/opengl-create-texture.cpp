@@ -20,7 +20,7 @@ namespace leep
     void CreateTexture::executeCommand() const
     {
         Renderer &r = GM.renderer();
-        int32_t id = texture_.id();
+        int32_t id = texture_.handle();
 		TextureConfig config;
 
 		switch(format_)

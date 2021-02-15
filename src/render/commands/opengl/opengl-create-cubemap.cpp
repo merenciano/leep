@@ -8,7 +8,7 @@ namespace leep
     void CreateCubemap::executeCommand() const
     {
         Renderer &r = GM.renderer();
-        int32_t id = texture_.id();
+        int32_t id = texture_.handle();
 
         LEEP_CORE_ASSERT(r.textures_[id].version_ == 0, "Texture created before?");
         LEEP_CORE_ASSERT(id < 60, "Start thinking about the max textures");
@@ -40,7 +40,7 @@ namespace leep
             uint8_t *img_data = stbi_load(
                 faces[i].c_str(), &width, &height, &nchannels, 0);
             LEEP_CORE_ASSERT(img_data, "Couldn't load the image to the cubemap");
-            glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_RGB, width, height,
+            glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_SRGB, width, height,
                             0, GL_RGB, GL_UNSIGNED_BYTE, img_data);
             stbi_image_free(img_data);
         }

@@ -8,11 +8,15 @@
 
 namespace leep
 {
-    typedef std::function<void()> Function;
+    typedef std::function<void()>       Function;
+    // You can use the arg for in and out parameters if you want a return
+    typedef std::function<void(void*)>  ArgsFunction;
+
     class Thread
     {
     public:
         Thread(Function f) : t_(f) {}
+        Thread(ArgsFunction f, void* a) : t_(f, a) {}
         ~Thread() = default;
         void join() { t_.join(); }
 

@@ -146,9 +146,8 @@ static const char* kPbrFragment = R"(
 		float illuminance = light_intensity * NoL;
 		vec3 color = BRDF(material, l, normalize(camera_position - vec3(world_position)));
 		vec3 ambient = material.albedo * 0.03;
-        //gamma correction
-        color = pow(ambient + color * illuminance, vec3(1.0/2.2));
-        FragColor = vec4(color, 1.0);
+
+        FragColor = vec4(ambient + color * illuminance, 1.0);
     }
 )";
 
@@ -199,7 +198,7 @@ namespace leep
         LEEP_ASSERT(material.type() == MaterialType::MT_PBR, "Wrong material type");
 
         // Load texture
-        int32_t tex_id = material.texture().id();
+        int32_t tex_id = material.texture().handle();
         LEEP_ASSERT(tex_id != -1, "Texture not created");
         LEEP_ASSERT(r.textures_[tex_id].version_ != -1, "Texture released");
         if (r.textures_[tex_id].version_ == 0)

@@ -31,7 +31,15 @@ static const char* kFSImageFragment = R"(
     out vec4 FragColor;
 
     void main() {
-        FragColor = texture(u_texture, uv); 
+        vec3 color = texture(u_texture, uv).rgb;
+
+        // Tone mapping
+        color = color / (color + vec3(1.0));
+
+        // gamma correction
+        color = pow(color, vec3(1.0/2.2));
+
+        FragColor = vec4(color,  1.0);
     }
 )";
 
@@ -82,13 +90,14 @@ namespace leep
             "Wrong material type");
         
         // Load texture
+        GLenum err = glGetError();
         Renderer &r = GM.renderer();
-        int32_t tex_id = material.texture().id();
+        int32_t tex_id = material.texture().handle();
         LEEP_CORE_ASSERT(r.textures_[tex_id].version_ > 0, "Invalid texture");
         glUseProgram(internal_id_);
         GLint uniform_location = glGetUniformLocation(internal_id_, "u_texture");
         glUniform1i(uniform_location, r.textures_[tex_id].texture_unit_);
-
+        err = glGetError();
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
     }
 }

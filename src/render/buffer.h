@@ -30,12 +30,12 @@ namespace leep
         void set_data(std::vector<Vertex> &data);
         void set_data(std::vector<uint32_t> &data);
         BufferType type() const;
-        int32_t handler() const;
+        int32_t handle() const;
         void release();
 
     private:
         BufferType type_;
-        int32_t handler_; 
+        int32_t handle_; 
     };
 }
 

@@ -32,9 +32,9 @@ namespace leep
 
     void Renderer::addDisplayListToQueue(DisplayList &&dl)
     {
-        next_frame_command_queue_mtx_.lock();
+        nxt_frame_q_mtx_.lock();
         next_frame_command_queue_.push_back(std::move(dl));
-        next_frame_command_queue_mtx_.unlock();
+        nxt_frame_q_mtx_.unlock();
     }
 
     void Renderer::renderFrame()
@@ -44,8 +44,7 @@ namespace leep
             DisplayList dl(std::move(current_frame_commands_.front()));
             current_frame_commands_.pop_front();
 
-            // Here I can't use the range-based for loop because unique_ptr can't be referenced,
-            // so I have to use this ugly loop instead
+            // I can't use the range-based for loop here because unique_ptr can't be referenced,
             for (auto it = dl.command_list().cbegin(); it != dl.command_list().cend(); ++it)
             {
                 it->get()->executeCommand();

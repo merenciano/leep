@@ -9,7 +9,7 @@ namespace leep
     void CreateFramebuffer::executeCommand() const
     {
         Renderer &r = GM.renderer();
-        int32_t id = framebuffer_.id();
+        int32_t id = framebuffer_.handle();
 		InternalFramebuffer &ifb = r.framebuffers_[id];
 
         LEEP_CORE_ASSERT(ifb.gpu_version_ == 0, "Internal framebuffer created before");
@@ -26,7 +26,7 @@ namespace leep
 				.set_format(TextureFormat::COLOR_BUFFER)
 				.executeCommand();
 			glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D,
-								   r.textures_[framebuffer_.color().id()].internal_id_, 0);
+								   r.textures_[framebuffer_.color().handle()].internal_id_, 0);
 		}
 		if (ifb.depth_)
 		{
@@ -35,7 +35,7 @@ namespace leep
 				.set_format(TextureFormat::DEPTH_BUFFER)
 				.executeCommand();
 			glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D,
-								   r.textures_[framebuffer_.depth().id()].internal_id_, 0);
+								   r.textures_[framebuffer_.depth().handle()].internal_id_, 0);
 			
 		}
 

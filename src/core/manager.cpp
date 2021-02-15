@@ -8,9 +8,6 @@
 #include "core/scene-graph.h"
 #include "render/renderer.h"
 #include "render/camera.h"
-//#include "render/commands/draw.h"
-//#include "render/commands/clear.h"
-//#include "render/commands/render-options.h"
 #include "tools/imgui-tools.h"
 #include "tools/resource-map.h"
 #include "tools/lua-scripting.h"
@@ -42,7 +39,7 @@ namespace leep
         LEEP_ASSERT(IsPow2(kEntitiesPerChunk), "This constant value must be power of 2");
         // Manager has the same life as the app, so I don't care of deleting this
         data_ = new ManagerData();
-        data_->window_.createWindow(1280, 720, true);
+        data_->window_.createWindow(1280, 720, false);
         data_->renderer_.init();
         data_->camera_.init();
         data_->delta_time_ = 0.16f;
@@ -59,27 +56,9 @@ namespace leep
 
     void Manager::nextFrame()
     {
-        /*if (data_->renderer_.textures_[data_->camera_.framebuffer().color().id()].version_ > 0)
-        {
-            Material full_screen_img;
-            full_screen_img.set_type(MaterialType::MT_FULL_SCREEN_IMAGE);
-            full_screen_img.set_texture(data_->camera_.framebuffer().color());
-
-            Clear()
-                .set_clear_buffer(true, true, false)
-                .set_clear_color(0.1f, 0.0f, 0.0f, 1.0f)
-                .executeCommand();
-            RenderOptions()
-                .set_depth(false, false)
-                .executeCommand();
-            Draw()
-                .set_geometry(data_->resource_map_.getGeometry("Quad"))
-                .set_material(full_screen_img)
-                .executeCommand();
-        }*/
-        renderer().submitFrame();
         window().swap();
         window().pollEvents();
+        renderer().submitFrame();
         data_->frame_timer_.end();
         data_->delta_time_ = data_->frame_timer_.duration() / 1000.0f;
         data_->frame_timer_.start();

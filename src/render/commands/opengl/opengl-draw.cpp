@@ -10,9 +10,9 @@ namespace leep
 {
     void Draw::executeCommand() const
     {
-        Renderer &r = Manager::instance().renderer();
-        int32_t vertex_handler = geometry_.vertex_buffer().handler();
-        int32_t index_handler = geometry_.index_buffer().handler();
+        Renderer& r = Manager::instance().renderer();
+        int32_t vertex_handler = geometry_.vertex_buffer().handle();
+        int32_t index_handler = geometry_.index_buffer().handle();
 
         LEEP_CORE_ASSERT(vertex_handler != ConstantValues::UNINITIALIZED_HANDLER,
             "You are trying to draw with an uninitialized vertex buffer");
@@ -23,7 +23,7 @@ namespace leep
         LEEP_CORE_ASSERT(r.buffers_[vertex_handler].version_ > 0,
             "Vertex buffer without data");
 
-        LEEP_CORE_ASSERT(r.buffers_[index_handler].version_ > 0, 
+        LEEP_CORE_ASSERT(r.buffers_[index_handler].version_ > 0,
             "Index buffer without data");
 
         LEEP_CORE_ASSERT(material_.type() != MaterialType::MT_NONE,
@@ -41,12 +41,12 @@ namespace leep
                 r.buffers_[vertex_handler].vertices_data_.size() * sizeof(Vertex),
                 (const void*)r.buffers_[vertex_handler].vertices_data_.data(),
                 GL_STATIC_DRAW);
-            r.buffers_[vertex_handler].gpu_version_ = r.buffers_[vertex_handler].version_; 
+            r.buffers_[vertex_handler].gpu_version_ = r.buffers_[vertex_handler].version_;
         }
         else
         {
             glBindBuffer(GL_ARRAY_BUFFER,
-                r.buffers_[geometry_.vertex_buffer().handler()].internal_id_);
+                r.buffers_[geometry_.vertex_buffer().handle()].internal_id_);
         }
 
         // Create the OpenGL index buffer if it has not been created yet
@@ -58,12 +58,12 @@ namespace leep
                 r.buffers_[index_handler].indices_data_.size() * sizeof(uint32_t),
                 (const void*)r.buffers_[index_handler].indices_data_.data(),
                 GL_STATIC_DRAW);
-            r.buffers_[index_handler].gpu_version_ = r.buffers_[index_handler].version_; 
+            r.buffers_[index_handler].gpu_version_ = r.buffers_[index_handler].version_;
         }
         else
         {
             glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,
-                r.buffers_[geometry_.index_buffer().handler()].internal_id_);
+                r.buffers_[geometry_.index_buffer().handle()].internal_id_);
         }
 
         // In order to keep things simple, at this moment the engine
@@ -74,11 +74,18 @@ namespace leep
             8 * sizeof(float), (void*)0);
         glEnableVertexAttribArray(attrib_pos);
 
+#ifdef LEEP_DEBUG
+        if (material_.type() != MT_FULL_SCREEN_IMAGE)
+        {
+#endif
         attrib_pos = glGetAttribLocation(
             r.materials_[material_.type()]->internal_id(), "a_normal"); 
         glVertexAttribPointer(attrib_pos, 3, GL_FLOAT, GL_FALSE,
             8 * sizeof(float), (void*)(3 * sizeof(float)));
         glEnableVertexAttribArray(attrib_pos);
+#ifdef LEEP_DEBUG
+        }
+#endif
 
         attrib_pos = glGetAttribLocation(
             r.materials_[material_.type()]->internal_id(), "a_uv");
@@ -86,7 +93,7 @@ namespace leep
             8 * sizeof(float), (void*)(6 * sizeof(float)));
         glEnableVertexAttribArray(attrib_pos);
 
-        uint32_t index_count = (uint32_t)r.buffers_[geometry_.index_buffer().handler()].indices_data_.size();
+        uint32_t index_count = (uint32_t)r.buffers_[geometry_.index_buffer().handle()].indices_data_.size();
         glDrawElements(GL_TRIANGLES, index_count, GL_UNSIGNED_INT, 0);
 
         glBindBuffer(GL_ARRAY_BUFFER, 0);

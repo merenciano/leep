@@ -6,6 +6,7 @@ TODO:
     - Better gpu resource deletion
     - Time comparisons with raspberry pi and governor at powresave (document that)
     - Pause and next frame button
+    - Entry point (APP abstraction?)
 
 
 

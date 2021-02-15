@@ -34,7 +34,7 @@ namespace leep
 
     private:
         MaterialData data_; 
-        MaterialType type_;
+        MaterialType type_; // Acts as a handle
         Texture texture_;
     };
 }

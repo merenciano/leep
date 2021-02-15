@@ -17,13 +17,13 @@ namespace leep
         }
 
         Renderer &r = GM.renderer();
-        InternalFramebuffer &ifb = r.framebuffers_[fb_.id()];
+        InternalFramebuffer &ifb = r.framebuffers_[fb_.handle()];
         GLsizei width;
         GLsizei height;
 
         if (ifb.gpu_version_ == 0)
         {
-            LEEP_CORE_ASSERT(fb_.id() >= 0 && ifb.cpu_version_ > 0, "Framebuffer not created");
+            LEEP_CORE_ASSERT(fb_.handle() >= 0 && ifb.cpu_version_ > 0, "Framebuffer not created");
 
             glGenFramebuffers(1, (GLuint*)&(ifb.internal_id_));
             
@@ -48,8 +48,8 @@ namespace leep
         // Set viewport
         if (ifb.color_)
         {
-            width = r.textures_[fb_.color().id()].width_;
-            height = r.textures_[fb_.color().id()].height_;
+            width = r.textures_[fb_.color().handle()].width_;
+            height = r.textures_[fb_.color().handle()].height_;
             glViewport(0, 0, width, height);
         }
 
@@ -57,14 +57,14 @@ namespace leep
         {
             if (ifb.color_)
             {
-                LEEP_CORE_ASSERT(width == r.textures_[fb_.depth().id()].width_ &&
-                                 height == r.textures_[fb_.depth().id()].height_,
+                LEEP_CORE_ASSERT(width == r.textures_[fb_.depth().handle()].width_ &&
+                                 height == r.textures_[fb_.depth().handle()].height_,
                                  "Color and depth texture sizes of framebuffer not matching");
             }
             else
             {
-                width = r.textures_[fb_.depth().id()].width_;
-                height = r.textures_[fb_.depth().id()].height_;
+                width = r.textures_[fb_.depth().handle()].width_;
+                height = r.textures_[fb_.depth().handle()].height_;
                 glViewport(0, 0, width, height);
             }
         }
@@ -75,13 +75,13 @@ namespace leep
             if (ifb.color_)
             {
                 glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0,
-                    GL_TEXTURE_2D, r.textures_[fb_.color().id()].internal_id_, 0); 
+                    GL_TEXTURE_2D, r.textures_[fb_.color().handle()].internal_id_, 0); 
             }
 
             if (ifb.depth_)
             {
                 glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT,
-                    GL_TEXTURE_2D, r.textures_[fb_.depth().id()].internal_id_, 0);
+                    GL_TEXTURE_2D, r.textures_[fb_.depth().handle()].internal_id_, 0);
             }
 
             ifb.gpu_version_ = ifb.cpu_version_;
