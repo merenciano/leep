@@ -2,19 +2,8 @@
 #include "glm/glm.hpp"
 #include "glm/gtc/matrix_transform.hpp"
 
-#define LEEP_SINGLE_THREAD 0
-
-using namespace leep;
-
-void Init()
+void leep::Init()
 {
-    Logger::Init();
-    GM.init();
-    LuaScripting::Init();
-    GM.resource_map().addTexture("Skybox", "../assets/tex/skybox", true);
-    GM.resource_map().addTexture("T-Rex", "../assets/tex/trex.jpg");
-
-
     PbrData pbr;
     pbr.tiling_x_ = 1.0f;
     pbr.tiling_y_ = 1.0f;
@@ -51,20 +40,10 @@ void Init()
 			dw.material_.set_texture(GM.resource_map().getTexture("T-Rex"));
         }
     }
-
-    LuaScripting::ExecuteScript("../assets/scripts/init.lua");
 }
 
-void Logic()
+void leep::Logic()
 {
-    Chrono logic_timer;
-
-    logic_timer.start();
-    //Entity::GetEntity("2").getComponent<LTransform>().rotateYWorld(1.0f * GM.delta_time());
-
-    LuaScripting::ExecuteScript("../assets/scripts/update.lua");
-    std::this_thread::sleep_for(std::chrono::milliseconds(15));
-
     GM.input().updateInput();
     CameraMovement(1.0f, 1.0f).executeSystem();
     UpdateTransform(GM.memory().container(EntityType::RENDERABLE)).executeSystem();
@@ -115,53 +94,9 @@ void Logic()
         .set_clear_buffer(true, false, false)
         .set_clear_color(1.0f, 0.0f, 0.0f, 1.0f);
 
-
     dl.addCommand<Draw>()
         .set_geometry(GM.resource_map().getGeometry("Quad"))
         .set_material(full_screen_img);
         
     dl.submit();
-
-    logic_timer.end();
-    GM.ui_tools().calcLogicAverage(logic_timer.duration());
-}
-
-void RenderScene()
-{
-    Chrono render_timer;
-    render_timer.start();
-    Manager::instance().renderer().renderFrame();
-
-    GM.ui_tools().update();
-    render_timer.end();
-    GM.ui_tools().calcRenderAverage(render_timer.duration());
-}
-#include <future>
-int main()
-{
-    Chrono init_timer;
-    Function logic = Logic;
-    init_timer.start();
-    Init();
-    init_timer.end();
-    GM.tools_data().init_time_ms_ = init_timer.duration();
-    LEEP_CORE_INFO("Init time: {0} ms", init_timer.duration());
-
-    GM.startFrameTimer();
-    while (!GM.window().windowShouldClose())
-    {
-#if LEEP_SINGLE_THREAD == 0
-        //Thread l(logic);
-        //std::thread l(Logic);
-        auto l = std::async(std::launch::async, Logic);
-        RenderScene();
-        //l.get();
-#elif LEEP_SINGLE_THREAD == 1
-        Logic();
-        RenderScene();
-#endif
-        GM.nextFrame();
-    }
-
-    return 0;
 }

@@ -51,6 +51,9 @@ project "leep"
         --glad
         "./extern/src/glad.c",
 
+        --minitrace
+        "./extern/src/minitrace.c",
+
         --imgui
         "./extern/src/imgui/*.cpp",
 
@@ -105,7 +108,7 @@ project "leep"
         defines "LEEP_OPENGL_ES"
     
     filter "configurations:Debug"
-        defines "LEEP_DEBUG"
+        defines { "LEEP_DEBUG", "MTR_ENABLED" }
         symbols "On"
     
     filter "configurations:Release"

@@ -1,6 +1,8 @@
 #ifndef __LEEP_CORE_MANAGER_H__
 #define __LEEP_CORE_MANAGER_H__ 1
 
+#include <atomic>
+
 #define GM Manager::instance()
 
 namespace leep 
