@@ -36,8 +36,9 @@ namespace leep
 
     void Manager::init()
     {
-        LEEP_ASSERT(IsPow2(kEntitiesPerChunk), "This constant value must be power of 2");
-        // Manager has the same life as the app, so I don't care of deleting this
+        LEEP_ASSERT(IsPow2(kEntitiesPerChunk),
+            "This constant value must be power of 2");
+        // Manager has the same life as the app, so I don't care of its deletion 
         data_ = new ManagerData();
         data_->window_.createWindow(1280, 720, false);
         data_->renderer_.init();
