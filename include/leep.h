@@ -64,8 +64,6 @@ void LeepInit()
     leep::Logger::Init();
     leep::GM.init();
     leep::LuaScripting::Init();
-    leep::GM.resource_map().addTexture("Skybox", "../assets/tex/skybox", true);
-    leep::GM.resource_map().addTexture("T-Rex", "../assets/tex/trex.jpg");
 
     leep::Init();
 
@@ -82,7 +80,6 @@ void LeepLogic()
     MTR_BEGIN("LEEP", "Logic");
     leep::Chrono logic_timer;
     logic_timer.start();
-    leep::LuaScripting::ExecuteScript("../assets/scripts/update.lua");
 
     leep::Logic();
 
@@ -115,11 +112,13 @@ int main(int argc, char **argv)
     while (!leep::GM.window().windowShouldClose())
     {
 #if LEEP_SINGLE_THREAD == 0
+        leep::LuaScripting::ExecuteScript("../assets/scripts/update.lua");
+
         lt.run();
         LeepRender();
         while (lt.running())
         {
-            LEEP_CORE_WARNING("Logic loop slower than render");
+            //LEEP_CORE_WARNING("Logic loop slower than render");
             std::this_thread::sleep_for(std::chrono::microseconds(100));
         }
 #elif LEEP_SINGLE_THREAD == 1

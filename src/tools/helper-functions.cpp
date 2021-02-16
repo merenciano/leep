@@ -27,7 +27,7 @@ void leep::CreateRenderable(std::string entity_name,
     d.geometry_ = GM.resource_map().getGeometry(geometry_name);
     d.material_.set_type(MaterialType::MT_PBR);
     d.material_.set_data(pbr);
-    d.material_.set_texture(GM.resource_map().getTexture(texture_name));
+    d.material_.set_albedo(GM.resource_map().getTexture(texture_name));
 }
 
 void leep::RemoveEntity(std::string entity_name)

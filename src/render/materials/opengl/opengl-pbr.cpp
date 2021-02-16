@@ -15,20 +15,25 @@ static const char* kPbrVertex = R"(
 
     layout (location = 0) in vec3 a_position;
     layout (location = 1) in vec3 a_normal;
-    layout (location = 2) in vec2 a_uv;
+    layout (location = 2) in vec3 a_tangent;
+    layout (location = 3) in vec3 a_bitangent;
+    layout (location = 4) in vec2 a_uv;
 
 	out vec4 world_position;
-	out vec3 normal;
+	out mat3 tbn;
 	out vec3 camera_position;
 	out vec3 light_direction;
 	out float light_intensity;
     out vec2 uv;
 
     void main() {
-        mat4 world = mat4(u_entity_data[0], u_entity_data[1], u_entity_data[2], u_entity_data[3]);
+        mat4 model = mat4(u_entity_data[0], u_entity_data[1], u_entity_data[2], u_entity_data[3]);
         mat4 vp = mat4(u_scene_data[0], u_scene_data[1], u_scene_data[2], u_scene_data[3]);
-        world_position = world * vec4(a_position, 1.0);
-		normal = normalize(mat3(world) * a_normal);
+        world_position = model * vec4(a_position, 1.0);
+		vec3 t = normalize(vec3(model * vec4(a_tangent, 0.0)));
+		vec3 b = normalize(vec3(model * vec4(a_bitangent, 0.0))); // b = cross(n, t) TODO: for the OpenGL ES version test calculating b on the vertex shader in order to reduce the vertex memory (no graphics card)
+		vec3 n = normalize(vec3(model * vec4(a_normal, 0.0)));
+		tbn = mat3(t, b, n);
         uv = a_uv;
 		light_direction = u_scene_data[5].xyz;
 		light_intensity = u_scene_data[5].w;
@@ -42,6 +47,7 @@ static const char* kPbrFragment = R"(
 
 	#define COLOR				u_entity_data[4].xyz
 	#define USE_ALBEDO_MAP		u_entity_data[4].w
+	#define USE_PBR_MAPS		u_entity_data[5].x
 	#define TILING_X 			u_entity_data[5].y
 	#define TILING_Y 			u_entity_data[5].z
 
@@ -53,9 +59,12 @@ static const char* kPbrFragment = R"(
 
     uniform vec4 u_entity_data[7];
     uniform sampler2D u_albedo;
+    uniform sampler2D u_metallic;
+    uniform sampler2D u_roughness;
+    uniform sampler2D u_normal;
 
 	in vec4 world_position;
-	in vec3 normal;
+	in mat3 tbn;
 	in vec3 camera_position;
 	in vec3 light_direction;
 	in float light_intensity;
@@ -103,8 +112,7 @@ static const char* kPbrFragment = R"(
 		return 1.0 / PI;
 	}
 
-	vec3 BRDF(Material mat, vec3 l, vec3 v) {
-		vec3 n = normal;
+	vec3 BRDF(Material mat, vec3 l, vec3 v, vec3 n) {
 		vec3 h = normalize(v + l);
 
 		vec3 f0 = 0.16 * mat.reflectance * mat.reflectance * (1.0 - mat.metallic) + mat.albedo * mat.metallic;
@@ -131,9 +139,13 @@ static const char* kPbrFragment = R"(
 	}
 
     void main() {
+		float roughness = texture(u_roughness, vec2(uv.x * TILING_X, uv.y * TILING_Y)).r;
+		vec3 normal = texture(u_normal, vec2(uv.x * TILING_X, uv.y * TILING_Y)).rgb;
+		normal = normalize(tbn * (normal * 2.0 - 1.0));
+		float metallic = texture(u_metallic, vec2(uv.x * TILING_X, uv.y * TILING_Y)).r;
 		Material material;
-		material.roughness = max(ROUGHNESS, 0.05);
-		material.metallic = METALLIC;
+		material.roughness = max(0.05, mix(ROUGHNESS, roughness, USE_PBR_MAPS));
+		material.metallic = mix(METALLIC, metallic, USE_PBR_MAPS);
 		material.reflectance = REFLECTANCE;
 
 		vec3 albedo = texture(u_albedo, vec2(uv.x * TILING_X, uv.y * TILING_Y)).rgb;
@@ -144,7 +156,7 @@ static const char* kPbrFragment = R"(
 		vec3 l = normalize(light_direction);
 		float NoL = clamp(dot(normal, l), 0.0, 1.0);
 		float illuminance = light_intensity * NoL;
-		vec3 color = BRDF(material, l, normalize(camera_position - vec3(world_position)));
+		vec3 color = BRDF(material, l, normalize(camera_position - vec3(world_position)), normal);
 		vec3 ambient = material.albedo * 0.03;
 
         FragColor = vec4(ambient + color * illuminance, 1.0);
@@ -165,7 +177,8 @@ namespace leep
         if (!err)
         {
             glGetShaderInfoLog(vert_shader, 512, nullptr, output_log);
-            LEEP_CORE_ERROR("PBR vertex shader compilation failed:\n{0}\n", output_log);
+            LEEP_CORE_ERROR(
+				"PBR vertex shader compilation failed:\n{0}\n", output_log);
         }
         //  Create and compile fragment shader and print if compilation errors
         GLuint frag_shader = glCreateShader(GL_FRAGMENT_SHADER);
@@ -175,7 +188,8 @@ namespace leep
         if (!err)
         {
             glGetShaderInfoLog(frag_shader, 512, nullptr, output_log);
-            LEEP_CORE_ERROR("PBR fragment shader compilation failed:\n{0}\n", output_log);
+            LEEP_CORE_ERROR(
+				"PBR fragment shader compilation failed:\n{0}\n", output_log);
         }
         //  Create the program with both shaders
         GLuint program = glCreateProgram();
@@ -195,35 +209,65 @@ namespace leep
     void Pbr::useMaterialData(const Material& material) const
     {
         Renderer& r = GM.renderer();
-        LEEP_ASSERT(material.type() == MaterialType::MT_PBR, "Wrong material type");
+        LEEP_ASSERT(material.type() == MaterialType::MT_PBR,
+			"Wrong material type");
 
         // Load texture
-        int32_t tex_id = material.texture().handle();
-        LEEP_ASSERT(tex_id != -1, "Texture not created");
-        LEEP_ASSERT(r.textures_[tex_id].version_ != -1, "Texture released");
-        if (r.textures_[tex_id].version_ == 0)
+        int32_t albedo_id = material.albedo().handle();
+        int32_t metallic_id = material.metallic().handle();
+        int32_t roughness_id = material.roughness().handle();
+        int32_t normal_id = material.normal().handle();
+        LEEP_ASSERT(albedo_id != -1, "Texture not created");
+        LEEP_ASSERT(metallic_id != -1, "Texture not created");
+        LEEP_ASSERT(roughness_id != -1, "Texture not created");
+        LEEP_ASSERT(normal_id != -1, "Texture not created");
+        LEEP_ASSERT(r.textures_[albedo_id].version_ != -1, "Texture released");
+        LEEP_ASSERT(r.textures_[metallic_id].version_ != -1,"Texture released");
+        LEEP_ASSERT(r.textures_[roughness_id].version_!= -1,"Texture released");
+        LEEP_ASSERT(r.textures_[normal_id].version_ != -1, "Texture released");
+        if (r.textures_[albedo_id].version_ == 0)
         {
-            // Render commands can be executed without submiting any DisplayList
-			if (r.textures_[tex_id].linear_)
-			{
-				CreateTexture()
-					.set_texture(material.texture())
-					.set_format(TextureFormat::LINEAR)
-					.executeCommand();
-			}
-			else
-			{
-				CreateTexture()
-					.set_texture(material.texture())
-					.set_format(TextureFormat::GAMMA)
-					.executeCommand();
-			}
+			CreateTexture()
+				.set_texture(material.albedo())
+				.set_format(TextureFormat::GAMMA)
+				.executeCommand();
+        }
+
+        if (r.textures_[metallic_id].version_ == 0)
+        {
+			CreateTexture()
+				.set_texture(material.metallic())
+				.set_format(TextureFormat::LINEAR)
+				.executeCommand();
+        }
+
+        if (r.textures_[roughness_id].version_ == 0)
+        {
+			CreateTexture()
+				.set_texture(material.roughness())
+				.set_format(TextureFormat::LINEAR)
+				.executeCommand();
+        }
+
+        if (r.textures_[normal_id].version_ == 0)
+        {
+			CreateTexture()
+				.set_texture(material.normal())
+				.set_format(TextureFormat::LINEAR)
+				.executeCommand();
         }
 
         GLint uniform_location = glGetUniformLocation(internal_id_, "u_albedo");
-        glUniform1i(uniform_location, r.textures_[tex_id].texture_unit_);
+        glUniform1i(uniform_location, r.textures_[albedo_id].texture_unit_);
+        uniform_location = glGetUniformLocation(internal_id_, "u_metallic");
+        glUniform1i(uniform_location, r.textures_[metallic_id].texture_unit_);
+        uniform_location = glGetUniformLocation(internal_id_, "u_roughness");
+        glUniform1i(uniform_location, r.textures_[roughness_id].texture_unit_);
+        uniform_location = glGetUniformLocation(internal_id_, "u_normal");
+        glUniform1i(uniform_location, r.textures_[normal_id].texture_unit_);
         
         uniform_location = glGetUniformLocation(internal_id_, "u_entity_data");
-        glUniform4fv(uniform_location, sizeof(PbrData) / sizeof(float) / 4, (const GLfloat*)&(material.data()));
+        glUniform4fv(uniform_location, sizeof(PbrData) / sizeof(float) / 4,
+					 (const GLfloat*)&(material.data()));
     }
 }

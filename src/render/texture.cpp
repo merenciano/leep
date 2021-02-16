@@ -33,7 +33,6 @@ namespace leep
         LEEP_ASSERT(path != "" || cube != true, "The cubemap needs a path to a directory");
 		LEEP_ASSERT(handle_ == ConstantValues::UNINITIALIZED_HANDLER, "This texture has been created before");
         Renderer &r = GM.renderer();
-        // texture mutex??
 
         if (!r.aviable_tex_pos_.empty())
         {
@@ -42,8 +41,7 @@ namespace leep
         }
         else
         {
-            InternalTexture tmp;
-            r.textures_.push_back(tmp);
+            r.textures_.emplace_back();
             handle_ = (int32_t)r.textures_.size() - 1;
         }
 

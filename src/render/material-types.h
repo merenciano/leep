@@ -26,7 +26,7 @@ namespace leep
 	public:
 		glm::vec3 color_;
 		float use_albedo_map_;
-		float paddinggg;
+        float use_pbr_maps_;
         float tiling_x_;
         float tiling_y_;
 		float padding;

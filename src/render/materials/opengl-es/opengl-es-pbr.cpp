@@ -91,13 +91,13 @@ namespace leep
         LEEP_ASSERT(material.type() == MaterialType::MT_PBR, "Wrong material type");
 
         // Load texture
-        int32_t tex_id = material.texture().handle();
+        int32_t tex_id = material.albedo().handle();
         LEEP_ASSERT(tex_id != -1, "Texture not created");
         LEEP_ASSERT(r.textures_[tex_id].version_ != -1, "Texture released");
         if (r.textures_[tex_id].version_ == 0)
         {
             // Render commands can be executed without submiting any DisplayList
-            CreateTexture().set_texture(material.texture()).executeCommand();
+            CreateTexture().set_texture(material.albedo()).executeCommand();
         }
 
         GLint uniform_location = glGetUniformLocation(internal_id_, "u_texture");

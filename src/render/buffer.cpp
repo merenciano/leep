@@ -26,11 +26,10 @@ namespace leep
         return *this;
     }
 
-    void Buffer::create(BufferType type)
+    void Buffer::create()
     {
         LEEP_ASSERT(handle_ == ConstantValues::UNINITIALIZED_HANDLER, "This handler has been created before");
 
-        type_ = type;
         if (!Manager::instance().renderer().aviable_buffer_pos_.empty())
         {
             // Getting the first element and removing it from the list
@@ -44,8 +43,9 @@ namespace leep
         }
     }
 
-    void Buffer::set_data(std::vector<Vertex> &data)
+    void Buffer::set_data(std::vector<float> &data, BufferType type)
     {
+        type_ = type;
         Manager::instance().renderer().buffers_[handle_].vertices_data_.swap(data);
         Manager::instance().renderer().buffers_[handle_].version_++;
         data.clear();
@@ -53,6 +53,7 @@ namespace leep
 
     void Buffer::set_data(std::vector<uint32_t> &data)
     {
+        type_ = BufferType::INDEX_BUFFER;
         Manager::instance().renderer().buffers_[handle_].indices_data_.swap(data);
         Manager::instance().renderer().buffers_[handle_].version_++;
         data.clear();

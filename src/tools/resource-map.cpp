@@ -8,7 +8,8 @@ namespace leep
         LEEP_ASSERT(name != "Cube", "There is already a cube named Cube");
         LEEP_ASSERT(name != "Sphere", "There is already a sphere named Sphere");
         LEEP_ASSERT(name != "Quad", "There is already a quad named Quad");
-        bool inserted = geometries_.emplace(std::make_pair(name, Geometry())).second;
+        bool inserted = 
+            geometries_.emplace(std::make_pair(name, Geometry())).second;
         if (inserted)
         {
             geometries_[name].loadObj(path);
@@ -19,15 +20,28 @@ namespace leep
         }
     }
 
-    void ResourceMap::addTexture(std::string name, std::string path, bool cube)
+    void ResourceMap::addTexture(
+            std::string name,
+            std::string path,
+            bool cube,
+            bool linear)
     {
-        bool inserted = textures_.emplace(std::make_pair(name, Texture())).second;
+        bool inserted =
+            textures_.emplace(std::make_pair(name, Texture())).second;
         if (inserted)
         {
             if (cube)
-                textures_[name].create(path, true);
+            {
+                textures_[name].create(path, false, true);
+            }
+            else if (linear)
+            {
+                textures_[name].create(path, true, false);
+            }
             else
-                textures_[name].create(path, false);
+            {
+                textures_[name].create(path);
+            }
         }
         else
         {

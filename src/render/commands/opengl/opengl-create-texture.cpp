@@ -29,7 +29,7 @@ namespace leep
 				config.format = GL_RGB;
 				config.internal_format = GL_RGB;
 				config.type = GL_UNSIGNED_BYTE;
-				config.filter = GL_NEAREST; // TODO: Check with linear (dont want any pixeled img)
+				config.filter = GL_LINEAR; // TODO: Check with linear (dont want any pixeled img)
 				config.wrap = GL_REPEAT;
 				break;
 
@@ -37,7 +37,7 @@ namespace leep
 				config.format = GL_RGB;
 				config.internal_format = GL_SRGB;
 				config.type = GL_UNSIGNED_BYTE;
-				config.filter = GL_NEAREST;
+				config.filter = GL_LINEAR;
 				config.wrap = GL_REPEAT;
 				break;
 

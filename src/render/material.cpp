@@ -17,7 +17,11 @@ namespace leep
     Material::Material(const Material &other)
     {
         type_ = other.type_;
-        texture_ = other.texture_;
+        albedo_ = other.albedo_;
+        metallic_ = other.metallic_;
+        roughness_ = other.roughness_;
+        normal_ = other.normal_;
+
         switch(type_)
         {
         case MaterialType::MT_NONE:
@@ -41,7 +45,11 @@ namespace leep
     {
         //LEEP_CORE_ASSERT(other.type_ != MaterialType::MT_NONE, "You are trying to copy an uninitialized material");
         type_ = other.type_;
-        texture_ = other.texture_;
+        albedo_ = other.albedo_;
+        metallic_ = other.metallic_;
+        roughness_ = other.roughness_;
+        normal_ = other.normal_;
+
         switch(type_)
         {
         case MaterialType::MT_PBR:
@@ -74,9 +82,24 @@ namespace leep
         data_.pbr_ = data;
     }
 
-    void Material::set_texture(Texture texture)
+    void Material::set_albedo(Texture texture)
     {
-        texture_ = texture;
+        albedo_ = texture;
+    }
+
+    void Material::set_metallic(Texture texture)
+    {
+        metallic_ = texture;
+    }
+
+    void Material::set_roughness(Texture texture)
+    {
+        roughness_ = texture;
+    }
+
+    void Material::set_normal(Texture texture)
+    {
+        normal_ = texture;
     }
 
     const Material::MaterialData& Material::data() const
@@ -89,8 +112,23 @@ namespace leep
         return type_;
     }
 
-    Texture Material::texture() const
+    Texture Material::albedo() const
     {
-        return texture_;
+        return albedo_;
+    }
+
+    Texture Material::metallic() const
+    {
+        return metallic_;
+    }
+
+    Texture Material::roughness() const
+    {
+        return roughness_;
+    }
+
+    Texture Material::normal() const
+    {
+        return normal_;
     }
 }

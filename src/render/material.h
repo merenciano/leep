@@ -27,15 +27,24 @@ namespace leep
         void set_type(MaterialType type);
         void set_model(const glm::mat4 &world);
         void set_data(const PbrData &data);
-        void set_texture(Texture tex);
+        void set_albedo(Texture tex);
+        void set_metallic(Texture tex);
+        void set_roughness(Texture tex);
+        void set_normal(Texture tex);
         const MaterialData& data() const;
         const MaterialType type() const;
-        Texture texture() const;
+        Texture albedo() const;
+        Texture metallic() const;
+        Texture roughness() const;
+        Texture normal() const;
 
     private:
         MaterialData data_; 
         MaterialType type_; // Acts as a handle
-        Texture texture_;
+        Texture albedo_;
+        Texture metallic_;
+        Texture roughness_;
+        Texture normal_;
     };
 }
 #endif // __LEEP_RENDER_MATERIAL_H__

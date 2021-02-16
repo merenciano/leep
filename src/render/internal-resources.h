@@ -69,7 +69,7 @@ namespace leep
         //  but I didn't be able to make it work with unions because
         //  of the exceptions it threw, I think multiple std::vectors
         //  inside an union does not work well, but I need some research on this
-        std::vector<Vertex> vertices_data_;
+        std::vector<float> vertices_data_;
         std::vector<uint32_t> indices_data_;
 
         uint32_t internal_id_;

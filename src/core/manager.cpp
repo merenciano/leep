@@ -46,7 +46,7 @@ namespace leep
         data_->delta_time_ = 0.16f;
 
         Renderer::s_cube.createCube();
-		Renderer::s_sphere.createSphere(50, 50);
+		Renderer::s_sphere.createSphere(500, 500);
 		Renderer::s_quad.createQuad();
     }
 

@@ -3,6 +3,8 @@
 
 #include "core/logger.h"
 
+#include <glm/glm.hpp>
+
 #ifdef LEEP_DEBUG 
     #define LEEP_ASSERT(x, ...)      { if(!(x)) { LEEP_ERROR("Assertion failed: {0}",__VA_ARGS__); abort(); }}
     #define LEEP_CORE_ASSERT(x, ...) { if(!(x)) { LEEP_CORE_ERROR("Assertion failed: {0}",__VA_ARGS__); abort(); }}
@@ -38,6 +40,12 @@ namespace leep
 
     struct Vertex
     {
+        glm::vec3 p;
+        glm::vec3 n;
+        glm::vec3 t;
+        glm::vec3 b;
+        glm::vec2 uv;
+        /*
         float px;
         float py;
         float pz;
@@ -46,6 +54,13 @@ namespace leep
         float nz;
         float tx;
         float ty;
+        float tz;
+        float bx;
+        float by;
+        float bz;
+        float u;
+        float v;
+        */
     };
 
     const uint32_t kEntitiesPerChunk = 128; 

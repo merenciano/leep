@@ -14,16 +14,7 @@ namespace leep
 
         glGenBuffers(1, &(r.buffers_[buffer_.handle()].internal_id_));
 
-        if (buffer_.type() == BufferType::VERTEX_BUFFER)
-        {
-            glBindBuffer(GL_ARRAY_BUFFER, r.buffers_[buffer_.handle()].internal_id_);
-            glBufferData(GL_ARRAY_BUFFER,
-                        r.buffers_[buffer_.handle()].vertices_data_.size() * sizeof(Vertex),
-                        (const void*)r.buffers_[buffer_.handle()].vertices_data_.data(),
-                        GL_STATIC_DRAW);
-            glBindBuffer(GL_ARRAY_BUFFER, 0);
-        }
-        else if (buffer_.type() == BufferType::INDEX_BUFFER)
+        if (buffer_.type() == BufferType::INDEX_BUFFER)
         {
             glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, r.buffers_[buffer_.handle()].internal_id_);
             glBufferData(GL_ELEMENT_ARRAY_BUFFER,
@@ -31,6 +22,15 @@ namespace leep
                         (const void*)r.buffers_[buffer_.handle()].indices_data_.data(),
                         GL_STATIC_DRAW);
             glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+        }
+        else if (buffer_.type() != BufferType::NONE)
+        {
+            glBindBuffer(GL_ARRAY_BUFFER, r.buffers_[buffer_.handle()].internal_id_);
+            glBufferData(GL_ARRAY_BUFFER,
+                        r.buffers_[buffer_.handle()].vertices_data_.size() * sizeof(float),
+                        (const void*)r.buffers_[buffer_.handle()].vertices_data_.data(),
+                        GL_STATIC_DRAW);
+            glBindBuffer(GL_ARRAY_BUFFER, 0);
         }
         
         r.buffers_[buffer_.handle()].gpu_version_ = r.buffers_[buffer_.handle()].version_; 
