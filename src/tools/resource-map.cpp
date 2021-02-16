@@ -23,25 +23,13 @@ namespace leep
     void ResourceMap::addTexture(
             std::string name,
             std::string path,
-            bool cube,
-            bool linear)
+            TexType t)
     {
         bool inserted =
             textures_.emplace(std::make_pair(name, Texture())).second;
         if (inserted)
         {
-            if (cube)
-            {
-                textures_[name].create(path, false, true);
-            }
-            else if (linear)
-            {
-                textures_[name].create(path, true, false);
-            }
-            else
-            {
-                textures_[name].create(path);
-            }
+            textures_[name].create(path, t);
         }
         else
         {

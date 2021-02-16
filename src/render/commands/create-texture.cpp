@@ -4,18 +4,11 @@ namespace leep
 {
 	CreateTexture::CreateTexture()
 	{
-		format_ = TextureFormat::NONE;
 	}
 
     CreateTexture& CreateTexture::set_texture(const Texture &texture)
     {
         texture_ = texture;
-        return *this;
-    }
-
-    CreateTexture& CreateTexture::set_format(TextureFormat format)
-    {
-        format_ = format;
         return *this;
     }
 }

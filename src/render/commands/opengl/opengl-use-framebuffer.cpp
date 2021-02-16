@@ -31,14 +31,12 @@ namespace leep
             {
                 CreateTexture()
                     .set_texture(fb_.color())
-                    .set_format(TextureFormat::COLOR_BUFFER)
                     .executeCommand();
             }
             if (ifb.depth_)
             {
                 CreateTexture()
                     .set_texture(fb_.depth())
-                    .set_format(TextureFormat::DEPTH_BUFFER)
                     .executeCommand();
             }
         }

@@ -35,8 +35,8 @@ namespace leep
 			handle_ = (int32_t)r.framebuffers_.size() - 1;
 		}
 
-		r.framebuffers_[handle_].color_texture_.createEmpty(width, height);
-		r.framebuffers_[handle_].depth_texture_.createEmpty(width, height);
+		r.framebuffers_[handle_].color_texture_.createEmpty(width, height, TexType::FLOAT16);
+		r.framebuffers_[handle_].depth_texture_.createEmpty(width, height, TexType::DEPTH);
 
 		if (width <= 1.0f)
 		{

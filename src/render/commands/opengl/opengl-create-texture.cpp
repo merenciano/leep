@@ -19,21 +19,29 @@ namespace leep
 
     void CreateTexture::executeCommand() const
     {
-        Renderer &r = GM.renderer();
-        int32_t id = texture_.handle();
 		TextureConfig config;
+        int32_t id = texture_.handle();
+        InternalTexture &itex = GM.renderer().textures_[id];
 
-		switch(format_)
+		switch(itex.type_)
 		{
-			case TextureFormat::LINEAR: 
-				config.format = GL_RGB;
-				config.internal_format = GL_RGB;
+			case TexType::R:
+				config.format = GL_RED;
+				config.internal_format = GL_R8;
 				config.type = GL_UNSIGNED_BYTE;
-				config.filter = GL_LINEAR; // TODO: Check with linear (dont want any pixeled img)
+				config.filter = GL_LINEAR;
 				config.wrap = GL_REPEAT;
 				break;
 
-			case TextureFormat::GAMMA: 
+			case TexType::RGB: 
+				config.format = GL_RGB;
+				config.internal_format = GL_RGB;
+				config.type = GL_UNSIGNED_BYTE;
+				config.filter = GL_LINEAR;
+				config.wrap = GL_REPEAT;
+				break;
+
+			case TexType::SRGB: 
 				config.format = GL_RGB;
 				config.internal_format = GL_SRGB;
 				config.type = GL_UNSIGNED_BYTE;
@@ -41,7 +49,7 @@ namespace leep
 				config.wrap = GL_REPEAT;
 				break;
 
-			case TextureFormat::COLOR_BUFFER:
+			case TexType::FLOAT16:
 				config.format = GL_RGBA;
 				config.internal_format = GL_RGBA16F;
 				config.type = GL_FLOAT;
@@ -49,7 +57,7 @@ namespace leep
 				config.wrap = GL_CLAMP_TO_EDGE;
 				break;
 
-			case TextureFormat::DEPTH_BUFFER:
+			case TexType::DEPTH:
 				config.format = GL_DEPTH_COMPONENT;
 				config.internal_format = GL_DEPTH_COMPONENT;
 				config.type = GL_FLOAT;
@@ -67,33 +75,35 @@ namespace leep
 				break;
 		}
 
-        LEEP_CORE_ASSERT(r.textures_[id].version_ == 0, "Texture created before?");
+        LEEP_CORE_ASSERT(itex.version_ == 0,
+            "Texture created before?");
         LEEP_CORE_ASSERT(id < 63, "Max texture units");
         LEEP_CORE_ASSERT(id >= 0, "Texture not initialized");
-        LEEP_CORE_ASSERT(r.textures_[id].internal_id_ == 0, "Renderer::createTexture: Texture created before");
+        LEEP_CORE_ASSERT(itex.internal_id_ == 0,
+            "Renderer::createTexture: Texture created before");
 
-        glGenTextures(1, (GLuint*)&(r.textures_[id].internal_id_));
-        r.textures_[id].texture_unit_ = id + 1;
-        glActiveTexture(GL_TEXTURE0 + r.textures_[id].texture_unit_);
-        glBindTexture(GL_TEXTURE_2D, r.textures_[id].internal_id_);
+        glGenTextures(1, (GLuint*)&(itex.internal_id_));
+        itex.texture_unit_ = id + 1;
+        glActiveTexture(GL_TEXTURE0 + itex.texture_unit_);
+        glBindTexture(GL_TEXTURE_2D, itex.internal_id_);
         
-        if (r.textures_[id].path_ != "")
+        if (itex.path_ != "")
         {
             int32_t width, height, nchannels;
             stbi_set_flip_vertically_on_load(1);
             uint8_t *img_data = stbi_load(
-                r.textures_[id].path_.c_str(),
+                itex.path_.c_str(),
                 &width, &height, &nchannels, STBI_rgb);
             LEEP_CORE_ASSERT(img_data, "Can not load the image to the texture");
-            glTexImage2D(GL_TEXTURE_2D, 0, config.internal_format, width, height,
-                        0, config.format, config.type, img_data);
+            glTexImage2D(GL_TEXTURE_2D, 0, config.internal_format, width,
+                height, 0, config.format, config.type, img_data);
             glGenerateMipmap(GL_TEXTURE_2D);
             stbi_image_free(img_data);
         }
 		else
 		{
-			glTexImage2D(GL_TEXTURE_2D, 0, config.internal_format, r.textures_[id].width_,
-				r.textures_[id].height_, 0, config.format, config.type, NULL);
+			glTexImage2D(GL_TEXTURE_2D, 0, config.internal_format, itex.width_,
+                itex.height_, 0, config.format, config.type, NULL);
 		}
 		// No shadows outside shadow maps
 		float border_color[] = { 1.0f, 1.0f, 1.0f, 1.0f };
@@ -102,6 +112,6 @@ namespace leep
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, config.filter);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, config.wrap);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, config.wrap);
-        r.textures_[id].version_++;
+        itex.version_++;
     }
 }

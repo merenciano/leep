@@ -28,10 +28,12 @@ namespace leep
         return *this;
     }
 
-    void Texture::create(std::string path, bool linear, bool cube)
+    void Texture::create(std::string path, TexType t)
     {
-        LEEP_ASSERT(path != "" || cube != true, "The cubemap needs a path to a directory");
-		LEEP_ASSERT(handle_ == ConstantValues::UNINITIALIZED_HANDLER, "This texture has been created before");
+        LEEP_ASSERT(path != "" || t != TexType::CUBE,
+            "The cubemap needs a path to a directory");
+		LEEP_ASSERT(handle_ == ConstantValues::UNINITIALIZED_HANDLER,
+            "This texture has been created before");
         Renderer &r = GM.renderer();
 
         if (!r.aviable_tex_pos_.empty())
@@ -50,14 +52,15 @@ namespace leep
         r.textures_[handle_].version_ = 0;
         r.textures_[handle_].width_ = 0;
         r.textures_[handle_].height_ = 0;
-        r.textures_[handle_].cube_ = cube;
-        r.textures_[handle_].linear_ = linear;
+        r.textures_[handle_].type_ = t;
     }
 
-    void Texture::createEmpty(float width, float height)
+    void Texture::createEmpty(float width, float height, TexType t)
     {
-        LEEP_ASSERT(handle_ == ConstantValues::UNINITIALIZED_HANDLER, "This texture has been created before");
-		LEEP_ASSERT(width > 0.0f && height > 0.0f, "Width and height of the texture must be greater than 0");
+        LEEP_ASSERT(handle_ == ConstantValues::UNINITIALIZED_HANDLER,
+            "This texture has been created before");
+		LEEP_ASSERT(width > 0.0f && height > 0.0f,
+            "Width and height of the texture must be greater than 0");
         Renderer &r = GM.renderer();
         if (!r.aviable_tex_pos_.empty())
         {
@@ -82,16 +85,15 @@ namespace leep
         else
         {
             r.textures_[handle_].width_ =
-            (uint32_t)((float)GM.window().width() * width);
+            (uint32_t)(GM.window().fwidth() * width);
             r.textures_[handle_].height_ =
-            (uint32_t)((float)GM.window().height() * height);
+            (uint32_t)(GM.window().fheight() * height);
         }
 
         r.textures_[handle_].internal_id_ = 0;
         r.textures_[handle_].path_ = "";
         r.textures_[handle_].version_ = 0;
-		r.textures_[handle_].cube_ = false; // TODO: Create empty cube tex if I add pointlight shadows
-		r.textures_[handle_].linear_ = false;
+		r.textures_[handle_].type_ = t;
     }
 
     void Texture::release()

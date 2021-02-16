@@ -1,0 +1,14 @@
+# File produced by Open Asset Import Library (http://www.assimp.sf.net)
+# (assimp v5.0.639693989)
+
+newmtl Default
+Kd 0.58823532 0.58823532 0.58823532
+Ka 0.58823532 0.58823532 0.58823532
+Ks 0.89999998 0.89999998 0.89999998
+Ke 0 0 0
+Tf 0 0 0
+d 1
+Ns 1.9999999
+illum 2
+map_Kd Textures\Cerberus_A.tga
+

@@ -31,8 +31,7 @@ namespace leep
         uint32_t texture_unit_;
         uint32_t width_;
         uint32_t height_;
-		bool linear_;
-        bool cube_;
+        TexType type_;
     };
 
 	struct InternalFramebuffer

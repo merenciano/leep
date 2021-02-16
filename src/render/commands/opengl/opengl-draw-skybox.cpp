@@ -40,7 +40,7 @@ namespace leep
             glGenBuffers(1, &(r.buffers_[vertex_handler].internal_id_));
             glBindBuffer(GL_ARRAY_BUFFER, r.buffers_[vertex_handler].internal_id_);
             glBufferData(GL_ARRAY_BUFFER,
-                r.buffers_[vertex_handler].vertices_data_.size() * sizeof(Vertex),
+                r.buffers_[vertex_handler].vertices_data_.size() * sizeof(float),
                 (const void*)r.buffers_[vertex_handler].vertices_data_.data(),
                 GL_STATIC_DRAW);
             r.buffers_[vertex_handler].gpu_version_ = r.buffers_[vertex_handler].version_; 

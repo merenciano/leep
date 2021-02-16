@@ -23,7 +23,6 @@ namespace leep
 		{
 			CreateTexture()
 				.set_texture(framebuffer_.color())
-				.set_format(TextureFormat::COLOR_BUFFER)
 				.executeCommand();
 			glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D,
 								   r.textures_[framebuffer_.color().handle()].internal_id_, 0);
@@ -32,7 +31,6 @@ namespace leep
 		{
 			CreateTexture()
 				.set_texture(framebuffer_.depth())
-				.set_format(TextureFormat::DEPTH_BUFFER)
 				.executeCommand();
 			glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D,
 								   r.textures_[framebuffer_.depth().handle()].internal_id_, 0);

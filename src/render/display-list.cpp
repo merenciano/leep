@@ -16,7 +16,7 @@ namespace leep
 
     DisplayList::~DisplayList()
     {
-        command_list_.clear();
+
     }
 
     const std::list<std::unique_ptr<DisplayListCommand>>& DisplayList::command_list() const

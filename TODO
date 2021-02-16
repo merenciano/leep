@@ -6,8 +6,17 @@ TODO:
     - Better gpu resource deletion
     - Time comparisons with raspberry pi and governor at powresave (document that)
     - Pause and next frame button
-    - Entry point (APP abstraction?)
-
+    - ALLOCATORS!! And memory with pointers to constant data
+    - Async resource loader (default tex and cube in between)
+    - PhyX phisics system
+    - Audio component using soloud for example
+    - Environment maps with IBL
+    - PointLights
+    - Shadow for direct light
+    - Deferred render
+    - Postprocess Pipeline
+    - Particle system
+    - FBX loading assimp ( and obj why not... check times)
 
 
     - Displaylist hard to debug because things happen later and its hard to keep track of which command is
