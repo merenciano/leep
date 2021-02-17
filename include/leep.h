@@ -39,6 +39,7 @@
 #include "../src/render/commands/draw-skybox.h"
 #include "../src/render/commands/create-texture.h"
 #include "../src/render/commands/render-options.h"
+#include "../src/render/commands/equirectangular-to-cubemap.h"
 
 // TOOLS
 #include "../src/tools/imgui-tools.h"

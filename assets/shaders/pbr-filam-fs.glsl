@@ -101,6 +101,7 @@ void main() {
     float roughness = texture(u_roughness, vec2(v_in.uv.x, v_in.uv.y)).r;
     vec3 normal = texture(u_normal, vec2(v_in.uv.x, v_in.uv.y)).rgb;
     normal = normalize(v_in.tbn * (normal * 2.0 - 1.0));
+    // TODO normal use_pbr_maps
     float metallic = texture(u_metallic, vec2(v_in.uv.x, v_in.uv.y)).r;
     Material material;
     material.roughness = max(0.05, mix(ROUGHNESS, roughness, USE_PBR_MAPS));

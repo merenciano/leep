@@ -76,7 +76,9 @@ void main()
 	// Sample input textures to get shading model params.
 	vec3 albedo = texture(u_albedo, v_in.uv).rgb;
 	float metalness = texture(u_metallic, v_in.uv).r;
+    metalness = mix(METALLIC, metalness, USE_PBR_MAPS);
 	float roughness = texture(u_roughness, v_in.uv).r;
+    roughness = mix(ROUGHNESS, roughness, USE_PBR_MAPS);
 
 	// Outgoing light direction (vector from world-space fragment position to the "eye").
 	vec3 Lo = normalize(CAMERA_POSITION - v_in.position);
@@ -84,6 +86,7 @@ void main()
 	// Get current fragment's normal and transform to world space.
 	vec3 normal = normalize(2.0 * texture(u_normal, v_in.uv).rgb - 1.0);
 	normal = normalize(v_in.tbn * normal);
+    normal = mix(v_in.tbn[2], normal, USE_PBR_MAPS);
 	
 	// Angle between surface normal and outgoing light direction.
 	float cosLo = max(0.0, dot(normal, Lo));

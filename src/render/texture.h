@@ -7,12 +7,15 @@ namespace leep
 {
     enum class TexType
     {
+        NONE,
         R,
         RGB,
         SRGB,
-        FLOAT16,
-        CUBE,
         DEPTH,
+        SKYBOX,
+        RGB_F16,
+        RGBA_F16,
+        ENVIRONMENT,
     };
     class Texture
     {
@@ -22,8 +25,8 @@ namespace leep
         ~Texture();
 
         Texture& operator=(const Texture &t);
-        void create(std::string path = "", TexType t = TexType::SRGB);
-        void createEmpty(float width, float height, TexType t = TexType::FLOAT16);
+        void create(std::string path, TexType t);
+        void createEmpty(float width, float height, TexType t);
         void release();
         int32_t handle() const;
 

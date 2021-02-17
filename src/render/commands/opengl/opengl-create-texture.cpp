@@ -49,7 +49,7 @@ namespace leep
 				config.wrap = GL_REPEAT;
 				break;
 
-			case TexType::FLOAT16:
+			case TexType::RGBA_F16:
 				config.format = GL_RGBA;
 				config.internal_format = GL_RGBA16F;
 				config.type = GL_FLOAT;
@@ -65,6 +65,14 @@ namespace leep
 				config.wrap = GL_CLAMP_TO_BORDER;
 				break;
 
+            case TexType::RGB_F16:
+                config.format = GL_RGB;
+                config.internal_format = GL_RGB16F;
+                config.type = GL_FLOAT;
+                config.filter = GL_LINEAR;
+                config.wrap = GL_CLAMP_TO_EDGE;
+                break;
+
 			default: 
 				LEEP_CORE_ERROR("Trying to create a texture with an invalid format");
 				config.format = GL_INVALID_ENUM;
@@ -77,7 +85,7 @@ namespace leep
 
         LEEP_CORE_ASSERT(itex.version_ == 0,
             "Texture created before?");
-        LEEP_CORE_ASSERT(id < 63, "Max texture units");
+        LEEP_CORE_ASSERT(id < 62, "Max texture units"); // Tex unit is id + 1
         LEEP_CORE_ASSERT(id >= 0, "Texture not initialized");
         LEEP_CORE_ASSERT(itex.internal_id_ == 0,
             "Renderer::createTexture: Texture created before");
@@ -87,18 +95,30 @@ namespace leep
         glActiveTexture(GL_TEXTURE0 + itex.texture_unit_);
         glBindTexture(GL_TEXTURE_2D, itex.internal_id_);
         
-        if (itex.path_ != "")
+        if (itex.type_ == TexType::RGB_F16)
         {
-            int32_t width, height, nchannels;
+            int width, height, nchannels;
+            stbi_set_flip_vertically_on_load(1);
+            float *img_data = stbi_loadf(
+                itex.path_.c_str(), &width, &height, &nchannels, 0);
+            LEEP_CORE_ASSERT(img_data, "The image couldn't be loaded");
+            glTexImage2D(GL_TEXTURE_2D, 0, config.internal_format, width,
+                height, 0, config.format, config.type, img_data);
+            stbi_image_free(img_data);
+        }
+        else if (itex.path_ != "")
+        {
+            int width, height, nchannels;
             stbi_set_flip_vertically_on_load(1);
             uint8_t *img_data = stbi_load(
-                itex.path_.c_str(),
-                &width, &height, &nchannels, STBI_rgb);
-            LEEP_CORE_ASSERT(img_data, "Can not load the image to the texture");
+                itex.path_.c_str(), &width, &height, &nchannels, STBI_rgb);
+            LEEP_CORE_ASSERT(img_data, "The image couldn't be loaded");
             glTexImage2D(GL_TEXTURE_2D, 0, config.internal_format, width,
                 height, 0, config.format, config.type, img_data);
             glGenerateMipmap(GL_TEXTURE_2D);
             stbi_image_free(img_data);
+			itex.width_ = width;
+			itex.height_ = height;
         }
 		else
 		{

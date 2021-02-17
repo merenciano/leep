@@ -235,7 +235,8 @@ namespace leep
         // can lose its reference if any entity is removed because
         // when that happens the last entity of the container is relocated
         // in order to fill the gap, so that last entity could be the one
-        // stored in the entity variable and Entity::index_ would cause a crash in the best case
+        // stored in the entity variable and Entity::index_ would cause
+        // a crash in the best case
         Entity e = Entity::GetEntity(selected_entity_);
         if (e.hasComponent<LTransform>())
         {
@@ -251,6 +252,7 @@ namespace leep
                 ImGui::InputFloat   ("Texture tiling X" , &data.tiling_x_);
                 ImGui::InputFloat   ("Texture tiling Y" , &data.tiling_y_);
                 ImGui::SliderFloat  ("Use albedo map"   , &data.use_albedo_map_ , 0.0f, 1.0f);
+                ImGui::SliderFloat  ("Use PBR maps"     , &data.use_pbr_maps_   , 0.0f, 1.0f);
                 ImGui::SliderFloat  ("Roughness"        , &data.roughness_      , 0.0f, 1.0f);
                 ImGui::SliderFloat  ("Metallic"         , &data.metallic_       , 0.0f, 1.0f);
                 ImGui::SliderFloat  ("Reflectance"      , &data.reflectance_    , 0.0f, 1.0f);

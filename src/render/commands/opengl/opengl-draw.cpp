@@ -10,7 +10,7 @@ namespace leep
 {
     void Draw::executeCommand() const
     {
-        Renderer& r = Manager::instance().renderer();
+        Renderer& r = GM.renderer();
         int32_t vertex_handler = geometry_.vertex_buffer().handle();
         int32_t index_handler = geometry_.index_buffer().handle();
 

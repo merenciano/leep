@@ -67,62 +67,71 @@ namespace leep
 
     void Pbr::useMaterialData(const Material& material) const
     {
+        GLuint u_loc;
         Renderer& r = GM.renderer();
         LEEP_ASSERT(material.type() == MaterialType::MT_PBR,
 			"Wrong material type");
 
-        // Load texture
-        int32_t albedo_id = material.albedo().handle();
-        int32_t metallic_id = material.metallic().handle();
-        int32_t roughness_id = material.roughness().handle();
-        int32_t normal_id = material.normal().handle();
-        LEEP_ASSERT(albedo_id != -1, "Texture not created");
-        LEEP_ASSERT(metallic_id != -1, "Texture not created");
-        LEEP_ASSERT(roughness_id != -1, "Texture not created");
-        LEEP_ASSERT(normal_id != -1, "Texture not created");
-        LEEP_ASSERT(r.textures_[albedo_id].version_ != -1, "Texture released");
-        LEEP_ASSERT(r.textures_[metallic_id].version_ != -1,"Texture released");
-        LEEP_ASSERT(r.textures_[roughness_id].version_!= -1,"Texture released");
-        LEEP_ASSERT(r.textures_[normal_id].version_ != -1, "Texture released");
-        if (r.textures_[albedo_id].version_ == 0)
+        // Load textures
+        int32_t a_id = material.albedo().handle();
+        if (a_id != ConstantValues::UNINITIALIZED_HANDLER)
         {
-			CreateTexture()
-				.set_texture(material.albedo())
-				.executeCommand();
+            LEEP_ASSERT(a_id != -1, "Texture not created");
+            LEEP_ASSERT(r.textures_[a_id].version_ != -1, "Texture released");
+            if (r.textures_[a_id].version_ == 0)
+            {
+                CreateTexture()
+                    .set_texture(material.albedo()).executeCommand();
+            }
+            u_loc = glGetUniformLocation(internal_id_, "u_albedo");
+            glUniform1i(u_loc, r.textures_[a_id].texture_unit_);
         }
 
-        if (r.textures_[metallic_id].version_ == 0)
+        int32_t m_id = material.metallic().handle();
+        if (m_id != ConstantValues::UNINITIALIZED_HANDLER)
         {
-			CreateTexture()
-				.set_texture(material.metallic())
-				.executeCommand();
+            LEEP_ASSERT(m_id != -1, "Texture not created");
+            LEEP_ASSERT(r.textures_[m_id].version_ != -1, "Texture released");
+            if (r.textures_[m_id].version_ == 0)
+            {
+                CreateTexture()
+                    .set_texture(material.metallic()).executeCommand();
+            }
+            u_loc = glGetUniformLocation(internal_id_, "u_metallic");
+            glUniform1i(u_loc, r.textures_[m_id].texture_unit_);
         }
 
-        if (r.textures_[roughness_id].version_ == 0)
+        int32_t r_id = material.roughness().handle();
+        if (r_id != ConstantValues::UNINITIALIZED_HANDLER)
         {
-			CreateTexture()
-				.set_texture(material.roughness())
-				.executeCommand();
+            LEEP_ASSERT(r_id != -1, "Texture not created");
+            LEEP_ASSERT(r.textures_[r_id].version_!= -1, "Texture released");
+            if (r.textures_[r_id].version_ == 0)
+            {
+                CreateTexture()
+                    .set_texture(material.roughness()).executeCommand();
+            }
+            u_loc = glGetUniformLocation(internal_id_, "u_roughness");
+            glUniform1i(u_loc, r.textures_[r_id].texture_unit_);
         }
 
-        if (r.textures_[normal_id].version_ == 0)
+        int32_t n_id = material.normal().handle();
+        if (n_id != ConstantValues::UNINITIALIZED_HANDLER)
         {
-			CreateTexture()
-				.set_texture(material.normal())
-				.executeCommand();
-        }
+            LEEP_ASSERT(n_id != -1, "Texture not created");
+            LEEP_ASSERT(r.textures_[n_id].version_ != -1, "Texture released");
+            if (r.textures_[n_id].version_ == 0)
+            {
+                CreateTexture()
+                    .set_texture(material.normal()).executeCommand();
+            }
 
-        GLint uniform_location = glGetUniformLocation(internal_id_, "u_albedo");
-        glUniform1i(uniform_location, r.textures_[albedo_id].texture_unit_);
-        uniform_location = glGetUniformLocation(internal_id_, "u_metallic");
-        glUniform1i(uniform_location, r.textures_[metallic_id].texture_unit_);
-        uniform_location = glGetUniformLocation(internal_id_, "u_roughness");
-        glUniform1i(uniform_location, r.textures_[roughness_id].texture_unit_);
-        uniform_location = glGetUniformLocation(internal_id_, "u_normal");
-        glUniform1i(uniform_location, r.textures_[normal_id].texture_unit_);
+            u_loc = glGetUniformLocation(internal_id_, "u_normal");
+            glUniform1i(u_loc, r.textures_[n_id].texture_unit_);
+        }
         
-        uniform_location = glGetUniformLocation(internal_id_, "u_entity_data");
-        glUniform4fv(uniform_location, sizeof(PbrData) / sizeof(float) / 4,
+        u_loc = glGetUniformLocation(internal_id_, "u_entity_data");
+        glUniform4fv(u_loc, sizeof(PbrData) / sizeof(float) / 4,
 					 (const GLfloat*)&(material.data()));
     }
 }

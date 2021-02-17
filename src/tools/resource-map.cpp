@@ -29,7 +29,10 @@ namespace leep
             textures_.emplace(std::make_pair(name, Texture())).second;
         if (inserted)
         {
-            textures_[name].create(path, t);
+            if (path != "")
+                textures_[name].create(path, t);
+            else
+                textures_[name].createEmpty(512, 512, t);
         }
         else
         {

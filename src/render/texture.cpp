@@ -30,7 +30,7 @@ namespace leep
 
     void Texture::create(std::string path, TexType t)
     {
-        LEEP_ASSERT(path != "" || t != TexType::CUBE,
+        LEEP_ASSERT(path != "" || t != TexType::SKYBOX,
             "The cubemap needs a path to a directory");
 		LEEP_ASSERT(handle_ == ConstantValues::UNINITIALIZED_HANDLER,
             "This texture has been created before");

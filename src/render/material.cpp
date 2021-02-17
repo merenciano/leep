@@ -78,8 +78,16 @@ namespace leep
 
     void Material::set_data(const PbrData &data)
     {
-        LEEP_CORE_ASSERT(type_ == MaterialType::MT_PBR, "The material has not the correct type yet.");
+        LEEP_CORE_ASSERT(type_ == MaterialType::MT_PBR,
+            "The material doesn't have the correct type.");
         data_.pbr_ = data;
+    }
+
+    void Material::set_data(const EquirecToCubeData &data)
+    {
+        LEEP_CORE_ASSERT(type_ == MaterialType::MT_EQUIREC_TO_CUBE,
+            "The material doesn't have the correct type.");
+        data_.etc_ = data;
     }
 
     void Material::set_albedo(Texture texture)
