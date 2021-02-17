@@ -87,7 +87,7 @@ namespace leep
 
     void EquirecToCube::useMaterialData(const Material &material) const
     {
-
+        GLenum err = glGetError();
         LEEP_CORE_ASSERT(material.type() == MaterialType::MT_EQUIREC_TO_CUBE,
             "Wrong material type");
         
@@ -96,9 +96,13 @@ namespace leep
         int32_t tex_id = material.albedo().handle();
         LEEP_CORE_ASSERT(r.textures_[tex_id].version_ > 0, "Invalid texture");
         glUseProgram(internal_id_);
-        GLint uniform_location = glGetUniformLocation(internal_id_, "u_equirectangle");
+        err = glGetError();
+        GLint uniform_location = glGetUniformLocation(internal_id_, "u_equirectangular");
         glUniform1i(uniform_location, r.textures_[tex_id].texture_unit_);
+        err = glGetError();
         uniform_location = glGetUniformLocation(internal_id_, "u_vp");
-        glUniform4fv(uniform_location, 4, (GLfloat*)&material.data().etc_.vp_);
+        err = glGetError();
+        glUniformMatrix4fv(uniform_location, 1, false, (const GLfloat*)&(material.data()));
+        err = glGetError();
     }
 }

@@ -43,7 +43,6 @@ namespace leep
 
     Material& Material::operator=(const Material &other)
     {
-        //LEEP_CORE_ASSERT(other.type_ != MaterialType::MT_NONE, "You are trying to copy an uninitialized material");
         type_ = other.type_;
         albedo_ = other.albedo_;
         metallic_ = other.metallic_;
@@ -52,6 +51,10 @@ namespace leep
 
         switch(type_)
         {
+        case MaterialType::MT_NONE:
+            LEEP_CORE_WARNING("You are copying an uninitialized material");
+            break;
+
         case MaterialType::MT_PBR:
             data_.pbr_ = other.data_.pbr_;
             break;
@@ -59,8 +62,12 @@ namespace leep
         case MaterialType::MT_FULL_SCREEN_IMAGE:
             break;
 
+        case MaterialType::MT_EQUIREC_TO_CUBE:
+            data_.etc_ = other.data_.etc_;
+            break;
+
         default:
-            //LEEP_CORE_ERROR("Operator '=' of material default case.");
+            LEEP_CORE_ERROR("Copy material type switch default case.");
             break;
         }
         return *this;

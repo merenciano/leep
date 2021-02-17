@@ -141,7 +141,7 @@ namespace leep
 		}
 
 		vertex_buffer_.create();
-		vertex_buffer_.set_data(vertex_vector,
+		vertex_buffer_.set_data(vertex_vector, 
             BufferType::VERTEX_BUFFER_3P_3N_2UV);
 		index_buffer_.create();
 		index_buffer_.set_data(index_vector);

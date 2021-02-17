@@ -48,12 +48,7 @@ namespace leep
 
         default:
             LEEP_CORE_ERROR("Trying to create a cubemap with an invalid format");
-            config.format = GL_INVALID_ENUM;
-            config.internal_format = GL_INVALID_ENUM;
-            config.type = GL_INVALID_ENUM;
-            config.filter = GL_INVALID_ENUM;
-            config.wrap = GL_INVALID_ENUM;
-            break;
+            return;
         }
 
         glGenTextures(1, (GLuint*)&(r.textures_[id].internal_id_));
@@ -63,7 +58,7 @@ namespace leep
 
         // The path for cubemaps will be the directory where the skyboxfaces are
         // and inside the directory the faces must have these names
-        if (r.textures_[id].path_ != "")
+        if (r.textures_[id].type_ == TexType::SKYBOX)
         {
             std::string faces[6] = {
                 r.textures_[id].path_ + "/right.jpg",

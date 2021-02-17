@@ -18,7 +18,10 @@ namespace leep
         ResourceMap(ResourceMap &&rm) = delete;
 
         void addGeometry(std::string name, std::string path);
-        void addTexture(std::string name, std::string path, TexType t);
+        void addGeometry(std::string name, Geometry geometry);
+        void addTexture(std::string name, std::string path, TexType type);
+        void addTexture(std::string name, Texture texture);
+        void addTexture(std::string name, float width, float height, TexType type);
         Geometry getGeometry(std::string name) const;
         Texture getTexture(std::string name) const;
 

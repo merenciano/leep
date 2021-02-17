@@ -25,18 +25,39 @@ namespace leep
             std::string path,
             TexType t)
     {
+        LEEP_CORE_ASSERT(path != "", "For the creation of empty textures call with size params");
         bool inserted =
             textures_.emplace(std::make_pair(name, Texture())).second;
         if (inserted)
         {
-            if (path != "")
-                textures_[name].create(path, t);
-            else
-                textures_[name].createEmpty(512, 512, t);
+            textures_[name].create(path, t);
         }
         else
         {
-            LEEP_CORE_WARNING("There is already a texture with that name");
+            LEEP_CORE_WARNING("Texture couldn't be inserted");
+        }
+    }
+
+    void ResourceMap::addTexture(std::string n, float w, float h, TexType t)
+    {
+        LEEP_CORE_ASSERT(w > 0.0f && h > 0.0f, "0,0 size texture is no texture");
+        bool inserted = textures_.emplace(std::make_pair(n, Texture())).second;
+        if (inserted)
+        {
+            textures_[n].createEmpty(w, h, t);
+        }
+        else
+        {
+            LEEP_CORE_WARNING("Texture couldn't be inserted");
+        }
+    }
+
+    void ResourceMap::addTexture(std::string name, Texture tex)
+    {
+        bool inserted = textures_.emplace(std::make_pair(name, tex)).second;
+        if (!inserted)
+        {
+            LEEP_CORE_WARNING("Texture couldn't be inserted");
         }
     }
 
