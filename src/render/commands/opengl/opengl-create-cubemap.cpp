@@ -20,13 +20,13 @@ namespace leep
         Renderer &r = GM.renderer();
         int32_t id = texture_.handle();
 
-        LEEP_CORE_ASSERT(r.textures_[id].version_ == 0,
+        LEEP_CORE_ASSERT(r.textures_[id].cpu_version_ > r.textures_[id].gpu_version_,
             "Texture created before (CPU)");
-        LEEP_CORE_ASSERT(id < 60,
+        LEEP_CORE_ASSERT(id < 62,
             "Start thinking about the max textures");
         LEEP_CORE_ASSERT(id >= 0, "Texture not initialized");
-        LEEP_CORE_ASSERT(r.textures_[id].internal_id_ == 0,
-            "Renderer::createCubemap: Texture created before (GPU)"); // TODO: textures with cpu and gpu version
+        LEEP_CORE_ASSERT(r.textures_[id].internal_id_ == CommonDefs::UNINIT_INTERNAL_ID,
+            "Texture already created in the gpu");
 
         switch (r.textures_[id].type_)
         {
@@ -100,6 +100,6 @@ namespace leep
         glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, config.wrap);
         glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, config.filter);
         glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, config.filter);
-        r.textures_[id].version_++;
+        r.textures_[id].gpu_version_ = r.textures_[id].cpu_version_;
     }
 }

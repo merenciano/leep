@@ -12,21 +12,15 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
-#include "tools/resource-map.h" // TODO remove
 namespace leep
 {
     void EquirectangularToCubemap::executeCommand() const
     {
         Renderer &r = GM.renderer();
-        InternalTexture &ieq = r.textures_[in_equi_.handle()];
         InternalTexture &icu = r.textures_[out_cube_.handle()];
 
-        if (ieq.version_ == 0)
-        {
-            CreateTexture().set_texture(in_equi_).executeCommand();
-        }
-
-        if (icu.version_ == 0)
+        std::string path_ = "../assets/tex/hdr/AlleyRef.hdr";
+        if (icu.cpu_version_ > icu.gpu_version_)
         {
             CreateCubemap().set_texture(out_cube_).executeCommand();
         }
@@ -46,9 +40,12 @@ namespace leep
         glGenFramebuffers(1, &fb);
         glBindFramebuffer(GL_FRAMEBUFFER, fb);
         glViewport(0, 0, icu.width_, icu.height_);
-
+        // Manually sync framebuffer here after changing textures
         Material m;
-        m.set_albedo(in_equi_);
+        Texture equirec;
+        equirec.create(path_, TexType::RGB_F16);
+        CreateTexture().set_texture(equirec).executeCommand();
+        m.set_albedo(equirec);
         m.set_type(MT_EQUIREC_TO_CUBE);
         RenderOptions().set_cull_face(CullFace::DISABLED).executeCommand();
 
@@ -61,5 +58,7 @@ namespace leep
             Draw().set_geometry(Renderer::s_cube).set_material(m).executeCommand();
         }
         glDeleteFramebuffers(1, &fb);
+
+        equirec.release();
     }
 }

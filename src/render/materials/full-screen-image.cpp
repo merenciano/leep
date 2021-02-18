@@ -6,7 +6,7 @@ namespace leep
 {
     FullScreenImage::FullScreenImage()
     {
-        internal_id_ = ConstantValues::UNINITIALIZED_INTERNAL_ID;
+        internal_id_ = CommonDefs::UNINIT_INTERNAL_ID;
     }
 
     FullScreenImage::~FullScreenImage()

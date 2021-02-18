@@ -74,11 +74,11 @@ namespace leep
 
         // Load textures
         int32_t a_id = material.albedo().handle();
-        if (a_id != ConstantValues::UNINITIALIZED_HANDLER)
+        if (a_id != CommonDefs::UNINIT_HANDLE)
         {
             LEEP_ASSERT(a_id != -1, "Texture not created");
-            LEEP_ASSERT(r.textures_[a_id].version_ != -1, "Texture released");
-            if (r.textures_[a_id].version_ == 0)
+            LEEP_ASSERT(r.textures_[a_id].cpu_version_ != -1, "Texture released");
+            if (r.textures_[a_id].cpu_version_ == 0)
             {
                 CreateTexture()
                     .set_texture(material.albedo()).executeCommand();
@@ -88,11 +88,11 @@ namespace leep
         }
 
         int32_t m_id = material.metallic().handle();
-        if (m_id != ConstantValues::UNINITIALIZED_HANDLER)
+        if (m_id != CommonDefs::UNINIT_HANDLE)
         {
             LEEP_ASSERT(m_id != -1, "Texture not created");
-            LEEP_ASSERT(r.textures_[m_id].version_ != -1, "Texture released");
-            if (r.textures_[m_id].version_ == 0)
+            LEEP_ASSERT(r.textures_[m_id].cpu_version_ != -1, "Texture released");
+            if (r.textures_[m_id].cpu_version_ == 0)
             {
                 CreateTexture()
                     .set_texture(material.metallic()).executeCommand();
@@ -102,11 +102,11 @@ namespace leep
         }
 
         int32_t r_id = material.roughness().handle();
-        if (r_id != ConstantValues::UNINITIALIZED_HANDLER)
+        if (r_id != CommonDefs::UNINIT_HANDLE)
         {
             LEEP_ASSERT(r_id != -1, "Texture not created");
-            LEEP_ASSERT(r.textures_[r_id].version_!= -1, "Texture released");
-            if (r.textures_[r_id].version_ == 0)
+            LEEP_ASSERT(r.textures_[r_id].cpu_version_!= -1, "Texture released");
+            if (r.textures_[r_id].cpu_version_ == 0)
             {
                 CreateTexture()
                     .set_texture(material.roughness()).executeCommand();
@@ -116,11 +116,11 @@ namespace leep
         }
 
         int32_t n_id = material.normal().handle();
-        if (n_id != ConstantValues::UNINITIALIZED_HANDLER)
+        if (n_id != CommonDefs::UNINIT_HANDLE)
         {
             LEEP_ASSERT(n_id != -1, "Texture not created");
-            LEEP_ASSERT(r.textures_[n_id].version_ != -1, "Texture released");
-            if (r.textures_[n_id].version_ == 0)
+            LEEP_ASSERT(r.textures_[n_id].cpu_version_ != -1, "Texture released");
+            if (r.textures_[n_id].cpu_version_ == 0)
             {
                 CreateTexture()
                     .set_texture(material.normal()).executeCommand();

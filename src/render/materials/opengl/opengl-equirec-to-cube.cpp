@@ -94,7 +94,7 @@ namespace leep
         // Load texture
         Renderer &r = GM.renderer();
         int32_t tex_id = material.albedo().handle();
-        LEEP_CORE_ASSERT(r.textures_[tex_id].version_ > 0, "Invalid texture");
+        LEEP_CORE_ASSERT(r.textures_[tex_id].cpu_version_ > 0, "Invalid texture");
         glUseProgram(internal_id_);
         err = glGetError();
         GLint uniform_location = glGetUniformLocation(internal_id_, "u_equirectangular");

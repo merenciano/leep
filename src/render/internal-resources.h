@@ -27,7 +27,8 @@ namespace leep
     {
         std::string path_;
         int32_t internal_id_;
-        int32_t version_;
+        int32_t cpu_version_;
+        int32_t gpu_version_;
         uint32_t texture_unit_;
         uint32_t width_;
         uint32_t height_;
@@ -51,8 +52,8 @@ namespace leep
     {
         InternalBuffer()
         {
-            internal_id_ = ConstantValues::UNINITIALIZED_INTERNAL_ID;
-            version_ = 0;
+            internal_id_ = CommonDefs::UNINIT_INTERNAL_ID;
+            cpu_version_ = 0;
             gpu_version_ = 0;
         }
 
@@ -72,7 +73,7 @@ namespace leep
         std::vector<uint32_t> indices_data_;
 
         uint32_t internal_id_;
-        int32_t version_; // TODO: Change the name to cpu_version_
+        int32_t cpu_version_;
         int32_t gpu_version_;
     };
 }

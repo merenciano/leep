@@ -93,8 +93,8 @@ namespace leep
         // Load texture
         int32_t tex_id = material.albedo().handle();
         LEEP_ASSERT(tex_id != -1, "Texture not created");
-        LEEP_ASSERT(r.textures_[tex_id].version_ != -1, "Texture released");
-        if (r.textures_[tex_id].version_ == 0)
+        LEEP_ASSERT(r.textures_[tex_id].cpu_version_ != -1, "Texture released");
+        if (r.textures_[tex_id].cpu_version_ == 0)
         {
             // Render commands can be executed without submiting any DisplayList
             CreateTexture().set_texture(material.albedo()).executeCommand();

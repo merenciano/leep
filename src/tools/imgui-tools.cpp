@@ -1,10 +1,12 @@
 #include "imgui-tools.h"
 #include "core/manager.h"
 #include "core/memory/memory.h"
+#include "render/renderer.h"
 #include "ecs/entity.h"
 #include "ecs/components/ltransform.h"
 #include "ecs/components/drawable.h"
 #include "tools/lua-scripting.h"
+#include "tools/resource-map.h"
 
 #include <vector>
 #include <deque>
@@ -53,6 +55,7 @@ namespace leep
         LuaCommands();
         entityInspector();
 		componentInspector();
+        resourceInspector();
 
         ImGui::Render();
         ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
@@ -261,4 +264,97 @@ namespace leep
         }
 		ImGui::End();
 	}
+
+    void ImguiTools::resourceInspector()
+    {
+        static bool show = true;
+        static ImGuiTableFlags flags = ImGuiTableFlags_ScrollY | 
+            ImGuiTableFlags_RowBg | ImGuiTableFlags_BordersOuter |
+            ImGuiTableFlags_BordersV | ImGuiTableFlags_Resizable |
+            ImGuiTableFlags_Reorderable | ImGuiTableFlags_Hideable;
+        if (!ImGui::Begin("Resource inspector", &show, 0))
+        {
+            // Early out if the window is collapsed, as an optimization.
+            ImGui::End();
+            return;
+        }
+
+        Renderer &r = GM.renderer();
+        if (ImGui::CollapsingHeader("Textures"))
+        {
+            ImVec2 size = ImVec2(-FLT_MIN, ImGui::GetTextLineHeightWithSpacing() * 6);
+            if (ImGui::BeginTable("##table1", 2, flags, size))
+            {
+                ImGui::TableSetupScrollFreeze(0, 1); // Make top row always visible
+                ImGui::TableSetupColumn("Index", ImGuiTableColumnFlags_None);
+                ImGui::TableSetupColumn("State", ImGuiTableColumnFlags_None);
+                ImGui::TableHeadersRow();
+
+                for (int32_t i = 0; i < r.textures_.size(); ++i)
+                {
+                    const InternalTexture &t = r.textures_[i];
+                    ImGui::TableNextRow();
+                    ImGui::TableSetColumnIndex(0);
+                    ImGui::Text("%d", i);
+                    ImGui::TableSetColumnIndex(1);
+                    if (t.internal_id_ == CommonDefs::UNINIT_INTERNAL_ID)
+                    {
+                        ImGui::Text("Deleted");
+                    }
+                    else if (t.gpu_version_ == CommonDefs::DELETED_GPU_RESOURCE)
+                    {
+                        ImGui::Text("Marked for deletion");
+                    }
+                    else if (t.gpu_version_ < t.cpu_version_)
+                    {
+                        ImGui::Text("Outdated");
+                    }
+                    else if (t.cpu_version_ == t.gpu_version_)
+                    {
+                        ImGui::Text("Updated");
+                    }
+                }
+                ImGui::EndTable();
+            }
+        }
+
+        if (ImGui::CollapsingHeader("Buffers"))
+        {
+            ImVec2 size = ImVec2(-FLT_MIN, ImGui::GetTextLineHeightWithSpacing() * 6);
+            if (ImGui::BeginTable("##table1", 2, flags, size))
+            {
+                ImGui::TableSetupScrollFreeze(0, 1); // Make top row always visible
+                ImGui::TableSetupColumn("Index", ImGuiTableColumnFlags_None);
+                ImGui::TableSetupColumn("State", ImGuiTableColumnFlags_None);
+                ImGui::TableHeadersRow();
+
+                for (int32_t i = 0; i < r.buffers_.size(); ++i)
+                {
+                    const InternalBuffer &b = r.buffers_[i];
+                    ImGui::TableNextRow();
+                    ImGui::TableSetColumnIndex(0);
+                    ImGui::Text("%d", i);
+                    ImGui::TableSetColumnIndex(1);
+                    if (b.internal_id_ == CommonDefs::UNINIT_INTERNAL_ID)
+                    {
+                        ImGui::Text("Not created");
+                    }
+                    else if (b.gpu_version_ == CommonDefs::DELETED_GPU_RESOURCE)
+                    {
+                        ImGui::Text("Marked for deletion");
+                    }
+                    else if (b.gpu_version_ < b. cpu_version_)
+                    {
+                        ImGui::Text("Outdated");
+                    }
+                    else if (b.cpu_version_ == b.gpu_version_)
+                    {
+                        ImGui::Text("Updated");
+                    }
+                }
+                ImGui::EndTable();
+            }
+        }
+		ImGui::End();
+    }
 }

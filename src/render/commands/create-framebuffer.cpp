@@ -1,10 +1,13 @@
 #include "create-framebuffer.h"
 
+#include "core/common-defs.h"
+
 namespace leep
 {
-    CreateFramebuffer& CreateFramebuffer::set_framebuffer(const Framebuffer &framebuffer)
+    CreateFramebuffer& CreateFramebuffer::set_framebuffer(const Framebuffer &fb)
     {
-        framebuffer_ = framebuffer;
+        LEEP_CHECK_RESOURCE(fb);
+        fb_ = fb;
         return *this;
     }
 }

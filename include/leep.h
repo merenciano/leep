@@ -23,6 +23,7 @@
 #include "../src/ecs/systems/infinite-falling.h"
 #include "../src/ecs/systems/update-transform.h"
 #include "../src/ecs/systems/update-scene-graph.h"
+#include "../src/ecs/systems/delete-released.h"
 
 // RENDER
 #include "../src/render/renderer.h"

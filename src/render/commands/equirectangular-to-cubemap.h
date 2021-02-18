@@ -14,13 +14,13 @@ namespace leep
         EquirectangularToCubemap();
         ~EquirectangularToCubemap();
 
-        EquirectangularToCubemap &set_in_equirect(Texture t);
+        //EquirectangularToCubemap &set_in_equirect(Texture t);
         EquirectangularToCubemap &set_out_cube(Texture t);
 
         virtual void executeCommand() const override;
 
     private:
-        Texture in_equi_;
+        //Texture in_equi_;
         Texture out_cube_;
     };
 }

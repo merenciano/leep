@@ -16,14 +16,30 @@ namespace leep
 
 		Framebuffer& operator=(const Framebuffer &other) = default;
 
-		void create(float width, float height, bool color = true, bool depth = true);
+        /**
+         * @brief Creates the framebuffer handler
+         * 
+         * @param width Width of the textures if color or depth are true
+         * @param height Height of the textures if color or depth are true
+         * @param color Create and attach a color texture
+         * @param depth Create and attach a depth texture
+         */
+		void create(float width, float height,
+                    bool color = true, bool depth = true);
+
+        /**
+         * @brief Release framebuffer
+         * 
+         * Invalidates the handle and marks the resource on the gpu for deletion
+         * 
+         */
 		void release();
 
-		void set_color_texture(Texture color);
-		void set_depth_texture(Texture depth);
-		Texture color() const;
-		Texture depth() const;
-		int32_t handle() const;
+        void set_color_texture(Texture color);
+        void set_depth_texture(Texture depth);
+        Texture color() const;
+        Texture depth() const;
+        int32_t handle() const;
 
 	private:
 		int32_t handle_;

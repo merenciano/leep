@@ -23,6 +23,12 @@ namespace leep
         int32_t id = texture_.handle();
         InternalTexture &itex = GM.renderer().textures_[id];
 
+        LEEP_CORE_ASSERT(itex.cpu_version_ == 1, "Texture created before?");
+        LEEP_CORE_ASSERT(id < 62, "Max texture units"); // Tex unit is id + 1
+        LEEP_CORE_ASSERT(id >= 0, "Texture not initialized");
+        LEEP_CORE_ASSERT(itex.internal_id_ == CommonDefs::UNINIT_INTERNAL_ID,
+            "Texture already created on GPU");
+
 		switch(itex.type_)
 		{
 			case TexType::R:
@@ -74,7 +80,7 @@ namespace leep
                 break;
 
 			default: 
-				LEEP_CORE_ERROR("Trying to create a texture with an invalid format");
+				LEEP_CORE_ERROR("Invalid format");
 				config.format = GL_INVALID_ENUM;
 				config.internal_format = GL_INVALID_ENUM;
 				config.type = GL_INVALID_ENUM;
@@ -83,12 +89,6 @@ namespace leep
 				break;
 		}
 
-        LEEP_CORE_ASSERT(itex.version_ == 0,
-            "Texture created before?");
-        LEEP_CORE_ASSERT(id < 62, "Max texture units"); // Tex unit is id + 1
-        LEEP_CORE_ASSERT(id >= 0, "Texture not initialized");
-        LEEP_CORE_ASSERT(itex.internal_id_ == 0,
-            "Renderer::createTexture: Texture created before");
 
         glGenTextures(1, (GLuint*)&(itex.internal_id_));
         itex.texture_unit_ = id + 1;
@@ -132,6 +132,6 @@ namespace leep
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, config.filter);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, config.wrap);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, config.wrap);
-        itex.version_++;
+        itex.gpu_version_ = itex.cpu_version_;
     }
 }

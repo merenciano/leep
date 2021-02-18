@@ -4,7 +4,7 @@ namespace leep
 {
     EquirecToCube::EquirecToCube()
     {
-        internal_id_ = ConstantValues::UNINITIALIZED_INTERNAL_ID;
+        internal_id_ = CommonDefs::UNINIT_INTERNAL_ID;
     }
 
     EquirecToCube::~EquirecToCube()

@@ -20,7 +20,7 @@ namespace leep
         virtual void executeCommand() const override;
 
     private:
-        Framebuffer framebuffer_;
+        Framebuffer fb_;
     };
 }
 

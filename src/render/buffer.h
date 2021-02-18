@@ -1,7 +1,12 @@
-// Lucas Merenciano Martinez <lucasmermar@gmail.com>
+/**
+ * @file buffer.h
+ * @author Lucas Merenciano Martinez (lucasmermar@gmail.com)
+ * @brief GPU Buffer handle class
+ * @version 0.1
+ */
 
 #ifndef __LEEP_RENDER_BUFFER_H__
-#define __LEEP_RENDER_BUFFER_H__ 1
+#define __LEEP_RENDER_BUFFER_H__
 
 #include <stdint.h>
 #include <vector>

@@ -8,7 +8,8 @@ namespace leep
 {
     Renderer::Renderer()
     {
-
+        tex_to_del_.store(-1);
+        buf_to_del_.store(-1);
     }
     
     Renderer::~Renderer()
@@ -52,11 +53,32 @@ namespace leep
                 it->get()->executeCommand();
             }
         }
+        deleteResources();
     }
 
     void Renderer::submitFrame()
     {
         LEEP_CORE_ASSERT(current_frame_commands_.empty(), "The current frame command list is not empty!");
         next_frame_command_queue_.swap(current_frame_commands_);
+    }
+
+    // TODO IMPORTANT: make a command with this...
+    // I dont want opengl calls from renderer class (must be backend agnostic)
+    #include <glad/glad.h>
+    void Renderer::deleteResources()
+    {
+        int32_t r = tex_to_del_.load();
+        if (r != -1)
+        {
+            glDeleteTextures(1, (GLuint*)&r);
+            tex_to_del_.store(-1);
+        }
+
+        r = buf_to_del_.load();
+        if (r != -1)
+        {
+            glDeleteBuffers(1, (GLuint*)&r);
+            buf_to_del_.store(-1);
+        }
     }
 }

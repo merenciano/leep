@@ -10,7 +10,7 @@ namespace leep
     {
         Renderer &r = Manager::instance().renderer();
 
-        LEEP_CORE_ASSERT(r.buffers_[buffer_.handle()].version_ > 0, "This buffer hasn't got any data yet");
+        LEEP_CORE_ASSERT(r.buffers_[buffer_.handle()].cpu_version_ > 0, "This buffer hasn't got any data yet");
 
         glGenBuffers(1, &(r.buffers_[buffer_.handle()].internal_id_));
 
@@ -33,6 +33,6 @@ namespace leep
             glBindBuffer(GL_ARRAY_BUFFER, 0);
         }
         
-        r.buffers_[buffer_.handle()].gpu_version_ = r.buffers_[buffer_.handle()].version_; 
+        r.buffers_[buffer_.handle()].gpu_version_ = r.buffers_[buffer_.handle()].cpu_version_; 
     }
 }

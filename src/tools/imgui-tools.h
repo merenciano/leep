@@ -26,6 +26,7 @@ namespace leep
 
 		void entityInspector();
 		void componentInspector();
+        void resourceInspector();
 
         // Without the average the number change so often
         // that it's impossible to read it 

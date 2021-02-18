@@ -9,7 +9,7 @@ namespace leep
 {
     Buffer::Buffer()
     {
-        handle_ = ConstantValues::UNINITIALIZED_HANDLER;
+        handle_ = CommonDefs::UNINIT_HANDLE;
         type_ = BufferType::NONE;
     }
 
@@ -28,7 +28,7 @@ namespace leep
 
     void Buffer::create()
     {
-        LEEP_ASSERT(handle_ == ConstantValues::UNINITIALIZED_HANDLER, "This handler has been created before");
+        LEEP_ASSERT(handle_ == CommonDefs::UNINIT_HANDLE, "This handler has been created before");
 
         if (!Manager::instance().renderer().aviable_buffer_pos_.empty())
         {
@@ -47,7 +47,7 @@ namespace leep
     {
         type_ = type;
         Manager::instance().renderer().buffers_[handle_].vertices_data_.swap(data);
-        Manager::instance().renderer().buffers_[handle_].version_++;
+        Manager::instance().renderer().buffers_[handle_].cpu_version_++;
         data.clear();
     }
 
@@ -55,7 +55,7 @@ namespace leep
     {
         type_ = BufferType::INDEX_BUFFER;
         Manager::instance().renderer().buffers_[handle_].indices_data_.swap(data);
-        Manager::instance().renderer().buffers_[handle_].version_++;
+        Manager::instance().renderer().buffers_[handle_].cpu_version_++;
         data.clear();
     }
 
@@ -71,8 +71,13 @@ namespace leep
 
     void Buffer::release()
     {
-        handle_ = ConstantValues::DELETED_HANDLER;
-        type_ = BufferType::NONE;
+        if (handle_ >= 0)
+        {
+            GM.renderer().buffers_[handle_].cpu_version_ = CommonDefs::DELETED_GPU_RESOURCE;
+            GM.renderer().buffers_[handle_].gpu_version_ = CommonDefs::DELETED_GPU_RESOURCE;
+
+            handle_ = CommonDefs::DELETED_HANDLE;
+        }
     }
 }
 

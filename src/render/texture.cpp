@@ -9,7 +9,7 @@ namespace leep
 {
     Texture::Texture()
     {
-        handle_ = ConstantValues::UNINITIALIZED_HANDLER;
+        handle_ = CommonDefs::UNINIT_HANDLE;
     }
 
     Texture::Texture(const Texture &t)
@@ -30,11 +30,13 @@ namespace leep
 
     void Texture::create(std::string path, TexType t)
     {
-        LEEP_ASSERT(path != "" || t != TexType::SKYBOX,
-            "The cubemap needs a path to a directory");
-		LEEP_ASSERT(handle_ == ConstantValues::UNINITIALIZED_HANDLER,
-            "This texture has been created before");
+        LEEP_ASSERT(handle_ == CommonDefs::UNINIT_HANDLE,
+            "This texture is currently in use");
+        LEEP_ASSERT(path != "", "For empty textures use createEmpty");
+
         Renderer &r = GM.renderer();
+
+        if (handle_ == CommonDefs::UNINIT_HANDLE)
 
         if (!r.aviable_tex_pos_.empty())
         {
@@ -47,9 +49,10 @@ namespace leep
             handle_ = (int32_t)r.textures_.size() - 1;
         }
 
-        r.textures_[handle_].internal_id_ = 0;
+        r.textures_[handle_].internal_id_ = CommonDefs::UNINIT_INTERNAL_ID;
         r.textures_[handle_].path_ = path;
-        r.textures_[handle_].version_ = 0;
+        r.textures_[handle_].cpu_version_ = 1;
+        r.textures_[handle_].gpu_version_ = 0;
         r.textures_[handle_].width_ = 0;
         r.textures_[handle_].height_ = 0;
         r.textures_[handle_].type_ = t;
@@ -57,8 +60,7 @@ namespace leep
 
     void Texture::createEmpty(float width, float height, TexType t)
     {
-        LEEP_ASSERT(handle_ == ConstantValues::UNINITIALIZED_HANDLER,
-            "This texture has been created before");
+        LEEP_ASSERT(handle_ == CommonDefs::UNINIT_HANDLE, "This texture is currently in use");
 		LEEP_ASSERT(width > 0.0f && height > 0.0f,
             "Width and height of the texture must be greater than 0");
         Renderer &r = GM.renderer();
@@ -69,8 +71,7 @@ namespace leep
         }
         else 
         {
-            InternalTexture tmp;
-            r.textures_.push_back(tmp);
+            r.textures_.emplace_back();
             handle_ = (int32_t)r.textures_.size() - 1;
         }
 
@@ -84,15 +85,14 @@ namespace leep
         }
         else
         {
-            r.textures_[handle_].width_ =
-            (uint32_t)(GM.window().fwidth() * width);
-            r.textures_[handle_].height_ =
-            (uint32_t)(GM.window().fheight() * height);
+            r.textures_[handle_].width_ = (uint32_t)(GM.window().fwidth() * width);
+            r.textures_[handle_].height_ = (uint32_t)(GM.window().fheight() * height);
         }
 
-        r.textures_[handle_].internal_id_ = 0;
+        r.textures_[handle_].internal_id_ = CommonDefs::UNINIT_INTERNAL_ID;
         r.textures_[handle_].path_ = "";
-        r.textures_[handle_].version_ = 0;
+        r.textures_[handle_].cpu_version_ = 1;
+        r.textures_[handle_].gpu_version_ = 0;
 		r.textures_[handle_].type_ = t;
     }
 
@@ -100,8 +100,10 @@ namespace leep
     {
         if (handle_ >= 0)
         {
-            GM.renderer().textures_[handle_].version_ = -1;
-			handle_ = ConstantValues::DELETED_HANDLER;
+            GM.renderer().textures_[handle_].cpu_version_ = CommonDefs::DELETED_GPU_RESOURCE;
+            GM.renderer().textures_[handle_].gpu_version_ = CommonDefs::DELETED_GPU_RESOURCE;
+
+			handle_ = CommonDefs::DELETED_HANDLE;
         }
     }
 
@@ -109,4 +111,4 @@ namespace leep
     {
         return handle_;
     }
-}
+} // namespace leep

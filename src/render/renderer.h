@@ -13,6 +13,7 @@
 #include <forward_list>
 #include <memory>
 #include <mutex>
+#include <atomic>
 
 namespace leep
 {
@@ -31,27 +32,30 @@ namespace leep
 
         void renderFrame();
         void submitFrame();
-
-        std::forward_list<int32_t> aviable_tex_pos_;
-        std::deque<InternalTexture> textures_;
-
-		std::forward_list<int32_t> aviable_fb_pos_;
-		std::deque<InternalFramebuffer> framebuffers_;
+        void deleteResources();
 
         // Forward list because random element access is not needed
         // and I only need push and pop front which are cheap in this container
-        std::forward_list<uint32_t> aviable_buffer_pos_;
+        std::forward_list<int32_t> aviable_buffer_pos_;
+        std::forward_list<int32_t> aviable_tex_pos_;
+        std::forward_list<int32_t> aviable_fb_pos_; // TODO: remove framebuffer creation and deletion
+
         // Here I need random element access so I decided deque over vector
         // because of the vector reallocations
         std::deque<InternalBuffer> buffers_;
+        std::deque<InternalTexture> textures_;
+		std::deque<InternalFramebuffer> framebuffers_; // TODO: Change this to fixed size array
 
         // Constant size
         std::unique_ptr<InternalMaterial> materials_[MaterialType::MT_MAX];
 
         // Deque because of the vector reallocations
+        // NOTE: Mutex if different threads from logic can submit display lists
         std::deque<DisplayList> next_frame_command_queue_;
         std::deque<DisplayList> current_frame_commands_;
 
+        std::atomic<int32_t> tex_to_del_;
+        std::atomic<int32_t> buf_to_del_;
     private:
         std::mutex nxt_frame_q_mtx_;
     };

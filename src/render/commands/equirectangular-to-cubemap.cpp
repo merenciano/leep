@@ -14,19 +14,20 @@ namespace leep
     {
 
     }
-
+/*
     EquirectangularToCubemap& EquirectangularToCubemap::set_in_equirect(Texture t)
     {
-        LEEP_CORE_ASSERT(t.handle() != ConstantValues::UNINITIALIZED_HANDLER,
+        LEEP_CORE_ASSERT(t.handle() != CommonDefs::UNINIT_HANDLE,
             "Texture not created");
         LEEP_CORE_ASSERT(GM.renderer().textures_[t.handle()].type_ == TexType::RGB_F16, "Equirect must be HDR");
         in_equi_ = t;
         return *this;
     }
+    */
 
     EquirectangularToCubemap& EquirectangularToCubemap::set_out_cube(Texture t)
     {
-        LEEP_CORE_ASSERT(t.handle() != ConstantValues::UNINITIALIZED_HANDLER,
+        LEEP_CORE_ASSERT(t.handle() != CommonDefs::UNINIT_HANDLE,
             "Texture not created");
         LEEP_CORE_ASSERT(GM.renderer().textures_[t.handle()].type_ == TexType::ENVIRONMENT,
             "Cubemap must be Environment");

@@ -8,7 +8,7 @@ namespace leep
 {
 	Framebuffer::Framebuffer()
 	{
-		handle_ = ConstantValues::UNINITIALIZED_HANDLER;
+		handle_ = CommonDefs::UNINIT_HANDLE;
 	}
 
 	Framebuffer::~Framebuffer()
@@ -21,7 +21,7 @@ namespace leep
 		LEEP_ASSERT((width > 1.0f && height > 1.0f) ||
 					(width <= 1.0f && height <= 1.0f),
 					"CreateFramebuffer: Or absolute or relative, make a decision!");
-		LEEP_ASSERT(handle_ == ConstantValues::UNINITIALIZED_HANDLER, "This framebuffer is already created");
+		LEEP_ASSERT(handle_ == CommonDefs::UNINIT_HANDLE, "This framebuffer is already created");
 		Renderer &r = GM.renderer();
 		if (!r.aviable_fb_pos_.empty())
 		{
@@ -61,24 +61,28 @@ namespace leep
 			InternalFramebuffer ifb = GM.renderer().framebuffers_[handle_];
 			ifb.color_texture_.release();
 			ifb.depth_texture_.release();
-			ifb.cpu_version_ = ConstantValues::MARKED_FOR_DELETE;
-			handle_ = ConstantValues::DELETED_HANDLER;
+			ifb.cpu_version_ = CommonDefs::MARKED_FOR_DELETE;
+			handle_ = CommonDefs::DELETED_HANDLE;
 		}
 	}
 
 	void Framebuffer::set_color_texture(Texture color)
 	{
-		LEEP_CORE_ASSERT(handle_ >= 0, "Framebuffer::set_color_texture: Invalid framebuffer");
+        LEEP_CHECK_RESOURCE((*this));
+        LEEP_CHECK_RESOURCE(color);
 		InternalFramebuffer ifb = GM.renderer().framebuffers_[handle_];
 		ifb.color_texture_ = color;
+        ifb.color_ = true;
 		ifb.cpu_version_++;
 	}
 
 	void Framebuffer::set_depth_texture(Texture depth)
 	{
-		LEEP_CORE_ASSERT(handle_ >= 0, "Framebuffer::set_depth_texture: Invalid framebuffer");
+        LEEP_CHECK_RESOURCE((*this));
+        LEEP_CHECK_RESOURCE(depth);
 		InternalFramebuffer ifb = GM.renderer().framebuffers_[handle_];
 		ifb.depth_texture_ = depth;
+        ifb.depth_ = true;
 		ifb.cpu_version_++;
 	}
 
