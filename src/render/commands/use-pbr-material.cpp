@@ -17,6 +17,12 @@ namespace leep
         data_ = data;
         return *this;
     }
+
+    UsePbrMaterial& UsePbrMaterial::set_irradiance_map(Texture t)
+    {
+        irr_ = t;
+        return *this;
+    }
 }
 
 #ifdef LEEP_OPENGL

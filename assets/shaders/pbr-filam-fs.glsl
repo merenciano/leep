@@ -98,17 +98,17 @@ vec3 BRDF(Material mat, vec3 l, vec3 v, vec3 n) {
 }
 
 void main() {
-    float roughness = texture(u_roughness, vec2(v_in.uv.x, v_in.uv.y)).r;
-    vec3 normal = texture(u_normal, vec2(v_in.uv.x, v_in.uv.y)).rgb;
+    float roughness = texture(u_roughness, v_in.uv).r;
+    vec3 normal = texture(u_normal, v_in.uv).rgb;
     normal = normalize(v_in.tbn * (normal * 2.0 - 1.0));
     // TODO normal use_pbr_maps
-    float metallic = texture(u_metallic, vec2(v_in.uv.x, v_in.uv.y)).r;
+    float metallic = texture(u_metallic, v_in.uv).r;
     Material material;
     material.roughness = max(0.05, mix(ROUGHNESS, roughness, USE_PBR_MAPS));
     material.metallic = mix(METALLIC, metallic, USE_PBR_MAPS);
     material.reflectance = REFLECTANCE;
 
-    vec3 albedo = texture(u_albedo, vec2(v_in.uv.x, v_in.uv.y)).rgb;
+    vec3 albedo = texture(u_albedo, v_in.uv).rgb;
     material.albedo = (1.0 - USE_ALBEDO_MAP) * COLOR + USE_ALBEDO_MAP * albedo;
     material.albedo *= (1.0 - material.metallic);
 

@@ -63,8 +63,8 @@ void CreateFramebuffer::executeCommand() const
         }
         glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0,
         GL_TEXTURE_2D, r.textures_[fb_.color().handle()].internal_id_, 0);
-        ifb.width_ = r.textures_[fb_.color().handle()].width_;
-        ifb.height_ = r.textures_[fb_.color().handle()].height_;
+        ifb.width_ = (float)r.textures_[fb_.color().handle()].width_;
+        ifb.height_ = (float)r.textures_[fb_.color().handle()].height_;
     }
     if (ifb.depth_)
     {
@@ -74,8 +74,8 @@ void CreateFramebuffer::executeCommand() const
         }
         glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT,
             GL_TEXTURE_2D, r.textures_[fb_.depth().handle()].internal_id_, 0);
-        ifb.width_ = r.textures_[fb_.depth().handle()].width_;
-        ifb.height_ = r.textures_[fb_.depth().handle()].height_;
+        ifb.width_ = (float)r.textures_[fb_.depth().handle()].width_;
+        ifb.height_ = (float)r.textures_[fb_.depth().handle()].height_;
     }
     ifb.gpu_version_ = ifb.cpu_version_;
 }

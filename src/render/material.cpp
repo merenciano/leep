@@ -21,6 +21,7 @@ namespace leep
         metallic_ = other.metallic_;
         roughness_ = other.roughness_;
         normal_ = other.normal_;
+        irradiance_ = other.irradiance_;
 
         switch(type_)
         {
@@ -48,6 +49,7 @@ namespace leep
         metallic_ = other.metallic_;
         roughness_ = other.roughness_;
         normal_ = other.normal_;
+        irradiance_ = other.irradiance_;
 
         switch(type_)
         {
@@ -97,24 +99,29 @@ namespace leep
         data_.etc_ = data;
     }
 
-    void Material::set_albedo(Texture texture)
+    void Material::set_albedo(Texture t)
     {
-        albedo_ = texture;
+        albedo_ = t;
     }
 
-    void Material::set_metallic(Texture texture)
+    void Material::set_metallic(Texture t)
     {
-        metallic_ = texture;
+        metallic_ = t;
     }
 
-    void Material::set_roughness(Texture texture)
+    void Material::set_roughness(Texture t)
     {
-        roughness_ = texture;
+        roughness_ = t;
     }
 
-    void Material::set_normal(Texture texture)
+    void Material::set_normal(Texture t)
     {
-        normal_ = texture;
+        normal_ = t;
+    }
+
+    void Material::set_irradiance(Texture t)
+    {
+        irradiance_ = t;
     }
 
     const Material::MaterialData& Material::data() const
@@ -145,5 +152,10 @@ namespace leep
     Texture Material::normal() const
     {
         return normal_;
+    }
+
+    Texture Material::irradiance() const
+    {
+        return irradiance_;
     }
 }

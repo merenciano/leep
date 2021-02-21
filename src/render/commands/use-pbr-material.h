@@ -4,6 +4,7 @@
 #define __LEEP_RENDER_COMMANDS_USE_PBR_MATERIAL_H__ 1
 
 #include "render/display-list-command.h"
+#include "render/texture.h"
 #include "glm/mat4x4.hpp"
  
 namespace leep
@@ -27,6 +28,7 @@ namespace leep
         ~UsePbrMaterial();
 
         UsePbrMaterial& set_scene_data(const PbrSceneData &data);
+        UsePbrMaterial& set_irradiance_map(Texture irradiance_map);
 
         virtual void executeCommand() const override;
 
@@ -36,6 +38,7 @@ namespace leep
         // the data could change before the render thread executes
         // the command.
         PbrSceneData data_;
+        Texture irr_;
     };
 }
 

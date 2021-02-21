@@ -9,9 +9,14 @@ namespace leep
 {
     void UsePbrMaterial::executeCommand() const
     {
-        GLuint program = Manager::instance().renderer().materials_[MaterialType::MT_PBR]->internal_id();
+        LEEP_CHECK_RESOURCE(irr_);
+        Renderer &r = GM.renderer();
+        GLuint program = r.materials_[MaterialType::MT_PBR]->internal_id();
         glUseProgram(program);
         uint32_t uniform_pos = glGetUniformLocation(program, "u_scene_data");
-        glUniform4fv(uniform_pos, sizeof(PbrSceneData) / sizeof(float) / 4, (float*)&data_); // TODO QUESTION: "this" instead of "&data_" ??
+        glUniform4fv(uniform_pos, sizeof(PbrSceneData) / sizeof(float) / 4, (float*)&data_);
+
+        uniform_pos = glGetUniformLocation(program, "u_irradiance_map");
+        glUniform1i(uniform_pos, r.textures_[irr_.handle()].texture_unit_);
     }
 }

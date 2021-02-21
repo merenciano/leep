@@ -19,7 +19,6 @@ namespace leep
         Renderer &r = GM.renderer();
         InternalTexture &icu = r.textures_[out_cube_.handle()];
 
-        std::string path_ = "../assets/tex/hdr/AlleyRef.hdr";
         if (icu.cpu_version_ > icu.gpu_version_)
         {
             CreateCubemap().set_texture(out_cube_).executeCommand();

@@ -40,6 +40,8 @@ uniform sampler2D u_metallic;
 uniform sampler2D u_roughness;
 uniform sampler2D u_normal;
 
+uniform samplerCube u_irradiance_map;
+
 // GGX/Towbridge-Reitz normal distribution function.
 // Uses Disney's reparametrization of alpha = roughness^2.
 float ndfGGX(float cosLh, float roughness)
@@ -75,6 +77,8 @@ void main()
 {
 	// Sample input textures to get shading model params.
 	vec3 albedo = texture(u_albedo, v_in.uv).rgb;
+    albedo = mix(COLOR, albedo, USE_ALBEDO_MAP);
+    //albedo = (1.0 - USE_ALBEDO_MAP) * COLOR + USE_ALBEDO_MAP * albedo;
 	float metalness = texture(u_metallic, v_in.uv).r;
     metalness = mix(METALLIC, metalness, USE_PBR_MAPS);
 	float roughness = texture(u_roughness, v_in.uv).r;
@@ -86,8 +90,8 @@ void main()
 	// Get current fragment's normal and transform to world space.
 	vec3 normal = normalize(2.0 * texture(u_normal, v_in.uv).rgb - 1.0);
 	normal = normalize(v_in.tbn * normal);
-    normal = mix(v_in.tbn[2], normal, USE_PBR_MAPS);
-	
+    normal = mix(normalize(v_in.tbn[2]), clamp(normal, -1.0, 1.0), USE_PBR_MAPS);
+    
 	// Angle between surface normal and outgoing light direction.
 	float cosLo = max(0.0, dot(normal, Lo));
 		
@@ -102,7 +106,8 @@ void main()
 	for(int i=0; i<NumLights; ++i)
 	{
 		vec3 Li = -LIGHT_DIRECTION;
-		vec3 Lradiance = vec3(1.0);
+		//vec3 Lradiance = vec3(1.0);
+        float Lradiance = LIGHT_INTENSITY;
 
 		// Half-vector between Li and Lo.
 		vec3 Lh = normalize(Li + Lo);
@@ -135,38 +140,37 @@ void main()
 		directLighting = (diffuseBRDF + specularBRDF) * Lradiance * cosLi;
 	}
 
-	// Ambient lighting (IBL).
-	/*vec3 ambientLighting;
-	{
-		// Sample diffuse irradiance at normal direction.
-		vec3 irradiance = texture(irradianceTexture, N).rgb;
+    // IBL
+    // Sample diffuse irradiance at normal direction.
+    vec3 irradiance = texture(u_irradiance_map, normal).rgb;
 
-		// Calculate Fresnel term for ambient lighting.
-		// Since we use pre-filtered cubemap(s) and irradiance is coming from many directions
-		// use cosLo instead of angle with light's half-vector (cosLh above).
-		// See: https://seblagarde.wordpress.com/2011/08/17/hello-world/
-		vec3 F = fresnelSchlick(F0, cosLo);
+    // Calculate Fresnel term for ambient lighting.
+    // Since we use pre-filtered cubemap(s) and irradiance is coming from many directions
+    // use cosLo instead of angle with light's half-vector (cosLh above).
+    // See: https://seblagarde.wordpress.com/2011/08/17/hello-world/
+    vec3 F = fresnelSchlick(F0, cosLo);
 
-		// Get diffuse contribution factor (as with direct lighting).
-		vec3 kd = mix(vec3(1.0) - F, vec3(0.0), metalness);
+    // Get diffuse contribution factor (as with direct lighting).
+    vec3 kd = mix(vec3(1.0) - F, vec3(0.0), metalness);
 
-		// Irradiance map contains exitant radiance assuming Lambertian BRDF, no need to scale by 1/PI here either.
-		vec3 diffuseIBL = kd * albedo * irradiance;
+    // Irradiance map contains exitant radiance assuming Lambertian BRDF, no need to scale by 1/PI here either.
+    vec3 diffuseIBL = kd * albedo * irradiance;
+/*
+    // Sample pre-filtered specular reflection environment at correct mipmap level.
+    int specularTextureLevels = textureQueryLevels(specularTexture);
+    vec3 specularIrradiance = textureLod(specularTexture, Lr, roughness * specularTextureLevels).rgb;
 
-		// Sample pre-filtered specular reflection environment at correct mipmap level.
-		int specularTextureLevels = textureQueryLevels(specularTexture);
-		vec3 specularIrradiance = textureLod(specularTexture, Lr, roughness * specularTextureLevels).rgb;
+    // Split-sum approximation factors for Cook-Torrance specular BRDF.
+    vec2 specularBRDF = texture(specularBRDF_LUT, vec2(cosLo, roughness)).rg;
 
-		// Split-sum approximation factors for Cook-Torrance specular BRDF.
-		vec2 specularBRDF = texture(specularBRDF_LUT, vec2(cosLo, roughness)).rg;
-
-		// Total specular IBL contribution.
-		vec3 specularIBL = (F0 * specularBRDF.x + specularBRDF.y) * specularIrradiance;
-
-		// Total ambient lighting contribution.
-		ambientLighting = diffuseIBL + specularIBL;
-	}*/
+    // Total specular IBL contribution.
+    vec3 specularIBL = (F0 * specularBRDF.x + specularBRDF.y) * specularIrradiance;
+*/
+    // Total ambient lighting contribution.
+    //ambientLighting = diffuseIBL + specularIBL;
+    vec3 ambientLighting = diffuseIBL;
 
 	// Final fragment color.
-	FragColor = vec4(directLighting + (albedo * 0.03), 1.0);
+	FragColor = vec4(directLighting + ambientLighting, 1.0);
+	//FragColor = vec4(irradiance, 1.0);
 }

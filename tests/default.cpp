@@ -8,9 +8,8 @@ void leep::Init()
         // Resource creation CPU side (GPU allocation will occur on first use)
         ResourceMap &rm = GM.resource_map();
         const std::string tp = "../assets/tex/";
-        //rm.addTexture("Skybox", tp + "skybox", TexType::SKYBOX);
-        rm.addTexture("HDREnv", tp + "hdr/AlleyRef.hdr", TexType::RGB_F16);
         rm.addTexture("Skybox", 1024.0f, 1024.0f, TexType::ENVIRONMENT);
+        rm.addTexture("IrradianceEnv", 1024.0f, 1024.0f, TexType::ENVIRONMENT);
         /*
         rm.addTexture("Cerberus_A" ,tp + "cerberus_A.png", TexType::SRGB);
         rm.addTexture("Cerberus_N" ,tp + "cerberus_N.png", TexType::RGB);
@@ -37,7 +36,7 @@ void leep::Init()
     tr.transform_ = glm::scale(tr.transform_,
                     glm::vec3(0.33f, 0.33f, 0.33f));
     Drawable &dw = e.getComponent<Drawable>();
-    dw.geometry_ = GM.resource_map().getGeometry("Cube");
+    dw.geometry_ = GM.resource_map().getGeometry("Sphere");
     dw.material_.set_type(MaterialType::MT_PBR);
     dw.material_.set_data(mat_data);
     /*dw.material_.set_albedo(GM.resource_map().getTexture("HDREnv"));
@@ -53,8 +52,11 @@ void leep::Init()
         .enable_blend(true)
         .set_blend_func(BlendFunc::ONE, BlendFunc::ZERO);
     init_dl.addCommand<EquirectangularToCubemap>()
-        .set_in_equirect(GM.resource_map().getTexture("HDREnv"))
+        .set_in_path("../assets/tex/hdr/AlleyRef.hdr")
         .set_out_cube(GM.resource_map().getTexture("Skybox"));
+    init_dl.addCommand<EquirectangularToCubemap>()
+        .set_in_path("../assets/tex/hdr/AlleyEnv.hdr")
+        .set_out_cube(GM.resource_map().getTexture("IrradianceEnv"));
     init_dl.submit();
 }
 
@@ -70,7 +72,7 @@ void leep::Logic()
     PbrSceneData pbr_sd;
     pbr_sd.view_projection_ = GM.camera().view_projection();
     pbr_sd.camera_position_ = GM.camera().position();
-    pbr_sd.light_direction_intensity_ = glm::vec4(1.0f, 1.0f, 0.0f, 50.0f);
+    pbr_sd.light_direction_intensity_ = glm::vec4(0.0f, 1.0f, 0.0f, 0.0f);
 
     Material full_screen_img;
     full_screen_img.set_type(MaterialType::MT_FULL_SCREEN_IMAGE);
@@ -91,7 +93,8 @@ void leep::Logic()
         .set_clear_color(0.2f, 0.2f, 0.2f, 1.0f);
 
     dl.addCommand<UsePbrMaterial>()
-        .set_scene_data(pbr_sd);
+        .set_scene_data(pbr_sd)
+        .set_irradiance_map(GM.resource_map().getTexture("Skybox"));
 
     dl.submit();
 
@@ -115,4 +118,5 @@ void leep::Logic()
         .set_material(full_screen_img);
         
     dl.submit();
+    //DeleteReleased().executeSystem();
 }
