@@ -39,6 +39,15 @@ namespace leep
 				config.wrap = GL_REPEAT;
 				break;
 
+			case TexType::LUT:
+				config.format = GL_RG;
+				config.internal_format = GL_RG16F;
+				config.type = GL_FLOAT;
+				config.filter = GL_LINEAR;
+				config.wrap = GL_CLAMP_TO_EDGE;
+
+				break;
+
 			case TexType::RGB: 
 				config.format = GL_RGB;
 				config.internal_format = GL_RGB;

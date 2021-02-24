@@ -87,6 +87,20 @@ namespace leep
             }
         }
 
+        if (out_lut_.handle() != CommonDefs::UNINIT_HANDLE)
+        {
+            InternalTexture &ilut = r.textures_[out_lut_.handle()];
+            Material mlut;
+            mlut.set_type(MT_LUT_GEN);
+            if (ilut.cpu_version_ > ilut.gpu_version_)
+            {
+                CreateTexture().set_texture(out_lut_).executeCommand();
+            }
+            glViewport(0, 0, ilut.width_, ilut.height_);
+            glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, ilut.internal_id_, 0);
+            glClear(GL_COLOR_BUFFER_BIT);
+            Draw().set_geometry(Renderer::s_quad).set_material(mlut).executeCommand();
+        }
 
         glDeleteFramebuffers(1, &fb);
         equirec.release();

@@ -7,7 +7,6 @@ namespace leep
 {
     EquirectangularToCubemap::EquirectangularToCubemap()
     {
-
     }
 
     EquirectangularToCubemap::~EquirectangularToCubemap()
@@ -37,6 +36,15 @@ namespace leep
         LEEP_CORE_ASSERT(GM.renderer().textures_[t.handle()].type_ == TexType::PREFILTER_ENVIRONMENT,
             "Cubemap must be PrefilterEnv");
         out_pref_ = t;
+        return *this;
+    }
+
+    EquirectangularToCubemap& EquirectangularToCubemap::set_out_lut(Texture t)
+    {
+        LEEP_CHECK_RESOURCE(t);
+        LEEP_CORE_ASSERT(GM.renderer().textures_[t.handle()].type_ == TexType::LUT,
+            "Texture must be of Lut type");
+        out_lut_ = t;
         return *this;
     }
 }

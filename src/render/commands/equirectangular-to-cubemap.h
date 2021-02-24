@@ -1,4 +1,3 @@
-// Lucas Merenciano Martinez <lucasmermar@gmail.com>
 
 #ifndef __LEEP_RENDER_COMMANDS_EQUIRECTANGULAR_TO_CUBEMAP_H__
 #define __LEEP_RENDER_COMMANDS_EQUIRECTANGULAR_TO_CUBEMAP_H__
@@ -17,6 +16,7 @@ namespace leep
         EquirectangularToCubemap &set_in_path(std::string in_path);
         EquirectangularToCubemap &set_out_cube(Texture out_texture);
         EquirectangularToCubemap &set_out_prefilter(Texture out_texture);
+        EquirectangularToCubemap &set_out_lut(Texture out_texture);
 
         virtual void executeCommand() const override;
 
@@ -24,6 +24,7 @@ namespace leep
         std::string path_;
         Texture out_cube_;
         Texture out_pref_;
+        Texture out_lut_;
     };
 }
 

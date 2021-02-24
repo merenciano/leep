@@ -15,6 +15,7 @@ namespace leep
         SKYBOX,
         RGB_F16,
         RGBA_F16,
+        LUT,
         ENVIRONMENT,
         PREFILTER_ENVIRONMENT,
     };

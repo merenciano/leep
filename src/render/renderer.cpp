@@ -4,6 +4,7 @@
 #include "render/materials/skybox.h"
 #include "render/materials/equirec-to-cube.h"
 #include "render/materials/prefilter-env.h"
+#include "render/materials/lut-gen.h"
 
 namespace leep
 {
@@ -22,12 +23,13 @@ namespace leep
     {
         // I dont mind them not being together in memory
         // since the correct usage of this engine will be
-        // using the diferent materials in order
+        // using the diferent materials in order so only one change per frame
         materials_[MaterialType::MT_PBR] = std::make_unique<Pbr>();
         materials_[MaterialType::MT_FULL_SCREEN_IMAGE] = std::make_unique<FullScreenImage>();
         materials_[MaterialType::MT_SKYBOX] = std::make_unique<Skybox>();
         materials_[MaterialType::MT_EQUIREC_TO_CUBE] = std::make_unique<EquirecToCube>();
         materials_[MaterialType::MT_PREFILTER_ENV] = std::make_unique<PrefilterEnv>();
+        materials_[MaterialType::MT_LUT_GEN] = std::make_unique<LutGen>();
         
         for (int32_t i = 0; i < MaterialType::MT_MAX; ++i)
         {
