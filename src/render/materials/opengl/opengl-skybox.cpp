@@ -18,9 +18,18 @@ static const char* kSkyboxVertex = R"(
 
     out vec3 position;
 
+    vec3 PositionRotated()
+    {
+        float rads = radians(-90.0);
+        mat3 rot = mat3(vec3(cos(rads), 0.0, -sin(rads)),
+                        vec3(0.0, 1.0, 0.0),
+                        vec3(sin(rads), 0.0, cos(rads)));
+        return a_position * rot;
+    }
+
     void main() {
         mat4 vp = mat4(u_scene_data[0], u_scene_data[1], u_scene_data[2], u_scene_data[3]);
-        position = a_position;
+        position = PositionRotated();
         gl_Position = vec4(vp * vec4(a_position.zyx, 1.0)).xyww;
     }
 )";
@@ -34,7 +43,6 @@ static const char* kSkyboxFragment = R"(
     in vec3 position;
 
     void main() {
-        //FragColor = vec4(1.0, 0.0, 0.0, 1.0);
         FragColor = texture(u_cubemap, position);
     }
 )";

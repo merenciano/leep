@@ -11,7 +11,8 @@ namespace leep
         GLenum format;
         GLenum type;
         GLenum wrap;
-        GLenum filter;
+        GLenum min_filter;
+        GLenum mag_filter;
     };
 
     void CreateCubemap::executeCommand() const
@@ -34,7 +35,8 @@ namespace leep
             config.format = GL_RGB;
             config.internal_format = GL_SRGB;
             config.type = GL_UNSIGNED_BYTE;
-            config.filter = GL_LINEAR;
+            config.min_filter = GL_LINEAR;
+            config.mag_filter = GL_LINEAR;
             config.wrap = GL_CLAMP_TO_EDGE;
             break;
 
@@ -42,9 +44,20 @@ namespace leep
             config.format = GL_RGB;
             config.internal_format = GL_RGB16F;
             config.type = GL_FLOAT;
-            config.filter = GL_LINEAR;
+            config.min_filter = GL_LINEAR;
+            config.mag_filter = GL_LINEAR;
             config.wrap = GL_CLAMP_TO_EDGE;
             break;
+
+        case TexType::PREFILTER_ENVIRONMENT:
+            config.format = GL_RGB;
+            config.internal_format = GL_RGB16F;
+            config.type = GL_FLOAT;
+            config.min_filter = GL_LINEAR_MIPMAP_LINEAR;
+            config.mag_filter = GL_LINEAR;
+            config.wrap = GL_CLAMP_TO_EDGE;
+            break;
+
 
         default:
             LEEP_CORE_ERROR("Trying to create a cubemap with an invalid format");
@@ -98,8 +111,12 @@ namespace leep
         glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, config.wrap);
         glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, config.wrap);
         glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, config.wrap);
-        glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, config.filter);
-        glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, config.filter);
+        glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, config.min_filter);
+        glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, config.mag_filter);
+        if (r.textures_[id].type_ == TexType::PREFILTER_ENVIRONMENT)
+        {
+            glGenerateMipmap(GL_TEXTURE_CUBE_MAP);
+        }
         r.textures_[id].gpu_version_ = r.textures_[id].cpu_version_;
     }
 }

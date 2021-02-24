@@ -50,7 +50,7 @@ namespace leep
 
         for (int32_t i = 0; i < 6; ++i)
         {
-            m.set_model(proj * views[i]);
+            m.set_model(proj * views[i]); 
             glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0,
                 GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, icu.internal_id_, 0);
             glClear(GL_COLOR_BUFFER_BIT);

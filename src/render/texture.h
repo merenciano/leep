@@ -16,6 +16,7 @@ namespace leep
         RGB_F16,
         RGBA_F16,
         ENVIRONMENT,
+        PREFILTER_ENVIRONMENT,
     };
     class Texture
     {

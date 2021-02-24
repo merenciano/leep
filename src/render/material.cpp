@@ -99,6 +99,13 @@ namespace leep
         data_.etc_ = data;
     }
 
+    void Material::set_data(const PrefilterEnvData &data)
+    {
+        LEEP_CORE_ASSERT(type_ == MaterialType::MT_PREFILTER_ENV,
+            "The material doesn't have the correct type.");
+        data_.pref_ = data;
+    }
+
     void Material::set_albedo(Texture t)
     {
         albedo_ = t;

@@ -14,6 +14,7 @@ namespace leep
         MT_FULL_SCREEN_IMAGE = 1,
         MT_SKYBOX = 2,
         MT_EQUIREC_TO_CUBE = 3,
+        MT_PREFILTER_ENV = 4,
 
         MT_MAX,
         MT_NONE
@@ -40,6 +41,12 @@ namespace leep
     struct EquirecToCubeData
     {
         glm::mat4 vp_;
+    };
+
+    struct PrefilterEnvData
+    {
+        glm::mat4 vp_;
+        float roughness_;
     };
 }
 #endif // __LEEP_RENDER_MATERIAL_TYPES_H__

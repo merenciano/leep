@@ -16,6 +16,7 @@ namespace leep
             glm::mat4 model_;
             PbrData pbr_;
             EquirecToCubeData etc_;
+            PrefilterEnvData pref_;
         };
 
         Material();
@@ -29,6 +30,7 @@ namespace leep
         void set_model(const glm::mat4 &model);
         void set_data(const PbrData &data);
         void set_data(const EquirecToCubeData &data);
+        void set_data(const PrefilterEnvData &data);
         void set_albedo(Texture tex);
         void set_metallic(Texture tex);
         void set_roughness(Texture tex);
