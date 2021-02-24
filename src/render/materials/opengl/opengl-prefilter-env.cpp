@@ -83,7 +83,7 @@ static const char* kPrefilterEnvFragment = R"(
         for(uint i = 0u; i < SAMPLE_COUNT; ++i)
         {
             vec2 Xi = Hammersley(i, SAMPLE_COUNT);
-            vec3 H  = ImportanceSampleGGX(Xi, N, roughness);
+            vec3 H  = ImportanceSampleGGX(Xi, N, u_roughness);
             vec3 L  = normalize(2.0 * dot(V, H) * H - V);
 
             float NdotL = max(dot(N, L), 0.0);
@@ -144,28 +144,33 @@ void PrefilterEnv::init()
 
 void PrefilterEnv::useMaterialData(const Material& material) const
 {
-    GLuint u_loc;
+    GLenum err = glGetError();
     Renderer& r = GM.renderer();
     LEEP_ASSERT(material.type() == MaterialType::MT_PREFILTER_ENV,
         "Wrong material type");
 
     // Load textures
     int32_t env_id = material.albedo().handle();
+    LEEP_CORE_ASSERT(r.textures_[env_id].cpu_version_ > 0, "Invalid texture");
+    glUseProgram(internal_id_);
+
     if (env_id != CommonDefs::UNINIT_HANDLE)
     {
-        LEEP_ASSERT(a_id != -1, "Texture not created");
-        LEEP_ASSERT(r.textures_[a_id].cpu_version_ != -1, "Texture released");
-        if (r.textures_[env_id].cpu_version_ == 0)
+        LEEP_CHECK_RESOURCE(material.albedo());
+        LEEP_ASSERT(r.textures_[env_id].cpu_version_ != CommonDefs::DELETED_GPU_RESOURCE, "Texture released");
+        if (r.textures_[env_id].gpu_version_ == 0)
         {
             CreateCubemap().set_texture(material.albedo()).executeCommand();
         }
     }
 
+    err = glGetError();
     GLuint u_loc = glGetUniformLocation(internal_id_, "u_environment_map");
     glUniform1i(u_loc, r.textures_[env_id].texture_unit_);
     u_loc = glGetUniformLocation(internal_id_, "u_roughness");
     glUniform1f(u_loc, material.data().pref_.roughness_);
     u_loc = glGetUniformLocation(internal_id_, "u_vp");
     glUniformMatrix4fv(u_loc, 1, false, (const GLfloat*)&(material.data()));
+    err = glGetError();
 }
 }

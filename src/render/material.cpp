@@ -36,6 +36,13 @@ namespace leep
         case MaterialType::MT_FULL_SCREEN_IMAGE:
             break;
 
+        case MaterialType::MT_EQUIREC_TO_CUBE:
+            data_.etc_ = other.data_.etc_;
+            break;
+
+        case MaterialType::MT_PREFILTER_ENV:
+            data_.pref_ = other.data_.pref_;
+
         default:
             LEEP_CORE_WARNING("Copy constructor of material default case.");
             break;
@@ -66,6 +73,10 @@ namespace leep
 
         case MaterialType::MT_EQUIREC_TO_CUBE:
             data_.etc_ = other.data_.etc_;
+            break;
+
+        case MaterialType::MT_PREFILTER_ENV:
+            data_.pref_ = other.data_.pref_;
             break;
 
         default:

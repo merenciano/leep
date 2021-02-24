@@ -30,6 +30,15 @@ namespace leep
         out_cube_ = t;
         return *this;
     }
+
+    EquirectangularToCubemap& EquirectangularToCubemap::set_out_prefilter(Texture t)
+    {
+        LEEP_CHECK_RESOURCE(t);
+        LEEP_CORE_ASSERT(GM.renderer().textures_[t.handle()].type_ == TexType::PREFILTER_ENVIRONMENT,
+            "Cubemap must be PrefilterEnv");
+        out_pref_ = t;
+        return *this;
+    }
 }
 
 #ifdef LEEP_OPENGL

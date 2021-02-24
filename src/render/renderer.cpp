@@ -3,6 +3,7 @@
 #include "render/materials/full-screen-image.h"
 #include "render/materials/skybox.h"
 #include "render/materials/equirec-to-cube.h"
+#include "render/materials/prefilter-env.h"
 
 namespace leep
 {
@@ -26,6 +27,7 @@ namespace leep
         materials_[MaterialType::MT_FULL_SCREEN_IMAGE] = std::make_unique<FullScreenImage>();
         materials_[MaterialType::MT_SKYBOX] = std::make_unique<Skybox>();
         materials_[MaterialType::MT_EQUIREC_TO_CUBE] = std::make_unique<EquirecToCube>();
+        materials_[MaterialType::MT_PREFILTER_ENV] = std::make_unique<PrefilterEnv>();
         
         for (int32_t i = 0; i < MaterialType::MT_MAX; ++i)
         {

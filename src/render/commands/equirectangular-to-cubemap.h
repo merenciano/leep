@@ -16,12 +16,14 @@ namespace leep
 
         EquirectangularToCubemap &set_in_path(std::string in_path);
         EquirectangularToCubemap &set_out_cube(Texture out_texture);
+        EquirectangularToCubemap &set_out_prefilter(Texture out_texture);
 
         virtual void executeCommand() const override;
 
     private:
         std::string path_;
         Texture out_cube_;
+        Texture out_pref_;
     };
 }
 

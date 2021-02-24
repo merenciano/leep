@@ -43,7 +43,8 @@ static const char* kSkyboxFragment = R"(
     in vec3 position;
 
     void main() {
-        FragColor = texture(u_cubemap, position);
+        //FragColor = texture(u_cubemap, position);
+        FragColor = textureLod(u_cubemap, position, 1.2);
     }
 )";
 

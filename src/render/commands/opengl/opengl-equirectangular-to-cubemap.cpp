@@ -56,8 +56,39 @@ namespace leep
             glClear(GL_COLOR_BUFFER_BIT);
             Draw().set_geometry(Renderer::s_cube).set_material(m).executeCommand();
         }
-        glDeleteFramebuffers(1, &fb);
 
+        if (out_pref_.handle() != CommonDefs::UNINIT_HANDLE)
+        {
+            InternalTexture &ipref = r.textures_[out_pref_.handle()];
+            if (ipref.cpu_version_ > ipref.gpu_version_)
+            {
+                CreateCubemap().set_texture(out_pref_).executeCommand();
+            }
+            Material m_pref;
+            PrefilterEnvData pref_data;
+            m_pref.set_type(MT_PREFILTER_ENV);
+            m_pref.set_albedo(out_cube_);
+            for (int32_t i = 0; i < 5; ++i)
+            {
+                // mip size
+                uint32_t s = ipref.width_ * std::powf(0.5f, i);
+                glViewport(0, 0, s, s);
+                pref_data.roughness_ = (float)i / 4.0f;  // mip / max mip levels - 1
+
+                for (int32_t j = 0; j < 6; ++j)
+                {
+                    pref_data.vp_ = proj * views[j];
+                    m_pref.set_data(pref_data);
+                    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0,
+                        GL_TEXTURE_CUBE_MAP_POSITIVE_X + j, ipref.internal_id_, i);
+                    glClear(GL_COLOR_BUFFER_BIT);
+                    Draw().set_geometry(Renderer::s_cube).set_material(m_pref).executeCommand();
+                }
+            }
+        }
+
+
+        glDeleteFramebuffers(1, &fb);
         equirec.release();
     }
 }
