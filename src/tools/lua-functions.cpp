@@ -1,5 +1,5 @@
 #include "lua-functions.h"
-#include "helper-functions.h"
+#include "tools/helper-functions.h"
 
 #include <string>
 

@@ -9,17 +9,29 @@ namespace leep
 {
     Camera::Camera()
     {
+        view_matrix_ = glm::mat4(1.0f);
+        projection_matrix_ = glm::mat4(1.0f);
     }
 
     Camera::~Camera()
     {
-
     }
 
     void Camera::init()
     {
         view_matrix_ = glm::mat4(1.0f);
         projection_matrix_ = glm::perspective(glm::radians(70.0f), (float)GM.window().width() / GM.window().height(), 0.1f, 80.0f);
+        fb_.create(GM.window().fwidth(), GM.window().fheight(), true, true);
+    }
+
+    void Camera::init(float width, float height, bool is_light)
+    {
+        view_matrix_ = glm::mat4(1.0f);
+        projection_matrix_ = glm::perspective(glm::radians(70.0f), (float)GM.window().fwidth() / GM.window().fheight(), 0.1f, 80.0f);
+        if (is_light)
+            fb_.create(width, height, false, true);
+        else
+            fb_.create(width, height, true, true);
     }
 
     void Camera::set_view(const glm::mat4 &view)
@@ -57,4 +69,9 @@ namespace leep
 		glm::mat4 inv = glm::inverse(view_matrix_);
 		return glm::vec3(inv[3][0], inv[3][1], inv[3][2]);
 	}
+
+    Framebuffer Camera::framebuffer() const
+    {
+        return fb_;
+    }
 }

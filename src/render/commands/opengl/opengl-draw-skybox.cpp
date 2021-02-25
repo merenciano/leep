@@ -13,19 +13,19 @@ namespace leep
     void DrawSkybox::executeCommand() const
     {
         Renderer &r = GM.renderer();
-        int32_t vertex_handler = Renderer::s_cube.vertex_buffer().handler();
-        int32_t index_handler = Renderer::s_cube.index_buffer().handler();
+        int32_t vertex_handler = Renderer::s_cube.vertex_buffer().handle();
+        int32_t index_handler = Renderer::s_cube.index_buffer().handle();
 
-        LEEP_CORE_ASSERT(vertex_handler != ConstantValues::UNINITIALIZED_HANDLER,
+        LEEP_CORE_ASSERT(vertex_handler != CommonDefs::UNINIT_HANDLE,
             "You are trying to draw with an uninitialized vertex buffer");
 
-        LEEP_CORE_ASSERT(index_handler != ConstantValues::UNINITIALIZED_HANDLER,
+        LEEP_CORE_ASSERT(index_handler != CommonDefs::UNINIT_HANDLE,
             "You are trying to draw with an uninitialized index buffer");
 
-        LEEP_CORE_ASSERT(r.buffers_[vertex_handler].version_ > 0,
+        LEEP_CORE_ASSERT(r.buffers_[vertex_handler].cpu_version_ > 0,
             "Vertex buffer without data");
 
-        LEEP_CORE_ASSERT(r.buffers_[index_handler].version_ > 0, 
+        LEEP_CORE_ASSERT(r.buffers_[index_handler].cpu_version_ > 0, 
             "Index buffer without data");
 
         LEEP_CORE_ASSERT(material_.type() != MaterialType::MT_NONE,
@@ -40,15 +40,15 @@ namespace leep
             glGenBuffers(1, &(r.buffers_[vertex_handler].internal_id_));
             glBindBuffer(GL_ARRAY_BUFFER, r.buffers_[vertex_handler].internal_id_);
             glBufferData(GL_ARRAY_BUFFER,
-                r.buffers_[vertex_handler].vertices_data_.size() * sizeof(Vertex),
+                r.buffers_[vertex_handler].vertices_data_.size() * sizeof(float),
                 (const void*)r.buffers_[vertex_handler].vertices_data_.data(),
                 GL_STATIC_DRAW);
-            r.buffers_[vertex_handler].gpu_version_ = r.buffers_[vertex_handler].version_; 
+            r.buffers_[vertex_handler].gpu_version_ = r.buffers_[vertex_handler].cpu_version_; 
         }
         else
         {
             glBindBuffer(GL_ARRAY_BUFFER,
-                r.buffers_[Renderer::s_cube.vertex_buffer().handler()].internal_id_);
+                r.buffers_[Renderer::s_cube.vertex_buffer().handle()].internal_id_);
         }
 
         // Create the OpenGL index buffer if it has not been created yet
@@ -60,12 +60,12 @@ namespace leep
                 r.buffers_[index_handler].indices_data_.size() * sizeof(uint32_t),
                 (const void*)r.buffers_[index_handler].indices_data_.data(),
                 GL_STATIC_DRAW);
-            r.buffers_[index_handler].gpu_version_ = r.buffers_[index_handler].version_; 
+            r.buffers_[index_handler].gpu_version_ = r.buffers_[index_handler].cpu_version_; 
         }
         else
         {
             glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,
-                r.buffers_[Renderer::s_cube.index_buffer().handler()].internal_id_);
+                r.buffers_[Renderer::s_cube.index_buffer().handle()].internal_id_);
         }
 
         GLint attrib_pos = glGetAttribLocation(
@@ -74,7 +74,7 @@ namespace leep
             8 * sizeof(float), (void*)0);
         glEnableVertexAttribArray(attrib_pos);
 
-        uint32_t index_count = (uint32_t)r.buffers_[Renderer::s_cube.index_buffer().handler()].indices_data_.size();
+        uint32_t index_count = (uint32_t)r.buffers_[Renderer::s_cube.index_buffer().handle()].indices_data_.size();
 
         glDepthFunc(GL_LEQUAL);
         glDrawElements(GL_TRIANGLES, index_count, GL_UNSIGNED_INT, 0);

@@ -7,7 +7,9 @@ namespace leep
     {
         LEEP_ASSERT(name != "Cube", "There is already a cube named Cube");
         LEEP_ASSERT(name != "Sphere", "There is already a sphere named Sphere");
-        bool inserted = geometries_.emplace(std::make_pair(name, Geometry())).second;
+        LEEP_ASSERT(name != "Quad", "There is already a quad named Quad");
+        bool inserted = 
+            geometries_.emplace(std::make_pair(name, Geometry())).second;
         if (inserted)
         {
             geometries_[name].loadObj(path);
@@ -18,19 +20,44 @@ namespace leep
         }
     }
 
-    void ResourceMap::addTexture(std::string name, std::string path, bool cube)
+    void ResourceMap::addTexture(
+            std::string name,
+            std::string path,
+            TexType t)
     {
-        bool inserted = textures_.emplace(std::make_pair(name, Texture())).second;
+        LEEP_CORE_ASSERT(path != "", "For the creation of empty textures call with size params");
+        bool inserted =
+            textures_.emplace(std::make_pair(name, Texture())).second;
         if (inserted)
         {
-            if (cube)
-                textures_[name].create(path, true);
-            else
-                textures_[name].create(path, false);
+            textures_[name].create(path, t);
         }
         else
         {
-            LEEP_CORE_WARNING("There is already a texture with that name");
+            LEEP_CORE_WARNING("Texture couldn't be inserted");
+        }
+    }
+
+    void ResourceMap::addTexture(std::string n, float w, float h, TexType t)
+    {
+        LEEP_CORE_ASSERT(w > 0.0f && h > 0.0f, "0,0 size texture is no texture");
+        bool inserted = textures_.emplace(std::make_pair(n, Texture())).second;
+        if (inserted)
+        {
+            textures_[n].createEmpty(w, h, t);
+        }
+        else
+        {
+            LEEP_CORE_WARNING("Texture couldn't be inserted");
+        }
+    }
+
+    void ResourceMap::addTexture(std::string name, Texture tex)
+    {
+        bool inserted = textures_.emplace(std::make_pair(name, tex)).second;
+        if (!inserted)
+        {
+            LEEP_CORE_WARNING("Texture couldn't be inserted");
         }
     }
 
@@ -40,6 +67,9 @@ namespace leep
             return Renderer::s_cube;
 		if (name == "Sphere")
 			return Renderer::s_sphere;
+        if (name == "Quad")
+            return Renderer::s_quad;
+
         return geometries_.at(name);
     }
 

@@ -14,7 +14,7 @@ namespace leep
 
     DrawSkybox& DrawSkybox::set_cubemap(const Texture &cubemap)
     {
-        material_.set_texture(cubemap);
+        material_.set_albedo(cubemap);
         return *this;
     }
 }

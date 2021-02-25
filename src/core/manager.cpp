@@ -16,6 +16,8 @@ namespace leep
 {
     Geometry Renderer::s_cube;
     Geometry Renderer::s_sphere;
+    Geometry Renderer::s_quad;
+
     struct Manager::ManagerData
     {
         Window      window_;
@@ -34,16 +36,18 @@ namespace leep
 
     void Manager::init()
     {
-        LEEP_ASSERT(IsPow2(kEntitiesPerChunk), "This constant value must be power of 2");
-        // Manager has the same life as the app, so I don't care of deleting this
+        LEEP_ASSERT(IsPow2(kEntitiesPerChunk),
+            "This constant value must be power of 2");
+        // Manager has the same life as the app, so I don't care of its deletion 
         data_ = new ManagerData();
-        data_->window_.createWindow(1280, 720, true);
+        data_->window_.createWindow(1280, 720, false);
         data_->renderer_.init();
         data_->camera_.init();
         data_->delta_time_ = 0.16f;
 
         Renderer::s_cube.createCube();
-		Renderer::s_sphere.createSphere(50, 50);
+		Renderer::s_sphere.createSphere(32, 32);
+		Renderer::s_quad.createQuad();
     }
 
     float Manager::delta_time() const
@@ -53,9 +57,9 @@ namespace leep
 
     void Manager::nextFrame()
     {
-        renderer().submitFrame();
         window().swap();
         window().pollEvents();
+        renderer().submitFrame();
         data_->frame_timer_.end();
         data_->delta_time_ = data_->frame_timer_.duration() / 1000.0f;
         data_->frame_timer_.start();

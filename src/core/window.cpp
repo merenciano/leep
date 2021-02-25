@@ -93,4 +93,20 @@ namespace leep
 		glfwGetWindowSize(data_->window, nullptr, &height);
 		return height;
 	}
+
+	float Window::fwidth() const
+	{
+		LEEP_ASSERT(data_, "The window has not been created yet");
+		int width;
+		glfwGetWindowSize(data_->window, &width, NULL);
+		return (float)width;
+	}
+
+	float Window::fheight() const
+	{
+		LEEP_ASSERT(data_, "The window has not been created yet");
+		int height;
+		glfwGetWindowSize(data_->window, nullptr, &height);
+		return (float)height;
+	}
 }

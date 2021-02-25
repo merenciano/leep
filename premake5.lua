@@ -1,15 +1,27 @@
+
 newoption {
-    trigger = "opengl",
-    description = "Uses OpenGL 3.3 for rendering"
+    trigger = "graphics-api",
+    value = "API",
+    description = "Choose the 3D graphics backend",
+    default = "OPENGL",
+    allowed = {
+        { "OPENGL", "OpenGL 3.3" },
+        { "OPENGL_ES",  "OpenGL for Embedded Systems 3.0" }
+    }
 }
 
 newoption {
-    trigger = "opengl-es",
-    description = "Uses OpenGL ES 3.0 for rendering"
+    trigger = "source",
+    value   = "path",
+    description = "Adds an extra source file to be compiled. Use it for compile different tests"
 }
+
+if not _OPTIONS["source"] then
+    _OPTIONS["source"] = "./tests/default.cpp"
+end
 
 workspace "Leep"
-    configurations {"Debug", "Release"}
+    configurations {"Debug", "Release", "Trace" }
     location "build"
     architecture "x86_64"
 
@@ -25,7 +37,10 @@ project "leep"
         "extern/include/",
     }
 
+    defines { "LEEP_" .. _OPTIONS["graphics-api"] }
+
     files {
+        _OPTIONS["source"],
         "include/*.h",
         "src/*.h",
         "src/*.cpp",
@@ -50,6 +65,9 @@ project "leep"
 
         --glad
         "./extern/src/glad.c",
+
+        --minitrace
+        "./extern/src/minitrace.c",
 
         --imgui
         "./extern/src/imgui/*.cpp",
@@ -98,18 +116,14 @@ project "leep"
             "./extern/src/GLFW/linux_joystick.c",
         }
 
-    filter "options:opengl"
-        defines "LEEP_OPENGL"
-    
-    filter "options:opengl-es"
-        defines "LEEP_OPENGL_ES"
-    
     filter "configurations:Debug"
-        defines "LEEP_DEBUG"
+        defines { "LEEP_DEBUG" }
         symbols "On"
     
     filter "configurations:Release"
         defines "LEEP_RELEASE"
         optimize "On"
 
-
+    filter "configurations:Trace"
+        defines { "LEEP_RELEASE", "MTR_ENABLED" }
+        optimize "On"

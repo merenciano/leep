@@ -11,7 +11,7 @@ namespace leep
     class CreateTexture : public DisplayListCommand
     {
     public:
-        CreateTexture() = default;
+        CreateTexture();
         CreateTexture(const CreateTexture &other) = delete;
         CreateTexture(CreateTexture &&other) = delete;
         ~CreateTexture() = default;

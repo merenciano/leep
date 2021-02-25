@@ -3,7 +3,7 @@
 #ifndef __LEEP_RENDER_MATERIALS_PBR_H__
 #define __LEEP_RENDER_MATERIALS_PBR_H__ 1
 
-#include "render/internal-material.h"
+#include "render/internal-resources.h"
 
 namespace leep
 {

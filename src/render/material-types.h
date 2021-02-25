@@ -11,8 +11,11 @@ namespace leep
     enum MaterialType
     {
         MT_PBR = 0,
-        MT_PLAIN_COLOR = 1,
+        MT_FULL_SCREEN_IMAGE = 1,
         MT_SKYBOX = 2,
+        MT_EQUIREC_TO_CUBE = 3,
+        MT_PREFILTER_ENV = 4,
+        MT_LUT_GEN = 5,
 
         MT_MAX,
         MT_NONE
@@ -26,7 +29,7 @@ namespace leep
 	public:
 		glm::vec3 color_;
 		float use_albedo_map_;
-		float paddinggg;
+        float use_pbr_maps_;
         float tiling_x_;
         float tiling_y_;
 		float padding;
@@ -36,13 +39,15 @@ namespace leep
 		float paddingg;
     };
 
-    struct PlainColorData
+    struct EquirecToCubeData
     {
-        glm::mat4 model_;
-        float r_;
-        float g_;
-        float b_;
-        float a_;
+        glm::mat4 vp_;
+    };
+
+    struct PrefilterEnvData
+    {
+        glm::mat4 vp_;
+        float roughness_;
     };
 }
 #endif // __LEEP_RENDER_MATERIAL_TYPES_H__

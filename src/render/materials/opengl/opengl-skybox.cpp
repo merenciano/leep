@@ -18,9 +18,18 @@ static const char* kSkyboxVertex = R"(
 
     out vec3 position;
 
+    vec3 PositionRotated()
+    {
+        float rads = radians(-90.0);
+        mat3 rot = mat3(vec3(cos(rads), 0.0, -sin(rads)),
+                        vec3(0.0, 1.0, 0.0),
+                        vec3(sin(rads), 0.0, cos(rads)));
+        return a_position * rot;
+    }
+
     void main() {
         mat4 vp = mat4(u_scene_data[0], u_scene_data[1], u_scene_data[2], u_scene_data[3]);
-        position = a_position;
+        position = PositionRotated();
         gl_Position = vec4(vp * vec4(a_position.zyx, 1.0)).xyww;
     }
 )";
@@ -34,8 +43,8 @@ static const char* kSkyboxFragment = R"(
     in vec3 position;
 
     void main() {
-        //FragColor = vec4(1.0, 0.0, 0.0, 1.0);
-        FragColor = texture(u_cubemap, position);
+        //FragColor = texture(u_cubemap, position);
+        FragColor = textureLod(u_cubemap, position, 1.2);
     }
 )";
 
@@ -86,14 +95,14 @@ namespace leep
         LEEP_ASSERT(material.type() == MaterialType::MT_SKYBOX, "Wrong material type");
 
         // Load texture
-        int32_t tex_id = material.texture().id();
+        int32_t tex_id = material.albedo().handle();
         LEEP_ASSERT(tex_id != -1, "Texture not created");
-        LEEP_ASSERT(r.textures_[tex_id].version_ != -1, "Texture released");
-        if (r.textures_[tex_id].version_ == 0)
+        LEEP_ASSERT(r.textures_[tex_id].cpu_version_ != -1, "Texture released");
+        if (r.textures_[tex_id].cpu_version_ == 0)
         {
             // Render commands can be executed without submiting any DisplayList,
             // you just have to make sure that the command will be executed from the main thread
-            CreateCubemap().set_texture(material.texture()).executeCommand();
+            CreateCubemap().set_texture(material.albedo()).executeCommand();
         }
 
         GLint uniform_location = glGetUniformLocation(internal_id_, "u_cubemap");

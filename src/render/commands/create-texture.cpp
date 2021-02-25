@@ -2,6 +2,10 @@
 
 namespace leep
 {
+	CreateTexture::CreateTexture()
+	{
+	}
+
     CreateTexture& CreateTexture::set_texture(const Texture &texture)
     {
         texture_ = texture;

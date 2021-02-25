@@ -1,10 +1,24 @@
 #ifndef __LEEP_RENDER_TEXTURE_H__
 #define __LEEP_RENDER_TEXTURE_H__ 1
 
-#include "render/internal-texture.h"
+#include <string>
 
 namespace leep
 {
+    enum class TexType
+    {
+        NONE,
+        R,
+        RGB,
+        SRGB,
+        DEPTH,
+        SKYBOX,
+        RGB_F16,
+        RGBA_F16,
+        LUT,
+        ENVIRONMENT,
+        PREFILTER_ENVIRONMENT,
+    };
     class Texture
     {
     public:
@@ -13,13 +27,13 @@ namespace leep
         ~Texture();
 
         Texture& operator=(const Texture &t);
-        void create(std::string path = "", bool cube = false);
-        void createEmpty(float width, float height);
+        void create(std::string path, TexType t);
+        void createEmpty(float width, float height, TexType t);
         void release();
-        int32_t id() const;
+        int32_t handle() const;
 
     private:
-        int32_t handler_;
+        int32_t handle_;
     };
 }
 

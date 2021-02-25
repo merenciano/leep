@@ -1,6 +1,8 @@
 #ifndef __LEEP_CORE_MANAGER_H__
 #define __LEEP_CORE_MANAGER_H__ 1
 
+#include <atomic>
+
 #define GM Manager::instance()
 
 namespace leep 
@@ -30,8 +32,8 @@ namespace leep
         float delta_time() const;
 
     private:
-        Manager() { data_ = nullptr; }
-        Manager(const Manager&) {}
+        Manager() = default;
+        Manager(const Manager&) = default;
         Manager& operator=(const Manager&) { return *this; }
 
         struct ManagerData;

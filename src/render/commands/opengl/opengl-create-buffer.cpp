@@ -10,29 +10,29 @@ namespace leep
     {
         Renderer &r = Manager::instance().renderer();
 
-        LEEP_CORE_ASSERT(r.buffers_[buffer_.handler()].version_ > 0, "This buffer hasn't got any data yet");
+        LEEP_CORE_ASSERT(r.buffers_[buffer_.handle()].cpu_version_ > 0, "This buffer hasn't got any data yet");
 
-        glGenBuffers(1, &(r.buffers_[buffer_.handler()].internal_id_));
+        glGenBuffers(1, &(r.buffers_[buffer_.handle()].internal_id_));
 
-        if (buffer_.type() == BufferType::VERTEX_BUFFER)
+        if (buffer_.type() == BufferType::INDEX_BUFFER)
         {
-            glBindBuffer(GL_ARRAY_BUFFER, r.buffers_[buffer_.handler()].internal_id_);
-            glBufferData(GL_ARRAY_BUFFER,
-                        r.buffers_[buffer_.handler()].vertices_data_.size() * sizeof(Vertex),
-                        (const void*)r.buffers_[buffer_.handler()].vertices_data_.data(),
-                        GL_STATIC_DRAW);
-            glBindBuffer(GL_ARRAY_BUFFER, 0);
-        }
-        else if (buffer_.type() == BufferType::INDEX_BUFFER)
-        {
-            glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, r.buffers_[buffer_.handler()].internal_id_);
+            glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, r.buffers_[buffer_.handle()].internal_id_);
             glBufferData(GL_ELEMENT_ARRAY_BUFFER,
-                        r.buffers_[buffer_.handler()].indices_data_.size() * sizeof(uint32_t),
-                        (const void*)r.buffers_[buffer_.handler()].indices_data_.data(),
+                        r.buffers_[buffer_.handle()].indices_data_.size() * sizeof(uint32_t),
+                        (const void*)r.buffers_[buffer_.handle()].indices_data_.data(),
                         GL_STATIC_DRAW);
             glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
         }
+        else if (buffer_.type() != BufferType::NONE)
+        {
+            glBindBuffer(GL_ARRAY_BUFFER, r.buffers_[buffer_.handle()].internal_id_);
+            glBufferData(GL_ARRAY_BUFFER,
+                        r.buffers_[buffer_.handle()].vertices_data_.size() * sizeof(float),
+                        (const void*)r.buffers_[buffer_.handle()].vertices_data_.data(),
+                        GL_STATIC_DRAW);
+            glBindBuffer(GL_ARRAY_BUFFER, 0);
+        }
         
-        r.buffers_[buffer_.handler()].gpu_version_ = r.buffers_[buffer_.handler()].version_; 
+        r.buffers_[buffer_.handle()].gpu_version_ = r.buffers_[buffer_.handle()].cpu_version_; 
     }
 }
