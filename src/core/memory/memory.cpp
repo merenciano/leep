@@ -4,6 +4,7 @@ namespace leep
 {
     Memory::Memory()
     {
+        renderq_.init(kRenderQueueSize);
     }
 
     EntityContainer& Memory::container(EntityType t)

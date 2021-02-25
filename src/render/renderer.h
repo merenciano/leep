@@ -51,8 +51,10 @@ namespace leep
 
         // Deque because of the vector reallocations
         // NOTE: Mutex if different threads from logic can submit display lists
-        std::list<DisplayList> next_frame_command_queue_;
-        std::list<DisplayList> current_frame_commands_;
+        //std::list<DisplayList> next_frame_command_queue_;
+        //std::list<DisplayList> current_frame_commands_;
+        std::list<DisplayList> next_frame_queue_;
+        std::list<DisplayList> curr_frame_queue_;
 
         std::atomic<int32_t> tex_to_del_;
         std::atomic<int32_t> buf_to_del_;

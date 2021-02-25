@@ -14,14 +14,20 @@ namespace leep
 
     }
 
-    const std::list<std::unique_ptr<DisplayListCommand>>& DisplayList::command_list() const
+    /*const std::list<std::unique_ptr<DisplayListCommand>>& DisplayList::command_list() const
     {
         return command_list_;
+    }
+*/
+    const std::list<DisplayListCommand*>& DisplayList::command_list() const
+    {
+        return list_;
     }
 
     void DisplayList::submit()
     {
-        LEEP_CORE_ASSERT(command_list_.size() > 0, "Trying to submit an empty display list");
-        Manager::instance().renderer().addDisplayListToQueue(std::move(*this));
+        //Manager::instance().renderer().addDisplayListToQueue(std::move(*this));
+        // TODO: mutex (make a function in renderer and lock there)
+        GM.renderer().next_frame_queue_.push_back(std::move(*this));
     }
 }

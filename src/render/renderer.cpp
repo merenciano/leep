@@ -39,25 +39,18 @@ namespace leep
 
     void Renderer::addDisplayListToQueue(DisplayList &&dl)
     {
+        LEEP_CORE_ASSERT(false, "This method should not be called");
         nxt_frame_q_mtx_.lock();
-        next_frame_command_queue_.push_back(std::move(dl));
+        //next_frame_command_queue_.push_back(std::move(dl));
         nxt_frame_q_mtx_.unlock();
     }
 
     void Renderer::renderFrame()
     {
+        /*
         while (!current_frame_commands_.empty())
         {
-            //DisplayList dl(std::move(current_frame_commands_.front()));
             DisplayList &dl = current_frame_commands_.front();
-
-            /*if (dl.command_list().size() == 0)
-            {
-                // TODO: Fix this bug. There is an assertion in the displaylist's submit method.
-                // So it's not possible to submit an empty list.
-                LEEP_CORE_WARNING("Empty DisplayList skipped");
-                continue;
-            }*/
 
             // I can't use the range-based for loop here because unique_ptr can't be referenced
             for (auto &it = dl.command_list().begin(); it != dl.command_list().end(); ++it)
@@ -65,14 +58,26 @@ namespace leep
                 it->get()->executeCommand();
             }
             current_frame_commands_.pop_front();
+        }*/
+
+        while (!curr_frame_queue_.empty())
+        {
+            DisplayList &dl = curr_frame_queue_.front();
+            for (auto &c : dl.command_list())
+            {
+                c->executeCommand();
+            }
+            curr_frame_queue_.pop_front();
         }
         deleteResources();
     }
 
     void Renderer::submitFrame()
     {
-        LEEP_CORE_ASSERT(current_frame_commands_.empty(), "The current frame command list is not empty!");
-        next_frame_command_queue_.swap(current_frame_commands_);
+        //LEEP_CORE_ASSERT(current_frame_commands_.empty(), "The current frame command list is not empty!");
+        //next_frame_command_queue_.swap(current_frame_commands_);
+        next_frame_queue_.swap(curr_frame_queue_);
+        GM.memory().renderq_.swapQueues();
     }
 
     // TODO IMPORTANT: make a command with this...

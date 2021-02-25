@@ -62,6 +62,15 @@ void leep::Init()
         .set_in_path("../assets/tex/env/rooftop-dif.hdr")
         .set_out_cube(GM.resource_map().getTexture("IrradianceEnv"));
     init_dl.submit();
+
+    /*LEEP_INFO("Draw: {0}", sizeof(Draw));
+    LEEP_INFO("EquirecToCube: {0}", sizeof(EquirectangularToCubemap));
+    LEEP_INFO("RenderOptions: {0}", sizeof(RenderOptions));
+    LEEP_INFO("UsePbrMaterial: {0}", sizeof(UsePbrMaterial));
+    LEEP_INFO("Material: {0}", sizeof(Material));
+    LEEP_INFO("Geometry: {0}", sizeof(Geometry));
+    LEEP_INFO("Texture: {0}", sizeof(Texture));
+    LEEP_INFO("MaterialData: {0}", sizeof(Material::MaterialData));*/
 }
 
 void leep::Logic()
