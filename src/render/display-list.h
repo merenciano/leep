@@ -12,6 +12,7 @@
 
 namespace leep
 {
+    const int32_t kDLMaxLen = 20;
     class DisplayList
     {
         public:
@@ -30,16 +31,21 @@ namespace leep
             template<typename T>
             T& addCommand()
             {
-                list_.push_back((DisplayListCommand*)GM.memory().renderq_.allocT<T>());
-                return *(static_cast<T*>(list_.back()));
+                //list_.push_back((DisplayListCommand*)GM.memory().render_mem_.allocT<T>());
+                //return *(static_cast<T*>(list_.back()));
+                LEEP_CORE_ASSERT(i_ < kDLMaxLen, "DisplayList full");
+                list_[i_++] = GM.memory().renderq_.commandAlloc<T>();
+                return *((T*)list_[i_ - 1]);
             }
             //const std::list<std::unique_ptr<DisplayListCommand>>& command_list() const;
-            const std::list<DisplayListCommand*>& command_list() const;
+            DisplayListCommand* command_list() const;
+            int32_t commandListCount() const;
             void submit();
 
         private:
             //std::list<std::unique_ptr<DisplayListCommand>> command_list_;
-            std::list<DisplayListCommand*> list_;
+            DisplayListCommand *list_[kDLMaxLen];
+            int32_t i_;
     };
 }
 

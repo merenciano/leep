@@ -50,7 +50,7 @@
 //#define MTR_ENABLED
 #include "minitrace.h"
 
-#define LEEP_SINGLE_THREAD 0
+#define LEEP_SINGLE_THREAD 1
 
 namespace leep 
 {
@@ -72,7 +72,7 @@ void LeepInit()
     leep::LuaScripting::ExecuteScript("../assets/scripts/init.lua");
     init_timer.end();
     leep::GM.tools_data().init_time_ms_ = init_timer.duration();
-    LEEP_CORE_INFO("Leep initialized in {0} milliseconds.", init_timer.duration());
+    //LEEP_CORE_INFO("Leep initialized in {0} milliseconds.", init_timer.duration());
     MTR_END("LEEP", "Init");
 }
 

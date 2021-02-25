@@ -40,6 +40,7 @@ namespace leep
             "This constant value must be power of 2");
         // Manager has the same life as the app, so I don't care of its deletion 
         data_ = new ManagerData();
+        data_->memory_.init();
         data_->window_.createWindow(1280, 720, false);
         data_->renderer_.init();
         data_->camera_.init();

@@ -7,63 +7,91 @@
 
 #include <unordered_map>
 
+#define KILOBYTES(X) ((X) * 1024)
+#define MEGABYTES(X) (KILOBYTES(X) * 1024)
+#define GIGABYTES(X) (MEGABYTES(X) * 1024)
+
 namespace leep
 {
-    const uint32_t kRenderQueueSize = 10 * 1024;
-    class RenderQAlloc
+    class Memory;
+    class DisplayList;
+    class DisplayListCommand;
+    typedef DisplayListCommand DLComm;
+    // TODO: Draw command with pointer to material will reduce vastly
+    // the memory stored in the pool (due to materialdata union being big)
+    const uint32_t kRenderPoolSize = 100 * 1024;
+    const uint32_t kRenderQueueMaxCount = 500;
+
+    class RenderQueues
     {
     public:
-        void init(int32_t chunk_size)
+        RenderQueues()
         {
-            curr_renderq_ = (uint8_t*)malloc(chunk_size);
-            next_renderq_ = (uint8_t*)malloc(chunk_size);
-            next_offset_ = next_renderq_;
+            curr_pool_ = nullptr;
+            next_pool_ = nullptr;
+            next_offset_ = nullptr;
+            curr_queue_ = nullptr;
+            next_queue_ = nullptr;
+            curr_count_ = 0;
+            next_count_ = 0;
         }
 
-        void* alloc(int32_t size)
-        {
-            void* mem = (void*)next_offset_;
-            next_offset_ += size;
-            return mem;
-        }
+        void init(Memory *m);
+        void addDL(DisplayList *dl);
 
         template<typename T>
-        T* allocT()
+        DLComm *commandAlloc()
         {
-            T* mem = new(next_offset_) T();
+            DLComm *mem = new(next_offset_) T();
             next_offset_ += sizeof(T);
-            LEEP_CORE_ASSERT(next_offset_ - next_renderq_ < kRenderQueueSize, "Queue doesn't fit in the chunk");
+            LEEP_CORE_ASSERT(next_offset_ - next_pool_ < kRenderPoolSize,
+                "Queue doesn't fit in the chunk");
             return mem;
         }
+
 
         void swapQueues()
         {
-            uint8_t* tmp = curr_renderq_;
-            curr_renderq_ = next_renderq_;
-            next_renderq_ = tmp;
-            next_offset_ = next_renderq_;
+            int8_t *tmp = curr_pool_;
+            curr_pool_ = next_pool_;
+            next_pool_ = tmp;
+            next_offset_ = next_pool_;
+
+            DLComm **tmp2 = curr_queue_;
+            curr_queue_ = next_queue_;
+            curr_count_ = next_count_;
+            next_queue_ = tmp2;
+            next_count_ = 0;
         }
 
-        uint8_t* curr_renderq_; /// Current rendering queue (Main thread renders this)
-        uint8_t* next_renderq_; /// Next rendering queue (Logic thread fill this for the next frame)
-        uint8_t* next_offset_;
+        int8_t *curr_pool_; // Main thread renders this
+        int8_t *next_pool_; // Logic thread fill this for the next frame
+        int8_t *next_offset_;
+        DLComm **curr_queue_;
+        DLComm **next_queue_;
+        int16_t  curr_count_;
+        int16_t  next_count_;
     };
 
     class Memory
     {
-        
     public:
         Memory();
+        void init();
+        void freeAll();
+        void *alloc(int32_t size);
+        float mbUsed() const;
+        size_t bytesUsed() const;
 
-        EntityContainer& container(EntityType t);
+        // Entities
         void createContainer(EntityType t);
-    //private:
+        EntityContainer &container(EntityType t);
         std::unordered_map<EntityType, EntityContainer> entities_;
 
-        RenderQAlloc renderq_;
+        RenderQueues renderq_;
+        int8_t *mem_;
+        int8_t *offset_;
     };
-
-    
 }
 
 #endif // __LEEP_CORE_MEMORY_H__

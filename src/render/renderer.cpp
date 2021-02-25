@@ -59,15 +59,11 @@ namespace leep
             }
             current_frame_commands_.pop_front();
         }*/
+        RenderQueues &rq = GM.memory().renderq_;
 
-        while (!curr_frame_queue_.empty())
+        for (int32_t i = 0; i < rq.curr_count_; ++i)
         {
-            DisplayList &dl = curr_frame_queue_.front();
-            for (auto &c : dl.command_list())
-            {
-                c->executeCommand();
-            }
-            curr_frame_queue_.pop_front();
+            rq.curr_queue_[i]->executeCommand();
         }
         deleteResources();
     }
@@ -76,7 +72,6 @@ namespace leep
     {
         //LEEP_CORE_ASSERT(current_frame_commands_.empty(), "The current frame command list is not empty!");
         //next_frame_command_queue_.swap(current_frame_commands_);
-        next_frame_queue_.swap(curr_frame_queue_);
         GM.memory().renderq_.swapQueues();
     }
 

@@ -71,6 +71,9 @@ void leep::Init()
     LEEP_INFO("Geometry: {0}", sizeof(Geometry));
     LEEP_INFO("Texture: {0}", sizeof(Texture));
     LEEP_INFO("MaterialData: {0}", sizeof(Material::MaterialData));*/
+
+    printf("%d\n", sizeof(int*));
+    printf("%d\n", sizeof(DLComm*));
 }
 
 void leep::Logic()

@@ -17,6 +17,7 @@
 
 namespace leep
 {
+    class DisplayListCommand;
     class Renderer
     {
     public:
@@ -47,14 +48,15 @@ namespace leep
 		std::deque<InternalFramebuffer> framebuffers_; // TODO: Change this to fixed size array
 
         // Constant size
+        // TODO: permanent allocator
         std::unique_ptr<InternalMaterial> materials_[MaterialType::MT_MAX];
 
         // Deque because of the vector reallocations
         // NOTE: Mutex if different threads from logic can submit display lists
         //std::list<DisplayList> next_frame_command_queue_;
         //std::list<DisplayList> current_frame_commands_;
-        std::list<DisplayList> next_frame_queue_;
-        std::list<DisplayList> curr_frame_queue_;
+        //DisplayListCommand* next_frame_comm_;
+        //DisplayListCommand* curr_frame_comm_;
 
         std::atomic<int32_t> tex_to_del_;
         std::atomic<int32_t> buf_to_del_;
