@@ -48,14 +48,23 @@ namespace leep
     {
         while (!current_frame_commands_.empty())
         {
-            DisplayList dl(std::move(current_frame_commands_.front()));
-            current_frame_commands_.pop_front();
+            //DisplayList dl(std::move(current_frame_commands_.front()));
+            DisplayList &dl = current_frame_commands_.front();
 
-            // I can't use the range-based for loop here because unique_ptr can't be referenced,
-            for (auto it = dl.command_list().cbegin(); it != dl.command_list().cend(); ++it)
+            /*if (dl.command_list().size() == 0)
+            {
+                // TODO: Fix this bug. There is an assertion in the displaylist's submit method.
+                // So it's not possible to submit an empty list.
+                LEEP_CORE_WARNING("Empty DisplayList skipped");
+                continue;
+            }*/
+
+            // I can't use the range-based for loop here because unique_ptr can't be referenced
+            for (auto &it = dl.command_list().begin(); it != dl.command_list().end(); ++it)
             {
                 it->get()->executeCommand();
             }
+            current_frame_commands_.pop_front();
         }
         deleteResources();
     }

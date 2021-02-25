@@ -9,11 +9,6 @@ namespace leep
 
     }
 
-    DisplayList::DisplayList(DisplayList &&other)
-    {
-        std::swap(command_list_, other.command_list_);
-    }
-
     DisplayList::~DisplayList()
     {
 
@@ -26,6 +21,7 @@ namespace leep
 
     void DisplayList::submit()
     {
+        LEEP_CORE_ASSERT(command_list_.size() > 0, "Trying to submit an empty display list");
         Manager::instance().renderer().addDisplayListToQueue(std::move(*this));
     }
 }

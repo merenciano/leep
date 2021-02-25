@@ -29,7 +29,7 @@ static const char* kPrefilterEnvFragment = R"(
     uniform float u_roughness;
 
     const float PI = 3.14159265359;
-    const uint SAMPLE_COUNT = 1024u;
+    const uint kSampleCount = 1024u;
 
     out vec4 FragColor;
     in vec3 position;
@@ -80,9 +80,9 @@ static const char* kPrefilterEnvFragment = R"(
 
         float totalWeight = 0.0;   
         vec3 prefilteredColor = vec3(0.0);     
-        for(uint i = 0u; i < SAMPLE_COUNT; ++i)
+        for(uint i = 0u; i < kSampleCount; ++i)
         {
-            vec2 Xi = Hammersley(i, SAMPLE_COUNT);
+            vec2 Xi = Hammersley(i, kSampleCount);
             vec3 H  = ImportanceSampleGGX(Xi, N, u_roughness);
             vec3 L  = normalize(2.0 * dot(V, H) * H - V);
 

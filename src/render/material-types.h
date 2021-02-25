@@ -15,7 +15,7 @@ namespace leep
         MT_SKYBOX = 2,
         MT_EQUIREC_TO_CUBE = 3,
         MT_PREFILTER_ENV = 4,
-        MT_LUT_GEN = 4,
+        MT_LUT_GEN = 5,
 
         MT_MAX,
         MT_NONE

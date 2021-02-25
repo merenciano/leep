@@ -18,5 +18,9 @@ namespace leep
 
         uniform_pos = glGetUniformLocation(program, "u_irradiance_map");
         glUniform1i(uniform_pos, r.textures_[irr_.handle()].texture_unit_);
+        uniform_pos = glGetUniformLocation(program, "u_prefilter_map");
+        glUniform1i(uniform_pos, r.textures_[pref_.handle()].texture_unit_);
+        uniform_pos = glGetUniformLocation(program, "u_lut");
+        glUniform1i(uniform_pos, r.textures_[lut_.handle()].texture_unit_);
     }
 }

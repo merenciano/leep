@@ -10,6 +10,8 @@ void leep::Init()
         const std::string tp = "../assets/tex/";
         rm.addTexture("Skybox", 1024.0f, 1024.0f, TexType::ENVIRONMENT);
         rm.addTexture("IrradianceEnv", 1024.0f, 1024.0f, TexType::ENVIRONMENT);
+        rm.addTexture("PrefilterSpec", 128.0f, 128.0f, TexType::PREFILTER_ENVIRONMENT);
+        rm.addTexture("LutMap", 512.0f, 512.0f, TexType::LUT);
         /*
         rm.addTexture("Cerberus_A" ,tp + "cerberus_A.png", TexType::SRGB);
         rm.addTexture("Cerberus_N" ,tp + "cerberus_N.png", TexType::RGB);
@@ -22,7 +24,7 @@ void leep::Init()
     GM.memory().createContainer(EntityType::RENDERABLE);
 
     PbrData mat_data;
-    mat_data.color_ = glm::vec3(1.0f, 0.0f, 0.0f);
+    mat_data.color_ = glm::vec3(0.3f, 0.3f, 0.3f);
     mat_data.use_albedo_map_ = 0.0f;
     mat_data.use_pbr_maps_ = 0.0f;
     mat_data.tiling_x_ = 1.0f;
@@ -52,10 +54,12 @@ void leep::Init()
         .enable_blend(true)
         .set_blend_func(BlendFunc::ONE, BlendFunc::ZERO);
     init_dl.addCommand<EquirectangularToCubemap>()
-        .set_in_path("../assets/tex/hdr/AlleyRef.hdr")
-        .set_out_cube(GM.resource_map().getTexture("Skybox"));
+        .set_in_path("../assets/tex/env/rooftop-env.hdr")
+        .set_out_cube(GM.resource_map().getTexture("Skybox"))
+        .set_out_prefilter(GM.resource_map().getTexture("PrefilterSpec"))
+        .set_out_lut(GM.resource_map().getTexture("LutMap"));
     init_dl.addCommand<EquirectangularToCubemap>()
-        .set_in_path("../assets/tex/hdr/AlleyEnv.hdr")
+        .set_in_path("../assets/tex/env/rooftop-dif.hdr")
         .set_out_cube(GM.resource_map().getTexture("IrradianceEnv"));
     init_dl.submit();
 }
@@ -66,7 +70,7 @@ void leep::Logic()
     CameraMovement(1.0f, 1.0f).executeSystem();
     UpdateTransform(GM.memory().container(EntityType::RENDERABLE)).executeSystem();
     UpdateSceneGraph().executeSystem();
-    Entity::GetEntity("Pipa").getComponent<LTransform>().rotateYWorld(0.001f);
+    //Entity::GetEntity("Pipa").getComponent<LTransform>().rotateYWorld(0.001f);
     // Render commands
     DisplayList dl;
     PbrSceneData pbr_sd;
@@ -94,29 +98,32 @@ void leep::Logic()
 
     dl.addCommand<UsePbrMaterial>()
         .set_scene_data(pbr_sd)
-        .set_irradiance_map(GM.resource_map().getTexture("Skybox"));
+        .set_irradiance_map(GM.resource_map().getTexture("IrradianceEnv"))
+        .set_prefilter_map(GM.resource_map().getTexture("PrefilterSpec"))
+        .set_lut_map(GM.resource_map().getTexture("LutMap"));
 
     dl.submit();
 
     Render(GM.memory().container(EntityType::RENDERABLE)).executeSystem();
     
-    dl.addCommand<UseSkyboxMaterial>();
-    dl.addCommand<DrawSkybox>()
+    DisplayList dl2;
+    dl2.addCommand<UseSkyboxMaterial>();
+    dl2.addCommand<DrawSkybox>()
         .set_cubemap(GM.resource_map().getTexture("Skybox"));
    
-    dl.addCommand<UseFramebuffer>();
+    dl2.addCommand<UseFramebuffer>();
 
-    dl.addCommand<RenderOptions>()
+    dl2.addCommand<RenderOptions>()
         .enable_depth_test(false);
 
-    dl.addCommand<Clear>()
+    dl2.addCommand<Clear>()
         .set_clear_buffer(true, false, false)
         .set_clear_color(1.0f, 0.0f, 0.0f, 1.0f);
 
-    dl.addCommand<Draw>()
+    dl2.addCommand<Draw>()
         .set_geometry(GM.resource_map().getGeometry("Quad"))
         .set_material(full_screen_img);
         
-    dl.submit();
+    dl2.submit();
     //DeleteReleased().executeSystem();
 }

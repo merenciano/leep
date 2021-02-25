@@ -23,6 +23,17 @@ namespace leep
         irr_ = t;
         return *this;
     }
+
+    UsePbrMaterial& UsePbrMaterial::set_prefilter_map(Texture t)
+    {
+        pref_ = t;
+        return *this;
+    }
+    UsePbrMaterial& UsePbrMaterial::set_lut_map(Texture t)
+    {
+        lut_ = t;
+        return *this;
+    }
 }
 
 #ifdef LEEP_OPENGL

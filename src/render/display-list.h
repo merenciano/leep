@@ -14,8 +14,8 @@ namespace leep
     {
         public:
             DisplayList();
-            DisplayList(DisplayList &other) = delete;
-            DisplayList(DisplayList &&other);
+            DisplayList(DisplayList&) = delete;
+            DisplayList(DisplayList&&) = default;
             ~DisplayList();
 
             template<typename T>

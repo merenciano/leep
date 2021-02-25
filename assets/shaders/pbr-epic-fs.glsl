@@ -11,13 +11,12 @@
 #define LIGHT_INTENSITY     u_scene_data[5].w
 #define CAMERA_POSITION     u_scene_data[4].xyz
 
-#define PI 3.14159265359
-const float Epsilon = 0.00001;
-
-const int NumLights = 1;
-
+const float kPI = 3.14159265359;
+const float kEpsilon = 0.00001;
+const int kNumLights = 1;
 // Constant normal incidence Fresnel factor for all dielectrics.
-const vec3 Fdielectric = vec3(0.04);
+const vec3 kFdielectric = vec3(0.04);
+const int kMaxPrefilterLod = 5;
 
 struct AnalyticalLight {
 	vec3 direction;
@@ -39,8 +38,9 @@ uniform sampler2D u_albedo;
 uniform sampler2D u_metallic;
 uniform sampler2D u_roughness;
 uniform sampler2D u_normal;
-
 uniform samplerCube u_irradiance_map;
+uniform samplerCube u_prefilter_map;
+uniform sampler2D u_lut;
 
 // GGX/Towbridge-Reitz normal distribution function.
 // Uses Disney's reparametrization of alpha = roughness^2.
@@ -50,7 +50,7 @@ float ndfGGX(float cosLh, float roughness)
 	float alphaSq = alpha * alpha;
 
 	float denom = (cosLh * cosLh) * (alphaSq - 1.0) + 1.0;
-	return alphaSq / (PI * denom * denom);
+	return alphaSq / (kPI * denom * denom);
 }
 
 // Single term for separable Schlick-GGX below.
@@ -98,12 +98,13 @@ void main()
 	// Specular reflection vector.
 	vec3 Lr = 2.0 * cosLo * normal - Lo;
 
+
 	// Fresnel reflectance at normal incidence (for metals use albedo color).
-	vec3 F0 = mix(Fdielectric, albedo, metalness);
+	vec3 F0 = mix(kFdielectric, albedo, metalness);
 
 	// Direct lighting calculation for analytical lights.
 	vec3 directLighting;
-	for(int i=0; i<NumLights; ++i)
+	for(int i=0; i<kNumLights; ++i)
 	{
 		vec3 Li = -LIGHT_DIRECTION;
 		//vec3 Lradiance = vec3(1.0);
@@ -134,7 +135,7 @@ void main()
 		vec3 diffuseBRDF = kd * albedo;
 
 		// Cook-Torrance specular microfacet BRDF.
-		vec3 specularBRDF = (F * D * G) / max(Epsilon, 4.0 * cosLi * cosLo);
+		vec3 specularBRDF = (F * D * G) / max(kEpsilon, 4.0 * cosLi * cosLo);
 
 		// Total contribution for this light.
 		directLighting = (diffuseBRDF + specularBRDF) * Lradiance * cosLi;
@@ -155,22 +156,20 @@ void main()
 
     // Irradiance map contains exitant radiance assuming Lambertian BRDF, no need to scale by 1/PI here either.
     vec3 diffuseIBL = kd * albedo * irradiance;
-/*
+
     // Sample pre-filtered specular reflection environment at correct mipmap level.
-    int specularTextureLevels = textureQueryLevels(specularTexture);
-    vec3 specularIrradiance = textureLod(specularTexture, Lr, roughness * specularTextureLevels).rgb;
+    vec3 specularIrradiance = textureLod(u_prefilter_map, Lr, roughness * kMaxPrefilterLod).rgb;
 
     // Split-sum approximation factors for Cook-Torrance specular BRDF.
-    vec2 specularBRDF = texture(specularBRDF_LUT, vec2(cosLo, roughness)).rg;
+    vec2 specularBRDF = texture(u_lut, vec2(cosLo, roughness)).rg;
 
     // Total specular IBL contribution.
     vec3 specularIBL = (F0 * specularBRDF.x + specularBRDF.y) * specularIrradiance;
-*/
+
     // Total ambient lighting contribution.
-    //ambientLighting = diffuseIBL + specularIBL;
-    vec3 ambientLighting = diffuseIBL;
+    vec3 ambientLighting = diffuseIBL + specularIBL;
+    //vec3 ambientLighting = diffuseIBL;
 
 	// Final fragment color.
 	FragColor = vec4(directLighting + ambientLighting, 1.0);
-	//FragColor = vec4(irradiance, 1.0);
 }

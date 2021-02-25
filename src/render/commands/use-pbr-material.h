@@ -28,7 +28,9 @@ namespace leep
         ~UsePbrMaterial();
 
         UsePbrMaterial& set_scene_data(const PbrSceneData &data);
-        UsePbrMaterial& set_irradiance_map(Texture irradiance_map);
+        UsePbrMaterial& set_irradiance_map(Texture irradiance);
+        UsePbrMaterial& set_prefilter_map(Texture prefilter);
+        UsePbrMaterial& set_lut_map(Texture lut);
 
         virtual void executeCommand() const override;
 
@@ -39,6 +41,8 @@ namespace leep
         // the command.
         PbrSceneData data_;
         Texture irr_;
+        Texture pref_;
+        Texture lut_;
     };
 }
 
