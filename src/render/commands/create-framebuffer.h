@@ -8,7 +8,7 @@
 
 namespace leep
 {
-    class CreateFramebuffer : public DisplayListCommand
+    class CreateFramebuffer : public DLComm
     {
     public:
         CreateFramebuffer() = default;

@@ -8,7 +8,7 @@
  
 namespace leep
 {
-    class UseSkyboxMaterial: public DisplayListCommand
+    class UseSkyboxMaterial: public DLComm
     {
     public:
         UseSkyboxMaterial();

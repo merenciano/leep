@@ -14,14 +14,9 @@ namespace leep
 
     }
 
-    /*const std::list<std::unique_ptr<DisplayListCommand>>& DisplayList::command_list() const
+    DLComm** DisplayList::command_list() const
     {
-        return command_list_;
-    }
-*/
-    DisplayListCommand* DisplayList::command_list() const
-    {
-        return list_[0];
+        return (DLComm**)list_;
     }
 
     int32_t DisplayList::commandListCount() const
@@ -31,10 +26,11 @@ namespace leep
 
     void DisplayList::submit()
     {
-        //Manager::instance().renderer().addDisplayListToQueue(std::move(*this));
-        // TODO: mutex (make a function in renderer and lock there)
-        //GM.renderer().next_frame_queue_.push_back(std::move(*this));
-        GM.memory().renderq_.addDL(this);
+        // TODO: If necessary: mutex (make a function in renderer and lock there)
+        // NOTE: At this moment adding displaylists at the same time for different
+        // threads is not supported.
+        GM.renderer().rq_.addDL(this);
+        // DisplayList can be used again after submit
         i_ = 0;
 #ifdef LEEP_DEBUG
         for (int32_t i = 0; i < kDLMaxLen; ++i)

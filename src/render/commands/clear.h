@@ -7,7 +7,7 @@
 
 namespace leep 
 {
-    class Clear : public DisplayListCommand
+    class Clear : public DLComm
     {
     public:
         Clear();

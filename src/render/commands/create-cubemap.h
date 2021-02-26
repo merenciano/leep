@@ -8,7 +8,7 @@
 
 namespace leep
 {
-    class CreateCubemap : public DisplayListCommand
+    class CreateCubemap : public DLComm
     {
     public:
         CreateCubemap() = default;

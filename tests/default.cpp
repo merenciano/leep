@@ -62,18 +62,6 @@ void leep::Init()
         .set_in_path("../assets/tex/env/rooftop-dif.hdr")
         .set_out_cube(GM.resource_map().getTexture("IrradianceEnv"));
     init_dl.submit();
-
-    /*LEEP_INFO("Draw: {0}", sizeof(Draw));
-    LEEP_INFO("EquirecToCube: {0}", sizeof(EquirectangularToCubemap));
-    LEEP_INFO("RenderOptions: {0}", sizeof(RenderOptions));
-    LEEP_INFO("UsePbrMaterial: {0}", sizeof(UsePbrMaterial));
-    LEEP_INFO("Material: {0}", sizeof(Material));
-    LEEP_INFO("Geometry: {0}", sizeof(Geometry));
-    LEEP_INFO("Texture: {0}", sizeof(Texture));
-    LEEP_INFO("MaterialData: {0}", sizeof(Material::MaterialData));*/
-
-    printf("%d\n", sizeof(int*));
-    printf("%d\n", sizeof(DLComm*));
 }
 
 void leep::Logic()
@@ -118,24 +106,25 @@ void leep::Logic()
 
     Render(GM.memory().container(EntityType::RENDERABLE)).executeSystem();
     
-    DisplayList dl2;
-    dl2.addCommand<UseSkyboxMaterial>();
-    dl2.addCommand<DrawSkybox>()
+    dl.addCommand<RenderOptions>()
+        .set_cull_face(CullFace::DISABLED);
+    dl.addCommand<UseSkyboxMaterial>();
+    dl.addCommand<DrawSkybox>()
         .set_cubemap(GM.resource_map().getTexture("Skybox"));
    
-    dl2.addCommand<UseFramebuffer>();
+    dl.addCommand<UseFramebuffer>();
 
-    dl2.addCommand<RenderOptions>()
+    dl.addCommand<RenderOptions>()
         .enable_depth_test(false);
 
-    dl2.addCommand<Clear>()
+    dl.addCommand<Clear>()
         .set_clear_buffer(true, false, false)
         .set_clear_color(1.0f, 0.0f, 0.0f, 1.0f);
 
-    dl2.addCommand<Draw>()
+    dl.addCommand<Draw>()
         .set_geometry(GM.resource_map().getGeometry("Quad"))
         .set_material(full_screen_img);
         
-    dl2.submit();
+    dl.submit();
     //DeleteReleased().executeSystem();
 }

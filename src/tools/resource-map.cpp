@@ -20,6 +20,20 @@ namespace leep
         }
     }
 
+    void ResourceMap::addGeometry(std::string name, Geometry g)
+    {
+        LEEP_CHECK_RESOURCE(g.vertex_buffer());
+        LEEP_CHECK_RESOURCE(g.index_buffer());
+        LEEP_ASSERT(name != "Cube", "There is already a cube named Cube");
+        LEEP_ASSERT(name != "Sphere", "There is already a sphere named Sphere");
+        LEEP_ASSERT(name != "Quad", "There is already a quad named Quad");
+        bool inserted = geometries_.emplace(std::make_pair(name, g)).second;
+        if (!inserted)
+        {
+            LEEP_CORE_WARNING("Geometry couldn't be inserted. Maybe there is already a geometry with that name");
+        }
+    }
+
     void ResourceMap::addTexture(
             std::string name,
             std::string path,

@@ -8,7 +8,7 @@
 
 namespace leep
 {
-    class PrefilterMips : public DisplayListCommand
+    class PrefilterMips : public DLComm
     {
     public:
         PrefilterMips();

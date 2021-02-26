@@ -30,7 +30,7 @@ namespace leep
         FRONT_AND_BACK,
     };
 
-    class RenderOptions : public DisplayListCommand
+    class RenderOptions : public DLComm
     {
     private:
         struct Options

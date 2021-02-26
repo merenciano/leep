@@ -9,7 +9,7 @@
 
 namespace leep
 {
-    class Draw : public DisplayListCommand
+    class Draw : public DLComm
     {
     public:
         Draw();

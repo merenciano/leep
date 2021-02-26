@@ -7,7 +7,7 @@
 
 namespace leep
 {
-    class EquirectangularToCubemap : public DisplayListCommand
+    class EquirectangularToCubemap : public DLComm
     {
     public:
         EquirectangularToCubemap();
