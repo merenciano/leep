@@ -28,11 +28,11 @@ namespace leep
         return *this;
     }
 
-    void Texture::create(std::string path, TexType t)
+    void Texture::create(const char *path, TexType t)
     {
         LEEP_ASSERT(handle_ == CommonDefs::UNINIT_HANDLE,
             "This texture is currently in use");
-        LEEP_ASSERT(path != "", "For empty textures use createEmpty");
+        LEEP_ASSERT(*path != '\0', "For empty textures use createEmpty");
 
         Renderer &r = GM.renderer();
 
@@ -45,12 +45,11 @@ namespace leep
         }
         else
         {
-            r.textures_.emplace_back();
-            handle_ = (int32_t)r.textures_.size() - 1;
+            handle_ = r.addTex();
         }
 
         r.textures_[handle_].internal_id_ = CommonDefs::UNINIT_INTERNAL_ID;
-        r.textures_[handle_].path_ = path;
+        strcpy_s(r.textures_[handle_].path_, path);
         r.textures_[handle_].cpu_version_ = 1;
         r.textures_[handle_].gpu_version_ = 0;
         r.textures_[handle_].width_ = 0;
@@ -71,8 +70,7 @@ namespace leep
         }
         else 
         {
-            r.textures_.emplace_back();
-            handle_ = (int32_t)r.textures_.size() - 1;
+            handle_ = r.addTex();
         }
 
         LEEP_CORE_ASSERT(((width > 1.0f && height > 1.0f) ||
@@ -90,7 +88,7 @@ namespace leep
         }
 
         r.textures_[handle_].internal_id_ = CommonDefs::UNINIT_INTERNAL_ID;
-        r.textures_[handle_].path_ = "";
+        *(r.textures_[handle_].path_) = '\0';
         r.textures_[handle_].cpu_version_ = 1;
         r.textures_[handle_].gpu_version_ = 0;
 		r.textures_[handle_].type_ = t;

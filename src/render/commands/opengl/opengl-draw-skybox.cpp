@@ -40,8 +40,8 @@ namespace leep
             glGenBuffers(1, &(r.buffers_[vertex_handler].internal_id_));
             glBindBuffer(GL_ARRAY_BUFFER, r.buffers_[vertex_handler].internal_id_);
             glBufferData(GL_ARRAY_BUFFER,
-                r.buffers_[vertex_handler].vertices_data_.size() * sizeof(float),
-                (const void*)r.buffers_[vertex_handler].vertices_data_.data(),
+                r.buffers_[vertex_handler].count_ * sizeof(float),
+                (const void*)r.buffers_[vertex_handler].data_.vertices_,
                 GL_STATIC_DRAW);
             r.buffers_[vertex_handler].gpu_version_ = r.buffers_[vertex_handler].cpu_version_; 
         }
@@ -57,8 +57,8 @@ namespace leep
             glGenBuffers(1, &(r.buffers_[index_handler].internal_id_));
             glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, r.buffers_[index_handler].internal_id_);
             glBufferData(GL_ELEMENT_ARRAY_BUFFER,
-                r.buffers_[index_handler].indices_data_.size() * sizeof(uint32_t),
-                (const void*)r.buffers_[index_handler].indices_data_.data(),
+                r.buffers_[index_handler].count_ * sizeof(uint32_t),
+                (const void*)r.buffers_[index_handler].data_.indices_,
                 GL_STATIC_DRAW);
             r.buffers_[index_handler].gpu_version_ = r.buffers_[index_handler].cpu_version_; 
         }
@@ -74,7 +74,7 @@ namespace leep
             8 * sizeof(float), (void*)0);
         glEnableVertexAttribArray(attrib_pos);
 
-        uint32_t index_count = (uint32_t)r.buffers_[Renderer::s_cube.index_buffer().handle()].indices_data_.size();
+        uint32_t index_count = (uint32_t)r.buffers_[Renderer::s_cube.index_buffer().handle()].count_;
 
         glDepthFunc(GL_LEQUAL);
         glDrawElements(GL_TRIANGLES, index_count, GL_UNSIGNED_INT, 0);

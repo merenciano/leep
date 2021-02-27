@@ -25,7 +25,7 @@ namespace leep
 
     struct InternalTexture
     {
-        std::string path_;
+        char path_[64];
         int32_t internal_id_;
         int32_t cpu_version_;
         int32_t gpu_version_;
@@ -55,6 +55,8 @@ namespace leep
             internal_id_ = CommonDefs::UNINIT_INTERNAL_ID;
             cpu_version_ = 0;
             gpu_version_ = 0;
+            count_ = 0;
+            data_.vertices_ = nullptr;
         }
 
         InternalBuffer(const InternalBuffer& other) = delete;
@@ -69,9 +71,14 @@ namespace leep
         //  but I didn't be able to make it work with unions because
         //  of the exceptions it threw, I think multiple std::vectors
         //  inside an union does not work well, but I need some research on this
-        std::vector<float> vertices_data_;
-        std::vector<uint32_t> indices_data_;
-
+        //std::vector<float> vertices_data_;
+        //std::vector<uint32_t> indices_data_;
+        union BufferData
+        {
+            float *vertices_;
+            uint32_t *indices_;
+        } data_;
+        int32_t count_;
         uint32_t internal_id_;
         int32_t cpu_version_;
         int32_t gpu_version_;

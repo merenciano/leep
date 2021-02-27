@@ -18,6 +18,34 @@ namespace leep
     const uint32_t kRenderPoolSize = KILOBYTES(100);
     const uint32_t kRenderQueueMaxCount = 500;
 
+    class GeneralAllocator
+    {
+    public:
+        template<typename T>
+        T *alloc()
+        {
+            return new T();
+        }
+
+        template<typename T>
+        T *alloc(uint32_t count)
+        {
+            return new T[count];
+        }
+
+        template<typename T>
+        void free(T *ptr)
+        {
+            delete ptr;
+        }
+
+        template<typename T>
+        void freearr(T *ptr)
+        {
+            delete[] ptr;
+        }
+    };
+
 
     class Memory
     {
@@ -32,6 +60,7 @@ namespace leep
         float mbUsed() const;
         size_t bytesUsed() const;
 
+        GeneralAllocator general_alloc_;
         // Entities
         void createContainer(EntityType t);
         EntityContainer &container(EntityType t);

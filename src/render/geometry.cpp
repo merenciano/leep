@@ -1,5 +1,7 @@
 #include "geometry.h"
 #include "core/common-defs.h"
+#include "core/manager.h"
+#include "core/memory/memory.h"
 
 #define TINYOBJLOADER_IMPLEMENTATION
 #include "tiny_obj_loader.h"
@@ -41,7 +43,10 @@ Buffer Geometry::index_buffer() const
 
 void Geometry::createCube()
 {
-    std::vector<float> vertices({
+    int32_t i = 0;
+    float *vert = GM.memory().general_alloc_.alloc<float>(24*8);
+    uint32_t *ind = GM.memory().general_alloc_.alloc<uint32_t>(36);
+    float vertices[] = {
         // positions          // normals           // uv 
         -0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  0.0f,  0.0f,
          0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  1.0f,  0.0f,
@@ -72,32 +77,44 @@ void Geometry::createCube()
          0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,  1.0f,  1.0f,
          0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,  1.0f,  0.0f,
         -0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,  0.0f,  0.0f,
-    });
+    };
 
-    std::vector<uint32_t> indices({
-            0,  2,  1,  2,  0,  3,
-            4,  5,  6,  6,  7,  4,
-            8,  9, 10, 10, 11,  8,
+    for (float f : vertices)
+    {
+        vert[i++] = f;
+    }
+
+    uint32_t indices[] = {
+         0,  2,  1,  2,  0,  3,
+         4,  5,  6,  6,  7,  4,
+         8,  9, 10, 10, 11,  8,
         13, 12, 14, 12, 15, 14,
         16, 17, 18, 18, 19, 16,
         23, 22, 20, 22, 21, 20,
-    });
+    };
+
+    i = 0;
+    for (uint32_t idx : indices)
+    {
+        ind[i++] = idx;
+    }
 
     vertex_buffer_.create();
-    vertex_buffer_.set_data(vertices, BufferType::VERTEX_BUFFER_3P_3N_2UV);
+    vertex_buffer_.set_data(vert, 24*8, BufferType::VERTEX_BUFFER_3P_3N_2UV);
     index_buffer_.create();
-    index_buffer_.set_data(indices);
+    index_buffer_.set_data(ind, 36);
 }
 
 void Geometry::createSphere(uint32_t x_segments, uint32_t y_segments)
 {
     const float PI = 3.14159265359f;
-    std::vector<float> vertex_vector;
-    std::vector<uint32_t> index_vector;
+    float *vert = GM.memory().general_alloc_.alloc<float>(x_segments * y_segments * 8);
+    uint32_t *ind = GM.memory().general_alloc_.alloc<uint32_t>(x_segments * y_segments * 6);
+    int32_t i = 0;
     
-    for (uint32_t y = 0; y <= y_segments; ++y)
+    for (uint32_t y = 0; y < y_segments; ++y)
     {
-        for (uint32_t x = 0; x <= x_segments; ++x)
+        for (uint32_t x = 0; x < x_segments; ++x)
         {
             float x_segment = (float)x / (float)x_segments;
             float y_segment = (float)y / (float)y_segments;
@@ -112,55 +129,66 @@ void Geometry::createSphere(uint32_t x_segments, uint32_t y_segments)
             float uvx = atan2(nx, nz) / (2.0f * PI) + 0.5f;
             float uvy = ny * 0.5f + 0.5f;
 
-            vertex_vector.emplace_back(px);
-            vertex_vector.emplace_back(py);
-            vertex_vector.emplace_back(pz);
-            vertex_vector.emplace_back(nx);
-            vertex_vector.emplace_back(ny);
-            vertex_vector.emplace_back(nz);
-            vertex_vector.emplace_back(uvx);
-            vertex_vector.emplace_back(uvy);
+            vert[i++] = px;
+            vert[i++] = py;
+            vert[i++] = pz;
+            vert[i++] = nx;
+            vert[i++] = ny;
+            vert[i++] = nz;
+            vert[i++] = uvx;
+            vert[i++] = uvy;
         }
     }
 
+    i = 0;
     for (uint32_t y = 0; y < y_segments; ++y)
     {
         for (uint32_t x = 0; x < x_segments; ++x)
         {
-            index_vector.push_back((y + 1) * (x_segments + 1) + x);
-            index_vector.push_back(y       * (x_segments + 1) + x);
-            index_vector.push_back(y       * (x_segments + 1) + x + 1);
-
-            index_vector.push_back((y + 1) * (x_segments + 1) + x);
-            index_vector.push_back(y       * (x_segments + 1) + x + 1);
-            index_vector.push_back((y + 1) * (x_segments + 1) + x + 1);
+            ind[i++] = ((y + 1) * (x_segments + 1) + x);
+            ind[i++] = (y       * (x_segments + 1) + x);
+            ind[i++] = (y       * (x_segments + 1) + x + 1);
+            ind[i++] = ((y + 1) * (x_segments + 1) + x);
+            ind[i++] = (y       * (x_segments + 1) + x + 1);
+            ind[i++] = ((y + 1) * (x_segments + 1) + x + 1);
         }
     }
 
     vertex_buffer_.create();
-    vertex_buffer_.set_data(vertex_vector, 
+    vertex_buffer_.set_data(vert, x_segments*y_segments*8,
         BufferType::VERTEX_BUFFER_3P_3N_2UV);
     index_buffer_.create();
-    index_buffer_.set_data(index_vector);
+    index_buffer_.set_data(ind, x_segments*y_segments * 6);
 }
 
 void Geometry::createQuad()
 {
-    std::vector<float> vertices({
+    float *v = GM.memory().general_alloc_.alloc<float>(32);
+    uint32_t *ind = GM.memory().general_alloc_.alloc<uint32_t>(6);
+    float vertices[]{
         -1.0f, -1.0f, 0.0f, 0.0f, 0.0f, -1.0f, 0.0f,  0.0f,
-            1.0f, -1.0f, 0.0f, 0.0f, 0.0f, -1.0f, 1.0f,  0.0f,
-            1.0f,  1.0f, 0.0f, 0.0f, 0.0f, -1.0f, 1.0f,  1.0f,
+        1.0f, -1.0f, 0.0f, 0.0f, 0.0f, -1.0f, 1.0f,  0.0f,
+        1.0f,  1.0f, 0.0f, 0.0f, 0.0f, -1.0f, 1.0f,  1.0f,
         -1.0f,  1.0f, 0.0f, 0.0f, 0.0f, -1.0f, 0.0f,  1.0f,
-    });
+    };
 
-    std::vector<uint32_t> indices({
-        0,  1,  2,  0,  2,  3,
-    });
+    float *i = v;
+    for (float f : vertices)
+    {
+        *i++ = f;
+    }
+
+    *(ind + 0) = 0;
+    *(ind + 1) = 1;
+    *(ind + 2) = 2;
+    *(ind + 3) = 0;
+    *(ind + 4) = 2;
+    *(ind + 5) = 3;
 
     vertex_buffer_.create();
-    vertex_buffer_.set_data(vertices, BufferType::VERTEX_BUFFER_3P_3N_2UV);
+    vertex_buffer_.set_data(v, 32, BufferType::VERTEX_BUFFER_3P_3N_2UV);
     index_buffer_.create();
-    index_buffer_.set_data(indices);
+    index_buffer_.set_data(ind, 6);
 }
 
 void Geometry::loadObj(std::string path)
@@ -189,7 +217,6 @@ void Geometry::loadObj(std::string path)
 
     auto& attrib = reader.GetAttrib();
     auto& shapes = reader.GetShapes();
-    auto& materials = reader.GetMaterials();
 
     // Loop over shapes
     for (size_t s = 0; s < shapes.size(); s++)
@@ -198,7 +225,7 @@ void Geometry::loadObj(std::string path)
         int32_t index_offset = 0;
         for (size_t f = 0; f < shapes[s].mesh.num_face_vertices.size(); f++)
         {
-            tinyobj::index_t idx = shapes[s].mesh.indices[index_offset + 0];
+            tinyobj::index_t idx = shapes[s].mesh.indices[index_offset++];
             Vertex v1, v2, v3;
 
             v1.p.x = attrib.vertices[3*idx.vertex_index+0]; // Cast the 3 to int64_t in case of overflow (that would be a large obj)
@@ -210,7 +237,7 @@ void Geometry::loadObj(std::string path)
             v1.uv.x = attrib.texcoords[2*idx.texcoord_index+0];
             v1.uv.y = attrib.texcoords[2*idx.texcoord_index+1];
 
-            idx = shapes[s].mesh.indices[index_offset + 1];
+            idx = shapes[s].mesh.indices[index_offset++];
             v2.p.x = attrib.vertices[3*idx.vertex_index+0];
             v2.p.y = attrib.vertices[3*idx.vertex_index+1];
             v2.p.z = attrib.vertices[3*idx.vertex_index+2];
@@ -220,7 +247,7 @@ void Geometry::loadObj(std::string path)
             v2.uv.x = attrib.texcoords[2*idx.texcoord_index+0];
             v2.uv.y = attrib.texcoords[2*idx.texcoord_index+1];
 
-            idx = shapes[s].mesh.indices[index_offset + 2];
+            idx = shapes[s].mesh.indices[index_offset++];
             v3.p.x = attrib.vertices[3*idx.vertex_index+0];
             v3.p.y = attrib.vertices[3*idx.vertex_index+1];
             v3.p.z = attrib.vertices[3*idx.vertex_index+2];
@@ -230,8 +257,6 @@ void Geometry::loadObj(std::string path)
             v3.uv.x = attrib.texcoords[2*idx.texcoord_index+0];
             v3.uv.y = attrib.texcoords[2*idx.texcoord_index+1];
             
-            index_offset += 3;
-
             // Calc tangent and bitangent
             glm::vec3 delta_p1 = v2.p - v1.p;
             glm::vec3 delta_p2 = v3.p - v1.p;
@@ -298,11 +323,24 @@ void Geometry::loadObj(std::string path)
             indices.emplace_back((uint32_t)indices.size());
         }
     }
+    int32_t i = 0;
+    float *v = GM.memory().general_alloc_.alloc<float>(vertices.size());
+    uint32_t *ind = GM.memory().general_alloc_.alloc<uint32_t>(indices.size());
+    for (float f : vertices)
+    {
+        v[i++] = f;
+    }
+    i = 0;
+    for (uint32_t u : indices)
+    {
+        ind[i++] = u;
+    }
+    
     vertex_buffer_.create();
     index_buffer_.create();
-    vertex_buffer_.set_data(vertices,
+    vertex_buffer_.set_data(v, vertices.size(), 
         BufferType::VERTEX_BUFFER_3P_3N_3T_3B_2UV);
-    index_buffer_.set_data(indices);
+    index_buffer_.set_data(ind, indices.size());
 }
 
 } // namespace leep

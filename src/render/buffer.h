@@ -33,8 +33,8 @@ namespace leep
         Buffer& operator=(const Buffer &other);
 
         void create();
-        void set_data(std::vector<float> &data, BufferType type);
-        void set_data(std::vector<uint32_t> &data);
+        void set_data(float *data, int32_t count, BufferType type);
+        void set_data(uint32_t *data, int32_t count);
         BufferType type() const;
         int32_t handle() const;
         void release();

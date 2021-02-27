@@ -44,7 +44,7 @@ namespace leep
             textures_.emplace(std::make_pair(name, Texture())).second;
         if (inserted)
         {
-            textures_[name].create(path, t);
+            textures_[name].create((const char*)path.c_str(), t);
         }
         else
         {

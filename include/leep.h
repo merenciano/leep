@@ -50,7 +50,7 @@
 //#define MTR_ENABLED
 #include "minitrace.h"
 
-#define LEEP_SINGLE_THREAD 0
+#define LEEP_SINGLE_THREAD 1
 
 namespace leep 
 {

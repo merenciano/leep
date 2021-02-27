@@ -26,20 +26,43 @@ Renderer::~Renderer()
 void Renderer::init()
 {
     rq_.init(&(GM.memory()));
+    textures_ = (InternalTexture*)GM.memory().alloc(sizeof(InternalTexture)*kMaxTextures);
+    buffers_ = (InternalBuffer*)GM.memory().alloc(sizeof(InternalBuffer)*kMaxBuffers);
+    materials_ = (InternalMaterial**)GM.memory().alloc(MT_MAX * sizeof(int*));
+    mat_pool_ = (int8_t*)GM.memory().alloc(kMatPoolSize);
+    mat_offset_ = mat_pool_;
+    buf_count_ = 0;
+    tex_count_ = 0;
+
+
     // I dont mind them not being together in memory
     // since the correct usage of this engine will be
     // using the diferent materials in order so only one change per frame
-    materials_[MaterialType::MT_PBR] = std::make_unique<Pbr>();
-    materials_[MaterialType::MT_FULL_SCREEN_IMAGE] = std::make_unique<FullScreenImage>();
-    materials_[MaterialType::MT_SKYBOX] = std::make_unique<Skybox>();
-    materials_[MaterialType::MT_EQUIREC_TO_CUBE] = std::make_unique<EquirecToCube>();
-    materials_[MaterialType::MT_PREFILTER_ENV] = std::make_unique<PrefilterEnv>();
-    materials_[MaterialType::MT_LUT_GEN] = std::make_unique<LutGen>();
+    materials_[MaterialType::MT_PBR] = matAlloc<Pbr>();
+    materials_[MaterialType::MT_FULL_SCREEN_IMAGE] = matAlloc<FullScreenImage>();
+    materials_[MaterialType::MT_SKYBOX] = matAlloc<Skybox>();
+    materials_[MaterialType::MT_EQUIREC_TO_CUBE] = matAlloc<EquirecToCube>();
+    materials_[MaterialType::MT_PREFILTER_ENV] = matAlloc<PrefilterEnv>();
+    materials_[MaterialType::MT_LUT_GEN] = matAlloc<LutGen>();
     
     for (int32_t i = 0; i < MaterialType::MT_MAX; ++i)
     {
         materials_[i]->init();
     }
+}
+
+int32_t Renderer::addTex()
+{
+    LEEP_CORE_ASSERT(tex_count_ < kMaxTextures, "Max textures");
+    new(textures_ + tex_count_) Texture(); // Only on debug?
+    return tex_count_++;
+}
+
+int32_t Renderer::addBuf()
+{
+    LEEP_CORE_ASSERT(buf_count_ < kMaxBuffers, "Max buffers");
+    new(buffers_ + buf_count_) InternalBuffer();
+    return buf_count_++;
 }
 
 void Renderer::renderFrame()
@@ -114,6 +137,20 @@ void RenderQueues::addDL(DisplayList *dl)
     {
         next_queue_[next_count_++] = dl->command_list()[i];
     }
+}
+
+void RenderQueues::swapQueues()
+{
+    int8_t *tmp = curr_pool_;
+    curr_pool_ = next_pool_;
+    next_pool_ = tmp;
+    next_offset_ = next_pool_;
+
+    DLComm **tmp2 = curr_queue_;
+    curr_queue_ = next_queue_;
+    curr_count_ = next_count_;
+    next_queue_ = tmp2;
+    next_count_ = 0;
 }
 
 } // namespace leep

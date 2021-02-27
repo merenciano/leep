@@ -38,25 +38,28 @@ namespace leep
         }
         else
         {
-            Manager::instance().renderer().buffers_.emplace_back();
-            handle_ = (int32_t)Manager::instance().renderer().buffers_.size() - 1;
+            handle_ = GM.renderer().addBuf();
         }
     }
 
-    void Buffer::set_data(std::vector<float> &data, BufferType type)
+    void Buffer::set_data(float *d, int32_t c, BufferType t)
     {
-        type_ = type;
-        Manager::instance().renderer().buffers_[handle_].vertices_data_.swap(data);
-        Manager::instance().renderer().buffers_[handle_].cpu_version_++;
-        data.clear();
+        LEEP_CORE_ASSERT(GM.renderer().buffers_[handle_].data_.vertices_
+             == nullptr, "There is data to be freed before setting new one");
+        type_ = t;
+        GM.renderer().buffers_[handle_].count_ = c;
+        GM.renderer().buffers_[handle_].data_.vertices_ = d;
+        GM.renderer().buffers_[handle_].cpu_version_++;
     }
 
-    void Buffer::set_data(std::vector<uint32_t> &data)
+    void Buffer::set_data(uint32_t *d, int32_t c)
     {
+        LEEP_CORE_ASSERT(GM.renderer().buffers_[handle_].data_.indices_
+             == nullptr, "There is data to be freed before setting new one");
         type_ = BufferType::INDEX_BUFFER;
-        Manager::instance().renderer().buffers_[handle_].indices_data_.swap(data);
-        Manager::instance().renderer().buffers_[handle_].cpu_version_++;
-        data.clear();
+        GM.renderer().buffers_[handle_].count_ = c;
+        GM.renderer().buffers_[handle_].data_.indices_ = d;
+        GM.renderer().buffers_[handle_].cpu_version_++;
     }
 
     BufferType Buffer::type() const
@@ -80,4 +83,3 @@ namespace leep
         }
     }
 }
-

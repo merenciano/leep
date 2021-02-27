@@ -290,7 +290,7 @@ namespace leep
                 ImGui::TableSetupColumn("State", ImGuiTableColumnFlags_None);
                 ImGui::TableHeadersRow();
 
-                for (int32_t i = 0; i < r.textures_.size(); ++i)
+                for (int32_t i = 0; i < r.tex_count_; ++i)
                 {
                     const InternalTexture &t = r.textures_[i];
                     ImGui::TableNextRow();
@@ -328,7 +328,7 @@ namespace leep
                 ImGui::TableSetupColumn("State", ImGuiTableColumnFlags_None);
                 ImGui::TableHeadersRow();
 
-                for (int32_t i = 0; i < r.buffers_.size(); ++i)
+                for (int32_t i = 0; i < r.buf_count_; ++i)
                 {
                     const InternalBuffer &b = r.buffers_[i];
                     ImGui::TableNextRow();

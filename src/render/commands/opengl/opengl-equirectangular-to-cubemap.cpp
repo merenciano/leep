@@ -42,7 +42,7 @@ namespace leep
         // Manually sync framebuffer here after changing textures
         Material m;
         Texture equirec;
-        equirec.create(path_, TexType::RGB_F16);
+        equirec.create(path_.c_str(), TexType::RGB_F16);
         CreateTexture().set_texture(equirec).executeCommand();
         m.set_albedo(equirec);
         m.set_type(MT_EQUIREC_TO_CUBE);
