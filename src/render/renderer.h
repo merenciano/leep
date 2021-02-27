@@ -9,10 +9,7 @@
 #include "render/material-types.h"
 
 #include <stdint.h>
-#include <deque>
 #include <forward_list>
-#include <memory>
-#include <mutex>
 #include <atomic>
 
 namespace leep
@@ -41,14 +38,15 @@ namespace leep
         DLComm *commandAlloc();
 
         DLComm **curr_queue_;
-        int16_t curr_count_;
 
     private:
         int8_t *curr_pool_; // Main thread renders this
         int8_t *next_pool_; // Logic thread fill this for the next frame
         int8_t *next_offset_;
         DLComm **next_queue_;
-        int16_t next_count_;
+        int32_t next_count_;
+    public: // Saving 8 bytes of paddind here
+        int32_t curr_count_;
     };
 
     class Renderer

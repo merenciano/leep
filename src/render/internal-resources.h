@@ -6,7 +6,6 @@
 #include "core/common-defs.h"
 #include "render/material.h"
 #include "render/texture.h"
-#include <string>
 
 namespace leep
 {
