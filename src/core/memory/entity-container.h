@@ -23,7 +23,7 @@ namespace leep
         uint64_t mask() const;
 #endif
 
-        std::deque<EntityChunk*> chunks_;
+        std::deque<EntityChunk*> blocks_;
     private:
         const EntityType type_;
     };

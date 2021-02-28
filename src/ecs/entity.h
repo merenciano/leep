@@ -30,11 +30,11 @@ namespace leep
         C& getComponent()
         {
             EntityContainer &c = GM.memory().container(type_);
-            for (size_t i = 0; i < c.chunks_.at(ChunkI(index_))->comps_.size(); ++i)
+            for (size_t i = 0; i < c.blocks_.at(ChunkI(index_))->comps_.size(); ++i)
             {
-                if (C::s_type == c.chunks_.at(ChunkI(index_))->comps_[i][0].type())
+                if (C::s_type == c.blocks_.at(ChunkI(index_))->comps_[i][0].type())
                 {
-                    return static_cast<C*>(c.chunks_.at(ChunkI(index_))->comps_[i])[EntityI(index_)];
+                    return static_cast<C*>(c.blocks_.at(ChunkI(index_))->comps_[i])[EntityI(index_)];
                 }
             }
             LEEP_ASSERT(false, "The entity does not have this component");
@@ -49,11 +49,11 @@ namespace leep
         C* componentPtr()
         {
             EntityContainer &c = GM.memory().container(type_);
-            for (size_t i = 0; i < c.chunks_.at(ChunkI(index_))->comps_.size(); ++i)
+            for (size_t i = 0; i < c.blocks_.at(ChunkI(index_))->comps_.size(); ++i)
             {
-                if (C::s_type == c.chunks_.at(ChunkI(index_))->comps_[i][0].type())
+                if (C::s_type == c.blocks_.at(ChunkI(index_))->comps_[i][0].type())
                 {
-                    return static_cast<C*>(c.chunks_.at(ChunkI(index_))->comps_[i]) + EntityI(index_);
+                    return static_cast<C*>(c.blocks_.at(ChunkI(index_))->comps_[i]) + EntityI(index_);
                 }
             }
             return nullptr;

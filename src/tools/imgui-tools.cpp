@@ -181,7 +181,7 @@ namespace leep
             }
             if (ImGui::CollapsingHeader(header_name.c_str()))
             {
-                for (uint32_t i = 0; i < it->second.chunks_.size(); ++i)
+                for (uint32_t i = 0; i < it->second.blocks_.size(); ++i)
                 {
                     std::string tree_name = "Chunk " + std::to_string(i);
                     if (ImGui::TreeNode(tree_name.c_str()))
@@ -195,7 +195,7 @@ namespace leep
                             ImGui::TableSetupColumn("Entity name", ImGuiTableColumnFlags_None);
                             ImGui::TableHeadersRow();
 
-                            for (int32_t j = 0; j < it->second.chunks_[i]->last_; ++j)
+                            for (int32_t j = 0; j < it->second.blocks_[i]->last_; ++j)
                             {
                                 ImGui::TableNextRow();
                                 ImGui::TableSetColumnIndex(0);

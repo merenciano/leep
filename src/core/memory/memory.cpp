@@ -1,6 +1,8 @@
 #include "memory.h"
 #include "render/display-list.h"
 
+#include <stdlib.h>
+
 namespace leep {
 
 Memory::Memory()
@@ -11,12 +13,19 @@ Memory::Memory()
 
 void Memory::init()
 {
-    mem_ = (int8_t*)malloc(GIGABYTES((uint64_t)2));
+    mem_ = (int8_t*)malloc(kTotalMemSize);
+    if (!mem_)
+    {
+        LEEP_CORE_ERROR("Couldn't allocate Leep's memory");
+        exit(1);
+    }
     offset_ = mem_;
+    buddy_.init();
 }
 
 void *Memory::alloc(int32_t size)
 {
+    LEEP_CORE_ASSERT(offset_ + size - mem_ < kTotalMemSize, "Out of memory");
     void *mem = (void*)offset_;
     offset_ += size;
     return mem; 

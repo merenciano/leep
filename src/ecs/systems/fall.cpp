@@ -16,7 +16,7 @@ namespace leep
         uint64_t mask = ((1 << COMP_FALL_SPEED) | (1 << COMP_LTRANSFORM));
         LEEP_ASSERT((container_.mask() & mask) == mask, "This container is not valid for this system.");
 #endif
-        for (auto &chunk : container_.chunks_)
+        for (auto &chunk : container_.blocks_)
         {
             LTransform *tr_array = chunk->template component<LTransform>();
             FallSpeed *fs_array = chunk->template component<FallSpeed>();

@@ -4,6 +4,7 @@
 #define __LEEP_CORE_MEMORY_H__
 
 #include "core/memory/entity-container.h"
+#include "core/memory/buddy-alloc.h"
 
 #include <unordered_map>
 
@@ -17,6 +18,7 @@ namespace leep
     // the memory stored in the pool (due to materialdata union being big)
     const uint32_t kRenderPoolSize = KILOBYTES(100);
     const uint32_t kRenderQueueMaxCount = 500;
+    const uint64_t kTotalMemSize = GIGABYTES((uint64_t)2);
 
     class GeneralAllocator
     {
@@ -61,6 +63,7 @@ namespace leep
         size_t bytesUsed() const;
 
         GeneralAllocator general_alloc_;
+        BuddyAlloc buddy_;
         // Entities
         void createContainer(EntityType t);
         EntityContainer &container(EntityType t);

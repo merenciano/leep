@@ -108,13 +108,14 @@ void Geometry::createCube()
 void Geometry::createSphere(uint32_t x_segments, uint32_t y_segments)
 {
     const float PI = 3.14159265359f;
-    float *vert = GM.memory().general_alloc_.alloc<float>(x_segments * y_segments * 8);
-    uint32_t *ind = GM.memory().general_alloc_.alloc<uint32_t>(x_segments * y_segments * 6);
+    // Using the raw alloc because for basic types I dont need to call the constructors
+    float *vert = (float*)GM.memory().buddy_.alloc(((1+x_segments) * (1+y_segments) * 8)*sizeof(float));
+    uint32_t *ind = (uint32_t*)GM.memory().buddy_.alloc((x_segments * y_segments * 6) * sizeof(uint32_t));
     int32_t i = 0;
     
-    for (uint32_t y = 0; y < y_segments; ++y)
+    for (uint32_t y = 0; y <= y_segments; ++y)
     {
-        for (uint32_t x = 0; x < x_segments; ++x)
+        for (uint32_t x = 0; x <= x_segments; ++x)
         {
             float x_segment = (float)x / (float)x_segments;
             float y_segment = (float)y / (float)y_segments;
@@ -155,7 +156,7 @@ void Geometry::createSphere(uint32_t x_segments, uint32_t y_segments)
     }
 
     vertex_buffer_.create();
-    vertex_buffer_.set_data(vert, x_segments*y_segments*8,
+    vertex_buffer_.set_data(vert, (1+x_segments)*(1+y_segments)*8,
         BufferType::VERTEX_BUFFER_3P_3N_2UV);
     index_buffer_.create();
     index_buffer_.set_data(ind, x_segments*y_segments * 6);

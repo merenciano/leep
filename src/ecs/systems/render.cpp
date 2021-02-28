@@ -21,7 +21,7 @@ namespace leep
 #endif
         DisplayList displayl;
 
-        for (auto &chunk : container_.chunks_)
+        for (auto &chunk : container_.blocks_)
         {
             GTransform *tr_array = chunk->template component<GTransform>();
             Drawable *dw_array = chunk->template component<Drawable>();

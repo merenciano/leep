@@ -15,25 +15,25 @@ namespace leep
             return Entity(-1, EntityType::NONE);
         }
         EntityContainer &cont = GM.memory().container(t);
-        if (cont.chunks_.back()->last_ == kEntitiesPerChunk)
+        if (cont.blocks_.back()->last_ == kEntitiesPerChunk)
         {
-            int32_t idx = cont.chunks_.back()->index_;
+            int32_t idx = cont.blocks_.back()->index_;
             switch (t)
             {
                 case EntityType::RENDERABLE:
-                    cont.chunks_.emplace_back(new RenderableEC());
+                    cont.blocks_.emplace_back(new RenderableEC());
                     break;
 
                 case EntityType::FALLING_CUBE:
-                    cont.chunks_.emplace_back(new FallingCubeEntities());
+                    cont.blocks_.emplace_back(new FallingCubeEntities());
                     break;
 
                 default: LEEP_ASSERT(false, "Default case CreateEntity");
             }
-            cont.chunks_.back()->index_ = idx + 1;
+            cont.blocks_.back()->index_ = idx + 1;
         }
-        int32_t entity_id = cont.chunks_.back()->index_ * kEntitiesPerChunk + cont.chunks_.back()->last_;
-        cont.chunks_.back()->last_++;
+        int32_t entity_id = cont.blocks_.back()->index_ * kEntitiesPerChunk + cont.blocks_.back()->last_;
+        cont.blocks_.back()->last_++;
         s_map_.addEntry(name, entity_id, t);
         return Entity(entity_id, t);
     }
@@ -59,7 +59,7 @@ namespace leep
         }
         
         // Copy the last entity to the place of the removed one
-        int32_t last_id = ((int32_t)cont.chunks_.size()-1) * kEntitiesPerChunk + (cont.chunks_.back()->last_ - 1);
+        int32_t last_id = ((int32_t)cont.blocks_.size()-1) * kEntitiesPerChunk + (cont.blocks_.back()->last_ - 1);
         if (last_id != index)
         {
             switch (cont.type())
@@ -69,13 +69,13 @@ namespace leep
                     break;
 
                 case EntityType::FALLING_CUBE:
-                    static_cast<FallingCubeEntities*>(cont.chunks_.back())
-                        ->relocateLast(cont.chunks_[chunk_id], entity_id);
+                    static_cast<FallingCubeEntities*>(cont.blocks_.back())
+                        ->relocateLast(cont.blocks_[chunk_id], entity_id);
                     break;
 
                 case EntityType::RENDERABLE:
-                    static_cast<RenderableEC*>(cont.chunks_.back())
-                        ->relocateLast(cont.chunks_[chunk_id], entity_id);
+                    static_cast<RenderableEC*>(cont.blocks_.back())
+                        ->relocateLast(cont.blocks_[chunk_id], entity_id);
 
             }
             s_map_.swap(index, last_id, s_map_.getEntity(name).type);
