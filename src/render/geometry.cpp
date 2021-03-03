@@ -325,8 +325,8 @@ void Geometry::loadObj(std::string path)
         }
     }
     int32_t i = 0;
-    float *v = GM.memory().general_alloc_.alloc<float>(vertices.size());
-    uint32_t *ind = GM.memory().general_alloc_.alloc<uint32_t>(indices.size());
+    float *v = GM.memory().general_alloc_.alloc<float>((uint32_t)vertices.size());
+    uint32_t *ind = GM.memory().general_alloc_.alloc<uint32_t>((uint32_t)indices.size());
     for (float f : vertices)
     {
         v[i++] = f;
@@ -339,9 +339,9 @@ void Geometry::loadObj(std::string path)
     
     vertex_buffer_.create();
     index_buffer_.create();
-    vertex_buffer_.set_data(v, vertices.size(), 
+    vertex_buffer_.set_data(v, (uint32_t)vertices.size(), 
         BufferType::VERTEX_BUFFER_3P_3N_3T_3B_2UV);
-    index_buffer_.set_data(ind, indices.size());
+    index_buffer_.set_data(ind, (uint32_t)indices.size());
 }
 
 } // namespace leep

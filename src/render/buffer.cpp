@@ -42,7 +42,7 @@ namespace leep
         }
     }
 
-    void Buffer::create(float *d, int32_t c, BufferType t)
+    void Buffer::create(float *d, uint32_t c, BufferType t)
     {
         LEEP_ASSERT(handle_ == CommonDefs::UNINIT_HANDLE, "This handler has been created before");
 
@@ -60,7 +60,7 @@ namespace leep
         set_data(d, c, t);
     }
 
-    void Buffer::create(uint32_t* d, int32_t c)
+    void Buffer::create(uint32_t* d, uint32_t c)
     {
         LEEP_ASSERT(handle_ == CommonDefs::UNINIT_HANDLE, "This handler has been created before");
 
@@ -78,7 +78,7 @@ namespace leep
         set_data(d, c);
     }
 
-    void Buffer::set_data(float *d, int32_t c, BufferType t)
+    void Buffer::set_data(float *d, uint32_t c, BufferType t)
     {
         LEEP_CORE_ASSERT(GM.renderer().buffers_[handle_].data_.vertices_
              == nullptr, "There is data to be freed before setting new one");
@@ -88,7 +88,7 @@ namespace leep
         GM.renderer().buffers_[handle_].cpu_version_++;
     }
 
-    void Buffer::set_data(uint32_t *d, int32_t c)
+    void Buffer::set_data(uint32_t *d, uint32_t c)
     {
         LEEP_CORE_ASSERT(GM.renderer().buffers_[handle_].data_.indices_
              == nullptr, "There is data to be freed before setting new one");

@@ -215,13 +215,13 @@ void BuddyAlloc::free(void *ptr)
             break;
         }
 
-        CList::RemoveFromItsList((CList::Node*)getPtr((i-1) + 1, block));
+        CList::RemoveFromItsList((CList::Node*)getPtr(((i-1) ^ 1) + 1, block));
         i = (i - 1) / 2;
         block--;
 
-        // Add this address to the free list
-        blocks_[block].push((CList::Node*)getPtr(i, block));
     }
+    // Add this address to the free list
+    blocks_[block].push((CList::Node*)getPtr(i, block));
 }
 
 } // namespace leep

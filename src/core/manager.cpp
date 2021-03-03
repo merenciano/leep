@@ -41,7 +41,7 @@ namespace leep
         // Manager has the same life as the app, so I don't care of its deletion 
         data_ = new ManagerData();
         data_->memory_.init();
-        data_->window_.createWindow(1280, 720, false);
+        data_->window_.createWindow(1280, 720, true);
         data_->renderer_.init();
         data_->camera_.init();
         data_->delta_time_ = 0.16f;

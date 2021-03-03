@@ -66,6 +66,21 @@ void leep::Init()
 
 void leep::Logic()
 {
+    // Alloc test
+    static InternalTexture *t[20];
+    for (int32_t i = 0; i < 20; ++i)
+    {
+        t[i] = GM.memory().buddy_.allocT<InternalTexture>(1);
+    }
+
+    for (int32_t i = 0; i < 20; ++i)
+    {
+        GM.memory().buddy_.free(t[i]);
+    }
+
+
+
+
     GM.input().updateInput();
     CameraMovement(1.0f, 1.0f).executeSystem();
     UpdateTransform(GM.memory().container(EntityType::RENDERABLE)).executeSystem();
