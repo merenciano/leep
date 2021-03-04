@@ -8,7 +8,7 @@
 
 namespace leep
 {
-    class DrawSkybox : public DisplayListCommand
+    class DrawSkybox : public DLComm
     {
     public:
         DrawSkybox();

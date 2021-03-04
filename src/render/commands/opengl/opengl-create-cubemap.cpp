@@ -74,12 +74,13 @@ namespace leep
         if (r.textures_[id].type_ == TexType::SKYBOX)
         {
             std::string faces[6] = {
-                r.textures_[id].path_ + "/right.jpg",
+                // MEGA TODO: Fix this soon
+                /*r.textures_[id].path_ + "/right.jpg",
                 r.textures_[id].path_ + "/left.jpg",
                 r.textures_[id].path_ + "/up.jpg",
                 r.textures_[id].path_ + "/down.jpg",
                 r.textures_[id].path_ + "/front.jpg",
-                r.textures_[id].path_ + "/back.jpg",
+                r.textures_[id].path_ + "/back.jpg",*/
 
             };
 

@@ -18,8 +18,8 @@ namespace leep
         {
             glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, r.buffers_[buffer_.handle()].internal_id_);
             glBufferData(GL_ELEMENT_ARRAY_BUFFER,
-                        r.buffers_[buffer_.handle()].indices_data_.size() * sizeof(uint32_t),
-                        (const void*)r.buffers_[buffer_.handle()].indices_data_.data(),
+                        r.buffers_[buffer_.handle()].count_ * sizeof(uint32_t),
+                        (const void*)r.buffers_[buffer_.handle()].data_.indices_,
                         GL_STATIC_DRAW);
             glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
         }
@@ -27,8 +27,8 @@ namespace leep
         {
             glBindBuffer(GL_ARRAY_BUFFER, r.buffers_[buffer_.handle()].internal_id_);
             glBufferData(GL_ARRAY_BUFFER,
-                        r.buffers_[buffer_.handle()].vertices_data_.size() * sizeof(float),
-                        (const void*)r.buffers_[buffer_.handle()].vertices_data_.data(),
+                        r.buffers_[buffer_.handle()].count_ * sizeof(float),
+                        (const void*)r.buffers_[buffer_.handle()].data_.vertices_,
                         GL_STATIC_DRAW);
             glBindBuffer(GL_ARRAY_BUFFER, 0);
         }

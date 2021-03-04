@@ -27,7 +27,7 @@ namespace leep
         ~Texture();
 
         Texture& operator=(const Texture &t);
-        void create(std::string path, TexType t);
+        void create(const char *path, TexType t);
         void createEmpty(float width, float height, TexType t);
         void release();
         int32_t handle() const;

@@ -5,10 +5,10 @@
 
 namespace leep
 {
-    class DisplayListCommand
+    class DLComm
     {
     public:
-        virtual ~DisplayListCommand() {}
+        virtual ~DLComm() {}
 
     protected:
         virtual void executeCommand() const = 0;

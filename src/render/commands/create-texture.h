@@ -8,7 +8,7 @@
 
 namespace leep
 {
-    class CreateTexture : public DisplayListCommand
+    class CreateTexture : public DLComm
     {
     public:
         CreateTexture();

@@ -19,7 +19,7 @@ namespace leep
 		glm::vec4 light_direction_intensity_;
     };
 
-    class UsePbrMaterial: public DisplayListCommand
+    class UsePbrMaterial: public DLComm
     {
     public:
         UsePbrMaterial();

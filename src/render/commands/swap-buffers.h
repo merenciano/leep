@@ -7,7 +7,7 @@
 
 namespace leep
 {
-    class SwapBuffers : public DisplayListCommand
+    class SwapBuffers : public DLComm
     {
     public:
         SwapBuffers();

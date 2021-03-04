@@ -109,18 +109,18 @@ namespace leep
             int width, height, nchannels;
             stbi_set_flip_vertically_on_load(1);
             float *img_data = stbi_loadf(
-                itex.path_.c_str(), &width, &height, &nchannels, 0);
+                itex.path_, &width, &height, &nchannels, 0);
             LEEP_CORE_ASSERT(img_data, "The image couldn't be loaded");
             glTexImage2D(GL_TEXTURE_2D, 0, config.internal_format, width,
                 height, 0, config.format, config.type, img_data);
             stbi_image_free(img_data);
         }
-        else if (itex.path_ != "")
+        else if (itex.path_[0] != '\0')
         {
             int width, height, nchannels;
             stbi_set_flip_vertically_on_load(1);
             uint8_t *img_data = stbi_load(
-                itex.path_.c_str(), &width, &height, &nchannels, STBI_rgb);
+                itex.path_, &width, &height, &nchannels, STBI_rgb);
             LEEP_CORE_ASSERT(img_data, "The image couldn't be loaded");
             glTexImage2D(GL_TEXTURE_2D, 0, config.internal_format, width,
                 height, 0, config.format, config.type, img_data);

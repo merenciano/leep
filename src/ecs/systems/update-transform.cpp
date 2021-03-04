@@ -12,7 +12,7 @@ namespace leep
         uint64_t mask = ((1 << COMP_LTRANSFORM) | (1 << COMP_GTRANSFORM));
         LEEP_ASSERT((container_.mask() & mask) == mask, "This container is not valid for this system.");
 #endif
-        for (auto &chunk : container_.chunks_)
+        for (auto &chunk : container_.blocks_)
         {
             LTransform *ltr_array = chunk->template component<LTransform>();
             GTransform *gtr_array = chunk->template component<GTransform>();

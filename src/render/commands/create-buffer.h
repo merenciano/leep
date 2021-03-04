@@ -8,7 +8,7 @@
 
 namespace leep
 {
-    class CreateBuffer : public DisplayListCommand
+    class CreateBuffer : public DLComm
     {
     public:
         CreateBuffer();

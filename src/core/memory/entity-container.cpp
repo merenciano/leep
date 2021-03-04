@@ -15,19 +15,19 @@ namespace leep
                 LEEP_ASSERT(false, "Invalid entity type");
                 break;
             case EntityType::FALLING_CUBE:
-                chunks_.emplace_back(new FallingCubeEntities());
+                blocks_.emplace_back(new FallingCubeEntities());
                 break;
 
             case EntityType::RENDERABLE:
-                chunks_.emplace_back(new RenderableEC());
+                blocks_.emplace_back(new RenderableEC());
                 break;
         }
-        chunks_.back()->index_ = 0;
+        blocks_.back()->index_ = 0;
     }
 
     EntityContainer::~EntityContainer()
     {
-        for (auto c : chunks_)
+        for (auto c : blocks_)
         {
             delete c;
         }
@@ -40,7 +40,7 @@ namespace leep
 
     bool EntityContainer::isEmpty() const
     {
-        return chunks_.size() == 1 && chunks_.back()->last_ == 0;
+        return blocks_.size() == 1 && blocks_.back()->last_ == 0;
     }
 
     void EntityContainer::removeLastEntity()
@@ -50,17 +50,17 @@ namespace leep
             return;
         }
 
-        chunks_.back()->last_--;
-        if (chunks_.back()->last_ <= 0)
+        blocks_.back()->last_--;
+        if (blocks_.back()->last_ <= 0)
         {
-            if (chunks_.size() == 1)
+            if (blocks_.size() == 1)
             {
-                chunks_.back()->last_ = 0;
+                blocks_.back()->last_ = 0;
             }
             else
             {
-                delete chunks_.back();
-                chunks_.pop_back();
+                delete blocks_.back();
+                blocks_.pop_back();
             }
         }
     }
@@ -68,7 +68,7 @@ namespace leep
 #ifdef LEEP_DEBUG
     uint64_t EntityContainer::mask() const
     {
-        return chunks_.front()->mask();
+        return blocks_.front()->mask();
     }
 #endif
 }

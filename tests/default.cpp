@@ -66,6 +66,21 @@ void leep::Init()
 
 void leep::Logic()
 {
+    // Alloc test
+    static InternalTexture *t[20];
+    for (int32_t i = 0; i < 20; ++i)
+    {
+        t[i] = GM.memory().buddy_.allocT<InternalTexture>(1);
+    }
+
+    for (int32_t i = 0; i < 20; ++i)
+    {
+        GM.memory().buddy_.free(t[i]);
+    }
+
+
+
+
     GM.input().updateInput();
     CameraMovement(1.0f, 1.0f).executeSystem();
     UpdateTransform(GM.memory().container(EntityType::RENDERABLE)).executeSystem();
@@ -106,24 +121,25 @@ void leep::Logic()
 
     Render(GM.memory().container(EntityType::RENDERABLE)).executeSystem();
     
-    DisplayList dl2;
-    dl2.addCommand<UseSkyboxMaterial>();
-    dl2.addCommand<DrawSkybox>()
+    dl.addCommand<RenderOptions>()
+        .set_cull_face(CullFace::DISABLED);
+    dl.addCommand<UseSkyboxMaterial>();
+    dl.addCommand<DrawSkybox>()
         .set_cubemap(GM.resource_map().getTexture("Skybox"));
    
-    dl2.addCommand<UseFramebuffer>();
+    dl.addCommand<UseFramebuffer>();
 
-    dl2.addCommand<RenderOptions>()
+    dl.addCommand<RenderOptions>()
         .enable_depth_test(false);
 
-    dl2.addCommand<Clear>()
+    dl.addCommand<Clear>()
         .set_clear_buffer(true, false, false)
         .set_clear_color(1.0f, 0.0f, 0.0f, 1.0f);
 
-    dl2.addCommand<Draw>()
+    dl.addCommand<Draw>()
         .set_geometry(GM.resource_map().getGeometry("Quad"))
         .set_material(full_screen_img);
         
-    dl2.submit();
+    dl.submit();
     //DeleteReleased().executeSystem();
 }

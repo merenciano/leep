@@ -8,7 +8,7 @@
  
 namespace leep
 {
-    class UseFramebuffer : public DisplayListCommand
+    class UseFramebuffer : public DLComm
     {
     public:
         UseFramebuffer();

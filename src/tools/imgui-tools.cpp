@@ -181,7 +181,7 @@ namespace leep
             }
             if (ImGui::CollapsingHeader(header_name.c_str()))
             {
-                for (uint32_t i = 0; i < it->second.chunks_.size(); ++i)
+                for (uint32_t i = 0; i < it->second.blocks_.size(); ++i)
                 {
                     std::string tree_name = "Chunk " + std::to_string(i);
                     if (ImGui::TreeNode(tree_name.c_str()))
@@ -195,7 +195,7 @@ namespace leep
                             ImGui::TableSetupColumn("Entity name", ImGuiTableColumnFlags_None);
                             ImGui::TableHeadersRow();
 
-                            for (int32_t j = 0; j < it->second.chunks_[i]->last_; ++j)
+                            for (int32_t j = 0; j < it->second.blocks_[i]->last_; ++j)
                             {
                                 ImGui::TableNextRow();
                                 ImGui::TableSetColumnIndex(0);
@@ -290,7 +290,7 @@ namespace leep
                 ImGui::TableSetupColumn("State", ImGuiTableColumnFlags_None);
                 ImGui::TableHeadersRow();
 
-                for (int32_t i = 0; i < r.textures_.size(); ++i)
+                for (int32_t i = 0; i < r.tex_count_; ++i)
                 {
                     const InternalTexture &t = r.textures_[i];
                     ImGui::TableNextRow();
@@ -328,7 +328,7 @@ namespace leep
                 ImGui::TableSetupColumn("State", ImGuiTableColumnFlags_None);
                 ImGui::TableHeadersRow();
 
-                for (int32_t i = 0; i < r.buffers_.size(); ++i)
+                for (int32_t i = 0; i < r.buf_count_; ++i)
                 {
                     const InternalBuffer &b = r.buffers_[i];
                     ImGui::TableNextRow();
