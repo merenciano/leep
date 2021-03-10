@@ -39,7 +39,7 @@ namespace leep
 
         DLComm **curr_queue_;
 
-    private:
+    //private:
         int8_t *curr_pool_; // Main thread renders this
         int8_t *next_pool_; // Logic thread fill this for the next frame
         int8_t *next_offset_;

@@ -54,7 +54,7 @@ void Renderer::init()
 int32_t Renderer::addTex()
 {
     LEEP_CORE_ASSERT(tex_count_ < kMaxTextures, "Max textures");
-    new(textures_ + tex_count_) Texture(); // Only on debug?
+    new(textures_ + tex_count_) InternalTexture(); // Only on debug?
     return tex_count_++;
 }
 

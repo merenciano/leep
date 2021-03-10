@@ -56,6 +56,7 @@ namespace leep
         entityInspector();
 		componentInspector();
         resourceInspector();
+        memoryInspector();
 
         ImGui::Render();
         ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
@@ -356,5 +357,98 @@ namespace leep
             }
         }
 		ImGui::End();
+    }
+
+    void ImguiTools::memoryInspector()
+    {
+        static bool show = true;
+        static ImGuiTableFlags flags = ImGuiTableFlags_ScrollY | 
+            ImGuiTableFlags_RowBg | ImGuiTableFlags_BordersOuter |
+            ImGuiTableFlags_BordersV | ImGuiTableFlags_Resizable |
+            ImGuiTableFlags_Reorderable | ImGuiTableFlags_Hideable;
+        Memory &m = GM.memory();
+        Renderer &r = GM.renderer();
+        if (!ImGui::Begin("Memory inspector", &show, 0))
+        {
+            // Early out if the window is collapsed, as an optimization.
+            ImGui::End();
+            return;
+        }
+
+        ImVec2 size = ImVec2(-FLT_MIN, ImGui::GetTextLineHeightWithSpacing() * 6);
+        if (ImGui::BeginTable("##table1", 4, flags, size))
+        {
+            ImGui::TableSetupScrollFreeze(0, 1); // Make top row always visible
+            ImGui::TableSetupColumn("Pool", ImGuiTableColumnFlags_None);
+            ImGui::TableSetupColumn("Used", ImGuiTableColumnFlags_None);
+            ImGui::TableSetupColumn("Capacity", ImGuiTableColumnFlags_None);
+            ImGui::TableSetupColumn("Percent", ImGuiTableColumnFlags_None);
+            ImGui::TableHeadersRow();
+
+            ImGui::TableNextRow();
+            ImGui::TableSetColumnIndex(0);
+            ImGui::Text("%s", "Pools");
+            ImGui::TableSetColumnIndex(1);
+            ImGui::Text("%.2f mb", ByteToMega(m.offset_ - m.mem_));
+            ImGui::TableSetColumnIndex(2);
+            ImGui::Text("%.2f mb", ByteToMega(kTotalMemSize));
+            ImGui::TableSetColumnIndex(3);
+            ImGui::Text("%.1f '%'", ((m.offset_-m.mem_)/(float)kTotalMemSize) * 100.0f);
+
+            ImGui::TableNextRow();
+            ImGui::TableSetColumnIndex(0);
+            ImGui::Text("%s", "Textures");
+            ImGui::TableSetColumnIndex(1);
+            ImGui::Text("%.2f kb", ByteToKilo(r.tex_count_ * sizeof(InternalTexture)));
+            ImGui::TableSetColumnIndex(2);
+            ImGui::Text("%.2f kb", ByteToKilo(kMaxTextures * sizeof(InternalTexture)));
+            ImGui::TableSetColumnIndex(3);
+            ImGui::Text("%.1f '%'", ((r.tex_count_ * sizeof(InternalTexture))/(float)(kMaxTextures * sizeof(InternalTexture))) * 100.0f);
+
+            ImGui::TableNextRow();
+            ImGui::TableSetColumnIndex(0);
+            ImGui::Text("%s", "Buffers");
+            ImGui::TableSetColumnIndex(1);
+            ImGui::Text("%.2f kb", ByteToKilo(r.buf_count_ * sizeof(InternalBuffer)));
+            ImGui::TableSetColumnIndex(2);
+            ImGui::Text("%.2f kb", ByteToKilo(kMaxBuffers * sizeof(InternalBuffer)));
+            ImGui::TableSetColumnIndex(3);
+            ImGui::Text("%.1f '%'", ((r.buf_count_ * sizeof(InternalBuffer))/(float)(kMaxBuffers * sizeof(InternalBuffer))) * 100.0f);
+
+            ImGui::TableNextRow();
+            ImGui::TableSetColumnIndex(0);
+            ImGui::Text("%s", "Materials");
+            ImGui::TableSetColumnIndex(1);
+            ImGui::Text("%.2f kb", ByteToKilo(kMatPoolSize));
+            ImGui::TableSetColumnIndex(2);
+            ImGui::Text("%.2f kb", ByteToKilo(kMatPoolSize));
+            ImGui::TableSetColumnIndex(3);
+            ImGui::Text("%.1f '%'", 100.0f);
+
+            ImGui::TableNextRow();
+            ImGui::TableSetColumnIndex(0);
+            ImGui::Text("%s", "Command pool");
+            ImGui::TableSetColumnIndex(1);
+            ImGui::Text("%.2f kb", ByteToKilo((r.rq_.next_offset_ - r.rq_.next_pool_)*2));
+            ImGui::TableSetColumnIndex(2);
+            ImGui::Text("%.2f kb", ByteToKilo(kRenderPoolSize*2));
+            ImGui::TableSetColumnIndex(3);
+            ImGui::Text("%.1f \%", (((r.rq_.next_offset_ - r.rq_.next_pool_)*2)/(float)(kRenderPoolSize*2)) * 100.0f);
+
+            ImGui::TableNextRow();
+            ImGui::TableSetColumnIndex(0);
+            ImGui::Text("%s", "Render queue");
+            ImGui::TableSetColumnIndex(1);
+            ImGui::Text("%.2f kb", ByteToKilo((r.rq_.curr_count_ * sizeof(DLComm*)*2)));
+            ImGui::TableSetColumnIndex(2);
+            ImGui::Text("%.2f kb", ByteToKilo((kRenderQueueMaxCount * sizeof(DLComm*))));
+            ImGui::TableSetColumnIndex(3);
+            ImGui::Text("%.1f '%'", ((r.rq_.curr_count_ * sizeof(DLComm*)*2)/(float)(kRenderQueueMaxCount * sizeof(DLComm*))) * 100.0f);
+
+            ImGui::EndTable();
+        }
+         
+
+        ImGui::End();
     }
 }
