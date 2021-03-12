@@ -7,6 +7,7 @@
 #include "render/geometry.h"
 #include "render/internal-resources.h"
 #include "render/material-types.h"
+#include "render/commands/draw.h"
 
 #include <stdint.h>
 #include <forward_list>
@@ -19,8 +20,13 @@ namespace leep
     class DisplayList;
 
     const int32_t kMaxTextures = 63;
-    const int32_t kMaxBuffers = 50;
+    const int32_t kMaxBuffers = 128;
     const int32_t kMatPoolSize = MT_MAX * 16; // Derived materials do not have attributes
+
+    // TODO: Draw command with pointer to material will reduce vastly
+    // the memory stored in the pool (due to materialdata union being big)
+    const uint32_t kRenderQueueMaxCount = 1000;
+    const uint32_t kRenderPoolSize = kRenderQueueMaxCount * sizeof(Draw);
 
     class RenderQueues
     {

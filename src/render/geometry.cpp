@@ -44,8 +44,8 @@ Buffer Geometry::index_buffer() const
 void Geometry::createCube()
 {
     int32_t i = 0;
-    float *vert = GM.memory().general_alloc_.alloc<float>(24*8);
-    uint32_t *ind = GM.memory().general_alloc_.alloc<uint32_t>(36);
+    float *vert = (float*)GM.memory().generalAlloc(24*8*sizeof(float));
+    uint32_t *ind = (uint32_t*)GM.memory().generalAlloc(36 * sizeof(uint32_t));
     float vertices[] = {
         // positions          // normals           // uv 
         -0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  0.0f,  0.0f,
@@ -109,8 +109,8 @@ void Geometry::createSphere(uint32_t x_segments, uint32_t y_segments)
 {
     const float PI = 3.14159265359f;
     // Using the raw alloc because for basic types I dont need to call the constructors
-    float *vert = (float*)GM.memory().buddy_.alloc(((1+x_segments) * (1+y_segments) * 8)*sizeof(float));
-    uint32_t *ind = (uint32_t*)GM.memory().buddy_.alloc((x_segments * y_segments * 6) * sizeof(uint32_t));
+    float *vert = (float*)GM.memory().generalAlloc(((1+x_segments) * (1+y_segments) * 8)*sizeof(float));
+    uint32_t *ind = (uint32_t*)GM.memory().generalAlloc((x_segments * y_segments * 6) * sizeof(uint32_t));
     int32_t i = 0;
     
     for (uint32_t y = 0; y <= y_segments; ++y)
@@ -164,8 +164,8 @@ void Geometry::createSphere(uint32_t x_segments, uint32_t y_segments)
 
 void Geometry::createQuad()
 {
-    float *v = GM.memory().general_alloc_.alloc<float>(32);
-    uint32_t *ind = GM.memory().general_alloc_.alloc<uint32_t>(6);
+    float *v = (float*)GM.memory().generalAlloc(32 * sizeof(float));
+    uint32_t *ind = (uint32_t*)GM.memory().generalAlloc(6 * sizeof(uint32_t));
     float vertices[]{
         -1.0f, -1.0f, 0.0f, 0.0f, 0.0f, -1.0f, 0.0f,  0.0f,
         1.0f, -1.0f, 0.0f, 0.0f, 0.0f, -1.0f, 1.0f,  0.0f,
@@ -325,8 +325,8 @@ void Geometry::loadObj(std::string path)
         }
     }
     int32_t i = 0;
-    float *v = GM.memory().general_alloc_.alloc<float>((uint32_t)vertices.size());
-    uint32_t *ind = GM.memory().general_alloc_.alloc<uint32_t>((uint32_t)indices.size());
+    float *v = (float*)GM.memory().generalAlloc((uint32_t)vertices.size() * sizeof(float));
+    uint32_t *ind = (uint32_t*)GM.memory().generalAlloc((uint32_t)indices.size() * sizeof(uint32_t));
     for (float f : vertices)
     {
         v[i++] = f;

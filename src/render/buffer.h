@@ -39,6 +39,7 @@ namespace leep
         void set_data(uint32_t *data, uint32_t count);
         BufferType type() const;
         int32_t handle() const;
+        void freeSystemRamData();
         void release();
 
     private:

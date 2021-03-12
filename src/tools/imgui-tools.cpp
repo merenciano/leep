@@ -385,36 +385,51 @@ namespace leep
             ImGui::TableSetupColumn("Percent", ImGuiTableColumnFlags_None);
             ImGui::TableHeadersRow();
 
+            // Initial big chunk of memory
             ImGui::TableNextRow();
             ImGui::TableSetColumnIndex(0);
             ImGui::Text("%s", "Pools");
             ImGui::TableSetColumnIndex(1);
+            // mem and offset are (int8_t*) so no need of sizeof here
             ImGui::Text("%.2f mb", ByteToMega(m.offset_ - m.mem_));
             ImGui::TableSetColumnIndex(2);
             ImGui::Text("%.2f mb", ByteToMega(kTotalMemSize));
             ImGui::TableSetColumnIndex(3);
-            ImGui::Text("%.1f '%'", ((m.offset_-m.mem_)/(float)kTotalMemSize) * 100.0f);
+            ImGui::Text("%.1f %%", ((m.offset_-m.mem_)/(float)kTotalMemSize) * 100.0f);
 
-            ImGui::TableNextRow();
-            ImGui::TableSetColumnIndex(0);
-            ImGui::Text("%s", "Textures");
-            ImGui::TableSetColumnIndex(1);
-            ImGui::Text("%.2f kb", ByteToKilo(r.tex_count_ * sizeof(InternalTexture)));
-            ImGui::TableSetColumnIndex(2);
-            ImGui::Text("%.2f kb", ByteToKilo(kMaxTextures * sizeof(InternalTexture)));
-            ImGui::TableSetColumnIndex(3);
-            ImGui::Text("%.1f '%'", ((r.tex_count_ * sizeof(InternalTexture))/(float)(kMaxTextures * sizeof(InternalTexture))) * 100.0f);
+            // Textures
+            {
+                size_t offset = r.tex_count_ * sizeof(InternalTexture);
+                size_t capacity = kMaxTextures * sizeof(InternalTexture);
+                ImGui::TableNextRow();
+                ImGui::TableSetColumnIndex(0);
+                ImGui::Text("%s", "Textures");
+                ImGui::TableSetColumnIndex(1);
+                ImGui::Text("%.2f kb", ByteToKilo(offset));
+                ImGui::TableSetColumnIndex(2);
+                ImGui::Text("%.2f kb", ByteToKilo(capacity));
+                ImGui::TableSetColumnIndex(3);
+                ImGui::Text("%.1f %%", (offset/(float)capacity) * 100.0f);
+            }
 
-            ImGui::TableNextRow();
-            ImGui::TableSetColumnIndex(0);
-            ImGui::Text("%s", "Buffers");
-            ImGui::TableSetColumnIndex(1);
-            ImGui::Text("%.2f kb", ByteToKilo(r.buf_count_ * sizeof(InternalBuffer)));
-            ImGui::TableSetColumnIndex(2);
-            ImGui::Text("%.2f kb", ByteToKilo(kMaxBuffers * sizeof(InternalBuffer)));
-            ImGui::TableSetColumnIndex(3);
-            ImGui::Text("%.1f '%'", ((r.buf_count_ * sizeof(InternalBuffer))/(float)(kMaxBuffers * sizeof(InternalBuffer))) * 100.0f);
+            // Buffers
+            {
+                size_t offset = r.buf_count_ * sizeof(InternalBuffer);
+                size_t capacity = kMaxBuffers * sizeof(InternalBuffer);
+                ImGui::TableNextRow();
+                ImGui::TableSetColumnIndex(0);
+                ImGui::Text("%s", "Buffers");
+                ImGui::TableSetColumnIndex(1);
+                ImGui::Text("%.2f kb", ByteToKilo(offset));
+                ImGui::TableSetColumnIndex(2);
+                ImGui::Text("%.2f kb", ByteToKilo(capacity));
+                ImGui::TableSetColumnIndex(3);
+                ImGui::Text("%.1f %%", (offset/(float)capacity) * 100.0f);
+            }
 
+            // Materials
+            // This will always full because the exact amount of materials is
+            // known and does not change
             ImGui::TableNextRow();
             ImGui::TableSetColumnIndex(0);
             ImGui::Text("%s", "Materials");
@@ -423,27 +438,54 @@ namespace leep
             ImGui::TableSetColumnIndex(2);
             ImGui::Text("%.2f kb", ByteToKilo(kMatPoolSize));
             ImGui::TableSetColumnIndex(3);
-            ImGui::Text("%.1f '%'", 100.0f);
+            ImGui::Text("%.1f %%", 100.0f);
 
-            ImGui::TableNextRow();
-            ImGui::TableSetColumnIndex(0);
-            ImGui::Text("%s", "Command pool");
-            ImGui::TableSetColumnIndex(1);
-            ImGui::Text("%.2f kb", ByteToKilo((r.rq_.next_offset_ - r.rq_.next_pool_)*2));
-            ImGui::TableSetColumnIndex(2);
-            ImGui::Text("%.2f kb", ByteToKilo(kRenderPoolSize*2));
-            ImGui::TableSetColumnIndex(3);
-            ImGui::Text("%.1f \%", (((r.rq_.next_offset_ - r.rq_.next_pool_)*2)/(float)(kRenderPoolSize*2)) * 100.0f);
+            // Command pool (multiplied by 2 because there are 2 pools that
+            // swap each frame (current and next))
+            {
+                // pool and offset are (int8_t*) so no need of sizeof here
+                size_t offset = (r.rq_.next_offset_ - r.rq_.next_pool_) * 2;
+                size_t capacity = kRenderPoolSize * 2;
+                ImGui::TableNextRow();
+                ImGui::TableSetColumnIndex(0);
+                ImGui::Text("%s", "Command pool");
+                ImGui::TableSetColumnIndex(1);
+                ImGui::Text("%.2f kb", ByteToKilo(offset));
+                ImGui::TableSetColumnIndex(2);
+                ImGui::Text("%.2f kb", ByteToKilo(capacity));
+                ImGui::TableSetColumnIndex(3);
+                ImGui::Text("%.1f %%", (offset / (float)capacity) * 100.0f);
+            }
 
-            ImGui::TableNextRow();
-            ImGui::TableSetColumnIndex(0);
-            ImGui::Text("%s", "Render queue");
-            ImGui::TableSetColumnIndex(1);
-            ImGui::Text("%.2f kb", ByteToKilo((r.rq_.curr_count_ * sizeof(DLComm*)*2)));
-            ImGui::TableSetColumnIndex(2);
-            ImGui::Text("%.2f kb", ByteToKilo((kRenderQueueMaxCount * sizeof(DLComm*))));
-            ImGui::TableSetColumnIndex(3);
-            ImGui::Text("%.1f '%'", ((r.rq_.curr_count_ * sizeof(DLComm*)*2)/(float)(kRenderQueueMaxCount * sizeof(DLComm*))) * 100.0f);
+            // Render queue
+            {
+                size_t offset = r.rq_.curr_count_ * sizeof(DLComm*) * 2;
+                size_t capacity = kRenderQueueMaxCount * sizeof(DLComm*);
+                ImGui::TableNextRow();
+                ImGui::TableSetColumnIndex(0);
+                ImGui::Text("%s", "Render queue");
+                ImGui::TableSetColumnIndex(1);
+                ImGui::Text("%.2f kb", ByteToKilo(offset));
+                ImGui::TableSetColumnIndex(2);
+                ImGui::Text("%.2f kb", ByteToKilo(capacity));
+                ImGui::TableSetColumnIndex(3);
+                ImGui::Text("%.1f %%", (offset / (float)capacity) * 100.0f);
+            }
+
+            // Buddy allocator
+            {
+                // mem and offset are (int8_t*) so no need of sizeof here
+                size_t offset = m.buddy_.mem_offset_ - m.buddy_.mem_;
+                ImGui::TableNextRow();
+                ImGui::TableSetColumnIndex(0);
+                ImGui::Text("%s", "Buddy allocator");
+                ImGui::TableSetColumnIndex(1);
+                ImGui::Text("%.2f mb", ByteToMega(offset));
+                ImGui::TableSetColumnIndex(2);
+                ImGui::Text("%.2f mb", ByteToKilo(kMaxAlloc));
+                ImGui::TableSetColumnIndex(3);
+                ImGui::Text("%.1f %%", (offset / (float)kMaxAlloc) * 100.0f);
+            }
 
             ImGui::EndTable();
         }

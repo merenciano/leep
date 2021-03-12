@@ -1,6 +1,7 @@
 #include "entity-chunk.h"
 
 #include "core/manager.h"
+#include "core/memory/memory.h"
 #include "core/scene-graph.h"
 #include "ecs/components/drawable.h"
 #include "ecs/components/ltransform.h"
@@ -15,20 +16,22 @@ namespace leep
  */
     FallingCubeEntities::FallingCubeEntities() : EntityChunk(s_type)
     {
-        comps_.emplace_back(new LTransform[kEntitiesPerChunk]());
-        comps_.emplace_back(new Drawable[kEntitiesPerChunk]());
-        comps_.emplace_back(new FallSpeed[kEntitiesPerChunk]());
-        comps_.emplace_back(new InfiniteFallingLimits[kEntitiesPerChunk]());
-        comps_.emplace_back(new GTransform[kEntitiesPerChunk]());
+        BuddyAlloc &a = GM.memory().buddy_;
+        comps_.emplace_back(a.allocT<LTransform>(kEntitiesPerChunk));
+        comps_.emplace_back(a.allocT<Drawable>(kEntitiesPerChunk));
+        comps_.emplace_back(a.allocT<FallSpeed>(kEntitiesPerChunk));
+        comps_.emplace_back(a.allocT<InfiniteFallingLimits>(kEntitiesPerChunk));
+        comps_.emplace_back(a.allocT<GTransform>(kEntitiesPerChunk));
     }
 
     FallingCubeEntities::~FallingCubeEntities()
     {
-        delete[] static_cast<LTransform*>(comps_[0]);
-        delete[] static_cast<Drawable*>(comps_[1]);
-        delete[] static_cast<FallSpeed*>(comps_[2]);
-        delete[] static_cast<InfiniteFallingLimits*>(comps_[3]);
-        delete[] static_cast<GTransform*>(comps_[4]);
+        BuddyAlloc &a = GM.memory().buddy_;
+        a.free(comps_[0]);
+        a.free(comps_[1]);
+        a.free(comps_[2]);
+        a.free(comps_[3]);
+        a.free(comps_[4]);
     }
 
     void FallingCubeEntities::relocateLast(EntityChunk *a, uint32_t i)
@@ -60,16 +63,28 @@ namespace leep
  */
     RenderableEC::RenderableEC() : EntityChunk(s_type)
     {
+        BuddyAlloc &a = GM.memory().buddy_;
+        /*
         comps_.emplace_back(new LTransform[kEntitiesPerChunk]());
         comps_.emplace_back(new GTransform[kEntitiesPerChunk]());
         comps_.emplace_back(new Drawable[kEntitiesPerChunk]());
+        */
+        comps_.emplace_back((Component*)a.allocT<LTransform>(kEntitiesPerChunk));
+        comps_.emplace_back((Component*)a.allocT<GTransform>(kEntitiesPerChunk));
+        comps_.emplace_back((Component*)a.allocT<Drawable>(kEntitiesPerChunk));
     }
 
     RenderableEC::~RenderableEC()
     {
+        BuddyAlloc &a = GM.memory().buddy_;
+        /*
         delete[] static_cast<LTransform*>(comps_[0]);
         delete[] static_cast<GTransform*>(comps_[1]);
         delete[] static_cast<Drawable*>(comps_[2]);
+        */
+        a.free(comps_[0]);
+        a.free(comps_[1]);
+        a.free(comps_[2]);
     }
 
     void RenderableEC::relocateLast(EntityChunk *a, uint32_t i)

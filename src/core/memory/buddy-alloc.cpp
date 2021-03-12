@@ -51,7 +51,7 @@ BuddyAlloc::BuddyAlloc()
 
 void BuddyAlloc::init()
 {
-    mem_ = (int8_t*)GM.memory().alloc(kMaxAlloc);
+    mem_ = (int8_t*)GM.memory().persistentAlloc(kMaxAlloc);
     block_limit_ = kBlockCount - 1;
     updateOffset(mem_ + sizeof(CList::Node));
     blocks_[kBlockCount - 1].init();
@@ -74,7 +74,7 @@ int8_t *BuddyAlloc::getPtr(uint32_t index, uint32_t block)
 
 uint32_t BuddyAlloc::getNode(int8_t *ptr, uint32_t block)
 {
-    return ((ptr - mem_) >> (kMaxAllocExp - block)) + (1<<block) - 1;
+    return (uint32_t)((ptr - mem_) >> (kMaxAllocExp - block)) + (1<<block) - 1;
 }
 
 bool BuddyAlloc::parentSplit(uint32_t index)
@@ -89,10 +89,10 @@ void BuddyAlloc::flipParentSplit(uint32_t index)
     split_info_[index / 8] ^= 1 << (index % 8);
 }
 
-uint32_t BuddyAlloc::adequateBlock(uint32_t request_size)
+uint32_t BuddyAlloc::adequateBlock(size_t request_size)
 {
     uint32_t block = kBlockCount - 1;
-    uint32_t size = kMinAlloc;
+    size_t size = kMinAlloc;
 
     while (size < request_size)
     {
@@ -131,7 +131,7 @@ void BuddyAlloc::lowerBlockLimit(uint32_t block)
     }
 }
 
-void *BuddyAlloc::alloc(uint32_t size)
+void *BuddyAlloc::alloc(size_t size)
 {
     uint32_t original_block;
     uint32_t block;
@@ -144,8 +144,8 @@ void *BuddyAlloc::alloc(uint32_t size)
 
     while (block + 1 != 0)
     {
-        uint32_t rsize;
-        uint32_t bytes_needed;
+        size_t rsize;
+        size_t bytes_needed;
         uint32_t i;
         int8_t *ptr;
 
@@ -164,7 +164,7 @@ void *BuddyAlloc::alloc(uint32_t size)
             ptr = (int8_t*)blocks_[block].pop();
         }
 
-        rsize = 1 << (kMaxAllocExp - block);
+        rsize = (size_t)(1 << (kMaxAllocExp - block));
         if (block < original_block)
         {
             bytes_needed = rsize / 2 + sizeof(CList::Node);
@@ -189,7 +189,7 @@ void *BuddyAlloc::alloc(uint32_t size)
             blocks_[block].push((CList::Node*)getPtr(i + 1, block));
 
         }
-        *(uint32_t*)ptr = size;
+        *(size_t*)ptr = size;
         return ptr + kHeaderSize;
     }
     return nullptr;

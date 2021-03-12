@@ -23,12 +23,22 @@ void Memory::init()
     buddy_.init();
 }
 
-void *Memory::alloc(int32_t size)
+void *Memory::persistentAlloc(size_t size)
 {
     LEEP_CORE_ASSERT(offset_ + size - mem_ < kTotalMemSize, "Out of memory");
     void *mem = (void*)offset_;
     offset_ += size;
     return mem; 
+}
+
+void *Memory::generalAlloc(size_t size)
+{
+    return buddy_.alloc(size);
+}
+
+void Memory::generalFree(void *ptr)
+{
+    buddy_.free(ptr);
 }
 
 void Memory::freeAll()

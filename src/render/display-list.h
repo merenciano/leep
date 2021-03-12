@@ -12,7 +12,9 @@
 namespace leep
 {
     class DLComm;
-    const int32_t kDLMaxLen = 20;
+    // TODO: Do something with the dlmax len to lower it and
+    // in the render system slice them up when reaching that limit
+    const int32_t kDLMaxLen = 1000;
     class DisplayList
     {
     public:
