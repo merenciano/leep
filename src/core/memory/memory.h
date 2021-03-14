@@ -27,9 +27,9 @@ namespace leep
         void freeAll();
         void *persistentAlloc(size_t size);
         // General alloc wrappers
-        inline void *generalAlloc(size_t size);
+        void *generalAlloc(size_t size);
         template<typename T> inline T *generalAllocT(size_t count);
-        inline void generalFree(void *ptr);
+        void generalFree(void *ptr);
 
         float mbUsed() const;
         size_t bytesUsed() const;
