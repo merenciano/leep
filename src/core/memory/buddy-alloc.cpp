@@ -99,8 +99,14 @@ uint32_t BuddyAlloc::adequateBlock(size_t request_size)
         block--;
         size = size << 1;
     }
-
+    printf("Correct size: %d, method size: %d\n", size, blockSize(block));
     return block;
+}
+
+size_t BuddyAlloc::blockSize(uint32_t block)
+{
+    uint32_t block_gap = kBlockCount - block - 1;
+    return kMinAlloc << block_gap;
 }
 
 void BuddyAlloc::lowerBlockLimit(uint32_t block)

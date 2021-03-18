@@ -37,6 +37,7 @@ namespace leep
         bool parentSplit(uint32_t index);
         void flipParentSplit(uint32_t index);
         uint32_t adequateBlock(size_t request_size);
+        size_t blockSize(uint32_t block);
         void lowerBlockLimit(uint32_t block);
         void *alloc(size_t size);
         template<typename T> T *allocT(size_t count = 1);
@@ -48,6 +49,8 @@ namespace leep
         CList blocks_[kBlockCount];
         uint32_t block_limit_;
         uint8_t split_info_[(1 << (kBlockCount - 1)) / 8];
+
+        size_t mem_used;
         
         int8_t *mem_;
         int8_t *mem_offset_;
