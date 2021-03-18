@@ -122,7 +122,7 @@ namespace leep
         }
     }
 
-    void Buffer::freeSystemRamData()
+    void Buffer::freeSystemRamData() const
     {
         if (GM.renderer().buffers_[handle_].data_.vertices_)
         {

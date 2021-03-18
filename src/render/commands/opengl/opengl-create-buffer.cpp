@@ -33,6 +33,9 @@ namespace leep
             glBindBuffer(GL_ARRAY_BUFFER, 0);
         }
         
-        r.buffers_[buffer_.handle()].gpu_version_ = r.buffers_[buffer_.handle()].cpu_version_; 
+        r.buffers_[buffer_.handle()].gpu_version_ = r.buffers_[buffer_.handle()].cpu_version_;
+
+        // TODO: Delete ram data now that has been copied into the vram?
+        buffer_.freeSystemRamData();
     }
 }
