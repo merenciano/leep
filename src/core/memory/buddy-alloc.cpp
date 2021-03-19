@@ -99,7 +99,7 @@ uint32_t BuddyAlloc::adequateBlock(size_t request_size)
         block--;
         size = size << 1;
     }
-    printf("Correct size: %d, method size: %d\n", size, blockSize(block));
+
     return block;
 }
 
@@ -195,6 +195,7 @@ void *BuddyAlloc::alloc(size_t size)
             blocks_[block].push((CList::Node*)getPtr(i + 1, block));
 
         }
+        mem_used_ += blockSize(block);
         *(size_t*)ptr = size;
         return ptr + kHeaderSize;
     }
@@ -226,6 +227,7 @@ void BuddyAlloc::free(void *ptr)
         block--;
 
     }
+    mem_used_ -= blockSize(block);
     // Add this address to the free list
     blocks_[block].push((CList::Node*)getPtr(i, block));
 }

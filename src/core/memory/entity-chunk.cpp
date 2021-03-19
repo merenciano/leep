@@ -16,22 +16,22 @@ namespace leep
  */
     FallingCubeEntities::FallingCubeEntities() : EntityChunk(s_type)
     {
-        BuddyAlloc &a = GM.memory().buddy_;
-        comps_.emplace_back(a.allocT<LTransform>(kEntitiesPerChunk));
-        comps_.emplace_back(a.allocT<Drawable>(kEntitiesPerChunk));
-        comps_.emplace_back(a.allocT<FallSpeed>(kEntitiesPerChunk));
-        comps_.emplace_back(a.allocT<InfiniteFallingLimits>(kEntitiesPerChunk));
-        comps_.emplace_back(a.allocT<GTransform>(kEntitiesPerChunk));
+        Memory &m = GM.memory();
+        comps_.emplace_back(m.generalAllocT<LTransform>(kEntitiesPerChunk));
+        comps_.emplace_back(m.generalAllocT<Drawable>(kEntitiesPerChunk));
+        comps_.emplace_back(m.generalAllocT<FallSpeed>(kEntitiesPerChunk));
+        comps_.emplace_back(m.generalAllocT<InfiniteFallingLimits>(kEntitiesPerChunk));
+        comps_.emplace_back(m.generalAllocT<GTransform>(kEntitiesPerChunk));
     }
 
     FallingCubeEntities::~FallingCubeEntities()
     {
-        BuddyAlloc &a = GM.memory().buddy_;
-        a.free(comps_[0]);
-        a.free(comps_[1]);
-        a.free(comps_[2]);
-        a.free(comps_[3]);
-        a.free(comps_[4]);
+        Memory &m = GM.memory();
+        m.generalFree(comps_[0]);
+        m.generalFree(comps_[1]);
+        m.generalFree(comps_[2]);
+        m.generalFree(comps_[3]);
+        m.generalFree(comps_[4]);
     }
 
     void FallingCubeEntities::relocateLast(EntityChunk *a, uint32_t i)
@@ -40,8 +40,8 @@ namespace leep
         FallingCubeEntities *chunk = static_cast<FallingCubeEntities*>(a);
         // Update pointers in the scene graph
         GM.scene_graph().changeTransform(static_cast<LTransform*>(&(comps_[0][last_ - 1])),
-                                            static_cast<LTransform*>(&(chunk->comps_[0][i])),
-                                            static_cast<GTransform*>(&(chunk->comps_[4][i])));
+                                         static_cast<LTransform*>(&(chunk->comps_[0][i])),
+                                         static_cast<GTransform*>(&(chunk->comps_[4][i])));
         // Do the relocation
         static_cast<LTransform*>(chunk->comps_[0])[i] = static_cast<LTransform*>(comps_[0])[last_ - 1];
         static_cast<Drawable*>(chunk->comps_[1])[i] = static_cast<Drawable*>(comps_[1])[last_ - 1];

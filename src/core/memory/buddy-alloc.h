@@ -50,7 +50,7 @@ namespace leep
         uint32_t block_limit_;
         uint8_t split_info_[(1 << (kBlockCount - 1)) / 8];
 
-        size_t mem_used;
+        size_t mem_used_;
         
         int8_t *mem_;
         int8_t *mem_offset_;

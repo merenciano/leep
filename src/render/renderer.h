@@ -79,16 +79,6 @@ namespace leep
         std::forward_list<int32_t> aviable_tex_pos_;
         std::forward_list<int32_t> aviable_fb_pos_; // TODO: remove framebuffer creation and deletion
 
-        // Here I need random element access so I decided deque over vector
-        // because of the vector reallocations
-        //std::deque<InternalBuffer> buffers_;
-        //std::deque<InternalTexture> textures_;
-        //std::deque<InternalFramebuffer> framebuffers_; // TODO: Change this to fixed size array
-
-        // Constant size
-        // TODO: permanent allocator
-        //std::unique_ptr<InternalMaterial> materials_[MaterialType::MT_MAX];
-
         std::atomic<int32_t> tex_to_del_;
         std::atomic<int32_t> buf_to_del_;
 

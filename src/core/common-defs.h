@@ -53,15 +53,6 @@ namespace leep
         FALLING_CUBE,
     };
 
-    struct Vertex // TODO: remove this class (update the creategeometries without this)
-    {
-        glm::vec3 p;
-        glm::vec3 n;
-        glm::vec3 t;
-        glm::vec3 b;
-        glm::vec2 uv;
-    };
-
     const uint32_t kEntitiesPerChunk = 128; 
 
     constexpr bool IsPow2(uint32_t n) 

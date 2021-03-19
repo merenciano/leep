@@ -13,7 +13,7 @@
 
 #include <glm/gtc/type_ptr.hpp>
 #include <ImGui/imgui.h>
-#include <ImGui/imgui_impl_opengl3.h> // TODO(Lucas): implement myself
+#include <ImGui/imgui_impl_opengl3.h> // TODO: implement it myself
 #include <ImGui/imgui_impl_glfw.h>
 #include <GLFW/glfw3.h> // remove this when implementing input
 
@@ -375,7 +375,7 @@ namespace leep
             return;
         }
 
-        ImVec2 size = ImVec2(-FLT_MIN, ImGui::GetTextLineHeightWithSpacing() * 6);
+        ImVec2 size = ImVec2(-FLT_MIN, ImGui::GetTextLineHeightWithSpacing() * 8);
         if (ImGui::BeginTable("##table1", 4, flags, size))
         {
             ImGui::TableSetupScrollFreeze(0, 1); // Make top row always visible
@@ -391,9 +391,9 @@ namespace leep
             ImGui::Text("%s", "Pools");
             ImGui::TableSetColumnIndex(1);
             // mem and offset are (int8_t*) so no need of sizeof here
-            ImGui::Text("%.2f mb", ByteToMega(m.offset_ - m.mem_));
+            ImGui::Text("%.2f MB", ByteToMega(m.offset_ - m.mem_));
             ImGui::TableSetColumnIndex(2);
-            ImGui::Text("%.2f mb", ByteToMega(kTotalMemSize));
+            ImGui::Text("%.2f MB", ByteToMega(kTotalMemSize));
             ImGui::TableSetColumnIndex(3);
             ImGui::Text("%.1f %%", ((m.offset_-m.mem_)/(float)kTotalMemSize) * 100.0f);
 
@@ -405,9 +405,9 @@ namespace leep
                 ImGui::TableSetColumnIndex(0);
                 ImGui::Text("%s", "Textures");
                 ImGui::TableSetColumnIndex(1);
-                ImGui::Text("%.2f kb", ByteToKilo(offset));
+                ImGui::Text("%.2f KB", ByteToKilo(offset));
                 ImGui::TableSetColumnIndex(2);
-                ImGui::Text("%.2f kb", ByteToKilo(capacity));
+                ImGui::Text("%.2f KB", ByteToKilo(capacity));
                 ImGui::TableSetColumnIndex(3);
                 ImGui::Text("%.1f %%", (offset/(float)capacity) * 100.0f);
             }
@@ -420,9 +420,9 @@ namespace leep
                 ImGui::TableSetColumnIndex(0);
                 ImGui::Text("%s", "Buffers");
                 ImGui::TableSetColumnIndex(1);
-                ImGui::Text("%.2f kb", ByteToKilo(offset));
+                ImGui::Text("%.2f KB", ByteToKilo(offset));
                 ImGui::TableSetColumnIndex(2);
-                ImGui::Text("%.2f kb", ByteToKilo(capacity));
+                ImGui::Text("%.2f KB", ByteToKilo(capacity));
                 ImGui::TableSetColumnIndex(3);
                 ImGui::Text("%.1f %%", (offset/(float)capacity) * 100.0f);
             }
@@ -434,9 +434,9 @@ namespace leep
             ImGui::TableSetColumnIndex(0);
             ImGui::Text("%s", "Materials");
             ImGui::TableSetColumnIndex(1);
-            ImGui::Text("%.2f kb", ByteToKilo(kMatPoolSize));
+            ImGui::Text("%.2f B", (float)kMatPoolSize);
             ImGui::TableSetColumnIndex(2);
-            ImGui::Text("%.2f kb", ByteToKilo(kMatPoolSize));
+            ImGui::Text("%.2f B", (float)kMatPoolSize);
             ImGui::TableSetColumnIndex(3);
             ImGui::Text("%.1f %%", 100.0f);
 
@@ -450,9 +450,9 @@ namespace leep
                 ImGui::TableSetColumnIndex(0);
                 ImGui::Text("%s", "Command pool");
                 ImGui::TableSetColumnIndex(1);
-                ImGui::Text("%.2f kb", ByteToKilo(offset));
+                ImGui::Text("%.2f KB", ByteToKilo(offset));
                 ImGui::TableSetColumnIndex(2);
-                ImGui::Text("%.2f kb", ByteToKilo(capacity));
+                ImGui::Text("%.2f KB", ByteToKilo(capacity));
                 ImGui::TableSetColumnIndex(3);
                 ImGui::Text("%.1f %%", (offset / (float)capacity) * 100.0f);
             }
@@ -465,9 +465,9 @@ namespace leep
                 ImGui::TableSetColumnIndex(0);
                 ImGui::Text("%s", "Render queue");
                 ImGui::TableSetColumnIndex(1);
-                ImGui::Text("%.2f kb", ByteToKilo(offset));
+                ImGui::Text("%.2f KB", ByteToKilo(offset));
                 ImGui::TableSetColumnIndex(2);
-                ImGui::Text("%.2f kb", ByteToKilo(capacity));
+                ImGui::Text("%.2f KB", ByteToKilo(capacity));
                 ImGui::TableSetColumnIndex(3);
                 ImGui::Text("%.1f %%", (offset / (float)capacity) * 100.0f);
             }
@@ -475,21 +475,20 @@ namespace leep
             // Buddy allocator
             {
                 // mem and offset are (int8_t*) so no need of sizeof here
-                size_t offset = m.buddy_.mem_offset_ - m.buddy_.mem_;
+                size_t used = m.buddy_.mem_used_;
                 ImGui::TableNextRow();
                 ImGui::TableSetColumnIndex(0);
                 ImGui::Text("%s", "Buddy allocator");
                 ImGui::TableSetColumnIndex(1);
-                ImGui::Text("%.2f mb", ByteToMega(offset));
+                ImGui::Text("%.2f MB", ByteToMega(used));
                 ImGui::TableSetColumnIndex(2);
-                ImGui::Text("%.2f mb", ByteToKilo(kMaxAlloc));
+                ImGui::Text("%.2f MB", ByteToMega(kMaxAlloc));
                 ImGui::TableSetColumnIndex(3);
-                ImGui::Text("%.1f %%", (offset / (float)kMaxAlloc) * 100.0f);
+                ImGui::Text("%.1f %%", (used / (float)kMaxAlloc) * 100.0f);
             }
 
             ImGui::EndTable();
-        }
-         
+        }    
 
         ImGui::End();
     }

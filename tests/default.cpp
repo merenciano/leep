@@ -13,6 +13,7 @@ void leep::Init()
         rm.addTexture("IrradianceEnv", 1024.0f, 1024.0f, TexType::ENVIRONMENT);
         rm.addTexture("PrefilterSpec", 128.0f, 128.0f, TexType::PREFILTER_ENVIRONMENT);
         rm.addTexture("LutMap", 512.0f, 512.0f, TexType::LUT);
+        rm.addGeometry("Pipa", "../assets/obj/cerberus-n.obj");
         /*
         rm.addTexture("Cerberus_A" ,tp + "cerberus_A.png", TexType::SRGB);
         rm.addTexture("Cerberus_N" ,tp + "cerberus_N.png", TexType::RGB);
@@ -34,15 +35,15 @@ void leep::Init()
     mat_data.roughness_ = 0.4f;
     mat_data.reflectance_ = 0.5f;
     
-    for (int i = 0; i < 900; ++i)
+    for (int i = 0; i < 90; ++i)
     {
         Entity e = Entity::CreateEntity("Cube" + std::to_string(i), EntityType::RENDERABLE);
         LTransform &tr = e.getComponent<LTransform>();
         tr.transform_ = glm::scale(tr.transform_,
                         glm::vec3(0.33f, 0.33f, 0.33f));
-        tr.transform_ = glm::translate(tr.transform_, glm::vec3(i * 2.0f, 0.0f, 0.0f));
+        tr.transform_ = glm::translate(tr.transform_, glm::vec3(i, 0.0f, 0.0f));
         Drawable &dw = e.getComponent<Drawable>();
-        dw.geometry_ = GM.resource_map().getGeometry("Sphere");
+        dw.geometry_ = GM.resource_map().getGeometry("Pipa");
         dw.material_.set_type(MaterialType::MT_PBR);
         dw.material_.set_data(mat_data);
     }

@@ -27,7 +27,7 @@ namespace leep
     void DisplayList::submit()
     {
         // TODO: If necessary: mutex (make a function in renderer and lock there)
-        // NOTE: At this moment adding displaylists at the same time for different
+        // NOTE: At this moment adding displaylists at the same time from different
         // threads is not supported.
         GM.renderer().rq_.addDL(this);
         // DisplayList can be used again after submit

@@ -18,9 +18,6 @@ namespace leep
 
     class Memory
     {
-        // TODO: handle heap allocator (int allocator)
-        //       per frame allocator?
-        //       general alloc (region based?, buddy?)
     public:
         Memory();
         void init();
@@ -39,8 +36,6 @@ namespace leep
         EntityContainer &container(EntityType t);
         std::unordered_map<EntityType, EntityContainer> entities_;
 
-        // TODO: look for a better way to access this data from
-        // the memory inspector tool and make private the variables below
         int8_t *mem_;
         int8_t *offset_;
         BuddyAlloc buddy_;
