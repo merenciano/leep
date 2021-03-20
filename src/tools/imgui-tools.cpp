@@ -19,13 +19,15 @@
 
 namespace leep
 {
-    static void BasicAppInfo();
-    static void LuaCommands();
-
     ImguiTools::ImguiTools()
     {
 		selected_entity_ = "";
         show_components_ = false;
+        show_lua_commands_ = false;
+        show_entity_inspector_ = false;
+        show_component_inspector_ = false;
+        show_resource_inspector_ = false;
+        show_memory_usage_ = false;
     }
 
     ImguiTools::~ImguiTools()
@@ -44,19 +46,21 @@ namespace leep
 
     void ImguiTools::update()
     {
+        static bool show_info = true;
+
         ImGui_ImplOpenGL3_NewFrame();
         ImGui_ImplGlfw_NewFrame();
         ImGui::NewFrame();
-        static bool show = true;
-        if (show)
-            ImGui::ShowDemoWindow(&show);
+        static bool show_demo = true;
+        if (show_demo)
+            ImGui::ShowDemoWindow(&show_demo);
 
-        BasicAppInfo();
-        LuaCommands();
-        entityInspector();
-		componentInspector();
-        resourceInspector();
-        memoryInspector();
+        infoWindow(&show_info);
+        if (show_lua_commands_)          luaCommands();
+        if (show_entity_inspector_)      entityInspector();
+		if (show_components_)            componentInspector();
+        if (show_resource_inspector_)    resourceInspector();
+        if (show_memory_usage_)          memoryUsage();
 
         ImGui::Render();
         ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
@@ -113,24 +117,50 @@ namespace leep
         return io.WantCaptureMouse;
     }
 
-    static void BasicAppInfo()
+    void ImguiTools::infoWindow(bool *show)
     {
-        static bool show = true;
-        if (!ImGui::Begin("Basic APP Info", &show, 0))
+        if (!ImGui::Begin("Basic APP Info", show, ImGuiWindowFlags_MenuBar))
         {
             // Early out if the window is collapsed, as an optimization.
             ImGui::End();
             return;
         }
+
+        ImGui::PushItemWidth(ImGui::GetFontSize() * -12);
+        if (ImGui::BeginMenuBar())
+        {
+            if (ImGui::BeginMenu("Inspect"))
+            {
+                ImGui::MenuItem("Entities", nullptr, &show_entity_inspector_);
+                ImGui::MenuItem("Components", nullptr, &show_components_);
+                ImGui::MenuItem("Resources", nullptr, &show_resource_inspector_);
+                ImGui::EndMenu();
+            }
+
+            if (ImGui::BeginMenu("Memory"))
+            {
+                ImGui::MenuItem("Memory usage", nullptr, &show_memory_usage_);
+                ImGui::EndMenu();
+            }
+
+            if (ImGui::BeginMenu("Tools"))
+            {
+                ImGui::MenuItem("Commands", nullptr, &show_lua_commands_);
+                ImGui::EndMenu();
+            }
+            ImGui::EndMenuBar();
+        }
+
         ImGui::Text("Frame time: %f", GM.delta_time() * 1000.0f);
         ImGui::Text("FPS: %f", 1.0f / GM.delta_time());
         ImGui::Text("Init time (ms): %f", GM.tools_data().init_time_ms_);
         ImGui::Text("Logic average (ms): %f", GM.tools_data().logic_average_ms_);
         ImGui::Text("Render average (ms): %f", GM.tools_data().render_average_ms_);
+        ImGui::PopItemWidth();
         ImGui::End();
     }
 
-    static void LuaCommands()
+    void ImguiTools::luaCommands()
     {
         static bool show = true;
         if (!ImGui::Begin("Insert Lua Commands", &show, 0))
@@ -150,8 +180,7 @@ namespace leep
 
     void ImguiTools::entityInspector()
     {
-        static bool show = true;
-        if (!ImGui::Begin("Entity inspector", &show, 0))
+        if (!ImGui::Begin("Entity inspector", &show_entity_inspector_, 0))
         {
             // Early out if the window is collapsed, as an optimization.
             ImGui::End();
@@ -359,16 +388,15 @@ namespace leep
 		ImGui::End();
     }
 
-    void ImguiTools::memoryInspector()
+    void ImguiTools::memoryUsage()
     {
-        static bool show = true;
         static ImGuiTableFlags flags = ImGuiTableFlags_ScrollY | 
             ImGuiTableFlags_RowBg | ImGuiTableFlags_BordersOuter |
             ImGuiTableFlags_BordersV | ImGuiTableFlags_Resizable |
             ImGuiTableFlags_Reorderable | ImGuiTableFlags_Hideable;
         Memory &m = GM.memory();
         Renderer &r = GM.renderer();
-        if (!ImGui::Begin("Memory inspector", &show, 0))
+        if (!ImGui::Begin("Memory usage", &show_memory_usage_, 0))
         {
             // Early out if the window is collapsed, as an optimization.
             ImGui::End();
