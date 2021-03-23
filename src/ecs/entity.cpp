@@ -1,6 +1,7 @@
 #include "entity.h"
 
 #include "core/manager.h"
+#include "core/memory/memory.h"
 #include "core/scene-graph.h"
 #include "ecs/components/ltransform.h"
 
@@ -9,6 +10,7 @@ namespace leep
     Entity Entity::CreateEntity(std::string name, EntityType t)
     {
         //LEEP_CORE_ASSERT(!s_map_.exists(name), "An entity with that name already exists.");
+        Memory &m = GM.memory();
         if (s_map_.exists(name))
         {
             LEEP_CORE_ERROR("CreateEntity: An entity with that name already exists.");
@@ -20,15 +22,17 @@ namespace leep
             int32_t idx = cont.blocks_.back()->index_;
             switch (t)
             {
-                case EntityType::RENDERABLE:
-                    cont.blocks_.emplace_back(new RenderableEC());
-                    break;
+            case EntityType::RENDERABLE:
+                //cont.blocks_.emplace_back(new RenderableEC());
+                cont.blocks_.emplace_back(m.generalAllocT<RenderableEC>(1));
+                break;
 
-                case EntityType::FALLING_CUBE:
-                    cont.blocks_.emplace_back(new FallingCubeEntities());
-                    break;
+            case EntityType::FALLING_CUBE:
+                //cont.blocks_.emplace_back(new FallingCubeEntities());
+                cont.blocks_.emplace_back(m.generalAllocT<FallingCubeEntities>(1));
+                break;
 
-                default: LEEP_ASSERT(false, "Default case CreateEntity");
+            default: LEEP_ASSERT(false, "Default case CreateEntity");
             }
             cont.blocks_.back()->index_ = idx + 1;
         }

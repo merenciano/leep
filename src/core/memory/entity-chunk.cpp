@@ -63,28 +63,18 @@ namespace leep
  */
     RenderableEC::RenderableEC() : EntityChunk(s_type)
     {
-        BuddyAlloc &a = GM.memory().buddy_;
-        /*
-        comps_.emplace_back(new LTransform[kEntitiesPerChunk]());
-        comps_.emplace_back(new GTransform[kEntitiesPerChunk]());
-        comps_.emplace_back(new Drawable[kEntitiesPerChunk]());
-        */
-        comps_.emplace_back((Component*)a.allocT<LTransform>(kEntitiesPerChunk));
-        comps_.emplace_back((Component*)a.allocT<GTransform>(kEntitiesPerChunk));
-        comps_.emplace_back((Component*)a.allocT<Drawable>(kEntitiesPerChunk));
+        Memory &m = GM.memory();
+        comps_.emplace_back(m.generalAllocT<LTransform>(kEntitiesPerChunk));
+        comps_.emplace_back(m.generalAllocT<GTransform>(kEntitiesPerChunk));
+        comps_.emplace_back(m.generalAllocT<Drawable>(kEntitiesPerChunk));
     }
 
     RenderableEC::~RenderableEC()
     {
-        BuddyAlloc &a = GM.memory().buddy_;
-        /*
-        delete[] static_cast<LTransform*>(comps_[0]);
-        delete[] static_cast<GTransform*>(comps_[1]);
-        delete[] static_cast<Drawable*>(comps_[2]);
-        */
-        a.free(comps_[0]);
-        a.free(comps_[1]);
-        a.free(comps_[2]);
+        Memory &m = GM.memory();
+        m.generalFree(comps_[0]);
+        m.generalFree(comps_[1]);
+        m.generalFree(comps_[2]);
     }
 
     void RenderableEC::relocateLast(EntityChunk *a, uint32_t i)
