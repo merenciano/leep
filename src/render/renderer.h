@@ -7,6 +7,7 @@
 #include "render/geometry.h"
 #include "render/internal-resources.h"
 #include "render/material-types.h"
+#include "render/commands/draw.h"
 
 #include <stdint.h>
 #include <forward_list>
@@ -19,8 +20,13 @@ namespace leep
     class DisplayList;
 
     const int32_t kMaxTextures = 63;
-    const int32_t kMaxBuffers = 50;
+    const int32_t kMaxBuffers = 128;
     const int32_t kMatPoolSize = MT_MAX * 16; // Derived materials do not have attributes
+
+    // TODO: Draw command with pointer to material will reduce vastly
+    // the memory stored in the pool (due to materialdata union being big)
+    const uint32_t kRenderQueueMaxCount = 1000;
+    const uint32_t kRenderPoolSize = kRenderQueueMaxCount * sizeof(Draw);
 
     class RenderQueues
     {
@@ -39,7 +45,7 @@ namespace leep
 
         DLComm **curr_queue_;
 
-    private:
+    //private:
         int8_t *curr_pool_; // Main thread renders this
         int8_t *next_pool_; // Logic thread fill this for the next frame
         int8_t *next_offset_;
@@ -72,16 +78,6 @@ namespace leep
         std::forward_list<int32_t> aviable_buffer_pos_;
         std::forward_list<int32_t> aviable_tex_pos_;
         std::forward_list<int32_t> aviable_fb_pos_; // TODO: remove framebuffer creation and deletion
-
-        // Here I need random element access so I decided deque over vector
-        // because of the vector reallocations
-        //std::deque<InternalBuffer> buffers_;
-        //std::deque<InternalTexture> textures_;
-        //std::deque<InternalFramebuffer> framebuffers_; // TODO: Change this to fixed size array
-
-        // Constant size
-        // TODO: permanent allocator
-        //std::unique_ptr<InternalMaterial> materials_[MaterialType::MT_MAX];
 
         std::atomic<int32_t> tex_to_del_;
         std::atomic<int32_t> buf_to_del_;

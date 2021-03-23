@@ -2,6 +2,7 @@
 
 #include "core/manager.h"
 #include "core/common-defs.h"
+#include "core/memory/memory.h"
 #include "render/renderer.h"
 #include "render/internal-resources.h"
 
@@ -114,10 +115,18 @@ namespace leep
         {
             GM.renderer().buffers_[handle_].cpu_version_ = CommonDefs::DELETED_GPU_RESOURCE;
             GM.renderer().buffers_[handle_].gpu_version_ = CommonDefs::DELETED_GPU_RESOURCE;
-            GM.memory().general_alloc_.freearr(GM.renderer().buffers_[handle_].data_.vertices_);
+            GM.memory().generalFree(GM.renderer().buffers_[handle_].data_.vertices_);
             GM.renderer().buffers_[handle_].data_.vertices_ = nullptr;
 
             handle_ = CommonDefs::DELETED_HANDLE;
+        }
+    }
+
+    void Buffer::freeSystemRamData() const
+    {
+        if (GM.renderer().buffers_[handle_].data_.vertices_)
+        {
+            GM.memory().generalFree(GM.renderer().buffers_[handle_].data_.vertices_);
         }
     }
 }

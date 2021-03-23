@@ -3,6 +3,7 @@
 #include "core/common-defs.h"
 #include "core/manager.h"
 #include "render/renderer.h"
+#include "render/commands/create-buffer.h"
 
 #include <glad/glad.h>
 
@@ -35,18 +36,7 @@ namespace leep
         // Create the OpenGL vertex buffer if it has not been created yet
         if (r.buffers_[vertex_handler].gpu_version_ == 0)
         {
-            // TODO: Or remove Createbuffer or remove this and call createbuffer
-            // TODO: Do the same with textures on materials
-            glGenBuffers(1, &(r.buffers_[vertex_handler].internal_id_));
-            glBindBuffer(GL_ARRAY_BUFFER,
-                r.buffers_[vertex_handler].internal_id_);
-            glBufferData(GL_ARRAY_BUFFER,
-                r.buffers_[vertex_handler].count_ * sizeof(float),
-                (const void*)r.buffers_[vertex_handler].data_.vertices_,
-                GL_STATIC_DRAW);
-
-            r.buffers_[vertex_handler].gpu_version_ = 
-                r.buffers_[vertex_handler].cpu_version_;
+            CreateBuffer().set_buffer(geometry_.vertex_buffer()).executeCommand();
         }
         else
         {
@@ -57,17 +47,7 @@ namespace leep
         // Create the OpenGL index buffer if it has not been created yet
         if (r.buffers_[index_handler].gpu_version_ == 0)
         {
-            glGenBuffers(1, &(r.buffers_[index_handler].internal_id_));
-            glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,
-                r.buffers_[index_handler].internal_id_);
-
-            glBufferData(GL_ELEMENT_ARRAY_BUFFER,
-                r.buffers_[index_handler].count_ * sizeof(uint32_t),
-                (const void*)r.buffers_[index_handler].data_.indices_,
-                GL_STATIC_DRAW);
-
-            r.buffers_[index_handler].gpu_version_ =
-                r.buffers_[index_handler].cpu_version_;
+            CreateBuffer().set_buffer(geometry_.index_buffer()).executeCommand();
         }
         else
         {

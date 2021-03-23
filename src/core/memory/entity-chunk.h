@@ -10,6 +10,8 @@
 
 namespace leep
 {
+    const uint32_t kMaxEntities = 1000000;
+    const uint32_t kMaxChunks = (kMaxEntities / kEntitiesPerChunk) + 1;  // +1 because division rounding
     class EntityChunk 
     {
     public:
@@ -38,6 +40,7 @@ namespace leep
         virtual uint64_t mask() const = 0;
 #endif
 
+        // ptr to ptr
         std::vector<Component*> comps_;
         const EntityType type_;
         int32_t last_;  // last points to the next unused entity (not a valid one)

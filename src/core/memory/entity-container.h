@@ -24,6 +24,7 @@ namespace leep
 #endif
 
         std::deque<EntityChunk*> blocks_;
+        //EntityChunk *chunks_[20];
     private:
         const EntityType type_;
     };

@@ -8,10 +8,12 @@ void leep::Init()
         // Resource creation CPU side (GPU allocation will occur on first use)
         ResourceMap &rm = GM.resource_map();
         const std::string tp = "../assets/tex/";
+        rm.addTexture("Default", "../assets/tex/default.jpg", TexType::SRGB);
         rm.addTexture("Skybox", 1024.0f, 1024.0f, TexType::ENVIRONMENT);
         rm.addTexture("IrradianceEnv", 1024.0f, 1024.0f, TexType::ENVIRONMENT);
         rm.addTexture("PrefilterSpec", 128.0f, 128.0f, TexType::PREFILTER_ENVIRONMENT);
         rm.addTexture("LutMap", 512.0f, 512.0f, TexType::LUT);
+        rm.addGeometry("Pipa", "../assets/obj/cerberus-n.obj");
         /*
         rm.addTexture("Cerberus_A" ,tp + "cerberus_A.png", TexType::SRGB);
         rm.addTexture("Cerberus_N" ,tp + "cerberus_N.png", TexType::RGB);
@@ -32,15 +34,19 @@ void leep::Init()
     mat_data.metallic_ = 0.5f;
     mat_data.roughness_ = 0.4f;
     mat_data.reflectance_ = 0.5f;
-
-    Entity e = Entity::CreateEntity("Pipa", EntityType::RENDERABLE);
-    LTransform &tr = e.getComponent<LTransform>();
-    tr.transform_ = glm::scale(tr.transform_,
-                    glm::vec3(0.33f, 0.33f, 0.33f));
-    Drawable &dw = e.getComponent<Drawable>();
-    dw.geometry_ = GM.resource_map().getGeometry("Sphere");
-    dw.material_.set_type(MaterialType::MT_PBR);
-    dw.material_.set_data(mat_data);
+    
+    for (int i = 0; i < 90; ++i)
+    {
+        Entity e = Entity::CreateEntity("Cube" + std::to_string(i), EntityType::RENDERABLE);
+        LTransform &tr = e.getComponent<LTransform>();
+        tr.transform_ = glm::scale(tr.transform_,
+                        glm::vec3(0.33f, 0.33f, 0.33f));
+        tr.transform_ = glm::translate(tr.transform_, glm::vec3(i, 0.0f, 0.0f));
+        Drawable &dw = e.getComponent<Drawable>();
+        dw.geometry_ = GM.resource_map().getGeometry("Pipa");
+        dw.material_.set_type(MaterialType::MT_PBR);
+        dw.material_.set_data(mat_data);
+    }
     /*dw.material_.set_albedo(GM.resource_map().getTexture("HDREnv"));
     dw.material_.set_metallic(GM.resource_map().getTexture("Cerberus_M"));
     dw.material_.set_roughness(GM.resource_map().getTexture("Cerberus_R"));
@@ -66,21 +72,6 @@ void leep::Init()
 
 void leep::Logic()
 {
-    // Alloc test
-    static InternalTexture *t[20];
-    for (int32_t i = 0; i < 20; ++i)
-    {
-        t[i] = GM.memory().buddy_.allocT<InternalTexture>(1);
-    }
-
-    for (int32_t i = 0; i < 20; ++i)
-    {
-        GM.memory().buddy_.free(t[i]);
-    }
-
-
-
-
     GM.input().updateInput();
     CameraMovement(1.0f, 1.0f).executeSystem();
     UpdateTransform(GM.memory().container(EntityType::RENDERABLE)).executeSystem();

@@ -65,13 +65,7 @@ namespace leep
         {
             LEEP_CORE_INFO("InternalBuffer data freed");
         }
-
-        //  TODO: I don't like having one unused vector in every buffer
-        //  but I didn't be able to make it work with unions because
-        //  of the exceptions it threw, I think multiple std::vectors
-        //  inside an union does not work well, but I need some research on this
-        //std::vector<float> vertices_data_;
-        //std::vector<uint32_t> indices_data_;
+        // The data will be unsigned or float depending on the type of the buffer
         union BufferData
         {
             float *vertices_;

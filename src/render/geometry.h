@@ -23,6 +23,13 @@ namespace leep
         void createCube();
 		void createSphere(uint32_t x_segments, uint32_t y_segments);
         void createQuad();
+
+        /* This method allocates memory using generalAlloc and will be released
+         * when the obj is going to be rendered for the first time
+         * after OpenGL copies it to the VRAM.
+         * Make sure the obj will be renderer before calling this method
+         * or free it manually with vertex/index_buffer().freeSystemRamData()
+         */
         void loadObj(std::string path);
     
     private:

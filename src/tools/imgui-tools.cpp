@@ -13,19 +13,21 @@
 
 #include <glm/gtc/type_ptr.hpp>
 #include <ImGui/imgui.h>
-#include <ImGui/imgui_impl_opengl3.h> // TODO(Lucas): implement myself
+#include <ImGui/imgui_impl_opengl3.h> // TODO: implement it myself
 #include <ImGui/imgui_impl_glfw.h>
 #include <GLFW/glfw3.h> // remove this when implementing input
 
 namespace leep
 {
-    static void BasicAppInfo();
-    static void LuaCommands();
-
     ImguiTools::ImguiTools()
     {
 		selected_entity_ = "";
         show_components_ = false;
+        show_lua_commands_ = false;
+        show_entity_inspector_ = false;
+        show_component_inspector_ = false;
+        show_resource_inspector_ = false;
+        show_memory_usage_ = false;
     }
 
     ImguiTools::~ImguiTools()
@@ -44,18 +46,21 @@ namespace leep
 
     void ImguiTools::update()
     {
+        static bool show_info = true;
+
         ImGui_ImplOpenGL3_NewFrame();
         ImGui_ImplGlfw_NewFrame();
         ImGui::NewFrame();
-        static bool show = true;
-        if (show)
-            ImGui::ShowDemoWindow(&show);
+        static bool show_demo = true;
+        if (show_demo)
+            ImGui::ShowDemoWindow(&show_demo);
 
-        BasicAppInfo();
-        LuaCommands();
-        entityInspector();
-		componentInspector();
-        resourceInspector();
+        infoWindow(&show_info);
+        if (show_lua_commands_)          luaCommands();
+        if (show_entity_inspector_)      entityInspector();
+		if (show_components_)            componentInspector();
+        if (show_resource_inspector_)    resourceInspector();
+        if (show_memory_usage_)          memoryUsage();
 
         ImGui::Render();
         ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
@@ -112,24 +117,50 @@ namespace leep
         return io.WantCaptureMouse;
     }
 
-    static void BasicAppInfo()
+    void ImguiTools::infoWindow(bool *show)
     {
-        static bool show = true;
-        if (!ImGui::Begin("Basic APP Info", &show, 0))
+        if (!ImGui::Begin("Basic APP Info", show, ImGuiWindowFlags_MenuBar))
         {
             // Early out if the window is collapsed, as an optimization.
             ImGui::End();
             return;
         }
+
+        ImGui::PushItemWidth(ImGui::GetFontSize() * -12);
+        if (ImGui::BeginMenuBar())
+        {
+            if (ImGui::BeginMenu("Inspect"))
+            {
+                ImGui::MenuItem("Entities", nullptr, &show_entity_inspector_);
+                ImGui::MenuItem("Components", nullptr, &show_components_);
+                ImGui::MenuItem("Resources", nullptr, &show_resource_inspector_);
+                ImGui::EndMenu();
+            }
+
+            if (ImGui::BeginMenu("Memory"))
+            {
+                ImGui::MenuItem("Memory usage", nullptr, &show_memory_usage_);
+                ImGui::EndMenu();
+            }
+
+            if (ImGui::BeginMenu("Tools"))
+            {
+                ImGui::MenuItem("Commands", nullptr, &show_lua_commands_);
+                ImGui::EndMenu();
+            }
+            ImGui::EndMenuBar();
+        }
+
         ImGui::Text("Frame time: %f", GM.delta_time() * 1000.0f);
         ImGui::Text("FPS: %f", 1.0f / GM.delta_time());
         ImGui::Text("Init time (ms): %f", GM.tools_data().init_time_ms_);
         ImGui::Text("Logic average (ms): %f", GM.tools_data().logic_average_ms_);
         ImGui::Text("Render average (ms): %f", GM.tools_data().render_average_ms_);
+        ImGui::PopItemWidth();
         ImGui::End();
     }
 
-    static void LuaCommands()
+    void ImguiTools::luaCommands()
     {
         static bool show = true;
         if (!ImGui::Begin("Insert Lua Commands", &show, 0))
@@ -149,8 +180,7 @@ namespace leep
 
     void ImguiTools::entityInspector()
     {
-        static bool show = true;
-        if (!ImGui::Begin("Entity inspector", &show, 0))
+        if (!ImGui::Begin("Entity inspector", &show_entity_inspector_, 0))
         {
             // Early out if the window is collapsed, as an optimization.
             ImGui::End();
@@ -356,5 +386,138 @@ namespace leep
             }
         }
 		ImGui::End();
+    }
+
+    void ImguiTools::memoryUsage()
+    {
+        static ImGuiTableFlags flags = ImGuiTableFlags_ScrollY | 
+            ImGuiTableFlags_RowBg | ImGuiTableFlags_BordersOuter |
+            ImGuiTableFlags_BordersV | ImGuiTableFlags_Resizable |
+            ImGuiTableFlags_Reorderable | ImGuiTableFlags_Hideable;
+        Memory &m = GM.memory();
+        Renderer &r = GM.renderer();
+        if (!ImGui::Begin("Memory usage", &show_memory_usage_, 0))
+        {
+            // Early out if the window is collapsed, as an optimization.
+            ImGui::End();
+            return;
+        }
+
+        ImVec2 size = ImVec2(-FLT_MIN, ImGui::GetTextLineHeightWithSpacing() * 8);
+        if (ImGui::BeginTable("##table1", 4, flags, size))
+        {
+            ImGui::TableSetupScrollFreeze(0, 1); // Make top row always visible
+            ImGui::TableSetupColumn("Pool", ImGuiTableColumnFlags_None);
+            ImGui::TableSetupColumn("Used", ImGuiTableColumnFlags_None);
+            ImGui::TableSetupColumn("Capacity", ImGuiTableColumnFlags_None);
+            ImGui::TableSetupColumn("Percent", ImGuiTableColumnFlags_None);
+            ImGui::TableHeadersRow();
+
+            // Initial big chunk of memory
+            ImGui::TableNextRow();
+            ImGui::TableSetColumnIndex(0);
+            ImGui::Text("%s", "Pools");
+            ImGui::TableSetColumnIndex(1);
+            // mem and offset are (int8_t*) so no need of sizeof here
+            ImGui::Text("%.2f MB", ByteToMega(m.offset_ - m.mem_));
+            ImGui::TableSetColumnIndex(2);
+            ImGui::Text("%.2f MB", ByteToMega(kTotalMemSize));
+            ImGui::TableSetColumnIndex(3);
+            ImGui::Text("%.1f %%", ((m.offset_-m.mem_)/(float)kTotalMemSize) * 100.0f);
+
+            // Textures
+            {
+                size_t offset = r.tex_count_ * sizeof(InternalTexture);
+                size_t capacity = kMaxTextures * sizeof(InternalTexture);
+                ImGui::TableNextRow();
+                ImGui::TableSetColumnIndex(0);
+                ImGui::Text("%s", "Textures");
+                ImGui::TableSetColumnIndex(1);
+                ImGui::Text("%.2f KB", ByteToKilo(offset));
+                ImGui::TableSetColumnIndex(2);
+                ImGui::Text("%.2f KB", ByteToKilo(capacity));
+                ImGui::TableSetColumnIndex(3);
+                ImGui::Text("%.1f %%", (offset/(float)capacity) * 100.0f);
+            }
+
+            // Buffers
+            {
+                size_t offset = r.buf_count_ * sizeof(InternalBuffer);
+                size_t capacity = kMaxBuffers * sizeof(InternalBuffer);
+                ImGui::TableNextRow();
+                ImGui::TableSetColumnIndex(0);
+                ImGui::Text("%s", "Buffers");
+                ImGui::TableSetColumnIndex(1);
+                ImGui::Text("%.2f KB", ByteToKilo(offset));
+                ImGui::TableSetColumnIndex(2);
+                ImGui::Text("%.2f KB", ByteToKilo(capacity));
+                ImGui::TableSetColumnIndex(3);
+                ImGui::Text("%.1f %%", (offset/(float)capacity) * 100.0f);
+            }
+
+            // Materials
+            // This will always full because the exact amount of materials is
+            // known and does not change
+            ImGui::TableNextRow();
+            ImGui::TableSetColumnIndex(0);
+            ImGui::Text("%s", "Materials");
+            ImGui::TableSetColumnIndex(1);
+            ImGui::Text("%.2f B", (float)kMatPoolSize);
+            ImGui::TableSetColumnIndex(2);
+            ImGui::Text("%.2f B", (float)kMatPoolSize);
+            ImGui::TableSetColumnIndex(3);
+            ImGui::Text("%.1f %%", 100.0f);
+
+            // Command pool (multiplied by 2 because there are 2 pools that
+            // swap each frame (current and next))
+            {
+                // pool and offset are (int8_t*) so no need of sizeof here
+                size_t offset = (r.rq_.next_offset_ - r.rq_.next_pool_) * 2;
+                size_t capacity = kRenderPoolSize * 2;
+                ImGui::TableNextRow();
+                ImGui::TableSetColumnIndex(0);
+                ImGui::Text("%s", "Command pool");
+                ImGui::TableSetColumnIndex(1);
+                ImGui::Text("%.2f KB", ByteToKilo(offset));
+                ImGui::TableSetColumnIndex(2);
+                ImGui::Text("%.2f KB", ByteToKilo(capacity));
+                ImGui::TableSetColumnIndex(3);
+                ImGui::Text("%.1f %%", (offset / (float)capacity) * 100.0f);
+            }
+
+            // Render queue
+            {
+                size_t offset = r.rq_.curr_count_ * sizeof(DLComm*) * 2;
+                size_t capacity = kRenderQueueMaxCount * sizeof(DLComm*);
+                ImGui::TableNextRow();
+                ImGui::TableSetColumnIndex(0);
+                ImGui::Text("%s", "Render queue");
+                ImGui::TableSetColumnIndex(1);
+                ImGui::Text("%.2f KB", ByteToKilo(offset));
+                ImGui::TableSetColumnIndex(2);
+                ImGui::Text("%.2f KB", ByteToKilo(capacity));
+                ImGui::TableSetColumnIndex(3);
+                ImGui::Text("%.1f %%", (offset / (float)capacity) * 100.0f);
+            }
+
+            // Buddy allocator
+            {
+                // mem and offset are (int8_t*) so no need of sizeof here
+                size_t used = m.buddy_.mem_used_;
+                ImGui::TableNextRow();
+                ImGui::TableSetColumnIndex(0);
+                ImGui::Text("%s", "Buddy allocator");
+                ImGui::TableSetColumnIndex(1);
+                ImGui::Text("%.2f MB", ByteToMega(used));
+                ImGui::TableSetColumnIndex(2);
+                ImGui::Text("%.2f MB", ByteToMega(kMaxAlloc));
+                ImGui::TableSetColumnIndex(3);
+                ImGui::Text("%.1f %%", (used / (float)kMaxAlloc) * 100.0f);
+            }
+
+            ImGui::EndTable();
+        }    
+
+        ImGui::End();
     }
 }

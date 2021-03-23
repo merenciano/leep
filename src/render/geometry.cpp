@@ -44,8 +44,8 @@ Buffer Geometry::index_buffer() const
 void Geometry::createCube()
 {
     int32_t i = 0;
-    float *vert = GM.memory().general_alloc_.alloc<float>(24*8);
-    uint32_t *ind = GM.memory().general_alloc_.alloc<uint32_t>(36);
+    float *vert = (float*)GM.memory().generalAlloc(24*8*sizeof(float));
+    uint32_t *ind = (uint32_t*)GM.memory().generalAlloc(36 * sizeof(uint32_t));
     float vertices[] = {
         // positions          // normals           // uv 
         -0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  0.0f,  0.0f,
@@ -109,8 +109,8 @@ void Geometry::createSphere(uint32_t x_segments, uint32_t y_segments)
 {
     const float PI = 3.14159265359f;
     // Using the raw alloc because for basic types I dont need to call the constructors
-    float *vert = (float*)GM.memory().buddy_.alloc(((1+x_segments) * (1+y_segments) * 8)*sizeof(float));
-    uint32_t *ind = (uint32_t*)GM.memory().buddy_.alloc((x_segments * y_segments * 6) * sizeof(uint32_t));
+    float *vert = (float*)GM.memory().generalAlloc(((1+x_segments) * (1+y_segments) * 8)*sizeof(float));
+    uint32_t *ind = (uint32_t*)GM.memory().generalAlloc((x_segments * y_segments * 6) * sizeof(uint32_t));
     int32_t i = 0;
     
     for (uint32_t y = 0; y <= y_segments; ++y)
@@ -164,8 +164,8 @@ void Geometry::createSphere(uint32_t x_segments, uint32_t y_segments)
 
 void Geometry::createQuad()
 {
-    float *v = GM.memory().general_alloc_.alloc<float>(32);
-    uint32_t *ind = GM.memory().general_alloc_.alloc<uint32_t>(6);
+    float *v = (float*)GM.memory().generalAlloc(32 * sizeof(float));
+    uint32_t *ind = (uint32_t*)GM.memory().generalAlloc(6 * sizeof(uint32_t));
     float vertices[]{
         -1.0f, -1.0f, 0.0f, 0.0f, 0.0f, -1.0f, 0.0f,  0.0f,
         1.0f, -1.0f, 0.0f, 0.0f, 0.0f, -1.0f, 1.0f,  0.0f,
@@ -194,7 +194,6 @@ void Geometry::createQuad()
 
 void Geometry::loadObj(std::string path)
 {
-    // TODO: Preallocate std::vector of vertices and indices
     tinyobj::ObjReaderConfig reader_config;
     reader_config.mtl_search_path = "./"; // Path to material files
     tinyobj::ObjReader reader;
@@ -227,97 +226,80 @@ void Geometry::loadObj(std::string path)
         for (size_t f = 0; f < shapes[s].mesh.num_face_vertices.size(); f++)
         {
             tinyobj::index_t idx = shapes[s].mesh.indices[index_offset++];
-            Vertex v1, v2, v3;
+            float v1[14], v2[14], v3[14];
 
-            v1.p.x = attrib.vertices[3*idx.vertex_index+0]; // Cast the 3 to int64_t in case of overflow (that would be a large obj)
-            v1.p.y = attrib.vertices[3*idx.vertex_index+1];
-            v1.p.z = attrib.vertices[3*idx.vertex_index+2];
-            v1.n.x = attrib.normals[3*idx.normal_index+0];
-            v1.n.y = attrib.normals[3*idx.normal_index+1];
-            v1.n.z = attrib.normals[3*idx.normal_index+2];
-            v1.uv.x = attrib.texcoords[2*idx.texcoord_index+0];
-            v1.uv.y = attrib.texcoords[2*idx.texcoord_index+1];
-
-            idx = shapes[s].mesh.indices[index_offset++];
-            v2.p.x = attrib.vertices[3*idx.vertex_index+0];
-            v2.p.y = attrib.vertices[3*idx.vertex_index+1];
-            v2.p.z = attrib.vertices[3*idx.vertex_index+2];
-            v2.n.x = attrib.normals[3*idx.normal_index+0];
-            v2.n.y = attrib.normals[3*idx.normal_index+1];
-            v2.n.z = attrib.normals[3*idx.normal_index+2];
-            v2.uv.x = attrib.texcoords[2*idx.texcoord_index+0];
-            v2.uv.y = attrib.texcoords[2*idx.texcoord_index+1];
+            v1[0] = attrib.vertices[3*idx.vertex_index+0]; // Cast the 3 to int64_t in case of overflow (that would be a large obj)
+            v1[1] = attrib.vertices[3*idx.vertex_index+1];
+            v1[2] = attrib.vertices[3*idx.vertex_index+2];
+            v1[3] = attrib.normals[3*idx.normal_index+0];
+            v1[4] = attrib.normals[3*idx.normal_index+1];
+            v1[5] = attrib.normals[3*idx.normal_index+2];
+            v1[12] = attrib.texcoords[2*idx.texcoord_index+0];
+            v1[13] = attrib.texcoords[2*idx.texcoord_index+1];
 
             idx = shapes[s].mesh.indices[index_offset++];
-            v3.p.x = attrib.vertices[3*idx.vertex_index+0];
-            v3.p.y = attrib.vertices[3*idx.vertex_index+1];
-            v3.p.z = attrib.vertices[3*idx.vertex_index+2];
-            v3.n.x = attrib.normals[3*idx.normal_index+0];
-            v3.n.y = attrib.normals[3*idx.normal_index+1];
-            v3.n.z = attrib.normals[3*idx.normal_index+2];
-            v3.uv.x = attrib.texcoords[2*idx.texcoord_index+0];
-            v3.uv.y = attrib.texcoords[2*idx.texcoord_index+1];
+            v2[0] = attrib.vertices[3*idx.vertex_index+0];
+            v2[1] = attrib.vertices[3*idx.vertex_index+1];
+            v2[2] = attrib.vertices[3*idx.vertex_index+2];
+            v2[3] = attrib.normals[3*idx.normal_index+0];
+            v2[4] = attrib.normals[3*idx.normal_index+1];
+            v2[5] = attrib.normals[3*idx.normal_index+2];
+            v2[12] = attrib.texcoords[2*idx.texcoord_index+0];
+            v2[13] = attrib.texcoords[2*idx.texcoord_index+1];
+
+            idx = shapes[s].mesh.indices[index_offset++];
+            v3[0] = attrib.vertices[3*idx.vertex_index+0];
+            v3[1] = attrib.vertices[3*idx.vertex_index+1];
+            v3[2] = attrib.vertices[3*idx.vertex_index+2];
+            v3[3] = attrib.normals[3*idx.normal_index+0];
+            v3[4] = attrib.normals[3*idx.normal_index+1];
+            v3[5] = attrib.normals[3*idx.normal_index+2];
+            v3[12] = attrib.texcoords[2*idx.texcoord_index+0];
+            v3[13] = attrib.texcoords[2*idx.texcoord_index+1];
             
-            // Calc tangent and bitangent
-            glm::vec3 delta_p1 = v2.p - v1.p;
-            glm::vec3 delta_p2 = v3.p - v1.p;
-            glm::vec2 delta_uv1 = v2.uv - v1.uv;
-            glm::vec2 delta_uv2 = v3.uv - v1.uv;
+            // Calculate tangent and bitangent
+            glm::vec3 delta_p1 = glm::vec3(v2[0], v2[1], v2[2]) - glm::vec3(v1[0], v1[1], v1[2]);
+            glm::vec3 delta_p2 = glm::vec3(v3[0], v3[1], v3[2]) - glm::vec3(v1[0], v1[1], v1[2]);
+            glm::vec2 delta_uv1 = glm::vec2(v2[12], v2[13]) - glm::vec2(v1[12], v1[13]);
+            glm::vec2 delta_uv2 = glm::vec2(v3[12], v3[13]) - glm::vec2(v1[12], v1[13]);
             float r = 1.0f / (delta_uv1.x * delta_uv2.y - delta_uv1.y * delta_uv2.x);
             glm::vec3 tan = (delta_p1 * delta_uv2.y - delta_p2 * delta_uv1.y) * r;
             glm::vec3 bitan = (delta_p2 * delta_uv1.x - delta_p1 * delta_uv2.x) * r;
 
-            v1.t = tan;
-            v2.t = tan;
-            v3.t = tan;
-            v1.b = bitan;
-            v2.b = bitan;
-            v3.b = bitan;
+            v1[6] = tan.x;
+            v1[7] = tan.y;
+            v1[8] = tan.z;
+            v2[6] = tan.x;
+            v2[7] = tan.y;
+            v2[8] = tan.z;
+            v3[6] = tan.x;
+            v3[7] = tan.y;
+            v3[8] = tan.z;
 
-            vertices.emplace_back(v1.p.x);
-            vertices.emplace_back(v1.p.y);
-            vertices.emplace_back(v1.p.z);
-            vertices.emplace_back(v1.n.x);
-            vertices.emplace_back(v1.n.y);
-            vertices.emplace_back(v1.n.z);
-            vertices.emplace_back(v1.t.x);
-            vertices.emplace_back(v1.t.y);
-            vertices.emplace_back(v1.t.z);
-            vertices.emplace_back(v1.b.x);
-            vertices.emplace_back(v1.b.y);
-            vertices.emplace_back(v1.b.z);
-            vertices.emplace_back(v1.uv.x);
-            vertices.emplace_back(v1.uv.y);
+            v1[9]  = bitan.x;
+            v1[10] = bitan.y;
+            v1[11] = bitan.z;
+            v2[9]  = bitan.x;
+            v2[10] = bitan.y;
+            v2[11] = bitan.z;
+            v3[9]  = bitan.x;
+            v3[10] = bitan.y;
+            v3[11] = bitan.z;
 
-            vertices.emplace_back(v2.p.x);
-            vertices.emplace_back(v2.p.y);
-            vertices.emplace_back(v2.p.z);
-            vertices.emplace_back(v2.n.x);
-            vertices.emplace_back(v2.n.y);
-            vertices.emplace_back(v2.n.z);
-            vertices.emplace_back(v2.t.x);
-            vertices.emplace_back(v2.t.y);
-            vertices.emplace_back(v2.t.z);
-            vertices.emplace_back(v2.b.x);
-            vertices.emplace_back(v2.b.y);
-            vertices.emplace_back(v2.b.z);
-            vertices.emplace_back(v2.uv.x);
-            vertices.emplace_back(v2.uv.y);
+            for (int32_t i = 0; i < 14; ++i)
+            {
+                vertices.emplace_back(v1[i]);
+            }
 
-            vertices.emplace_back(v3.p.x);
-            vertices.emplace_back(v3.p.y);
-            vertices.emplace_back(v3.p.z);
-            vertices.emplace_back(v3.n.x);
-            vertices.emplace_back(v3.n.y);
-            vertices.emplace_back(v3.n.z);
-            vertices.emplace_back(v3.t.x);
-            vertices.emplace_back(v3.t.y);
-            vertices.emplace_back(v3.t.z);
-            vertices.emplace_back(v3.b.x);
-            vertices.emplace_back(v3.b.y);
-            vertices.emplace_back(v3.b.z);
-            vertices.emplace_back(v3.uv.x);
-            vertices.emplace_back(v3.uv.y);
+            for (int32_t i = 0; i < 14; ++i)
+            {
+                vertices.emplace_back(v2[i]);
+            }
+
+            for (int32_t i = 0; i < 14; ++i)
+            {
+                vertices.emplace_back(v3[i]);
+            }
 
             indices.emplace_back((uint32_t)indices.size());
             indices.emplace_back((uint32_t)indices.size());
@@ -325,8 +307,8 @@ void Geometry::loadObj(std::string path)
         }
     }
     int32_t i = 0;
-    float *v = GM.memory().general_alloc_.alloc<float>((uint32_t)vertices.size());
-    uint32_t *ind = GM.memory().general_alloc_.alloc<uint32_t>((uint32_t)indices.size());
+    float *v = (float*)GM.memory().generalAlloc((uint32_t)vertices.size() * sizeof(float));
+    uint32_t *ind = (uint32_t*)GM.memory().generalAlloc((uint32_t)indices.size() * sizeof(uint32_t));
     for (float f : vertices)
     {
         v[i++] = f;

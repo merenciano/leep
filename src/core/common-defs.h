@@ -17,6 +17,18 @@
 
 #define MAX_INT32_VALUE = 2147483647
 
+float constexpr ByteToKilo(size_t x) 
+{
+    return x / 1024.0f;
+}
+
+float constexpr ByteToMega(size_t x)
+{
+    return ByteToKilo(x) / 1024.0f;
+}
+
+#define BYTE_TO_MEGA(x) (BYTE_TO_KILO(x) / 1024.0f)
+
 namespace leep 
 {
     enum CommonDefs     // Not an enum class because it is used to assign int32_t handlers
@@ -39,15 +51,6 @@ namespace leep
         NONE,
         RENDERABLE,
         FALLING_CUBE,
-    };
-
-    struct Vertex // TODO: remove this class (update the creategeometries without this)
-    {
-        glm::vec3 p;
-        glm::vec3 n;
-        glm::vec3 t;
-        glm::vec3 b;
-        glm::vec2 uv;
     };
 
     const uint32_t kEntitiesPerChunk = 128; 

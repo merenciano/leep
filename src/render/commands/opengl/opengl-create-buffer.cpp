@@ -21,7 +21,6 @@ namespace leep
                         r.buffers_[buffer_.handle()].count_ * sizeof(uint32_t),
                         (const void*)r.buffers_[buffer_.handle()].data_.indices_,
                         GL_STATIC_DRAW);
-            glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
         }
         else if (buffer_.type() != BufferType::NONE)
         {
@@ -30,9 +29,11 @@ namespace leep
                         r.buffers_[buffer_.handle()].count_ * sizeof(float),
                         (const void*)r.buffers_[buffer_.handle()].data_.vertices_,
                         GL_STATIC_DRAW);
-            glBindBuffer(GL_ARRAY_BUFFER, 0);
         }
         
-        r.buffers_[buffer_.handle()].gpu_version_ = r.buffers_[buffer_.handle()].cpu_version_; 
+        r.buffers_[buffer_.handle()].gpu_version_ = r.buffers_[buffer_.handle()].cpu_version_;
+
+        // Delete ram data now that has been copied into the vram
+        buffer_.freeSystemRamData();
     }
 }

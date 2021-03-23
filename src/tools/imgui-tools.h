@@ -24,9 +24,12 @@ namespace leep
         void update();
         void render();
 
+        void infoWindow(bool *show);
+        void luaCommands();
 		void entityInspector();
 		void componentInspector();
         void resourceInspector();
+        void memoryUsage();
 
         // Without the average the number change so often
         // that it's impossible to read it 
@@ -39,6 +42,11 @@ namespace leep
 	private:
 		std::string selected_entity_;
 		bool show_components_;
+        bool show_lua_commands_;
+        bool show_entity_inspector_;
+        bool show_component_inspector_;
+        bool show_resource_inspector_;
+        bool show_memory_usage_;
     };
 }
 
