@@ -33,6 +33,9 @@ namespace leep
 {
     enum CommonDefs     // Not an enum class because it is used to assign int32_t handlers
     {
+        TCP                     = 100,
+        UDP                     = 101,
+
         UNINIT_HANDLE           = -5000,
         DELETED_HANDLE          = -5001,
 
