@@ -44,58 +44,58 @@ static const char* kPrefilterEnvFragment = R"(
         return float(bits) * 2.3283064365386963e-10; // / 0x100000000
     }
 
-    vec2 Hammersley(uint i, uint N)
+    vec2 Hammersley(uint i, uint n)
     {
-        return vec2(float(i)/float(N), RadicalInverse_VdC(i));
+        return vec2(float(i)/float(n), RadicalInverse_VdC(i));
     }  
 
-    vec3 ImportanceSampleGGX(vec2 Xi, vec3 N, float roughness)
+    vec3 ImportanceSampleGGX(vec2 xi, vec3 n, float roughness)
     {
         float a = roughness*roughness;
         
-        float phi = 2.0 * PI * Xi.x;
-        float cosTheta = sqrt((1.0 - Xi.y) / (1.0 + (a*a - 1.0) * Xi.y));
-        float sinTheta = sqrt(1.0 - cosTheta*cosTheta);
+        float phi = 2.0 * PI * xi.x;
+        float cos_theta = sqrt((1.0 - xi.y) / (1.0 + (a*a - 1.0) * xi.y));
+        float sin_theta = sqrt(1.0 - cos_theta*cos_theta);
         
-        // from spherical coordinates to cartesian coordinates
-        vec3 H;
-        H.x = cos(phi) * sinTheta;
-        H.y = sin(phi) * sinTheta;
-        H.z = cosTheta;
+        // spherical to cartesian
+        vec3 h;
+        h.x = cos(phi) * sin_theta;
+        h.y = sin(phi) * sin_theta;
+        h.z = cos_theta;
         
-        // from tangent-space vector to world-space sample vector
-        vec3 up        = abs(N.z) < 0.999 ? vec3(0.0, 0.0, 1.0) : vec3(1.0, 0.0, 0.0);
-        vec3 tangent   = normalize(cross(up, N));
-        vec3 bitangent = cross(N, tangent);
+        // tangent-space to world-space
+        vec3 up = abs(n.z) < 0.999 ? vec3(0.0, 0.0, 1.0) : vec3(1.0, 0.0, 0.0);
+        vec3 tangent = normalize(cross(up, n));
+        vec3 bitangent = cross(n, tangent);
         
-        vec3 sampleVec = tangent * H.x + bitangent * H.y + N * H.z;
-        return normalize(sampleVec);
+        vec3 sample = tangent * h.x + bitangent * h.y + n * h.z;
+        return normalize(sample);
     }
 
     void main()
     {
-        vec3 N = normalize(position);    
-        vec3 R = N;
-        vec3 V = R;
+        vec3 n = normalize(position);    
+        vec3 r = n;
+        vec3 v = r;
 
-        float totalWeight = 0.0;   
-        vec3 prefilteredColor = vec3(0.0);     
+        float weight = 0.0;   
+        vec3 color = vec3(0.0);     
         for(uint i = 0u; i < kSampleCount; ++i)
         {
-            vec2 Xi = Hammersley(i, kSampleCount);
-            vec3 H  = ImportanceSampleGGX(Xi, N, u_roughness);
-            vec3 L  = normalize(2.0 * dot(V, H) * H - V);
+            vec2 xi = Hammersley(i, kSampleCount);
+            vec3 h  = ImportanceSampleGGX(xi, n, u_roughness);
+            vec3 l  = normalize(2.0 * dot(v, h) * h - v);
 
-            float NdotL = max(dot(N, L), 0.0);
-            if(NdotL > 0.0)
+            float NoL = max(dot(n, l), 0.0);
+            if(NoL > 0.0)
             {
-                prefilteredColor += texture(u_environment_map, L).rgb * NdotL;
-                totalWeight      += NdotL;
+                color += texture(u_environment_map, l).rgb * NoL;
+                weight += NoL;
             }
         }
-        prefilteredColor = prefilteredColor / totalWeight;
+        color = color / weight;
 
-        FragColor = vec4(prefilteredColor, 1.0);
+        FragColor = vec4(color, 1.0);
     }
 )";
 
