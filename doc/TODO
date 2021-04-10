@@ -1,2 +1,4 @@
-* init-material command!! That opengl calls shouldnt be in the internalmaterial init
-* check ps5 and xbox cpu cache lines capacity in order to set the correct chunksize and document it
+TODO:
+    - Time comparisons with raspberry pi and governor at powresave (document that)
+    - Pause and next frame button
+    - Async resource loader (default tex and cube in between)

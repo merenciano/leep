@@ -1,30 +1,29 @@
-#include "lut-gen.h"
+#include "full-screen-image.h"
 
 #include "core/common-defs.h"
 
-namespace leep {
-
-LutGen::LutGen()
+namespace leep
 {
-    internal_id_ = CommonDefs::UNINIT_INTERNAL_ID;
+    FullScreenImage::FullScreenImage()
+    {
+        internal_id_ = CommonDefs::UNINIT_INTERNAL_ID;
+    }
+
+    FullScreenImage::~FullScreenImage()
+    {
+
+    }
+
+    uint32_t FullScreenImage::internal_id() const
+    {
+        return internal_id_;
+    }
 }
-
-LutGen::~LutGen()
-{
-
-}
-
-uint32_t LutGen::internal_id() const
-{
-    return internal_id_;
-}
-
-} // namespace leep
 
 #ifdef LEEP_OPENGL
-    #include "render/materials/opengl/opengl-lut-gen.cpp"
+    #include "render/materials/opengl/opengl-full-screen-image.cpp"
 #endif
 
 #ifdef LEEP_OPENGL_ES
-    #include "render/materials/opengl-es/opengl-es-lut-gen.cpp"
+    #include "render/materials/opengl-es/opengl-es-full-screen-image.cpp"
 #endif

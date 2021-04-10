@@ -48,86 +48,85 @@ static const char* kLutGenFragment = R"(
         return vec2(i * kInvSampleCount, RadicalInverse_VdC(i));
     }
 
-    vec3 ImportanceSampleGGX(vec2 Xi, vec3 N, float roughness)
+    vec3 ImportanceSampleGGX(vec2 xi, vec3 n, float roughness)
     {
         float a = roughness*roughness;
         
-        float phi = 2.0 * kPI * Xi.x;
-        float cosTheta = sqrt((1.0 - Xi.y) / (1.0 + (a*a - 1.0) * Xi.y));
-        float sinTheta = sqrt(1.0 - cosTheta*cosTheta);
+        float phi = 2.0 * kPI * xi.x;
+        float cos_theta = sqrt((1.0 - xi.y) / (1.0 + (a*a - 1.0) * xi.y));
+        float sin_theta = sqrt(1.0 - cos_theta*cos_theta);
         
         // from spherical coordinates to cartesian coordinates - halfway vector
-        vec3 H;
-        H.x = cos(phi) * sinTheta;
-        H.y = sin(phi) * sinTheta;
-        H.z = cosTheta;
+        vec3 h;
+        h.x = cos(phi) * sin_theta;
+        h.y = sin(phi) * sin_theta;
+        h.z = cos_theta;
         
-        // from tangent-space H vector to world-space sample vector
-        vec3 up          = abs(N.z) < 0.999 ? vec3(0.0, 0.0, 1.0) : vec3(1.0, 0.0, 0.0);
-        vec3 tangent   = normalize(cross(up, N));
-        vec3 bitangent = cross(N, tangent);
+        // from tangent-space h vector to world-space sample vector
+        vec3 up = abs(n.z) < 0.999 ? vec3(0.0, 0.0, 1.0) : vec3(1.0, 0.0, 0.0);
+        vec3 tangent = normalize(cross(up, n));
+        vec3 bitangent = cross(n, tangent);
         
-        vec3 sampleVec = tangent * H.x + bitangent * H.y + N * H.z;
-        return normalize(sampleVec);
+        vec3 sample = tangent * h.x + bitangent * h.y + n * h.z;
+        return normalize(sample);
     }
 
-    float GeometrySchlickGGX(float NdotV, float roughness)
+    float GeometrySchlickGGX(float NoV, float roughness)
     {
-        // note that we use a different k for IBL
         float a = roughness;
         float k = (a * a) / 2.0;
 
-        float nom   = NdotV;
-        float denom = NdotV * (1.0 - k) + k;
+        float nom   = NoV;
+        float denom = NoV * (1.0 - k) + k;
 
         return nom / denom;
     }
 
-    float GeometrySmith(vec3 N, vec3 V, vec3 L, float roughness)
+    float GeometrySmith(vec3 n, vec3 v, vec3 l, float roughness)
     {
-        float NdotV = max(dot(N, V), 0.0);
-        float NdotL = max(dot(N, L), 0.0);
-        float ggx2 = GeometrySchlickGGX(NdotV, roughness);
-        float ggx1 = GeometrySchlickGGX(NdotL, roughness);
+        float NoV = max(dot(n, v), 0.0);
+        float NoL = max(dot(n, l), 0.0);
+        float ggx2 = GeometrySchlickGGX(NoV, roughness);
+        float ggx1 = GeometrySchlickGGX(NoL, roughness);
 
         return ggx1 * ggx2;
     }
 
-    vec2 IntegrateBRDF(float NdotV, float roughness)
+    vec2 IntegrateBRDF(float NoV, float roughness)
     {
-        vec3 V;
-        V.x = sqrt(1.0 - NdotV*NdotV);
-        V.y = 0.0;
-        V.z = NdotV;
+        vec3 v;
+        v.x = sqrt(1.0 - NoV*NoV);
+        v.y = 0.0;
+        v.z = NoV;
 
-        float A = 0.0;
-        float B = 0.0;
+        float a = 0.0;
+        float b = 0.0;
 
-        vec3 N = vec3(0.0, 0.0, 1.0);
+        vec3 n = vec3(0.0, 0.0, 1.0);
 
         for(uint i = 0u; i < kSampleCount; ++i)
         {
-            vec2 Xi = Hammersley(i);
-            vec3 H  = ImportanceSampleGGX(Xi, N, roughness);
-            vec3 L  = normalize(2.0 * dot(V, H) * H - V);
+            vec2 xi = Hammersley(i);
+            vec3 h  = ImportanceSampleGGX(xi, n, roughness);
+            vec3 l  = normalize(2.0 * dot(v, h) * h - v);
 
-            float NdotL = max(L.z, 0.0);
-            float NdotH = max(H.z, 0.0);
-            float VdotH = max(dot(V, H), 0.0);
+            float NoL = max(l.z, 0.0);
+            float NoH = max(h.z, 0.0);
+            float VoH = max(dot(v, h), 0.0);
 
-            if(NdotL > 0.0)
+            if(NoL > 0.0)
             {
-                float G = GeometrySmith(N, V, L, roughness);
-                float G_Vis = (G * VdotH) / (NdotH * NdotV);
-                float Fc = pow(1.0 - VdotH, 5.0);
+                float g = GeometrySmith(n, v, l, roughness);
+                float g_vis = (g * VoH) / (NoH * NoV);
+                float fc = pow(1.0 - VoH, 5.0);
 
-                A += (1.0 - Fc) * G_Vis;
-                B += Fc * G_Vis;
+                a += (1.0 - fc) * g_vis;
+                b += fc * g_vis;
             }
         }
-        A *= kInvSampleCount;
-        B *= kInvSampleCount;
-        return vec2(A, B);
+        a *= kInvSampleCount;
+        b *= kInvSampleCount;
+        return vec2(a, b);
     }
 
     void main() {
@@ -147,9 +146,7 @@ static const char* kLutGen2Fragment = R"(
     const float kInvSampleCount = 1.0 / float(kSampleCount);
     const float kEpsilon = 0.001; // This program needs larger eps.
 
-    // Compute Van der Corput radical inverse
-    // See: http://holger.dammertz.org/stuff/notes_HammersleyOnHemisphere.html
-    float radicalInverse_VdC(uint bits)
+    float RadicalInverse_VdC(uint bits)
     {
         bits = (bits << 16u) | (bits >> 16u);
         bits = ((bits & 0x55555555u) << 1u) | ((bits & 0xAAAAAAAAu) >> 1u);
@@ -160,80 +157,71 @@ static const char* kLutGen2Fragment = R"(
     }
 
     // Sample i-th point from Hammersley point set of NumSamples points total.
-    vec2 sampleHammersley(uint i)
+    vec2 SampleHammersley(uint i)
     {
-        return vec2(i * kInvSampleCount, radicalInverse_VdC(i));
+        return vec2(i * kInvSampleCount, RadicalInverse_VdC(i));
     }
 
-    // Importance sample GGX normal distribution function for a fixed roughness value.
-    // This returns normalized half-vector between Li & Lo.
-    // For derivation see: http://blog.tobias-franke.eu/2014/03/30/notes_on_importance_sampling.html
-    vec3 sampleGGX(float u1, float u2, float roughness)
+    vec3 SampleGGX(float u1, float u2, float roughness)
     {
         float alpha = roughness * roughness;
 
-        float cosTheta = sqrt((1.0 - u2) / (1.0 + (alpha*alpha - 1.0) * u2));
-        float sinTheta = sqrt(1.0 - cosTheta*cosTheta); // Trig. identity
+        float cos_theta = sqrt((1.0 - u2) / (1.0 + (alpha*alpha - 1.0) * u2));
+        float sin_theta = sqrt(1.0 - cos_theta*cos_theta);
         float phi = kTwoPI * u1;
 
         // Convert to Cartesian upon return.
-        return vec3(sinTheta * cos(phi), sinTheta * sin(phi), cosTheta);
+        return vec3(sin_theta * cos(phi), sin_theta * sin(phi), cos_theta);
     }
 
     // Single term for separable Schlick-GGX below.
-    float gaSchlickG1(float cosTheta, float k)
+    float GASchlickG1(float cos_theta, float k)
     {
-        return cosTheta / (cosTheta * (1.0 - k) + k);
+        return cos_theta / (cos_theta * (1.0 - k) + k);
     }
 
     // Schlick-GGX approximation of geometric attenuation function using Smith's method (IBL version).
-    float gaSchlickGGX_IBL(float cosLi, float cosLo, float roughness)
+    float GASchlickGGX_IBL(float cos_li, float cos_lo, float roughness)
     {
         float r = roughness;
-        float k = (r * r) / 2.0; // Epic suggests using this roughness remapping for IBL lighting.
-        return gaSchlickG1(cosLi, k) * gaSchlickG1(cosLo, k);
+        float k = (r * r) / 2.0;
+        return GASchlickG1(cos_li, k) * GASchlickG1(cos_lo, k);
     }
 
     void main() {
-        // Get integration parameters.
-	    float cosLo = uv.x;
 	    float roughness = uv.y;
-        // Make sure viewing angle is non-zero to avoid divisions by zero (and subsequently NaNs).
-	    cosLo = max(cosLo, kEpsilon);
+	    float cos_lo = max(uv.x, kEpsilon);
 
-	    // Derive tangent-space viewing vector from angle to normal (pointing towards +Z in this reference frame).
-	    vec3 Lo = vec3(sqrt(1.0 - cosLo*cosLo), 0.0, cosLo);
+        // viewing direction
+	    vec3 lo = vec3(sqrt(1.0 - cos_lo*cos_lo), 0.0, cos_lo);
 
-        // We will now pre-integrate Cook-Torrance BRDF for a solid white environment and save results into a 2D LUT.
-        // DFG1 & DFG2 are terms of split-sum approximation of the reflectance integral.
-        // For derivation see: "Moving Frostbite to Physically Based Rendering 3.0", SIGGRAPH 2014, section 4.9.2.
-        float DFG1 = 0;
-        float DFG2 = 0;
+        float dfg1 = 0;
+        float dfg2 = 0;
 
         for(uint i=0u; i < kSampleCount; ++i) {
-            vec2 u  = sampleHammersley(i);
+            vec2 u = SampleHammersley(i);
+            // half-vector
+            vec3 lh = SampleGGX(u.x, u.y, roughness);
 
-            // Sample directly in tangent/shading space since we don't care about reference frame as long as it's consistent.
-            vec3 Lh = sampleGGX(u.x, u.y, roughness);
+            // Incident direction
+            vec3 li = 2.0 * dot(lo, lh) * lh - lo;
 
-            // Compute incident direction (Li) by reflecting viewing direction (Lo) around half-vector (Lh).
-            vec3 Li = 2.0 * dot(Lo, Lh) * Lh - Lo;
+            float cos_li = li.z;
+            float cos_lh = lh.z;
+            float cos_lo_lh = max(dot(lo, lh), 0.0);
 
-            float cosLi   = Li.z;
-            float cosLh   = Lh.z;
-            float cosLoLh = max(dot(Lo, Lh), 0.0);
+            if(cos_li > 0.0)
+            {
+                float g  = GASchlickGGX_IBL(cos_li, cos_lo, roughness);
+                float gv = g * cos_lo_lh / (cos_lh * cos_lo);
+                float fc = pow(1.0 - cos_lo_lh, 5);
 
-            if(cosLi > 0.0) {
-                float G  = gaSchlickGGX_IBL(cosLi, cosLo, roughness);
-                float Gv = G * cosLoLh / (cosLh * cosLo);
-                float Fc = pow(1.0 - cosLoLh, 5);
-
-                DFG1 += (1 - Fc) * Gv;
-                DFG2 += Fc * Gv;
+                dfg1 += (1 - fc) * gv;
+                dfg2 += fc * gv;
             }
         }
 
-        FragColor = vec2(DFG1 * kInvSampleCount, DFG2 * kInvSampleCount);
+        FragColor = vec2(dfg1 * kInvSampleCount, dfg2 * kInvSampleCount);
     }
 )";
 
