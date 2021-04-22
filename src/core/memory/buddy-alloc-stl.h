@@ -8,7 +8,7 @@
 namespace leep
 {
     template <typename T>
-    class stl_buddy
+    class BuddySTL
     {
     public:
         typedef size_t size_type;
@@ -18,11 +18,11 @@ namespace leep
         typedef const T& const_reference;
         typedef T value_type;
 
-        stl_buddy(){}
-        ~stl_buddy(){}
+        BuddySTL(){}
+        ~BuddySTL(){}
 
-        template <class U> struct rebind { typedef stl_buddy<U> other; };
-        template <class U> stl_buddy(const stl_buddy<U>&){}
+        template <class U> struct rebind { typedef BuddySTL<U> other; };
+        template <class U> BuddySTL(const BuddySTL<U>&){}
 
         pointer address(reference x) const {return &x;}
         const_pointer address(const_reference x) const {return &x;}

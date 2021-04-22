@@ -17,7 +17,7 @@ namespace leep
         LTransform *parent = nullptr;
         LTransform *self   = nullptr;
         GTransform *global = nullptr;
-        std::list<LTransform*, stl_buddy<LTransform*>> childs;
+        std::list<LTransform*, BuddySTL<LTransform*>> childs;
     };
 
     class SceneGraph 
@@ -59,7 +59,7 @@ namespace leep
             SceneGraphNode,
             std::hash<LTransform*>,
             std::equal_to<LTransform*>,
-            stl_buddy<std::pair<LTransform* const, SceneGraphNode>>> map_;
+            BuddySTL<std::pair<LTransform* const, SceneGraphNode>>> map_;
     };
 }
 

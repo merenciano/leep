@@ -25,7 +25,7 @@ namespace leep
         uint64_t mask() const;
 #endif
 
-        std::deque<EntityChunk*, stl_buddy<EntityChunk*>> blocks_;
+        std::deque<EntityChunk*, BuddySTL<EntityChunk*>> blocks_;
         //EntityChunk *chunks_[20];
         
     private:

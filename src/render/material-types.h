@@ -35,8 +35,7 @@ namespace leep
 		float padding;
 		float roughness_;
 		float metallic_;
-		float reflectance_;
-		float paddingg;
+		float paddingg[2];
     };
 
     struct EquirecToCubeData

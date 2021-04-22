@@ -45,13 +45,13 @@ namespace leep
             EntityIndex,
             std::hash<std::string>,
             std::equal_to<std::string>,
-            stl_buddy<std::pair<const std::string, EntityIndex>>> map_;
+            BuddySTL<std::pair<const std::string, EntityIndex>>> map_;
         std::unordered_map<
             EntityIndex,
             std::string,
             EntityIndex::HashFunction,
             std::equal_to<EntityIndex>,
-            stl_buddy<std::pair<const EntityIndex, std::string>>> rmap_;
+            BuddySTL<std::pair<const EntityIndex, std::string>>> rmap_;
     };
 }
 

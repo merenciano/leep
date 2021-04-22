@@ -91,7 +91,7 @@ namespace leep
         // TODO: Move the camera here
         InternalFramebuffer framebuffer_;
         std::vector<InternalFramebuffer,
-                    stl_buddy<InternalFramebuffer>> framebuffers_;
+                    BuddySTL<InternalFramebuffer>> framebuffers_;
 
         InternalMaterial **materials_;
         int8_t *mat_pool_;

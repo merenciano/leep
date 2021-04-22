@@ -42,7 +42,7 @@ namespace leep
 #endif
 
         // ptr to ptr
-        std::vector<Component*, stl_buddy<Component*>> comps_;
+        std::vector<Component*, BuddySTL<Component*>> comps_;
         const EntityType type_;
         int32_t last_;  // last points to the next unused entity (not a valid one)
         int32_t index_; // index of the chunk in the chunk container

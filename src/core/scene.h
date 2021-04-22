@@ -25,7 +25,7 @@ namespace leep
             EntityContainer,
             std::hash<EntityType>,
             std::equal_to<EntityType>,
-            stl_buddy<std::pair<const EntityType, EntityContainer>>> *entities_;
+            BuddySTL<std::pair<const EntityType, EntityContainer>>> *entities_;
 
         SceneGraph scene_graph_;
         EntityMap entity_map_;

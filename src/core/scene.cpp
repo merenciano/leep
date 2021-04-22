@@ -11,7 +11,7 @@ Scene::Scene()
         EntityContainer,
         std::hash<EntityType>,
         std::equal_to<EntityType>,
-        stl_buddy<std::pair<const EntityType, EntityContainer>>>>(1);
+        BuddySTL<std::pair<const EntityType, EntityContainer>>>>(1);
     LEEP_CORE_ASSERT(entities_, "Entities map allocation failed");
 }
 

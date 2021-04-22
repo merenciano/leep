@@ -33,7 +33,6 @@ void leep::Init()
     mat_data.tiling_y_ = 1.0f;
     mat_data.metallic_ = 0.5f;
     mat_data.roughness_ = 0.4f;
-    mat_data.reflectance_ = 0.5f;
     
     for (int i = 0; i < 900; ++i)
     {

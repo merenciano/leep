@@ -129,7 +129,12 @@ int main(int argc, char **argv)
         LeepRender();
 #endif
         MTR_BEGIN("LEEP", "Swap_Buffers");
+        leep::Chrono swap_timer;
+        swap_timer.start();
         leep::GM.nextFrame();
+        swap_timer.end();
+        // Swap duration adds to render time
+        leep::GM.ui_tools().calcRenderAverage(swap_timer.duration());
         MTR_END("LEEP", "Swap_Buffers");
     }
     mtr_flush();

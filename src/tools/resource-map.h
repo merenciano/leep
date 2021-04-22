@@ -31,13 +31,13 @@ namespace leep
             Geometry,
             std::hash<std::string>,
             std::equal_to<std::string>,
-            stl_buddy<std::pair<const std::string, Geometry>>> geometries_;
+            BuddySTL<std::pair<const std::string, Geometry>>> geometries_;
         std::unordered_map<
             std::string,
             Texture,
             std::hash<std::string>,
             std::equal_to<std::string>,
-            stl_buddy<std::pair<const std::string, Texture>>> textures_;
+            BuddySTL<std::pair<const std::string, Texture>>> textures_;
     };
 }
 
