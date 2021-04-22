@@ -13,7 +13,6 @@
 
 namespace leep
 {
-    static EntityMap s_map_;
     class Entity
     {
     public:
@@ -29,7 +28,7 @@ namespace leep
         template<typename C>
         C& getComponent()
         {
-            EntityContainer &c = GM.memory().container(type_);
+            EntityContainer &c = GM.scene().container(type_);
             for (size_t i = 0; i < c.blocks_.at(ChunkI(index_))->comps_.size(); ++i)
             {
                 if (C::s_type == c.blocks_.at(ChunkI(index_))->comps_[i][0].type())
@@ -48,7 +47,7 @@ namespace leep
         template<typename C>
         C* componentPtr()
         {
-            EntityContainer &c = GM.memory().container(type_);
+            EntityContainer &c = GM.scene().container(type_);
             for (size_t i = 0; i < c.blocks_.at(ChunkI(index_))->comps_.size(); ++i)
             {
                 if (C::s_type == c.blocks_.at(ChunkI(index_))->comps_[i][0].type())

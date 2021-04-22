@@ -4,6 +4,7 @@
 #define __LEEP_ECS_ENTITY_MAP_H__
 
 #include "core/common-defs.h"
+#include "core/memory/buddy-alloc-stl.h"
 
 #include <stdint.h>
 #include <unordered_map>
@@ -39,8 +40,18 @@ namespace leep
         std::string getEntityName(int32_t i, EntityType t);
 
     private:
-        std::unordered_map<std::string, EntityIndex> map_;
-        std::unordered_map<EntityIndex, std::string, EntityIndex::HashFunction> rmap_;
+        std::unordered_map<
+            std::string,
+            EntityIndex,
+            std::hash<std::string>,
+            std::equal_to<std::string>,
+            BuddySTL<std::pair<const std::string, EntityIndex>>> map_;
+        std::unordered_map<
+            EntityIndex,
+            std::string,
+            EntityIndex::HashFunction,
+            std::equal_to<EntityIndex>,
+            BuddySTL<std::pair<const EntityIndex, std::string>>> rmap_;
     };
 }
 

@@ -1,9 +1,9 @@
 #ifndef __LEEP_CORE_MANAGER_H__
-#define __LEEP_CORE_MANAGER_H__ 1
-
-#include <atomic>
+#define __LEEP_CORE_MANAGER_H__
 
 #define GM Manager::instance()
+
+#include "core/memory/memory.h"
 
 namespace leep 
 {
@@ -26,7 +26,7 @@ namespace leep
         class Input&       input();
         class Memory&      memory();
         class ImguiTools&  ui_tools();
-        class SceneGraph&  scene_graph();
+        class Scene&       scene();
         class ResourceMap& resource_map();
         struct ToolsData&  tools_data();
         float delta_time() const;
@@ -38,6 +38,7 @@ namespace leep
 
         struct ManagerData;
         ManagerData *data_;
+        Memory memory_;
     };
 }
 

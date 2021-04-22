@@ -5,7 +5,7 @@
 #include "core/input.h"
 #include "core/chrono.h"
 #include "core/memory/memory.h"
-#include "core/scene-graph.h"
+#include "core/scene.h"
 #include "render/renderer.h"
 #include "render/camera.h"
 #include "tools/imgui-tools.h"
@@ -24,9 +24,8 @@ namespace leep
         Renderer    renderer_;
         Camera      camera_;
         Input       input_;
-        Memory      memory_;
         ImguiTools  ui_tools_;
-        SceneGraph  scene_graph_;
+        Scene       scene_;
         ResourceMap resource_map_;
         ToolsData   tools_data_;
 
@@ -38,9 +37,11 @@ namespace leep
     {
         LEEP_ASSERT(IsPow2(kEntitiesPerChunk),
             "This constant value must be power of 2");
-        // Manager has the same life as the app, so I don't care of its deletion 
-        data_ = new ManagerData();
-        data_->memory_.init();
+        // TODO: Organize this in a different way in order to use the
+        // generalAlloc for this struct
+        // (maybe memory instantiated inside this class).
+        memory_.init();
+        data_ = memory_.generalAllocT<ManagerData>(1);
         data_->window_.createWindow(1280, 720, true);
         data_->renderer_.init();
         data_->camera_.init();
@@ -77,9 +78,9 @@ namespace leep
     Renderer&    Manager::renderer()      { return data_->renderer_; }
     Camera&      Manager::camera()        { return data_->camera_; }
     Input&       Manager::input()         { return data_->input_; }
-    Memory&      Manager::memory()        { return data_->memory_; }
+    Memory&      Manager::memory()        { return memory_; }
     ImguiTools&  Manager::ui_tools()      { return data_->ui_tools_; }
-    SceneGraph&  Manager::scene_graph()   { return data_->scene_graph_; }
+    Scene&       Manager::scene()         { return data_->scene_; }
     ResourceMap& Manager::resource_map()  { return data_->resource_map_; }
     ToolsData&   Manager::tools_data()    { return data_->tools_data_; }
 }

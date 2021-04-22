@@ -79,7 +79,7 @@ project "leep"
     }
     
     configuration "vs2019"
-        defines {"_CRT_SECURE_NO_WARNINGS", "_GLFW_WIN32", }
+        defines {"_CRT_SECURE_NO_WARNINGS", "_GLFW_WIN32", "LEEP_WIN", }
 
         files {
             "./extern/src/GLFW/win32_platform.h",
@@ -95,7 +95,7 @@ project "leep"
         }
 
     configuration "gmake"
-        defines { "_GLFW_X11", "LUA_USE_POSIX",}
+        defines { "_GLFW_X11", "LUA_USE_POSIX", "LEEP_LINUX", }
         links { "X11", "dl", "pthread"  }
         buildoptions { "-Wall",  }
 

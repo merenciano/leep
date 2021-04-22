@@ -170,7 +170,7 @@ void *BuddyAlloc::alloc(size_t size)
             ptr = (int8_t*)blocks_[block].pop();
         }
 
-        rsize = (size_t)(1 << (kMaxAllocExp - block));
+        rsize = (size_t)1 << (size_t)(kMaxAllocExp - block);
         if (block < original_block)
         {
             bytes_needed = rsize / 2 + sizeof(CList::Node);

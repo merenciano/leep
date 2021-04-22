@@ -23,7 +23,7 @@ void leep::Init()
         */
     }
 
-    GM.memory().createContainer(EntityType::RENDERABLE);
+    GM.scene().createContainer(EntityType::RENDERABLE);
 
     PbrData mat_data;
     mat_data.color_ = glm::vec3(0.3f, 0.3f, 0.3f);
@@ -33,9 +33,8 @@ void leep::Init()
     mat_data.tiling_y_ = 1.0f;
     mat_data.metallic_ = 0.5f;
     mat_data.roughness_ = 0.4f;
-    mat_data.reflectance_ = 0.5f;
     
-    for (int i = 0; i < 90; ++i)
+    for (int i = 0; i < 900; ++i)
     {
         Entity e = Entity::CreateEntity("Cube" + std::to_string(i), EntityType::RENDERABLE);
         LTransform &tr = e.getComponent<LTransform>();
@@ -74,7 +73,7 @@ void leep::Logic()
 {
     GM.input().updateInput();
     CameraMovement(1.0f, 1.0f).executeSystem();
-    UpdateTransform(GM.memory().container(EntityType::RENDERABLE)).executeSystem();
+    UpdateTransform(GM.scene().container(EntityType::RENDERABLE)).executeSystem();
     UpdateSceneGraph().executeSystem();
     //Entity::GetEntity("Pipa").getComponent<LTransform>().rotateYWorld(0.001f);
     // Render commands
@@ -110,7 +109,7 @@ void leep::Logic()
 
     dl.submit();
 
-    Render(GM.memory().container(EntityType::RENDERABLE)).executeSystem();
+    Render(GM.scene().container(EntityType::RENDERABLE)).executeSystem();
     
     dl.addCommand<RenderOptions>()
         .set_cull_face(CullFace::DISABLED);

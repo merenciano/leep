@@ -1,6 +1,8 @@
 #include "entity-container.h"
+#include "core/common-defs.h"
 #include "core/manager.h"
 #include "core/memory/memory.h"
+#include "core/memory/entity-chunk.h"
 
 namespace leep
 {
