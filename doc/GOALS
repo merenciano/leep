@@ -1,8 +1,0 @@
--For the engine:
-*PBR
-*DOD
-*Add various backends (OpenGL, Vulkan, DirectX)
-
-
--For the documentation:
-*Test render times with DOD and Entity class and compare
