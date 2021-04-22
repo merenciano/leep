@@ -5,6 +5,7 @@
 
 #include "ecs/component.h"
 #include "core/common-defs.h"
+#include "core/memory/buddy-alloc-stl.h"
 #include <stdint.h>
 #include <vector>
 
@@ -26,7 +27,7 @@ namespace leep
         template<typename C>
         C* component()
         {
-            for (Component *comp : comps_)
+            for (auto comp : comps_)
             {
                 if (comp->type() == C::s_type)
                 {
@@ -41,7 +42,7 @@ namespace leep
 #endif
 
         // ptr to ptr
-        std::vector<Component*> comps_;
+        std::vector<Component*, stl_buddy<Component*>> comps_;
         const EntityType type_;
         int32_t last_;  // last points to the next unused entity (not a valid one)
         int32_t index_; // index of the chunk in the chunk container

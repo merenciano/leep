@@ -5,6 +5,7 @@
 #include "../src/core/logger.h"
 #include "../src/core/chrono.h"
 #include "../src/core/input.h"
+#include "../src/core/scene.h"
 #include "../src/core/logic-thread.h"
 #include "../src/core/memory/memory.h"
 

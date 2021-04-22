@@ -1,6 +1,7 @@
 #include "imgui-tools.h"
 #include "core/manager.h"
 #include "core/memory/memory.h"
+#include "core/scene.h"
 #include "render/renderer.h"
 #include "ecs/entity.h"
 #include "ecs/components/ltransform.h"
@@ -187,8 +188,8 @@ namespace leep
             return;
         }
 
-        auto it = GM.memory().entities_.begin();
-        while(it != GM.memory().entities_.end())
+        auto it = GM.scene().entities_->begin();
+        while(it != GM.scene().entities_->end())
         {
             std::string header_name;
             switch(it->first)

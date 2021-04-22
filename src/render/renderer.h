@@ -4,6 +4,7 @@
 #define __LEEP_RENDER_RENDERER_H__
 
 #include "core/memory/memory.h"
+#include "core/memory/buddy-alloc-stl.h"
 #include "render/geometry.h"
 #include "render/internal-resources.h"
 #include "render/material-types.h"
@@ -89,7 +90,8 @@ namespace leep
 
         // TODO: Move the camera here
         InternalFramebuffer framebuffer_;
-        std::vector<InternalFramebuffer> framebuffers_;
+        std::vector<InternalFramebuffer,
+                    stl_buddy<InternalFramebuffer>> framebuffers_;
 
         InternalMaterial **materials_;
         int8_t *mat_pool_;

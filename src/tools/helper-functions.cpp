@@ -1,7 +1,7 @@
 #include "helper-functions.h"
 
 #include "core/manager.h"
-#include "core/scene-graph.h"
+#include "core/scene.h"
 #include "ecs/entity.h"
 #include "ecs/components/drawable.h"
 #include "tools/resource-map.h"
@@ -41,15 +41,15 @@ void leep::SetParent(std::string entity_name, std::string parent_name)
     LTransform &pltr = Entity::GetEntity(parent_name).getComponent<LTransform>();
     GTransform &egtr = Entity::GetEntity(entity_name).getComponent<GTransform>();
     GTransform &pgtr = Entity::GetEntity(parent_name).getComponent<GTransform>();
-    GM.scene_graph().createNode(&eltr, &egtr);
-    GM.scene_graph().createNode(&pltr, &pgtr);
-    GM.scene_graph().setParent(&eltr, &pltr);
+    GM.scene().scene_graph_.createNode(&eltr, &egtr);
+    GM.scene().scene_graph_.createNode(&pltr, &pgtr);
+    GM.scene().scene_graph_.setParent(&eltr, &pltr);
 }
 
 void leep::DetachFromParent(std::string entity_name)
 {
     LTransform &eltr = Entity::GetEntity(entity_name).getComponent<LTransform>();
-    GM.scene_graph().detachFromParent(&eltr);
+    GM.scene().scene_graph_.detachFromParent(&eltr);
 }
 
 void leep::SetLocation(std::string entity_name, float x, float y, float z)

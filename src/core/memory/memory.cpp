@@ -21,6 +21,7 @@ void Memory::init()
     }
     offset_ = mem_;
     buddy_.init();
+
 }
 
 void *Memory::persistentAlloc(size_t size)
@@ -56,14 +57,5 @@ size_t Memory::bytesUsed() const
     return offset_ - mem_;
 }
 
-EntityContainer &Memory::container(EntityType t)
-{
-    return entities_.at(t);
-}
-
-void Memory::createContainer(EntityType t)
-{
-    entities_.emplace(std::make_pair(t, t));
-}
 
 } // namespace leep

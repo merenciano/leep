@@ -1,6 +1,7 @@
 #include "update-scene-graph.h"
 #include "core/common-defs.h"
 #include "core/manager.h"
+#include "core/scene.h"
 
 namespace leep
 {
@@ -13,7 +14,7 @@ namespace leep
         }
     }
 
-    UpdateSceneGraph::UpdateSceneGraph() : sg_(GM.scene_graph())
+    UpdateSceneGraph::UpdateSceneGraph() : sg_(GM.scene().scene_graph_)
     {
     }
 
