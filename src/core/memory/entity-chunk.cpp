@@ -2,7 +2,7 @@
 
 #include "core/manager.h"
 #include "core/memory/memory.h"
-#include "core/scene-graph.h"
+#include "core/scene.h"
 #include "ecs/components/drawable.h"
 #include "ecs/components/ltransform.h"
 #include "ecs/components/gtransform.h"
@@ -39,9 +39,10 @@ namespace leep
         LEEP_ASSERT(a && i < kEntitiesPerChunk, "Wrong parameters");
         FallingCubeEntities *chunk = static_cast<FallingCubeEntities*>(a);
         // Update pointers in the scene graph
-        GM.scene_graph().changeTransform(static_cast<LTransform*>(&(comps_[0][last_ - 1])),
-                                         static_cast<LTransform*>(&(chunk->comps_[0][i])),
-                                         static_cast<GTransform*>(&(chunk->comps_[4][i])));
+        GM.scene().scene_graph_.changeTransform(
+            static_cast<LTransform*>(&(comps_[0][last_ - 1])),
+            static_cast<LTransform*>(&(chunk->comps_[0][i])),
+            static_cast<GTransform*>(&(chunk->comps_[4][i])));
         // Do the relocation
         static_cast<LTransform*>(chunk->comps_[0])[i] = static_cast<LTransform*>(comps_[0])[last_ - 1];
         static_cast<Drawable*>(chunk->comps_[1])[i] = static_cast<Drawable*>(comps_[1])[last_ - 1];
@@ -82,13 +83,17 @@ namespace leep
         LEEP_ASSERT(a && i < kEntitiesPerChunk, "Wrong parameters");
         RenderableEC *chunk = static_cast<RenderableEC*>(a);
         // Update pointers in the scene graph
-        GM.scene_graph().changeTransform(static_cast<LTransform*>(&(comps_[0][last_ - 1])),
-                                         static_cast<LTransform*>(&(chunk->comps_[0][i])),
-                                         static_cast<GTransform*>(&(chunk->comps_[1][i])));
+        GM.scene().scene_graph_.changeTransform(
+            static_cast<LTransform*>(&(comps_[0][last_ - 1])),
+            static_cast<LTransform*>(&(chunk->comps_[0][i])),
+            static_cast<GTransform*>(&(chunk->comps_[1][i])));
         // Do the relocation
-        static_cast<LTransform*>(chunk->comps_[0])[i] = static_cast<LTransform*>(comps_[0])[last_ - 1];
-        static_cast<GTransform*>(chunk->comps_[1])[i] = static_cast<GTransform*>(comps_[1])[last_ - 1];
-        static_cast<Drawable*>(chunk->comps_[2])[i] = static_cast<Drawable*>(comps_[2])[last_ - 1];
+        static_cast<LTransform*>(chunk->comps_[0])[i] =
+            static_cast<LTransform*>(comps_[0])[last_ - 1];
+        static_cast<GTransform*>(chunk->comps_[1])[i] =
+            static_cast<GTransform*>(comps_[1])[last_ - 1];
+        static_cast<Drawable*>(chunk->comps_[2])[i] =
+            static_cast<Drawable*>(comps_[2])[last_ - 1];
 #ifdef LEEP_DEBUG
         static_cast<LTransform*>(comps_[0])[last_ - 1] = LTransform();
         static_cast<GTransform*>(comps_[1])[last_ - 1] = GTransform();

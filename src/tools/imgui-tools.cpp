@@ -1,6 +1,7 @@
 #include "imgui-tools.h"
 #include "core/manager.h"
 #include "core/memory/memory.h"
+#include "core/scene.h"
 #include "render/renderer.h"
 #include "ecs/entity.h"
 #include "ecs/components/ltransform.h"
@@ -13,9 +14,8 @@
 
 #include <glm/gtc/type_ptr.hpp>
 #include <ImGui/imgui.h>
-#include <ImGui/imgui_impl_opengl3.h> // TODO: implement it myself
+#include <ImGui/imgui_impl_opengl3.h> // TODO: implement it using Leep renderer
 #include <ImGui/imgui_impl_glfw.h>
-#include <GLFW/glfw3.h> // remove this when implementing input
 
 namespace leep
 {
@@ -51,7 +51,7 @@ namespace leep
         ImGui_ImplOpenGL3_NewFrame();
         ImGui_ImplGlfw_NewFrame();
         ImGui::NewFrame();
-        static bool show_demo = true;
+        static bool show_demo = false;
         if (show_demo)
             ImGui::ShowDemoWindow(&show_demo);
 
@@ -88,16 +88,18 @@ namespace leep
         }
     }
 
+    // This function adds 64 values and then div by 32 because
+    // each frame it takes 2 values that add together (render and swap times)
     void ImguiTools::calcRenderAverage(float frame) const
     {
         static int32_t i = 0;
-        static float previous[32];
+        static float previous[64];
         previous[i++] = frame;
-        if (i == 32)
+        if (i == 64)
         {
             float avg = 0.0f;
             i = 0;
-            for (int j = 0; j < 32; ++j)
+            for (int j = 0; j < 64; ++j)
             {
                 avg += previous[j];
             }
@@ -119,7 +121,9 @@ namespace leep
 
     void ImguiTools::infoWindow(bool *show)
     {
-        if (!ImGui::Begin("Basic APP Info", show, ImGuiWindowFlags_MenuBar))
+        ImGui::SetNextWindowPos(ImVec2(10, 10), ImGuiCond_FirstUseEver);
+
+        if (!ImGui::Begin("Basic APP Info", show, ImGuiWindowFlags_MenuBar | ImGuiWindowFlags_AlwaysAutoResize))
         {
             // Early out if the window is collapsed, as an optimization.
             ImGui::End();
@@ -163,7 +167,8 @@ namespace leep
     void ImguiTools::luaCommands()
     {
         static bool show = true;
-        if (!ImGui::Begin("Insert Lua Commands", &show, 0))
+        ImGui::SetNextWindowPos(ImVec2(240, 10), ImGuiCond_FirstUseEver);
+        if (!ImGui::Begin("Insert Lua Commands", &show, ImGuiWindowFlags_AlwaysAutoResize))
         {
             // Early out if the window is collapsed, as an optimization.
             ImGui::End();
@@ -180,15 +185,16 @@ namespace leep
 
     void ImguiTools::entityInspector()
     {
-        if (!ImGui::Begin("Entity inspector", &show_entity_inspector_, 0))
+        ImGui::SetNextWindowPos(ImVec2(10, 150), ImGuiCond_FirstUseEver);
+        if (!ImGui::Begin("Entity inspector", &show_entity_inspector_, ImGuiWindowFlags_AlwaysAutoResize))
         {
             // Early out if the window is collapsed, as an optimization.
             ImGui::End();
             return;
         }
 
-        auto it = GM.memory().entities_.begin();
-        while(it != GM.memory().entities_.end())
+        auto it = GM.scene().entities_->begin();
+        while(it != GM.scene().entities_->end())
         {
             std::string header_name;
             switch(it->first)
@@ -256,9 +262,9 @@ namespace leep
         {
             return;
         }
-
+        ImGui::SetNextWindowPos(ImVec2(185, 150), ImGuiCond_FirstUseEver);
         snprintf(window_title, 64, "Components of %s", selected_entity_.c_str());
-		if (!ImGui::Begin(window_title, &show_components_, 0))
+		if (!ImGui::Begin(window_title, &show_components_, ImGuiWindowFlags_AlwaysAutoResize))
 		{
 			// Early out if the window is collapsed, as an optimization.
 			ImGui::End();
@@ -288,7 +294,6 @@ namespace leep
                 ImGui::SliderFloat  ("Use PBR maps"     , &data.use_pbr_maps_   , 0.0f, 1.0f);
                 ImGui::SliderFloat  ("Roughness"        , &data.roughness_      , 0.0f, 1.0f);
                 ImGui::SliderFloat  ("Metallic"         , &data.metallic_       , 0.0f, 1.0f);
-                ImGui::SliderFloat  ("Reflectance"      , &data.reflectance_    , 0.0f, 1.0f);
                 dw.material_.set_data(data);
             }
         }
@@ -302,7 +307,8 @@ namespace leep
             ImGuiTableFlags_RowBg | ImGuiTableFlags_BordersOuter |
             ImGuiTableFlags_BordersV | ImGuiTableFlags_Resizable |
             ImGuiTableFlags_Reorderable | ImGuiTableFlags_Hideable;
-        if (!ImGui::Begin("Resource inspector", &show, 0))
+        ImGui::SetNextWindowPos(ImVec2(1050, 10), ImGuiCond_FirstUseEver);
+        if (!ImGui::Begin("Resource inspector", &show, ImGuiWindowFlags_AlwaysAutoResize))
         {
             // Early out if the window is collapsed, as an optimization.
             ImGui::End();
@@ -396,27 +402,28 @@ namespace leep
             ImGuiTableFlags_Reorderable | ImGuiTableFlags_Hideable;
         Memory &m = GM.memory();
         Renderer &r = GM.renderer();
-        if (!ImGui::Begin("Memory usage", &show_memory_usage_, 0))
+        ImGui::SetNextWindowPos(ImVec2(10, 560), ImGuiCond_FirstUseEver);
+        if (!ImGui::Begin("Memory usage", &show_memory_usage_, ImGuiWindowFlags_AlwaysAutoResize))
         {
             // Early out if the window is collapsed, as an optimization.
             ImGui::End();
             return;
         }
 
-        ImVec2 size = ImVec2(-FLT_MIN, ImGui::GetTextLineHeightWithSpacing() * 8);
+        ImVec2 size = ImVec2(-FLT_MIN, ImGui::GetTextLineHeightWithSpacing() * 7);
         if (ImGui::BeginTable("##table1", 4, flags, size))
         {
             ImGui::TableSetupScrollFreeze(0, 1); // Make top row always visible
-            ImGui::TableSetupColumn("Pool", ImGuiTableColumnFlags_None);
-            ImGui::TableSetupColumn("Used", ImGuiTableColumnFlags_None);
-            ImGui::TableSetupColumn("Capacity", ImGuiTableColumnFlags_None);
-            ImGui::TableSetupColumn("Percent", ImGuiTableColumnFlags_None);
+            ImGui::TableSetupColumn("Pool", ImGuiTableColumnFlags_WidthStretch);
+            ImGui::TableSetupColumn("Used", ImGuiTableColumnFlags_WidthStretch);
+            ImGui::TableSetupColumn("Capacity", ImGuiTableColumnFlags_WidthStretch);
+            ImGui::TableSetupColumn("Percent", ImGuiTableColumnFlags_WidthStretch);
             ImGui::TableHeadersRow();
 
             // Initial big chunk of memory
             ImGui::TableNextRow();
             ImGui::TableSetColumnIndex(0);
-            ImGui::Text("%s", "Pools");
+            ImGui::Text("%s", "Leep memory");
             ImGui::TableSetColumnIndex(1);
             // mem and offset are (int8_t*) so no need of sizeof here
             ImGui::Text("%.2f MB", ByteToMega(m.offset_ - m.mem_));
@@ -457,7 +464,7 @@ namespace leep
 
             // Materials
             // This will always full because the exact amount of materials is
-            // known and does not change
+            /* known and does not change
             ImGui::TableNextRow();
             ImGui::TableSetColumnIndex(0);
             ImGui::Text("%s", "Materials");
@@ -466,14 +473,12 @@ namespace leep
             ImGui::TableSetColumnIndex(2);
             ImGui::Text("%.2f B", (float)kMatPoolSize);
             ImGui::TableSetColumnIndex(3);
-            ImGui::Text("%.1f %%", 100.0f);
+            ImGui::Text("%.1f %%", 100.0f);*/
 
-            // Command pool (multiplied by 2 because there are 2 pools that
-            // swap each frame (current and next))
             {
                 // pool and offset are (int8_t*) so no need of sizeof here
-                size_t offset = (r.rq_.next_offset_ - r.rq_.next_pool_) * 2;
-                size_t capacity = kRenderPoolSize * 2;
+                size_t offset = r.rq_.next_offset_ - r.rq_.next_pool_;
+                size_t capacity = kRenderPoolSize;
                 ImGui::TableNextRow();
                 ImGui::TableSetColumnIndex(0);
                 ImGui::Text("%s", "Command pool");
@@ -487,7 +492,7 @@ namespace leep
 
             // Render queue
             {
-                size_t offset = r.rq_.curr_count_ * sizeof(DLComm*) * 2;
+                size_t offset = r.rq_.curr_count_ * sizeof(DLComm*);
                 size_t capacity = kRenderQueueMaxCount * sizeof(DLComm*);
                 ImGui::TableNextRow();
                 ImGui::TableSetColumnIndex(0);
@@ -506,7 +511,7 @@ namespace leep
                 size_t used = m.buddy_.mem_used_;
                 ImGui::TableNextRow();
                 ImGui::TableSetColumnIndex(0);
-                ImGui::Text("%s", "Buddy allocator");
+                ImGui::Text("%s", "General alloc");
                 ImGui::TableSetColumnIndex(1);
                 ImGui::Text("%.2f MB", ByteToMega(used));
                 ImGui::TableSetColumnIndex(2);

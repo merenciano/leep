@@ -3,10 +3,7 @@
 #ifndef __LEEP_CORE_MEMORY_H__
 #define __LEEP_CORE_MEMORY_H__
 
-#include "core/memory/entity-container.h"
 #include "core/memory/buddy-alloc.h"
-
-#include <unordered_map>
 
 #define KILOBYTES(X) ((X) * 1024)
 #define MEGABYTES(X) (KILOBYTES(X) * 1024)
@@ -30,11 +27,6 @@ namespace leep
 
         float mbUsed() const;
         size_t bytesUsed() const;
-
-        // Entities
-        void createContainer(EntityType t);
-        EntityContainer &container(EntityType t);
-        std::unordered_map<EntityType, EntityContainer> entities_;
 
         int8_t *mem_;
         int8_t *offset_;
