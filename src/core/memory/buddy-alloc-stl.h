@@ -52,5 +52,17 @@ namespace leep
             p->~T();
         }
     };
+
+    template<class T, class U>
+    inline bool operator==(const BuddySTL<T> &a, const BuddySTL<U> &b)
+    {
+        return true; // I only have one
+    }
+
+    template<class T, class U>
+    inline bool operator!=(const BuddySTL<T> &a, const BuddySTL<U> &b)
+    {
+        return false; // I only have one
+    }
 } // namespace leep
 #endif // __LEEP_CORE_MEMORY_STL_BUDDY_H__

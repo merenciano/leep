@@ -137,6 +137,9 @@ namespace leep
                 glEnableVertexAttribArray(attrib_pos);
                 break;
             }
+            default:
+                LEEP_CORE_ERROR("Wrong vertex buffer for draw command.");
+                break;
         }
 
         uint32_t index_count = 

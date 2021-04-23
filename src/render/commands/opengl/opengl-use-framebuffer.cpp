@@ -55,8 +55,8 @@ namespace leep
         {
             if (ifb.color_)
             {
-                LEEP_CORE_ASSERT(width == r.textures_[fb_.depth().handle()].width_ &&
-                                 height == r.textures_[fb_.depth().handle()].height_,
+                LEEP_CORE_ASSERT(width == (GLsizei)r.textures_[fb_.depth().handle()].width_ &&
+                                 height == (GLsizei)r.textures_[fb_.depth().handle()].height_,
                                  "Color and depth texture sizes of framebuffer not matching");
             }
             else

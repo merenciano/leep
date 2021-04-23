@@ -5,6 +5,7 @@
 
 #include "core/common-defs.h"
 #include "core/manager.h"
+#include "core/scene.h"
 #include "core/memory/memory.h"
 #include "core/memory/entity-container.h"
 #include "ecs/entity-map.h"

@@ -60,7 +60,7 @@ void BuddyAlloc::init()
 
 inline void BuddyAlloc::updateOffset(int8_t *offset)
 {
-    LEEP_CORE_ASSERT(offset - mem_ <= kMaxAlloc, "Buddy out of space");
+    LEEP_CORE_ASSERT(offset - mem_ <= (int64_t)kMaxAlloc, "Buddy out of space");
     if (offset > mem_offset_)
     {
         mem_offset_ = offset;

@@ -59,6 +59,7 @@ namespace leep
                     break;
             }
 
+            glBlendFunc(sfac, dfac);
         }
 
         if (current_options_.dirty_mask_ & LEEP_ENABLE_BLEND_BIT)

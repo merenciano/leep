@@ -132,7 +132,7 @@ void RenderQueues::init(Memory *m)
 void RenderQueues::addDL(DisplayList *dl)
 {
     LEEP_CORE_ASSERT(next_count_ + dl->commandListCount() < 
-        kRenderQueueMaxCount, "Max queue count reached");
+        (int32_t)kRenderQueueMaxCount, "Max queue count reached");
     for (int32_t i = 0; i < dl->commandListCount(); ++i)
     {
         next_queue_[next_count_++] = dl->command_list()[i];

@@ -144,7 +144,6 @@ void PrefilterEnv::init()
 
 void PrefilterEnv::useMaterialData(const Material& material) const
 {
-    GLenum err = glGetError();
     Renderer& r = GM.renderer();
     LEEP_ASSERT(material.type() == MaterialType::MT_PREFILTER_ENV,
         "Wrong material type");
@@ -164,13 +163,11 @@ void PrefilterEnv::useMaterialData(const Material& material) const
         }
     }
 
-    err = glGetError();
     GLuint u_loc = glGetUniformLocation(internal_id_, "u_environment_map");
     glUniform1i(u_loc, r.textures_[env_id].texture_unit_);
     u_loc = glGetUniformLocation(internal_id_, "u_roughness");
     glUniform1f(u_loc, material.data().pref_.roughness_);
     u_loc = glGetUniformLocation(internal_id_, "u_vp");
     glUniformMatrix4fv(u_loc, 1, false, (const GLfloat*)&(material.data()));
-    err = glGetError();
 }
 }

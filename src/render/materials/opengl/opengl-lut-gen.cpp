@@ -28,119 +28,6 @@ static const char* kLutGenFragment = R"(
     in vec2 uv;
     out vec2 FragColor;
 
-    const float kPI = 3.14159265359;
-    const uint kSampleCount = 1024u;
-    const float kInvSampleCount = 1.0 / float(kSampleCount);
-
-    // Van der Corput radical inverse
-    float RadicalInverse_VdC(uint bits) 
-    {
-        bits = (bits << 16u) | (bits >> 16u);
-        bits = ((bits & 0x55555555u) << 1u) | ((bits & 0xAAAAAAAAu) >> 1u);
-        bits = ((bits & 0x33333333u) << 2u) | ((bits & 0xCCCCCCCCu) >> 2u);
-        bits = ((bits & 0x0F0F0F0Fu) << 4u) | ((bits & 0xF0F0F0F0u) >> 4u);
-        bits = ((bits & 0x00FF00FFu) << 8u) | ((bits & 0xFF00FF00u) >> 8u);
-        return float(bits) * 2.3283064365386963e-10; // / 0x100000000
-    }
-
-    vec2 Hammersley(uint i)
-    {
-        return vec2(i * kInvSampleCount, RadicalInverse_VdC(i));
-    }
-
-    vec3 ImportanceSampleGGX(vec2 xi, vec3 n, float roughness)
-    {
-        float a = roughness*roughness;
-        
-        float phi = 2.0 * kPI * xi.x;
-        float cos_theta = sqrt((1.0 - xi.y) / (1.0 + (a*a - 1.0) * xi.y));
-        float sin_theta = sqrt(1.0 - cos_theta*cos_theta);
-        
-        // from spherical coordinates to cartesian coordinates - halfway vector
-        vec3 h;
-        h.x = cos(phi) * sin_theta;
-        h.y = sin(phi) * sin_theta;
-        h.z = cos_theta;
-        
-        // from tangent-space h vector to world-space sample vector
-        vec3 up = abs(n.z) < 0.999 ? vec3(0.0, 0.0, 1.0) : vec3(1.0, 0.0, 0.0);
-        vec3 tangent = normalize(cross(up, n));
-        vec3 bitangent = cross(n, tangent);
-        
-        vec3 sample = tangent * h.x + bitangent * h.y + n * h.z;
-        return normalize(sample);
-    }
-
-    float GeometrySchlickGGX(float NoV, float roughness)
-    {
-        float a = roughness;
-        float k = (a * a) / 2.0;
-
-        float nom   = NoV;
-        float denom = NoV * (1.0 - k) + k;
-
-        return nom / denom;
-    }
-
-    float GeometrySmith(vec3 n, vec3 v, vec3 l, float roughness)
-    {
-        float NoV = max(dot(n, v), 0.0);
-        float NoL = max(dot(n, l), 0.0);
-        float ggx2 = GeometrySchlickGGX(NoV, roughness);
-        float ggx1 = GeometrySchlickGGX(NoL, roughness);
-
-        return ggx1 * ggx2;
-    }
-
-    vec2 IntegrateBRDF(float NoV, float roughness)
-    {
-        vec3 v;
-        v.x = sqrt(1.0 - NoV*NoV);
-        v.y = 0.0;
-        v.z = NoV;
-
-        float a = 0.0;
-        float b = 0.0;
-
-        vec3 n = vec3(0.0, 0.0, 1.0);
-
-        for(uint i = 0u; i < kSampleCount; ++i)
-        {
-            vec2 xi = Hammersley(i);
-            vec3 h  = ImportanceSampleGGX(xi, n, roughness);
-            vec3 l  = normalize(2.0 * dot(v, h) * h - v);
-
-            float NoL = max(l.z, 0.0);
-            float NoH = max(h.z, 0.0);
-            float VoH = max(dot(v, h), 0.0);
-
-            if(NoL > 0.0)
-            {
-                float g = GeometrySmith(n, v, l, roughness);
-                float g_vis = (g * VoH) / (NoH * NoV);
-                float fc = pow(1.0 - VoH, 5.0);
-
-                a += (1.0 - fc) * g_vis;
-                b += fc * g_vis;
-            }
-        }
-        a *= kInvSampleCount;
-        b *= kInvSampleCount;
-        return vec2(a, b);
-    }
-
-    void main() {
-        vec2 integratedBRDF = IntegrateBRDF(uv.x, uv.y);
-        FragColor = integratedBRDF;
-    }
-)";
-
-static const char* kLutGen2Fragment = R"(
-    #version 330 core 
-
-    in vec2 uv;
-    out vec2 FragColor;
-
     const float kTwoPI = 2.0 * 3.14159265359;
     const uint  kSampleCount = 1024u;
     const float kInvSampleCount = 1.0 / float(kSampleCount);
@@ -243,7 +130,7 @@ namespace leep
         }
         //  Create and compile fragment shader and print if compilation errors
         GLuint frag_shader = glCreateShader(GL_FRAGMENT_SHADER);
-        glShaderSource(frag_shader, 1, &kLutGen2Fragment, nullptr);
+        glShaderSource(frag_shader, 1, &kLutGenFragment, nullptr);
         glCompileShader(frag_shader);
         glGetShaderiv(frag_shader, GL_COMPILE_STATUS, &err);
         if (!err)

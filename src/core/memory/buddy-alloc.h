@@ -1,6 +1,8 @@
 #ifndef __LEEP_CORE_MEMORY_BUDDY_ALLOCATOR_H__
 #define __LEEP_CORE_MEMORY_BUDDY_ALLOCATOR_H__
 
+// Needed for size_t on linux...
+#include <stddef.h>
 #include <stdint.h>
 
 namespace leep

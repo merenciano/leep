@@ -36,8 +36,6 @@ namespace leep
 
         Renderer &r = GM.renderer();
 
-        if (handle_ == CommonDefs::UNINIT_HANDLE)
-
         if (!r.aviable_tex_pos_.empty())
         {
             handle_ = r.aviable_tex_pos_.front();
@@ -49,7 +47,7 @@ namespace leep
         }
 
         r.textures_[handle_].internal_id_ = CommonDefs::UNINIT_INTERNAL_ID;
-        strcpy_s(r.textures_[handle_].path_, path);
+        strcpy(r.textures_[handle_].path_, path);
         r.textures_[handle_].cpu_version_ = 1;
         r.textures_[handle_].gpu_version_ = 0;
         r.textures_[handle_].width_ = 0;

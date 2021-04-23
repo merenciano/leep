@@ -8,6 +8,7 @@
 #include "render/commands/draw.h"
 #include "render/commands/render-options.h"
 
+#include <cmath>
 #include <glad/glad.h>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
@@ -71,7 +72,7 @@ namespace leep
             for (int32_t i = 0; i < 5; ++i)
             {
                 // mip size
-                uint32_t s = (uint32_t)((float)ipref.width_ * std::powf(0.5f, (float)i));
+                uint32_t s = (uint32_t)((float)ipref.width_ * powf(0.5f, (float)i));
                 glViewport(0, 0, s, s);
                 pref_data.roughness_ = (float)i / 4.0f;  // mip / max mip levels - 1
 

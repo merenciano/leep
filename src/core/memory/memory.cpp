@@ -26,7 +26,7 @@ void Memory::init()
 
 void *Memory::persistentAlloc(size_t size)
 {
-    LEEP_CORE_ASSERT(offset_ + size - mem_ < kTotalMemSize, "Out of memory");
+    LEEP_CORE_ASSERT(offset_ + size - mem_ < (int64_t)kTotalMemSize, "Out of memory");
     void *mem = (void*)offset_;
     offset_ += size;
     return mem; 
