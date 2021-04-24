@@ -239,7 +239,7 @@ namespace leep
         {
             LEEP_ASSERT(a_id != -1, "Texture not created");
             LEEP_ASSERT(r.textures_[a_id].cpu_version_ != -1, "Texture released");
-            if (r.textures_[a_id].cpu_version_ == 0)
+            if (r.textures_[a_id].gpu_version_ == 0)
             {
                 CreateTexture()
                     .set_texture(material.albedo()).executeCommand();
@@ -253,7 +253,7 @@ namespace leep
         {
             LEEP_ASSERT(m_id != -1, "Texture not created");
             LEEP_ASSERT(r.textures_[m_id].cpu_version_ != -1, "Texture released");
-            if (r.textures_[m_id].cpu_version_ == 0)
+            if (r.textures_[m_id].gpu_version_ == 0)
             {
                 CreateTexture()
                     .set_texture(material.metallic()).executeCommand();
@@ -267,7 +267,7 @@ namespace leep
         {
             LEEP_ASSERT(r_id != -1, "Texture not created");
             LEEP_ASSERT(r.textures_[r_id].cpu_version_!= -1, "Texture released");
-            if (r.textures_[r_id].cpu_version_ == 0)
+            if (r.textures_[r_id].gpu_version_ == 0)
             {
                 CreateTexture()
                     .set_texture(material.roughness()).executeCommand();
@@ -281,7 +281,7 @@ namespace leep
         {
             LEEP_ASSERT(n_id != -1, "Texture not created");
             LEEP_ASSERT(r.textures_[n_id].cpu_version_ != -1, "Texture released");
-            if (r.textures_[n_id].cpu_version_ == 0)
+            if (r.textures_[n_id].gpu_version_ == 0)
             {
                 CreateTexture()
                     .set_texture(material.normal()).executeCommand();
