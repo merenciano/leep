@@ -18,6 +18,8 @@ namespace leep
         MT_LUT_GEN = 5,
 
         MT_MAX,
+        // MT_NONE after MT_MAX because MT_MAX is used set the
+        // size of a valid materials array
         MT_NONE
     };
 
