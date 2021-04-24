@@ -34,7 +34,7 @@ void leep::Init()
     mat_data.metallic_ = 0.5f;
     mat_data.roughness_ = 0.4f;
     
-    for (int i = 0; i < 900; ++i)
+    for (int i = 0; i < 90; ++i)
     {
         Entity e = Entity::CreateEntity("Cube" + std::to_string(i), EntityType::RENDERABLE);
         LTransform &tr = e.getComponent<LTransform>();
