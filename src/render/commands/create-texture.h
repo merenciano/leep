@@ -17,10 +17,15 @@ namespace leep
         ~CreateTexture() = default;
 
         CreateTexture& set_texture(const Texture &texture);
+
+        // If true, releases pixel data from RAM after
+        // being copied to VRAM by the render backend
+        CreateTexture& releaseRamData(bool value);
         virtual void executeCommand() const override;
 
     private:
         Texture texture_;
+        bool release_ram_data_;
     };
 }
 

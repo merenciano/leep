@@ -108,24 +108,38 @@ namespace leep
         {
             int width, height, nchannels;
             stbi_set_flip_vertically_on_load(1);
-            float *img_data = stbi_loadf(
-                itex.path_, &width, &height, &nchannels, 0);
-            LEEP_CORE_ASSERT(img_data, "The image couldn't be loaded");
+            if (!itex.pix_)
+            {
+                itex.pix_ = stbi_loadf(
+                    itex.path_, &width, &height, &nchannels, 0);
+            }
+            LEEP_CORE_ASSERT(itex.pix_, "The image couldn't be loaded");
             glTexImage2D(GL_TEXTURE_2D, 0, config.internal_format, width,
-                height, 0, config.format, config.type, img_data);
-            stbi_image_free(img_data);
+                height, 0, config.format, config.type, itex.pix_);
+            if (release_ram_data_)
+            {
+                stbi_image_free(itex.pix_);
+                itex.pix_ = nullptr;
+            }
         }
         else if (itex.path_[0] != '\0')
         {
             int width, height, nchannels;
             stbi_set_flip_vertically_on_load(1);
-            uint8_t *img_data = stbi_load(
-                itex.path_, &width, &height, &nchannels, STBI_rgb);
-            LEEP_CORE_ASSERT(img_data, "The image couldn't be loaded");
+            if (!itex.pix_)
+            {
+                itex.pix_ = stbi_load(
+                    itex.path_, &width, &height, &nchannels, STBI_rgb);
+            }
+            LEEP_CORE_ASSERT(itex.pix_, "The image couldn't be loaded");
             glTexImage2D(GL_TEXTURE_2D, 0, config.internal_format, width,
-                height, 0, config.format, config.type, img_data);
+                height, 0, config.format, config.type, itex.pix_);
             glGenerateMipmap(GL_TEXTURE_2D);
-            stbi_image_free(img_data);
+            if (release_ram_data_)
+            {
+                stbi_image_free(itex.pix_);
+                itex.pix_ = nullptr;
+            }
 			itex.width_ = width;
 			itex.height_ = height;
         }

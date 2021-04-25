@@ -41,10 +41,33 @@ namespace leep
     {
         LEEP_CORE_ASSERT(path != "", "For the creation of empty textures call with size params");
         bool inserted =
-            textures_.emplace(std::make_pair(name, Texture())).second;
+            textures_.emplace(std::make_pair(name, FuTexture())).second;
         if (inserted)
         {
-            textures_[name].create((const char*)path.c_str(), t);
+            textures_[name].tex_.create((const char*)path.c_str(), t);
+        }
+        else
+        {
+            LEEP_CORE_WARNING("Texture couldn't be inserted");
+        }
+    }
+
+    void ResourceMap::addTextureAsync(std::string name,
+                                      std::string path,
+                                      TexType t)
+    {
+        LEEP_CORE_ASSERT(path != "",
+            "For the creation of empty textures call with size params");
+        printf("%s\n", (const char*)path.c_str());
+        bool inserted =
+            textures_.emplace(std::make_pair(name, FuTexture())).second;
+        if (inserted)
+        {
+            textures_[name].fut_ = std::async(
+                std::launch::async,
+                &Texture::createAndLoad,
+                (Texture*)&textures_[name].tex_,
+                (const char*)path.c_str(), t);
         }
         else
         {
@@ -55,10 +78,10 @@ namespace leep
     void ResourceMap::addTexture(std::string n, float w, float h, TexType t)
     {
         LEEP_CORE_ASSERT(w > 0.0f && h > 0.0f, "0,0 size texture is no texture");
-        bool inserted = textures_.emplace(std::make_pair(n, Texture())).second;
+        bool inserted = textures_.emplace(std::make_pair(n, FuTexture())).second;
         if (inserted)
         {
-            textures_[n].createEmpty(w, h, t);
+            textures_[n].tex_.createEmpty(w, h, t);
         }
         else
         {
@@ -68,10 +91,14 @@ namespace leep
 
     void ResourceMap::addTexture(std::string name, Texture tex)
     {
-        bool inserted = textures_.emplace(std::make_pair(name, tex)).second;
+        bool inserted = textures_.emplace(std::make_pair(name, FuTexture())).second;
         if (!inserted)
         {
             LEEP_CORE_WARNING("Texture couldn't be inserted");
+        }
+        else
+        {
+            textures_.at(name).tex_ = tex;
         }
     }
 
@@ -89,6 +116,10 @@ namespace leep
 
     Texture ResourceMap::getTexture(std::string name) const
     {
-        return textures_.at(name);
+        if (textures_.at(name).fut_.valid())
+        {
+            textures_.at(name).fut_.wait();
+        }
+        return textures_.at(name).tex_;
     }
 }

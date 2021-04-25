@@ -14,10 +14,10 @@ void leep::Init()
         rm.addTexture("PrefilterSpec", 128.0f, 128.0f, TexType::PREFILTER_ENVIRONMENT);
         rm.addTexture("LutMap", 512.0f, 512.0f, TexType::LUT);
         rm.addGeometry("Cerberus", "../assets/obj/cerberus-n.obj");
-        rm.addTexture("Cerberus_A" ,tp + "cerberus/cerberus_A.png", TexType::SRGB);
-        rm.addTexture("Cerberus_N" ,tp + "cerberus/cerberus_N.png", TexType::RGB);
-        rm.addTexture("Cerberus_M" ,tp + "cerberus/cerberus_M.png", TexType::RGB);
-        rm.addTexture("Cerberus_R" ,tp + "cerberus/cerberus_R.png", TexType::RGB);
+        rm.addTextureAsync("Cerberus_A" ,tp + "cerberus/cerberus_A.png", TexType::SRGB);
+        rm.addTextureAsync("Cerberus_N" ,tp + "cerberus/cerberus_N.png", TexType::RGB);
+        rm.addTextureAsync("Cerberus_M" ,tp + "cerberus/cerberus_M.png", TexType::RGB);
+        rm.addTextureAsync("Cerberus_R" ,tp + "cerberus/cerberus_R.png", TexType::RGB);
     }
 
     GM.scene().createContainer(EntityType::RENDERABLE);

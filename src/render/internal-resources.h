@@ -25,6 +25,7 @@ namespace leep
     struct InternalTexture
     {
         char path_[64];
+        void *pix_;
         int32_t internal_id_;
         int32_t cpu_version_;
         int32_t gpu_version_;
