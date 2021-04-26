@@ -58,16 +58,17 @@ namespace leep
     {
         LEEP_CORE_ASSERT(path != "",
             "For the creation of empty textures call with size params");
-        printf("%s\n", (const char*)path.c_str());
         bool inserted =
             textures_.emplace(std::make_pair(name, FuTexture())).second;
         if (inserted)
         {
+            char* cpath = (char*)GM.memory().generalAlloc(64);
+            strcpy(cpath, path.c_str());
             textures_[name].fut_ = std::async(
                 std::launch::async,
                 &Texture::createAndLoad,
                 (Texture*)&textures_[name].tex_,
-                (const char*)path.c_str(), t);
+                (const char*)cpath, t);
         }
         else
         {

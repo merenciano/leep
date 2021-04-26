@@ -16,8 +16,8 @@ void leep::Init()
         rm.addGeometry("Cerberus", "../assets/obj/cerberus-n.obj");
         rm.addTextureAsync("Cerberus_A" ,tp + "cerberus/cerberus_A.png", TexType::SRGB);
         rm.addTextureAsync("Cerberus_N" ,tp + "cerberus/cerberus_N.png", TexType::RGB);
-        rm.addTextureAsync("Cerberus_M" ,tp + "cerberus/cerberus_M.png", TexType::RGB);
-        rm.addTextureAsync("Cerberus_R" ,tp + "cerberus/cerberus_R.png", TexType::RGB);
+        rm.addTextureAsync("Cerberus_M" ,tp + "cerberus/cerberus_M.png", TexType::R);
+        rm.addTextureAsync("Cerberus_R" ,tp + "cerberus/cerberus_R.png", TexType::R);
     }
 
     GM.scene().createContainer(EntityType::RENDERABLE);

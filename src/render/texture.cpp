@@ -116,9 +116,10 @@ namespace leep
             handle_ = r.addTex();
         }
 
+        int width, height, nchannels;
+        stbi_set_flip_vertically_on_load(1);
         if (t == TexType::RGB_F16 || t == TexType::RGBA_F16 || t ==TexType::LUT)
         {
-            int width, height, nchannels;
             r.textures_[handle_].pix_ = (void*)stbi_loadf(
                 path, &width, &height, &nchannels, 0);
             LEEP_CORE_ASSERT(r.textures_[handle_].pix_,
@@ -126,7 +127,6 @@ namespace leep
         }
         else
         {
-            int width, height, nchannels;
             r.textures_[handle_].pix_ = (void*)stbi_load(
                 path, &width, &height, &nchannels, 0);
             LEEP_CORE_ASSERT(r.textures_[handle_].pix_,
@@ -137,9 +137,14 @@ namespace leep
         strcpy(r.textures_[handle_].path_, path);
         r.textures_[handle_].cpu_version_ = 1;
         r.textures_[handle_].gpu_version_ = 0;
-        r.textures_[handle_].width_ = 0;
-        r.textures_[handle_].height_ = 0;
+        r.textures_[handle_].width_ = width;
+        r.textures_[handle_].height_ = height;
         r.textures_[handle_].type_ = t;
+
+        if (path)
+        {
+            GM.memory().generalFree((void*)path);
+        }
     }
 
     void Texture::releasePixels()
