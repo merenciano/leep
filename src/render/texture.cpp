@@ -5,8 +5,10 @@
 #include "core/window.h"
 #include "render/renderer.h"
 
-// TODO: Define STB_MALLOC to use my own allocator
-//#define STB_IMAGE_IMPLEMENTATION
+#define STB_IMAGE_IMPLEMENTATION
+#define STBI_MALLOC(sz)           GM.memory().generalAlloc(sz)
+#define STBI_REALLOC(p,newsz)     GM.memory().generalRealloc(p,newsz)
+#define STBI_FREE(p)              GM.memory().generalFree(p)
 #include "stb_image.h"
 
 namespace leep

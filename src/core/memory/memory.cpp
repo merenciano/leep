@@ -37,6 +37,11 @@ void *Memory::generalAlloc(size_t size)
     return buddy_.alloc(size);
 }
 
+void *Memory::generalRealloc(void *ptr, size_t size)
+{
+    return buddy_.realloc(ptr, size);
+}
+
 void Memory::generalFree(void *ptr)
 {
     buddy_.free(ptr);
