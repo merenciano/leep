@@ -108,6 +108,9 @@ namespace leep
 
         Renderer &r = GM.renderer();
 
+        // Lock needed because this function is called
+        // from ResourceMap::addTextureAsync
+        r.mtx_.lock();
         if (!r.aviable_tex_pos_.empty())
         {
             handle_ = r.aviable_tex_pos_.front();
@@ -117,6 +120,7 @@ namespace leep
         {
             handle_ = r.addTex();
         }
+        r.mtx_.unlock();
 
         int width, height, nchannels;
         stbi_set_flip_vertically_on_load(1);
