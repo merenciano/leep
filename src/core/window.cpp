@@ -23,7 +23,7 @@ namespace leep
 		// so all of this will be freed anyway when the program closes.
 #ifdef LEEP_DEBUG
 		//glfwTerminate(); //crashes
-		delete data_;
+		GM.memory().generalFree(data_);
 #endif
 	}
 
@@ -39,7 +39,7 @@ namespace leep
 			return false; // window already created
 		}
 
-		data_ = new WindowData();
+		data_ = GM.memory().generalAllocT<WindowData>(1);
 		data_->window = glfwCreateWindow(w, h, "LEEP", NULL, NULL);
 		if (!data_->window)
 		{
@@ -47,7 +47,7 @@ namespace leep
 			return false;
 		}
 
-		// I call this function here because motoret only supports one window
+		// I call this function here because leep only supports one window
 		glfwMakeContextCurrent(data_->window);
 
 		gladLoadGLLoader((GLADloadproc) glfwGetProcAddress);

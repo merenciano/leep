@@ -6,9 +6,9 @@
 #include "ecs/components/drawable.h"
 #include "tools/resource-map.h"
 
-void leep::CreateRenderable(std::string entity_name,
-                            std::string geometry_name,
-                            std::string texture_name)
+void leep::CreateRenderable(String entity_name,
+                            String geometry_name,
+                            String texture_name)
 {
     Entity e = Entity::CreateEntity(entity_name, EntityType::RENDERABLE);
     // If it fails
@@ -32,12 +32,12 @@ void leep::CreateRenderable(std::string entity_name,
     d.material_.set_albedo(GM.resource_map().getTexture(texture_name));
 }
 
-void leep::RemoveEntity(std::string entity_name)
+void leep::RemoveEntity(String entity_name)
 {
     Entity::RemoveEntity(entity_name);
 }
 
-void leep::SetParent(std::string entity_name, std::string parent_name)
+void leep::SetParent(String entity_name, String parent_name)
 {
     LTransform &eltr = Entity::GetEntity(entity_name).getComponent<LTransform>();
     LTransform &pltr = Entity::GetEntity(parent_name).getComponent<LTransform>();
@@ -48,13 +48,13 @@ void leep::SetParent(std::string entity_name, std::string parent_name)
     GM.scene().scene_graph_.setParent(&eltr, &pltr);
 }
 
-void leep::DetachFromParent(std::string entity_name)
+void leep::DetachFromParent(String entity_name)
 {
     LTransform &eltr = Entity::GetEntity(entity_name).getComponent<LTransform>();
     GM.scene().scene_graph_.detachFromParent(&eltr);
 }
 
-void leep::SetLocation(std::string entity_name, float x, float y, float z)
+void leep::SetLocation(String entity_name, float x, float y, float z)
 {
     LTransform &eltr = Entity::GetEntity(entity_name).getComponent<LTransform>();
     eltr.setLocation(glm::vec3(x, y, z));

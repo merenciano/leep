@@ -1,7 +1,9 @@
-#ifndef __LEEP_RENDER_TEXTURE_H__
-#define __LEEP_RENDER_TEXTURE_H__ 1
+// Lucas Merenciano Martinez  <lucasmermar@gmail.com>
 
-#include <string>
+#ifndef __LEEP_RENDER_TEXTURE_H__
+#define __LEEP_RENDER_TEXTURE_H__
+
+#include <stdint.h>
 
 namespace leep
 {

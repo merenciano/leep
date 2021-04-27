@@ -5,7 +5,6 @@
 #include "render/texture.h"
 #include "core/memory/buddy-alloc-stl.h"
 
-#include <string>
 #include <unordered_map>
 #include <future>
 
@@ -25,27 +24,27 @@ namespace leep
         ResourceMap(const ResourceMap &rm) = delete;
         ResourceMap(ResourceMap &&rm) = delete;
 
-        void addGeometry(std::string name, std::string path);
-        void addGeometry(std::string name, Geometry geometry);
-        void addTexture(std::string name, std::string path, TexType type);
-        void addTextureAsync(std::string name, std::string path, TexType);
-        void addTexture(std::string name, Texture texture);
-        void addTexture(std::string name, float width, float height, TexType type);
-        Geometry getGeometry(std::string name) const;
-        Texture getTexture(std::string name) const;
+        void addGeometry(String name, String path);
+        void addGeometry(String name, Geometry geometry);
+        void addTexture(String name, String path, TexType type);
+        void addTextureAsync(String name, String path, TexType);
+        void addTexture(String name, Texture texture);
+        void addTexture(String name, float width, float height, TexType type);
+        Geometry getGeometry(String name) const;
+        Texture getTexture(String name) const;
 
         std::unordered_map<
-            std::string,
+            String,
             Geometry,
-            std::hash<std::string>,
-            std::equal_to<std::string>,
-            BuddySTL<std::pair<const std::string, Geometry>>> geometries_;
+            std::hash<String>,
+            std::equal_to<String>,
+            BuddySTL<std::pair<const String, Geometry>>> geometries_;
         std::unordered_map<
-            std::string,
+            String,
             FuTexture,
-            std::hash<std::string>,
-            std::equal_to<std::string>,
-            BuddySTL<std::pair<const std::string, FuTexture>>> textures_;
+            std::hash<String>,
+            std::equal_to<String>,
+            BuddySTL<std::pair<const String, FuTexture>>> textures_;
     };
 }
 

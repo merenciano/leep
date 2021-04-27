@@ -4,11 +4,11 @@
 #define __LEEP_ECS_ENTITY_MAP_H__
 
 #include "core/common-defs.h"
+#include "core/string.h"
 #include "core/memory/buddy-alloc-stl.h"
 
 #include <stdint.h>
 #include <unordered_map>
-#include <string>
 
 namespace leep
 {
@@ -32,26 +32,26 @@ namespace leep
         EntityMap();
         ~EntityMap();
 
-        void addEntry(std::string name, int32_t id, EntityType t);
+        void addEntry(String name, int32_t id, EntityType t);
         void swap(int32_t i, int32_t last, EntityType t);
-        void removeEntry(std::string name, int32_t id, EntityType t);
-        bool exists(std::string name);
-        EntityIndex getEntity(std::string name);
-        std::string getEntityName(int32_t i, EntityType t);
+        void removeEntry(String name, int32_t id, EntityType t);
+        bool exists(String name);
+        EntityIndex getEntity(String name);
+        String getEntityName(int32_t i, EntityType t);
 
     private:
         std::unordered_map<
-            std::string,
+            String,
             EntityIndex,
-            std::hash<std::string>,
-            std::equal_to<std::string>,
-            BuddySTL<std::pair<const std::string, EntityIndex>>> map_;
+            std::hash<String>,
+            std::equal_to<String>,
+            BuddySTL<std::pair<const String, EntityIndex>>> map_;
         std::unordered_map<
             EntityIndex,
-            std::string,
+            String,
             EntityIndex::HashFunction,
             std::equal_to<EntityIndex>,
-            BuddySTL<std::pair<const EntityIndex, std::string>>> rmap_;
+            BuddySTL<std::pair<const EntityIndex, String>>> rmap_;
     };
 }
 

@@ -22,9 +22,9 @@ namespace leep
         Entity(const Entity& e) { index_ = e.index_; type_ = e.type_; }
         ~Entity() = default;
 
-        static Entity CreateEntity(std::string name, EntityType t);
-        static void RemoveEntity(std::string name);
-        static Entity GetEntity(std::string name);
+        static Entity CreateEntity(String name, EntityType t);
+        static void RemoveEntity(String name);
+        static Entity GetEntity(String name);
 
         template<typename C>
         C& getComponent()
@@ -68,7 +68,7 @@ namespace leep
             return componentPtr<C>();
         }
 
-        std::string name() const;
+        String name() const;
         bool isValid() const;
         Entity& operator=(const Entity& e);
 

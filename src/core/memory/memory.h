@@ -11,7 +11,7 @@
 
 namespace leep
 {
-    const uint64_t kTotalMemSize = GIGABYTES((uint64_t)2);
+    const uint64_t kTotalMemSize = MEGABYTES((uint64_t)1124);
 
     class Memory
     {

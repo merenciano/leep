@@ -14,7 +14,7 @@ namespace leep
 
     }
 
-    EquirectangularToCubemap& EquirectangularToCubemap::set_in_path(std::string p)
+    EquirectangularToCubemap& EquirectangularToCubemap::set_in_path(String p)
     {
         LEEP_CORE_ASSERT(p != "", "Invalid path");
         path_ = p;

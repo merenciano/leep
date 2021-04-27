@@ -192,16 +192,16 @@ void Geometry::createQuad()
     index_buffer_.set_data(ind, 6);
 }
 
-void Geometry::loadObj(std::string path)
+void Geometry::loadObj(String path)
 {
     tinyobj::ObjReaderConfig reader_config;
     reader_config.mtl_search_path = "./"; // Path to material files
     tinyobj::ObjReader reader;
 
-    std::vector<float> vertices;
-    std::vector<uint32_t> indices;
+    std::vector<float, BuddySTL<float>> vertices;
+    std::vector<uint32_t, BuddySTL<uint32_t>> indices;
 
-    if (!reader.ParseFromFile(path, reader_config))
+    if (!reader.ParseFromFile(std::string(path.c_str()), reader_config))
     {
         if (!reader.Error().empty())
         {

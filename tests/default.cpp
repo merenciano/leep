@@ -7,17 +7,17 @@ void leep::Init()
     {
         // Resource creation CPU side (GPU allocation will occur on first use)
         ResourceMap &rm = GM.resource_map();
-        const std::string tp = "../assets/tex/";
-        rm.addTextureAsync("Default", "../assets/tex/default.jpg", TexType::SRGB);
+        const String tp = "../assets/tex/";
+        rm.addTexture("Default", "../assets/tex/default.jpg", TexType::SRGB);
         rm.addTexture("Skybox", 1024.0f, 1024.0f, TexType::ENVIRONMENT);
         rm.addTexture("IrradianceEnv", 1024.0f, 1024.0f, TexType::ENVIRONMENT);
         rm.addTexture("PrefilterSpec", 128.0f, 128.0f, TexType::PREFILTER_ENVIRONMENT);
         rm.addTexture("LutMap", 512.0f, 512.0f, TexType::LUT);
         rm.addGeometry("Cerberus", "../assets/obj/cerberus-n.obj");
-        rm.addTextureAsync("Cerberus_A" ,tp + "cerberus/cerberus_A.png", TexType::SRGB);
-        rm.addTextureAsync("Cerberus_N" ,tp + "cerberus/cerberus_N.png", TexType::RGB);
-        rm.addTextureAsync("Cerberus_M" ,tp + "cerberus/cerberus_M.png", TexType::R);
-        rm.addTextureAsync("Cerberus_R" ,tp + "cerberus/cerberus_R.png", TexType::R);
+        rm.addTexture("Cerberus_A" ,tp + "cerberus/cerberus_A.png", TexType::SRGB);
+        rm.addTexture("Cerberus_N" ,tp + "cerberus/cerberus_N.png", TexType::RGB);
+        rm.addTexture("Cerberus_M" ,tp + "cerberus/cerberus_M.png", TexType::R);
+        rm.addTexture("Cerberus_R" ,tp + "cerberus/cerberus_R.png", TexType::R);
     }
 
     GM.scene().createContainer(EntityType::RENDERABLE);
@@ -33,7 +33,7 @@ void leep::Init()
     
     for (int i = 0; i < 400; ++i)
     {
-        Entity e = Entity::CreateEntity("Cerberus" + std::to_string(i), EntityType::RENDERABLE);
+        Entity e = Entity::CreateEntity("Cerberus" + ToString(i), EntityType::RENDERABLE);
         LTransform &tr = e.getComponent<LTransform>();
         tr.transform_ = glm::scale(tr.transform_, glm::vec3(0.33f, 0.33f, 0.33f));
         tr.transform_ = glm::translate(tr.transform_, glm::vec3(2.0f * i, 0.0f, 0.0f));
@@ -41,10 +41,10 @@ void leep::Init()
         dw.geometry_ = GM.resource_map().getGeometry("Cerberus");
         dw.material_.set_type(MaterialType::MT_PBR);
         dw.material_.set_data(mat_data);
-        dw.material_.set_albedo(GM.resource_map().getTexture("Cerberus_A"));
-        dw.material_.set_metallic(GM.resource_map().getTexture("Cerberus_M"));
-        dw.material_.set_roughness(GM.resource_map().getTexture("Cerberus_R"));
-        dw.material_.set_normal(GM.resource_map().getTexture("Cerberus_N"));
+        dw.material_.set_albedo(GM.resource_map().getTexture("Default"));
+        dw.material_.set_metallic(GM.resource_map().getTexture("Default"));
+        dw.material_.set_roughness(GM.resource_map().getTexture("Default"));
+        dw.material_.set_normal(GM.resource_map().getTexture("Default"));
     }
 
     DisplayList init_dl;

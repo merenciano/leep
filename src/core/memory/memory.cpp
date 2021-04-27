@@ -62,5 +62,4 @@ size_t Memory::bytesUsed() const
     return offset_ - mem_;
 }
 
-
 } // namespace leep

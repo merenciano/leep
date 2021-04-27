@@ -179,7 +179,7 @@ namespace leep
         ImGui::InputText("Command input", buffer, IM_ARRAYSIZE(buffer));
         if (ImGui::Button("Execute"))
         {
-            LuaScripting::ExecuteCommand(std::string(buffer));
+            LuaScripting::ExecuteCommand(String(buffer));
         }
         ImGui::End();
     }
@@ -197,7 +197,7 @@ namespace leep
         auto it = GM.scene().entities_->begin();
         while(it != GM.scene().entities_->end())
         {
-            std::string header_name;
+            String header_name;
             switch(it->first)
             {
                 default:
@@ -220,7 +220,7 @@ namespace leep
             {
                 for (uint32_t i = 0; i < it->second.blocks_.size(); ++i)
                 {
-                    std::string tree_name = "Chunk " + std::to_string(i);
+                    String tree_name = "Chunk " + ToString(i);
                     if (ImGui::TreeNode(tree_name.c_str()))
                     {
                         static ImGuiTableFlags flags = ImGuiTableFlags_ScrollY | ImGuiTableFlags_RowBg | ImGuiTableFlags_BordersOuter | ImGuiTableFlags_BordersV | ImGuiTableFlags_Resizable | ImGuiTableFlags_Reorderable | ImGuiTableFlags_Hideable;
@@ -336,7 +336,7 @@ namespace leep
                     ImGui::TableSetColumnIndex(1);
                     if (t.internal_id_ == CommonDefs::UNINIT_INTERNAL_ID)
                     {
-                        ImGui::Text("Deleted");
+                        ImGui::Text("Not created");
                     }
                     else if (t.gpu_version_ == CommonDefs::DELETED_GPU_RESOURCE)
                     {
