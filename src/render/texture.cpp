@@ -41,7 +41,7 @@ namespace leep
         LEEP_ASSERT(*path != '\0', "For empty textures use createEmpty");
 
         Renderer &r = GM.renderer();
-
+        r.mtx_.lock();
         if (!r.aviable_tex_pos_.empty())
         {
             handle_ = r.aviable_tex_pos_.front();
@@ -51,7 +51,7 @@ namespace leep
         {
             handle_ = r.addTex();
         }
-
+        r.mtx_.unlock();
         r.textures_[handle_].internal_id_ = CommonDefs::UNINIT_INTERNAL_ID;
         strcpy(r.textures_[handle_].path_, path);
         r.textures_[handle_].pix_ = nullptr;
@@ -68,6 +68,7 @@ namespace leep
 		LEEP_ASSERT(width > 0.0f && height > 0.0f,
             "Width and height of the texture must be greater than 0");
         Renderer &r = GM.renderer();
+        r.mtx_.lock();
         if (!r.aviable_tex_pos_.empty())
         {
             handle_ = r.aviable_tex_pos_.front();
@@ -77,7 +78,7 @@ namespace leep
         {
             handle_ = r.addTex();
         }
-
+        r.mtx_.unlock();
         LEEP_CORE_ASSERT(((width > 1.0f && height > 1.0f) ||
             (width <= 1.0f && height <= 1.0f)),
             "Or absolute or relative, make a decision!");

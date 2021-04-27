@@ -8,7 +8,7 @@ void leep::Init()
         // Resource creation CPU side (GPU allocation will occur on first use)
         ResourceMap &rm = GM.resource_map();
         const std::string tp = "../assets/tex/";
-        rm.addTexture("Default", "../assets/tex/default.jpg", TexType::SRGB);
+        rm.addTextureAsync("Default", "../assets/tex/default.jpg", TexType::SRGB);
         rm.addTexture("Skybox", 1024.0f, 1024.0f, TexType::ENVIRONMENT);
         rm.addTexture("IrradianceEnv", 1024.0f, 1024.0f, TexType::ENVIRONMENT);
         rm.addTexture("PrefilterSpec", 128.0f, 128.0f, TexType::PREFILTER_ENVIRONMENT);
@@ -31,12 +31,12 @@ void leep::Init()
     mat_data.metallic_ = 0.5f;
     mat_data.roughness_ = 0.4f;
     
-    for (int i = 0; i < 1; ++i)
+    for (int i = 0; i < 400; ++i)
     {
-        Entity e = Entity::CreateEntity("Cerberus"/* + std::to_string(i)*/, EntityType::RENDERABLE);
+        Entity e = Entity::CreateEntity("Cerberus" + std::to_string(i), EntityType::RENDERABLE);
         LTransform &tr = e.getComponent<LTransform>();
         tr.transform_ = glm::scale(tr.transform_, glm::vec3(0.33f, 0.33f, 0.33f));
-        tr.transform_ = glm::translate(tr.transform_, glm::vec3(2.0f, 0.0f, 0.0f));
+        tr.transform_ = glm::translate(tr.transform_, glm::vec3(2.0f * i, 0.0f, 0.0f));
         Drawable &dw = e.getComponent<Drawable>();
         dw.geometry_ = GM.resource_map().getGeometry("Cerberus");
         dw.material_.set_type(MaterialType::MT_PBR);
