@@ -3,7 +3,6 @@
 #include "render/renderer.h"
 #include <glad/glad.h>
 
-#define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
 
 namespace leep
@@ -106,28 +105,44 @@ namespace leep
         
         if (itex.type_ == TexType::RGB_F16)
         {
-            int width, height, nchannels;
-            stbi_set_flip_vertically_on_load(1);
-            float *img_data = stbi_loadf(
-                itex.path_, &width, &height, &nchannels, 0);
-            LEEP_CORE_ASSERT(img_data, "The image couldn't be loaded");
-            glTexImage2D(GL_TEXTURE_2D, 0, config.internal_format, width,
-                height, 0, config.format, config.type, img_data);
-            stbi_image_free(img_data);
+            if (!itex.pix_)
+            {
+				stbi_set_flip_vertically_on_load(1);
+				int width, height, nchannels;
+                itex.pix_ = stbi_loadf(
+                    itex.path_, &width, &height, &nchannels, 0);
+				itex.width_ = width;
+				itex.height_ = height;
+            }
+            LEEP_CORE_ASSERT(itex.pix_, "The image couldn't be loaded");
+            glTexImage2D(GL_TEXTURE_2D, 0, config.internal_format, itex.width_,
+				itex.height_, 0, config.format, config.type, itex.pix_);
+            if (release_ram_data_)
+            {
+                stbi_image_free(itex.pix_);
+                itex.pix_ = nullptr;
+            }
         }
         else if (itex.path_[0] != '\0')
         {
-            int width, height, nchannels;
-            stbi_set_flip_vertically_on_load(1);
-            uint8_t *img_data = stbi_load(
-                itex.path_, &width, &height, &nchannels, STBI_rgb);
-            LEEP_CORE_ASSERT(img_data, "The image couldn't be loaded");
-            glTexImage2D(GL_TEXTURE_2D, 0, config.internal_format, width,
-                height, 0, config.format, config.type, img_data);
+            if (!itex.pix_)
+            {
+				stbi_set_flip_vertically_on_load(1);
+				int width, height, nchannels;
+                itex.pix_ = stbi_load(
+                    itex.path_, &width, &height, &nchannels, STBI_rgb);
+				itex.width_ = width;
+				itex.height_ = height;
+            }
+            LEEP_CORE_ASSERT(itex.pix_, "The image couldn't be loaded");
+            glTexImage2D(GL_TEXTURE_2D, 0, config.internal_format, itex.width_,
+				itex.height_, 0, config.format, config.type, itex.pix_);
             glGenerateMipmap(GL_TEXTURE_2D);
-            stbi_image_free(img_data);
-			itex.width_ = width;
-			itex.height_ = height;
+            if (release_ram_data_)
+            {
+                stbi_image_free(itex.pix_);
+                itex.pix_ = nullptr;
+            }
         }
 		else
 		{

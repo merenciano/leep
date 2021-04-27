@@ -20,7 +20,7 @@ namespace leep
     void Camera::init()
     {
         view_matrix_ = glm::mat4(1.0f);
-        projection_matrix_ = glm::perspective(glm::radians(70.0f), (float)GM.window().width() / GM.window().height(), 0.1f, 80.0f);
+        projection_matrix_ = glm::perspective(glm::radians(70.0f), (float)GM.window().width() / GM.window().height(), 0.01f, 80.0f);
         fb_.create(GM.window().fwidth(), GM.window().fheight(), true, true);
     }
 

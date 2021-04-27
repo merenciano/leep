@@ -3,6 +3,10 @@
 #include "core/common-defs.h"
 #include "core/manager.h"
 #include "core/memory/memory.h"
+
+#define MIN(a,b) (((a)<(b))?(a):(b))
+#define MAX(a,b) (((a)>(b))?(a):(b))
+
 namespace leep {
 
 CList::CList()
@@ -47,6 +51,7 @@ BuddyAlloc::BuddyAlloc()
     mem_ = nullptr;
     mem_offset_ = nullptr;
     block_limit_ = 0;
+    mem_used_ = 0;
 }
 
 void BuddyAlloc::init()
@@ -69,6 +74,8 @@ inline void BuddyAlloc::updateOffset(int8_t *offset)
 
 int8_t *BuddyAlloc::getPtr(uint32_t index, uint32_t block)
 {
+    
+
     return mem_ + ((index - ( 1 << block) + 1) << (kMaxAllocExp - block));
 }
 
@@ -105,7 +112,7 @@ uint32_t BuddyAlloc::adequateBlock(size_t request_size)
 
 size_t BuddyAlloc::blockSize(uint32_t block)
 {
-    uint32_t block_gap = kBlockCount - block - 1;
+    size_t block_gap = kBlockCount - block - 1;
     return kMinAlloc << block_gap;
 }
 
@@ -148,13 +155,13 @@ void *BuddyAlloc::alloc(size_t size)
     block = adequateBlock(size + kHeaderSize);
     original_block = block;
 
+    mtx_.lock();
     while (block + 1 != 0)
     {
         size_t rsize;
         size_t bytes_needed;
         uint32_t i;
         int8_t *ptr;
-
         lowerBlockLimit(block);
 
         ptr = (int8_t*)blocks_[block].pop();
@@ -195,13 +202,67 @@ void *BuddyAlloc::alloc(size_t size)
             blocks_[block].push((CList::Node*)getPtr(i + 1, block));
 
         }
+        mtx_.unlock();
         mem_used_ += blockSize(block);
         *(size_t*)ptr = size;
         return ptr + kHeaderSize;
     }
+    mtx_.unlock();
     return nullptr;
 }
 
+void *BuddyAlloc::realloc(void *ptr, size_t size)
+{
+    if (size <= 0)
+    {
+        free(ptr);
+        return nullptr;
+    }
+
+    void *new_ptr = alloc(size);
+    LEEP_CORE_ASSERT(new_ptr, "Error allocating on realloc");
+    if (!ptr)
+    {
+        return new_ptr;
+    }
+    size_t old_size = *(size_t*)ptr + kHeaderSize;
+    memcpy(new_ptr, ptr, MIN(old_size, size));
+    free(ptr);
+    return new_ptr;
+
+
+    /*
+    if (!ptr)
+    {
+        LEEP_CORE_ASSERT(size > 0, "Invalid size for NULL ptr");
+        return alloc(size);
+    }
+
+    void *new_ptr = nullptr;
+    size_t old_size = *(size_t*)ptr + kHeaderSize;
+
+    if (size == 0)
+    {
+        free(ptr);
+    }
+    else if (old_size > size)
+    {
+        //memset((int8_t*)ptr + size, 0, old_size - size);
+        new_ptr = ptr;
+    }
+    else if (old_size == size)
+    {
+        new_ptr = ptr;
+    }
+    else
+    {
+        new_ptr = alloc(size);
+        memcpy(new_ptr, ptr, MIN(old_size, size));
+        free(ptr);
+    }
+    return new_ptr;
+    */
+}
 
 void BuddyAlloc::free(void *ptr)
 {
@@ -210,9 +271,11 @@ void BuddyAlloc::free(void *ptr)
 
     if (!ptr) return;
 
+    mtx_.lock();
     ptr = (int8_t*)ptr - kHeaderSize;
-    block = adequateBlock(*(uint32_t*)ptr + kHeaderSize);
+    block = adequateBlock(*(size_t*)ptr + kHeaderSize);
     i = getNode((int8_t*)ptr, block);
+    mem_used_ -= blockSize(block);
 
     while (i != 0)
     {
@@ -227,9 +290,10 @@ void BuddyAlloc::free(void *ptr)
         block--;
 
     }
-    mem_used_ -= blockSize(block);
+
     // Add this address to the free list
     blocks_[block].push((CList::Node*)getPtr(i, block));
+    mtx_.unlock();
 }
 
 } // namespace leep

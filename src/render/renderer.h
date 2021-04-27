@@ -13,6 +13,7 @@
 #include <stdint.h>
 #include <forward_list>
 #include <atomic>
+#include <mutex>
 
 namespace leep
 {
@@ -100,6 +101,8 @@ namespace leep
         InternalTexture *textures_;
         int32_t buf_count_;
         int32_t tex_count_;
+
+        std::mutex mtx_;
 
         RenderQueues rq_;
     };

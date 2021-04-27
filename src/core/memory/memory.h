@@ -23,6 +23,7 @@ namespace leep
         // General alloc wrappers
         void *generalAlloc(size_t size);
         template<typename T> inline T *generalAllocT(size_t count);
+        void *generalRealloc(void *ptr, size_t size);
         void generalFree(void *ptr);
 
         float mbUsed() const;

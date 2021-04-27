@@ -4,6 +4,7 @@
 // Needed for size_t on linux...
 #include <stddef.h>
 #include <stdint.h>
+#include <mutex>
 
 namespace leep
 {
@@ -35,6 +36,7 @@ namespace leep
     public:
         BuddyAlloc();
         void *alloc(size_t size);
+        void *realloc(void *p, size_t new_size);
         template<typename T> T *allocT(size_t count = 1);
         void free(void *ptr);
         void init();
@@ -58,6 +60,7 @@ namespace leep
 
         int8_t *mem_;
         int8_t *mem_offset_;
+        std::mutex mtx_;
     };
 
     template<typename T>

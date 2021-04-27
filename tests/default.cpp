@@ -13,43 +13,39 @@ void leep::Init()
         rm.addTexture("IrradianceEnv", 1024.0f, 1024.0f, TexType::ENVIRONMENT);
         rm.addTexture("PrefilterSpec", 128.0f, 128.0f, TexType::PREFILTER_ENVIRONMENT);
         rm.addTexture("LutMap", 512.0f, 512.0f, TexType::LUT);
-        rm.addGeometry("Pipa", "../assets/obj/cerberus-n.obj");
-        /*
-        rm.addTexture("Cerberus_A" ,tp + "cerberus_A.png", TexType::SRGB);
-        rm.addTexture("Cerberus_N" ,tp + "cerberus_N.png", TexType::RGB);
-        rm.addTexture("Cerberus_M" ,tp + "cerberus_M.png", TexType::RGB);
-        rm.addTexture("Cerberus_R" ,tp + "cerberus_R.png", TexType::RGB);
-        rm.addGeometry("Cerberus"  ,"../assets/obj/cerberus.obj");
-        */
+        rm.addGeometry("Cerberus", "../assets/obj/cerberus-n.obj");
+        rm.addTextureAsync("Cerberus_A" ,tp + "cerberus/cerberus_A.png", TexType::SRGB);
+        rm.addTextureAsync("Cerberus_N" ,tp + "cerberus/cerberus_N.png", TexType::RGB);
+        rm.addTextureAsync("Cerberus_M" ,tp + "cerberus/cerberus_M.png", TexType::R);
+        rm.addTextureAsync("Cerberus_R" ,tp + "cerberus/cerberus_R.png", TexType::R);
     }
 
     GM.scene().createContainer(EntityType::RENDERABLE);
 
     PbrData mat_data;
     mat_data.color_ = glm::vec3(0.3f, 0.3f, 0.3f);
-    mat_data.use_albedo_map_ = 0.0f;
-    mat_data.use_pbr_maps_ = 0.0f;
+    mat_data.use_albedo_map_ = 1.0f;
+    mat_data.use_pbr_maps_ = 1.0f;
     mat_data.tiling_x_ = 1.0f;
     mat_data.tiling_y_ = 1.0f;
     mat_data.metallic_ = 0.5f;
     mat_data.roughness_ = 0.4f;
     
-    for (int i = 0; i < 900; ++i)
+    for (int i = 0; i < 1; ++i)
     {
-        Entity e = Entity::CreateEntity("Cube" + std::to_string(i), EntityType::RENDERABLE);
+        Entity e = Entity::CreateEntity("Cerberus"/* + std::to_string(i)*/, EntityType::RENDERABLE);
         LTransform &tr = e.getComponent<LTransform>();
-        tr.transform_ = glm::scale(tr.transform_,
-                        glm::vec3(0.33f, 0.33f, 0.33f));
-        tr.transform_ = glm::translate(tr.transform_, glm::vec3(i, 0.0f, 0.0f));
+        tr.transform_ = glm::scale(tr.transform_, glm::vec3(0.33f, 0.33f, 0.33f));
+        tr.transform_ = glm::translate(tr.transform_, glm::vec3(2.0f, 0.0f, 0.0f));
         Drawable &dw = e.getComponent<Drawable>();
-        dw.geometry_ = GM.resource_map().getGeometry("Pipa");
+        dw.geometry_ = GM.resource_map().getGeometry("Cerberus");
         dw.material_.set_type(MaterialType::MT_PBR);
         dw.material_.set_data(mat_data);
+        dw.material_.set_albedo(GM.resource_map().getTexture("Cerberus_A"));
+        dw.material_.set_metallic(GM.resource_map().getTexture("Cerberus_M"));
+        dw.material_.set_roughness(GM.resource_map().getTexture("Cerberus_R"));
+        dw.material_.set_normal(GM.resource_map().getTexture("Cerberus_N"));
     }
-    /*dw.material_.set_albedo(GM.resource_map().getTexture("HDREnv"));
-    dw.material_.set_metallic(GM.resource_map().getTexture("Cerberus_M"));
-    dw.material_.set_roughness(GM.resource_map().getTexture("Cerberus_R"));
-    dw.material_.set_normal(GM.resource_map().getTexture("Cerberus_N"));*/
 
     DisplayList init_dl;
     init_dl.addCommand<RenderOptions>()

@@ -5,6 +5,12 @@
 #include "core/window.h"
 #include "render/renderer.h"
 
+#define STB_IMAGE_IMPLEMENTATION
+#define STBI_MALLOC(sz)           GM.memory().generalAlloc(sz)
+#define STBI_REALLOC(p,newsz)     GM.memory().generalRealloc(p,newsz)
+#define STBI_FREE(p)              GM.memory().generalFree(p)
+#include "stb_image.h"
+
 namespace leep
 {
     Texture::Texture()
@@ -48,6 +54,7 @@ namespace leep
 
         r.textures_[handle_].internal_id_ = CommonDefs::UNINIT_INTERNAL_ID;
         strcpy(r.textures_[handle_].path_, path);
+        r.textures_[handle_].pix_ = nullptr;
         r.textures_[handle_].cpu_version_ = 1;
         r.textures_[handle_].gpu_version_ = 0;
         r.textures_[handle_].width_ = 0;
@@ -87,9 +94,73 @@ namespace leep
 
         r.textures_[handle_].internal_id_ = CommonDefs::UNINIT_INTERNAL_ID;
         *(r.textures_[handle_].path_) = '\0';
+        r.textures_[handle_].pix_ = nullptr;
         r.textures_[handle_].cpu_version_ = 1;
         r.textures_[handle_].gpu_version_ = 0;
 		r.textures_[handle_].type_ = t;
+    }
+
+    void Texture::createAndLoad(const char *path, TexType t)
+    {
+        LEEP_ASSERT(handle_ == CommonDefs::UNINIT_HANDLE,
+            "This texture is currently in use");
+        LEEP_ASSERT(*path != '\0', "For empty textures use createEmpty");
+
+        Renderer &r = GM.renderer();
+
+        // Lock needed because this function is called
+        // from ResourceMap::addTextureAsync
+        r.mtx_.lock();
+        if (!r.aviable_tex_pos_.empty())
+        {
+            handle_ = r.aviable_tex_pos_.front();
+            r.aviable_tex_pos_.pop_front();
+        }
+        else
+        {
+            handle_ = r.addTex();
+        }
+        r.mtx_.unlock();
+
+        int width, height, nchannels;
+        stbi_set_flip_vertically_on_load(1);
+        if (t == TexType::RGB_F16 || t == TexType::RGBA_F16 || t ==TexType::LUT)
+        {
+            r.textures_[handle_].pix_ = (void*)stbi_loadf(
+                path, &width, &height, &nchannels, 0);
+            LEEP_CORE_ASSERT(r.textures_[handle_].pix_,
+                "The image couldn't be loaded");
+        }
+        else
+        {
+            r.textures_[handle_].pix_ = (void*)stbi_load(
+                path, &width, &height, &nchannels, 0);
+            LEEP_CORE_ASSERT(r.textures_[handle_].pix_,
+                "The image couldn't be loaded");
+        }
+
+        r.textures_[handle_].internal_id_ = CommonDefs::UNINIT_INTERNAL_ID;
+        strcpy(r.textures_[handle_].path_, path);
+        r.textures_[handle_].cpu_version_ = 1;
+        r.textures_[handle_].gpu_version_ = 0;
+        r.textures_[handle_].width_ = width;
+        r.textures_[handle_].height_ = height;
+        r.textures_[handle_].type_ = t;
+
+        if (path)
+        {
+            GM.memory().generalFree((void*)path);
+        }
+    }
+
+    void Texture::releasePixels()
+    {
+        if (GM.renderer().textures_[handle_].pix_)
+        {
+            stbi_image_free(GM.renderer().textures_[handle_].pix_);
+            //GM.memory().generalFree(GM.renderer().textures_[handle_].pix_);
+            GM.renderer().textures_[handle_].pix_ = nullptr;
+        }
     }
 
     void Texture::release()
@@ -98,6 +169,7 @@ namespace leep
         {
             GM.renderer().textures_[handle_].cpu_version_ = CommonDefs::DELETED_GPU_RESOURCE;
             GM.renderer().textures_[handle_].gpu_version_ = CommonDefs::DELETED_GPU_RESOURCE;
+            releasePixels();
 
 			handle_ = CommonDefs::DELETED_HANDLE;
         }

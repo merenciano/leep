@@ -7,9 +7,16 @@
 
 #include <string>
 #include <unordered_map>
+#include <future>
 
 namespace leep
 {
+    struct FuTexture
+    {
+        std::future<void> fut_;
+        Texture tex_;
+    };
+
     class ResourceMap
     {
     public:
@@ -21,6 +28,7 @@ namespace leep
         void addGeometry(std::string name, std::string path);
         void addGeometry(std::string name, Geometry geometry);
         void addTexture(std::string name, std::string path, TexType type);
+        void addTextureAsync(std::string name, std::string path, TexType);
         void addTexture(std::string name, Texture texture);
         void addTexture(std::string name, float width, float height, TexType type);
         Geometry getGeometry(std::string name) const;
@@ -34,10 +42,10 @@ namespace leep
             BuddySTL<std::pair<const std::string, Geometry>>> geometries_;
         std::unordered_map<
             std::string,
-            Texture,
+            FuTexture,
             std::hash<std::string>,
             std::equal_to<std::string>,
-            BuddySTL<std::pair<const std::string, Texture>>> textures_;
+            BuddySTL<std::pair<const std::string, FuTexture>>> textures_;
     };
 }
 
