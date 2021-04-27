@@ -56,11 +56,11 @@ namespace leep
             ImGui::ShowDemoWindow(&show_demo);
 
         infoWindow(&show_info);
-        if (show_lua_commands_)          luaCommands();
-        if (show_entity_inspector_)      entityInspector();
-		if (show_components_)            componentInspector();
-        if (show_resource_inspector_)    resourceInspector();
-        if (show_memory_usage_)          memoryUsage();
+        if (show_lua_commands_)         luaCommands();
+        if (show_entity_inspector_)     entityInspector();
+        if (show_components_)           componentInspector();
+        if (show_resource_inspector_)   resourceInspector();
+        if (show_memory_usage_)         memoryUsage();
 
         ImGui::Render();
         ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
@@ -135,9 +135,9 @@ namespace leep
         {
             if (ImGui::BeginMenu("Inspect"))
             {
-                ImGui::MenuItem("Entities", nullptr, &show_entity_inspector_);
+                ImGui::MenuItem("Entities",   nullptr, &show_entity_inspector_);
                 ImGui::MenuItem("Components", nullptr, &show_components_);
-                ImGui::MenuItem("Resources", nullptr, &show_resource_inspector_);
+                ImGui::MenuItem("Resources",  nullptr, &show_resource_inspector_);
                 ImGui::EndMenu();
             }
 
@@ -168,7 +168,8 @@ namespace leep
     {
         static bool show = true;
         ImGui::SetNextWindowPos(ImVec2(240, 10), ImGuiCond_FirstUseEver);
-        if (!ImGui::Begin("Insert Lua Commands", &show, ImGuiWindowFlags_AlwaysAutoResize))
+        ImGui::SetNextWindowSize(ImVec2(300, 80), ImGuiCond_FirstUseEver);
+        if (!ImGui::Begin("Insert Lua Commands", &show, 0))
         {
             // Early out if the window is collapsed, as an optimization.
             ImGui::End();
@@ -238,10 +239,10 @@ namespace leep
                                 ImGui::Text("%d", j);
                                 ImGui::TableSetColumnIndex(1);
                                 //ImGui::Text("%s", Entity(j, it->first).name().c_str());
-                                if (ImGui::Button(Entity(j, it->first).name().c_str()))
+                                if (ImGui::Button(Entity(j + i * kEntitiesPerChunk, it->first).name().c_str()))
                                 {
                                     show_components_  = true;
-                                    selected_entity_ = Entity(j, it->first).name();
+                                    selected_entity_ = Entity(j + i * kEntitiesPerChunk, it->first).name();
                                 }
                             }
                             ImGui::EndTable();

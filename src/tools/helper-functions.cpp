@@ -19,10 +19,13 @@ void leep::CreateRenderable(std::string entity_name,
     }
     Drawable &d = e.getComponent<Drawable>();
     PbrData pbr;
+    pbr.color_ = glm::vec3(1.0f, 1.0f, 1.0f);
+    pbr.use_albedo_map_ = 0.0f;
+    pbr.use_pbr_maps_ = 0.0f;
     pbr.tiling_x_ = 1.0f;
     pbr.tiling_y_ = 1.0f;
-    pbr.metallic_ = 0.0f;
-    pbr.roughness_ = 0.0f;
+    pbr.metallic_ = 0.5f;
+    pbr.roughness_ = 0.5f;
     d.geometry_ = GM.resource_map().getGeometry(geometry_name);
     d.material_.set_type(MaterialType::MT_PBR);
     d.material_.set_data(pbr);
