@@ -14,10 +14,10 @@ void leep::Init()
         rm.addTexture("PrefilterSpec", 128.0f, 128.0f, TexType::PREFILTER_ENVIRONMENT);
         rm.addTexture("LutMap", 512.0f, 512.0f, TexType::LUT);
         rm.addGeometry("Cerberus", "../assets/obj/cerberus-n.obj");
-        rm.addTexture("Cerberus_A" ,tp + "cerberus/cerberus_A.png", TexType::SRGB);
-        rm.addTexture("Cerberus_N" ,tp + "cerberus/cerberus_N.png", TexType::RGB);
-        rm.addTexture("Cerberus_M" ,tp + "cerberus/cerberus_M.png", TexType::R);
-        rm.addTexture("Cerberus_R" ,tp + "cerberus/cerberus_R.png", TexType::R);
+        rm.addTextureAsync("Cerberus_A" ,tp + "cerberus/cerberus_A.png", TexType::SRGB);
+        rm.addTextureAsync("Cerberus_N" ,tp + "cerberus/cerberus_N.png", TexType::RGB);
+        rm.addTextureAsync("Cerberus_M" ,tp + "cerberus/cerberus_M.png", TexType::R);
+        rm.addTextureAsync("Cerberus_R" ,tp + "cerberus/cerberus_R.png", TexType::R);
     }
 
     GM.scene().createContainer(EntityType::RENDERABLE);
@@ -30,21 +30,21 @@ void leep::Init()
     mat_data.tiling_y_ = 1.0f;
     mat_data.metallic_ = 0.5f;
     mat_data.roughness_ = 0.4f;
+    mat_data.normal_map_intensity_ = 1.0f;
     
-    for (int i = 0; i < 400; ++i)
+    for (int i = 0; i < 1; ++i)
     {
         Entity e = Entity::CreateEntity("Cerberus" + ToString(i), EntityType::RENDERABLE);
         LTransform &tr = e.getComponent<LTransform>();
-        tr.transform_ = glm::scale(tr.transform_, glm::vec3(0.33f, 0.33f, 0.33f));
-        tr.transform_ = glm::translate(tr.transform_, glm::vec3(2.0f * i, 0.0f, 0.0f));
+        tr.transform_ = glm::translate(tr.transform_, glm::vec3(2.0f * i, 0.0f, -1.5f));
         Drawable &dw = e.getComponent<Drawable>();
         dw.geometry_ = GM.resource_map().getGeometry("Cerberus");
         dw.material_.set_type(MaterialType::MT_PBR);
         dw.material_.set_data(mat_data);
-        dw.material_.set_albedo(GM.resource_map().getTexture("Default"));
-        dw.material_.set_metallic(GM.resource_map().getTexture("Default"));
-        dw.material_.set_roughness(GM.resource_map().getTexture("Default"));
-        dw.material_.set_normal(GM.resource_map().getTexture("Default"));
+        dw.material_.set_albedo(GM.resource_map().getTexture("Cerberus_A"));
+        dw.material_.set_metallic(GM.resource_map().getTexture("Cerberus_M"));
+        dw.material_.set_roughness(GM.resource_map().getTexture("Cerberus_R"));
+        dw.material_.set_normal(GM.resource_map().getTexture("Cerberus_N"));
     }
 
     DisplayList init_dl;
@@ -55,12 +55,12 @@ void leep::Init()
         .enable_blend(true)
         .set_blend_func(BlendFunc::ONE, BlendFunc::ZERO);
     init_dl.addCommand<EquirectangularToCubemap>()
-        .set_in_path("../assets/tex/env/rooftop-env.hdr")
+        .set_in_path("../assets/tex/env/g-canyon-env.hdr")
         .set_out_cube(GM.resource_map().getTexture("Skybox"))
         .set_out_prefilter(GM.resource_map().getTexture("PrefilterSpec"))
         .set_out_lut(GM.resource_map().getTexture("LutMap"));
     init_dl.addCommand<EquirectangularToCubemap>()
-        .set_in_path("../assets/tex/env/rooftop-dif.hdr")
+        .set_in_path("../assets/tex/env/g-canyon-dif.hdr")
         .set_out_cube(GM.resource_map().getTexture("IrradianceEnv"));
     init_dl.submit();
 }
@@ -71,7 +71,7 @@ void leep::Logic()
     CameraMovement(1.0f, 1.0f).executeSystem();
     UpdateTransform(GM.scene().container(EntityType::RENDERABLE)).executeSystem();
     UpdateSceneGraph().executeSystem();
-    //Entity::GetEntity("Pipa").getComponent<LTransform>().rotateYWorld(0.001f);
+    Entity::GetEntity("Cerberus0").getComponent<LTransform>().rotateYWorld(0.003f);
     // Render commands
     DisplayList dl;
     PbrSceneData pbr_sd;
@@ -128,4 +128,9 @@ void leep::Logic()
         
     dl.submit();
     //DeleteReleased().executeSystem();
+}
+
+void leep::Close()
+{
+
 }

@@ -311,3 +311,8 @@ void leep::Logic()
         
     dl.submit();
 }
+
+void leep::Close()
+{
+
+}

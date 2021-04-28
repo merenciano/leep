@@ -28,6 +28,7 @@ namespace leep
         show_component_inspector_ = false;
         show_resource_inspector_ = false;
         show_memory_usage_ = false;
+        callback_ = nullptr;
     }
 
     ImguiTools::~ImguiTools()
@@ -44,6 +45,11 @@ namespace leep
         ImGui_ImplOpenGL3_Init("#version 330");
     }
 
+    void ImguiTools::set_callback(void(*callbackfun)(void))
+    {
+        callback_ = callbackfun;
+    }
+
     void ImguiTools::update()
     {
         static bool show_info = true;
@@ -51,6 +57,12 @@ namespace leep
         ImGui_ImplOpenGL3_NewFrame();
         ImGui_ImplGlfw_NewFrame();
         ImGui::NewFrame();
+
+        if (callback_)
+        {
+            (*callback_)();
+        }
+
         static bool show_demo = false;
         if (show_demo)
             ImGui::ShowDemoWindow(&show_demo);
@@ -61,6 +73,8 @@ namespace leep
         if (show_components_)           componentInspector();
         if (show_resource_inspector_)   resourceInspector();
         if (show_memory_usage_)         memoryUsage();
+
+        
 
         ImGui::Render();
         ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());

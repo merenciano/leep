@@ -1,7 +1,7 @@
 # Wavefront Obj file
 # 
 # verts: 23613 uv-s: 24672
-mtllib export3dcoat.mtl
+mtllib ../assets/obj/matball.mtl
 
 g temp:pCylinder7
 

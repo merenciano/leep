@@ -27,7 +27,7 @@ namespace leep
 
     // TODO: Draw command with pointer to material will reduce vastly
     // the memory stored in the pool (due to materialdata union being big)
-    const uint32_t kRenderQueueMaxCount = 1000;
+    const uint32_t kRenderQueueMaxCount = 2000;
     const uint32_t kRenderPoolSize = kRenderQueueMaxCount * sizeof(Draw);
 
     class RenderQueues

@@ -38,6 +38,8 @@ namespace leep
 
         bool wantMouse() const;
         bool wantKeyboard() const;
+
+        void set_callback(void(*callbacfun)(void));
 		
 	private:
         String selected_entity_;
@@ -47,6 +49,7 @@ namespace leep
         bool show_component_inspector_;
         bool show_resource_inspector_;
         bool show_memory_usage_;
+        void (*callback_)(void);
     };
 }
 
