@@ -11,6 +11,16 @@ Memory::Memory()
     offset_ = nullptr;
 }
 
+Memory::~Memory()
+{
+    if (mem_)
+    {
+        free(mem_);
+    }
+    mem_ = nullptr;
+    offset_ = nullptr;
+}
+
 void Memory::init()
 {
     mem_ = (int8_t*)malloc(kTotalMemSize);

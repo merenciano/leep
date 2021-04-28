@@ -4,7 +4,7 @@ namespace leep
 {
 	CreateTexture::CreateTexture()
 	{
-        release_ram_data_ = false;
+        release_ram_data_ = true;
 	}
 
     CreateTexture& CreateTexture::set_texture(const Texture &texture)

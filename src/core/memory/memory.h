@@ -17,6 +17,7 @@ namespace leep
     {
     public:
         Memory();
+        ~Memory();
         void init();
         void freeAll();
         void *persistentAlloc(size_t size);
