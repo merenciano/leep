@@ -3,7 +3,7 @@
 
 namespace leep
 {
-    void ResourceMap::addGeometry(std::string name, std::string path)
+    void ResourceMap::addGeometry(String name, String path)
     {
         LEEP_ASSERT(name != "Cube", "There is already a cube named Cube");
         LEEP_ASSERT(name != "Sphere", "There is already a sphere named Sphere");
@@ -20,7 +20,7 @@ namespace leep
         }
     }
 
-    void ResourceMap::addGeometry(std::string name, Geometry g)
+    void ResourceMap::addGeometry(String name, Geometry g)
     {
         LEEP_CHECK_RESOURCE(g.vertex_buffer());
         LEEP_CHECK_RESOURCE(g.index_buffer());
@@ -35,8 +35,8 @@ namespace leep
     }
 
     void ResourceMap::addTexture(
-            std::string name,
-            std::string path,
+            String name,
+            String path,
             TexType t)
     {
         LEEP_CORE_ASSERT(path != "", "For the creation of empty textures call with size params");
@@ -52,8 +52,8 @@ namespace leep
         }
     }
 
-    void ResourceMap::addTextureAsync(std::string name,
-                                      std::string path,
+    void ResourceMap::addTextureAsync(String name,
+                                      String path,
                                       TexType t)
     {
         LEEP_CORE_ASSERT(path != "",
@@ -76,7 +76,7 @@ namespace leep
         }
     }
 
-    void ResourceMap::addTexture(std::string n, float w, float h, TexType t)
+    void ResourceMap::addTexture(String n, float w, float h, TexType t)
     {
         LEEP_CORE_ASSERT(w > 0.0f && h > 0.0f, "0,0 size texture is no texture");
         bool inserted = textures_.emplace(std::make_pair(n, FuTexture())).second;
@@ -90,7 +90,7 @@ namespace leep
         }
     }
 
-    void ResourceMap::addTexture(std::string name, Texture tex)
+    void ResourceMap::addTexture(String name, Texture tex)
     {
         bool inserted = textures_.emplace(std::make_pair(name, FuTexture())).second;
         if (!inserted)
@@ -103,7 +103,7 @@ namespace leep
         }
     }
 
-    Geometry ResourceMap::getGeometry(std::string name) const
+    Geometry ResourceMap::getGeometry(String name) const
     {
         if (name == "Cube")
             return Renderer::s_cube;
@@ -115,7 +115,7 @@ namespace leep
         return geometries_.at(name);
     }
 
-    Texture ResourceMap::getTexture(std::string name) const
+    Texture ResourceMap::getTexture(String name) const
     {
         if (textures_.at(name).fut_.valid())
         {

@@ -15,9 +15,11 @@ namespace leep
         lua_register(L, "SetParent", LUA_SetParent);
         lua_register(L, "DetachFromParent", LUA_DetachFromParent);
         lua_register(L, "SetLocation", LUA_SetLocation);
+        lua_register(L, "SetSunDirection", LUA_SetSunDirection);
+        lua_register(L, "SetSunIntensity", LUA_SetSunIntensity);
     }
 
-    void LuaScripting::ExecuteScript(std::string path)
+    void LuaScripting::ExecuteScript(String path)
     {
         if (luaL_dofile(L, path.c_str()))
         {
@@ -29,7 +31,7 @@ namespace leep
         }
     }
 
-    void LuaScripting::ExecuteCommand(std::string command)
+    void LuaScripting::ExecuteCommand(String command)
     {
         if (luaL_dostring(L, command.c_str()))
         {
@@ -41,7 +43,7 @@ namespace leep
         }
     }
 
-    void LuaScripting::SetGlobal(std::string name, float value)
+    void LuaScripting::SetGlobal(String name, float value)
     {
         lua_pushnumber(L, value);
         lua_setglobal(L, name.c_str());

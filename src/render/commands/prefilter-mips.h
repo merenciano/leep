@@ -3,6 +3,7 @@
 #ifndef __LEEP_RENDER_COMMANDS_PREFILTER_MIPS_H__
 #define __LEEP_RENDER_COMMANDS_PREFILTER_MIPS_H__
 
+#include "core/string.h"
 #include "render/display-list-command.h"
 #include "render/texture.h"
 
@@ -14,14 +15,13 @@ namespace leep
         PrefilterMips();
         ~PrefilterMips();
 
-        PrefilterMips &set_in_path(std::string in_path);
+        PrefilterMips &set_in_path(String in_path);
         PrefilterMips &set_out_cube(Texture out_texture);
-        // SEGUIR POR AQUI
 
         virtual void executeCommand() const override;
 
     private:
-        std::string path_;
+        String path_;
         Texture out_cube_;
     };
 }

@@ -3,17 +3,19 @@
 #ifndef __LEEP_HELPER_FUNCTIONS_H__
 #define __LEEP_HELPER_FUNCTIONS_H__
 
-#include <string>
+#include "core/string.h"
 
 namespace leep
 {
-    void CreateRenderable(std::string entity_name,
-                          std::string geometry_name,
-                          std::string texture_name);
-    void RemoveEntity(std::string entity_name);
-    void SetParent(std::string entity_name, std::string parent_name);
-    void DetachFromParent(std::string entity_name);
-    void SetLocation(std::string entity_name, float x, float y, float z);
+    void CreateRenderable(String entity_name,
+                          String geometry_name,
+                          String texture_name);
+    void RemoveEntity(String entity_name);
+    void SetParent(String entity_name, String parent_name);
+    void DetachFromParent(String entity_name);
+    void SetLocation(String entity_name, float x, float y, float z);
+    void SetSunDirection(float x, float y, float z);
+    void SetSunIntensity(float intensity);
 }
 
 #endif // __LEEP_HELPER_FUNCTIONS_H__

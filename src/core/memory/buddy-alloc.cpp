@@ -230,7 +230,7 @@ void *BuddyAlloc::realloc(void *ptr, size_t size)
     free(ptr);
     return new_ptr;
 
-
+    // TODO: Check why the code below ends causing access denied exceptions
     /*
     if (!ptr)
     {

@@ -12,7 +12,7 @@ namespace leep
 
     }
 
-    void EntityMap::addEntry(std::string name, int32_t id, EntityType t)
+    void EntityMap::addEntry(String name, int32_t id, EntityType t)
     {
         EntityIndex eid = { t, id };
         map_[name] = eid;
@@ -28,24 +28,24 @@ namespace leep
         map_[rmap_[elast]] = ei;
     }
 
-    void EntityMap::removeEntry(std::string name, int32_t id, EntityType t)
+    void EntityMap::removeEntry(String name, int32_t id, EntityType t)
     {
         EntityIndex ei = { t, id };
         map_.erase(name);
         rmap_.erase(ei);
     }
 
-    bool EntityMap::exists(std::string name)
+    bool EntityMap::exists(String name)
     {
         return map_.find(name) != map_.end(); 
     }
 
-    EntityIndex EntityMap::getEntity(std::string name) 
+    EntityIndex EntityMap::getEntity(String name)
     {
         return map_[name];
     }
 
-    std::string EntityMap::getEntityName(int32_t i, EntityType t)
+    String EntityMap::getEntityName(int32_t i, EntityType t)
     {
         EntityIndex ei = { t, i};
         return rmap_.at(ei);

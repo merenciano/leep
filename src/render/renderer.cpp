@@ -16,6 +16,7 @@ Renderer::Renderer()
 {
     tex_to_del_.store(-1);
     buf_to_del_.store(-1);
+    sun_dir_intensity_ = glm::vec4(1.0f, -1.0f, 0.0f, 1.0f);
 }
 
 Renderer::~Renderer()

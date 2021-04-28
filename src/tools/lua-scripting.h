@@ -3,8 +3,8 @@
 #ifndef __LEEP_TOOLS_LUA_SCRIPTING_H__
 #define __LEEP_TOOLS_LUA_SCRIPTING_H__
 
+#include "core/string.h"
 #include <../src/lua/lua.hpp>
-#include <string>
 
 namespace leep
 {
@@ -15,9 +15,9 @@ namespace leep
         ~LuaScripting() = delete;
 
         static void Init();
-        static void SetGlobal(std::string name, float value);
-        static void ExecuteScript(std::string path);
-        static void ExecuteCommand(std::string command);
+        static void SetGlobal(String name, float value);
+        static void ExecuteScript(String path);
+        static void ExecuteCommand(String command);
 
     private:
         static lua_State *L;

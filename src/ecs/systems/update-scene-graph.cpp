@@ -36,7 +36,8 @@ namespace leep
                     continue;
                 }
 
-                for (LTransform *c : sg_.map_[it->first].childs)
+                //for (LTransform *c : it->second.childs)
+                for (LTransform* c : sg_.map_[it->first].childs)
                 {
                     UpdateGlobalTransforms(sg_, c);
                 }

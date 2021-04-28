@@ -11,12 +11,13 @@
 
 namespace leep
 {
-    const uint64_t kTotalMemSize = GIGABYTES((uint64_t)2);
+    const uint64_t kTotalMemSize = MEGABYTES((uint64_t)1224);
 
     class Memory
     {
     public:
         Memory();
+        ~Memory();
         void init();
         void freeAll();
         void *persistentAlloc(size_t size);

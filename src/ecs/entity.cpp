@@ -7,9 +7,8 @@
 
 namespace leep
 {
-    Entity Entity::CreateEntity(std::string name, EntityType t)
+    Entity Entity::CreateEntity(String name, EntityType t)
     {
-        //LEEP_CORE_ASSERT(!s_map_.exists(name), "An entity with that name already exists.");
         Memory &m = GM.memory();
         if (GM.scene().entity_map_.exists(name))
         {
@@ -23,12 +22,10 @@ namespace leep
             switch (t)
             {
             case EntityType::RENDERABLE:
-                //cont.blocks_.emplace_back(new RenderableEC());
                 cont.blocks_.emplace_back(m.generalAllocT<RenderableEC>(1));
                 break;
 
             case EntityType::FALLING_CUBE:
-                //cont.blocks_.emplace_back(new FallingCubeEntities());
                 cont.blocks_.emplace_back(m.generalAllocT<FallingCubeEntities>(1));
                 break;
 
@@ -42,7 +39,7 @@ namespace leep
         return Entity(entity_id, t);
     }
 
-    void Entity::RemoveEntity(std::string name)
+    void Entity::RemoveEntity(String name)
     {
         EntityMap &emap = GM.scene().entity_map_;
         if (!emap.exists(name))
@@ -90,14 +87,14 @@ namespace leep
         emap.removeEntry(name, last_id, emap.getEntity(name).type);
     }
 
-    Entity Entity::GetEntity(std::string name)
+    Entity Entity::GetEntity(String name)
     {
         EntityMap &emap = GM.scene().entity_map_;
         LEEP_ASSERT(emap.exists(name), "There isn't any entity with that name");
         return Entity(emap.getEntity(name).index, emap.getEntity(name).type);
     }
 
-    std::string Entity::name() const
+    String Entity::name() const
     {
         return GM.scene().entity_map_.getEntityName(index_, type_);
     }

@@ -54,7 +54,7 @@ static const char* kPbrFragment = R"(
     #define USE_PBR_MAPS		u_entity_data[5].x
     #define ROUGHNESS			u_entity_data[6].x
     #define METALLIC			u_entity_data[6].y
-    #define REFLECTANCE			u_entity_data[6].z
+    #define NORMAL_MAP_INTENSITY u_entity_data[6].z
 
     #define LIGHT_DIRECTION     u_scene_data[5].xyz
     #define LIGHT_INTENSITY     u_scene_data[5].w
@@ -131,7 +131,7 @@ static const char* kPbrFragment = R"(
 	    // Get current fragment's normal and transform to world space.
 	    vec3 normal = normalize(2.0 * texture(u_normal, v_in.uv).rgb - 1.0);
 	    normal = normalize(v_in.tbn * normal);
-        normal = mix(normalize(v_in.tbn[2]), clamp(normal, -1.0, 1.0), USE_PBR_MAPS);
+        normal = mix(normalize(v_in.tbn[2]), clamp(normal, -1.0, 1.0), NORMAL_MAP_INTENSITY);
     
 	    // Angle between surface normal and outgoing light direction.
 	    float cos_lo = max(0.0, dot(normal, lo));

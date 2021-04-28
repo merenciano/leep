@@ -28,6 +28,7 @@ namespace leep
         show_component_inspector_ = false;
         show_resource_inspector_ = false;
         show_memory_usage_ = false;
+        callback_ = nullptr;
     }
 
     ImguiTools::~ImguiTools()
@@ -44,6 +45,11 @@ namespace leep
         ImGui_ImplOpenGL3_Init("#version 330");
     }
 
+    void ImguiTools::set_callback(void(*callbackfun)(void))
+    {
+        callback_ = callbackfun;
+    }
+
     void ImguiTools::update()
     {
         static bool show_info = true;
@@ -51,6 +57,12 @@ namespace leep
         ImGui_ImplOpenGL3_NewFrame();
         ImGui_ImplGlfw_NewFrame();
         ImGui::NewFrame();
+
+        if (callback_)
+        {
+            (*callback_)();
+        }
+
         static bool show_demo = false;
         if (show_demo)
             ImGui::ShowDemoWindow(&show_demo);
@@ -61,6 +73,8 @@ namespace leep
         if (show_components_)           componentInspector();
         if (show_resource_inspector_)   resourceInspector();
         if (show_memory_usage_)         memoryUsage();
+
+        
 
         ImGui::Render();
         ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
@@ -179,7 +193,7 @@ namespace leep
         ImGui::InputText("Command input", buffer, IM_ARRAYSIZE(buffer));
         if (ImGui::Button("Execute"))
         {
-            LuaScripting::ExecuteCommand(std::string(buffer));
+            LuaScripting::ExecuteCommand(String(buffer));
         }
         ImGui::End();
     }
@@ -197,7 +211,7 @@ namespace leep
         auto it = GM.scene().entities_->begin();
         while(it != GM.scene().entities_->end())
         {
-            std::string header_name;
+            String header_name;
             switch(it->first)
             {
                 default:
@@ -220,7 +234,7 @@ namespace leep
             {
                 for (uint32_t i = 0; i < it->second.blocks_.size(); ++i)
                 {
-                    std::string tree_name = "Chunk " + std::to_string(i);
+                    String tree_name = "Chunk " + ToString(i);
                     if (ImGui::TreeNode(tree_name.c_str()))
                     {
                         static ImGuiTableFlags flags = ImGuiTableFlags_ScrollY | ImGuiTableFlags_RowBg | ImGuiTableFlags_BordersOuter | ImGuiTableFlags_BordersV | ImGuiTableFlags_Resizable | ImGuiTableFlags_Reorderable | ImGuiTableFlags_Hideable;
@@ -295,6 +309,7 @@ namespace leep
                 ImGui::SliderFloat  ("Use PBR maps"     , &data.use_pbr_maps_   , 0.0f, 1.0f);
                 ImGui::SliderFloat  ("Roughness"        , &data.roughness_      , 0.0f, 1.0f);
                 ImGui::SliderFloat  ("Metallic"         , &data.metallic_       , 0.0f, 1.0f);
+                ImGui::SliderFloat  ("NormalMap intensity", &data.normal_map_intensity_, 0.0f, 1.0f);
                 dw.material_.set_data(data);
             }
         }
@@ -336,7 +351,7 @@ namespace leep
                     ImGui::TableSetColumnIndex(1);
                     if (t.internal_id_ == CommonDefs::UNINIT_INTERNAL_ID)
                     {
-                        ImGui::Text("Deleted");
+                        ImGui::Text("Not created");
                     }
                     else if (t.gpu_version_ == CommonDefs::DELETED_GPU_RESOURCE)
                     {

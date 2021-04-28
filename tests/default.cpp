@@ -7,8 +7,8 @@ void leep::Init()
     {
         // Resource creation CPU side (GPU allocation will occur on first use)
         ResourceMap &rm = GM.resource_map();
-        const std::string tp = "../assets/tex/";
-        rm.addTextureAsync("Default", "../assets/tex/default.jpg", TexType::SRGB);
+        const String tp = "../assets/tex/";
+        rm.addTexture("Default", "../assets/tex/default.jpg", TexType::SRGB);
         rm.addTexture("Skybox", 1024.0f, 1024.0f, TexType::ENVIRONMENT);
         rm.addTexture("IrradianceEnv", 1024.0f, 1024.0f, TexType::ENVIRONMENT);
         rm.addTexture("PrefilterSpec", 128.0f, 128.0f, TexType::PREFILTER_ENVIRONMENT);
@@ -30,13 +30,13 @@ void leep::Init()
     mat_data.tiling_y_ = 1.0f;
     mat_data.metallic_ = 0.5f;
     mat_data.roughness_ = 0.4f;
+    mat_data.normal_map_intensity_ = 1.0f;
     
-    for (int i = 0; i < 400; ++i)
+    for (int i = 0; i < 1; ++i)
     {
-        Entity e = Entity::CreateEntity("Cerberus" + std::to_string(i), EntityType::RENDERABLE);
+        Entity e = Entity::CreateEntity("Cerberus" + ToString(i), EntityType::RENDERABLE);
         LTransform &tr = e.getComponent<LTransform>();
-        tr.transform_ = glm::scale(tr.transform_, glm::vec3(0.33f, 0.33f, 0.33f));
-        tr.transform_ = glm::translate(tr.transform_, glm::vec3(2.0f * i, 0.0f, 0.0f));
+        tr.transform_ = glm::translate(tr.transform_, glm::vec3(2.0f * i, 0.0f, -1.5f));
         Drawable &dw = e.getComponent<Drawable>();
         dw.geometry_ = GM.resource_map().getGeometry("Cerberus");
         dw.material_.set_type(MaterialType::MT_PBR);
@@ -55,12 +55,12 @@ void leep::Init()
         .enable_blend(true)
         .set_blend_func(BlendFunc::ONE, BlendFunc::ZERO);
     init_dl.addCommand<EquirectangularToCubemap>()
-        .set_in_path("../assets/tex/env/rooftop-env.hdr")
+        .set_in_path("../assets/tex/env/g-canyon-env.hdr")
         .set_out_cube(GM.resource_map().getTexture("Skybox"))
         .set_out_prefilter(GM.resource_map().getTexture("PrefilterSpec"))
         .set_out_lut(GM.resource_map().getTexture("LutMap"));
     init_dl.addCommand<EquirectangularToCubemap>()
-        .set_in_path("../assets/tex/env/rooftop-dif.hdr")
+        .set_in_path("../assets/tex/env/g-canyon-dif.hdr")
         .set_out_cube(GM.resource_map().getTexture("IrradianceEnv"));
     init_dl.submit();
 }
@@ -71,7 +71,7 @@ void leep::Logic()
     CameraMovement(1.0f, 1.0f).executeSystem();
     UpdateTransform(GM.scene().container(EntityType::RENDERABLE)).executeSystem();
     UpdateSceneGraph().executeSystem();
-    //Entity::GetEntity("Pipa").getComponent<LTransform>().rotateYWorld(0.001f);
+    Entity::GetEntity("Cerberus0").getComponent<LTransform>().rotateYWorld(0.003f);
     // Render commands
     DisplayList dl;
     PbrSceneData pbr_sd;
@@ -128,4 +128,9 @@ void leep::Logic()
         
     dl.submit();
     //DeleteReleased().executeSystem();
+}
+
+void leep::Close()
+{
+
 }

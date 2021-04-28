@@ -1,8 +1,8 @@
 #ifndef __LEEP_TOOLS_IMGUI_TOOLS_H__
 #define __LEEP_TOOLS_IMGUI_TOOLS_H__ 1
 
+#include "core/string.h"
 #include <stdint.h>
-#include <string>
 
 namespace leep
 {
@@ -38,15 +38,18 @@ namespace leep
 
         bool wantMouse() const;
         bool wantKeyboard() const;
+
+        void set_callback(void(*callbacfun)(void));
 		
 	private:
-		std::string selected_entity_;
+        String selected_entity_;
 		bool show_components_;
         bool show_lua_commands_;
         bool show_entity_inspector_;
         bool show_component_inspector_;
         bool show_resource_inspector_;
         bool show_memory_usage_;
+        void (*callback_)(void);
     };
 }
 

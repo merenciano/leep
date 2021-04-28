@@ -20,12 +20,10 @@ namespace leep
                 LEEP_ASSERT(false, "Invalid entity type");
                 break;
             case EntityType::FALLING_CUBE:
-                //blocks_.emplace_back(new FallingCubeEntities());
                 blocks_.emplace_back(m.generalAllocT<FallingCubeEntities>(1));
                 break;
 
             case EntityType::RENDERABLE:
-                //blocks_.emplace_back(new RenderableEC());
                 blocks_.emplace_back(m.generalAllocT<RenderableEC>(1));
                 break;
         }

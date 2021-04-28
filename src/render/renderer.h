@@ -27,7 +27,7 @@ namespace leep
 
     // TODO: Draw command with pointer to material will reduce vastly
     // the memory stored in the pool (due to materialdata union being big)
-    const uint32_t kRenderQueueMaxCount = 1000;
+    const uint32_t kRenderQueueMaxCount = 2000;
     const uint32_t kRenderPoolSize = kRenderQueueMaxCount * sizeof(Draw);
 
     class RenderQueues
@@ -53,7 +53,7 @@ namespace leep
         int8_t *next_offset_;
         DLComm **next_queue_;
         int32_t next_count_;
-    public: // Saving 8 bytes of paddind here
+    public: // Saving 8 bytes of padding here
         int32_t curr_count_;
     };
 
@@ -75,11 +75,13 @@ namespace leep
         void submitFrame();
         void deleteResources();
 
+        glm::vec4 sun_dir_intensity_;
+
         // Forward list because random element access is not needed
         // and I only need push and pop front which are cheap in this container
-        std::forward_list<int32_t> aviable_buffer_pos_;
-        std::forward_list<int32_t> aviable_tex_pos_;
-        std::forward_list<int32_t> aviable_fb_pos_; // TODO: remove framebuffer creation and deletion
+        std::forward_list<int32_t, BuddySTL<int32_t>> aviable_buffer_pos_;
+        std::forward_list<int32_t, BuddySTL<int32_t>> aviable_tex_pos_;
+        std::forward_list<int32_t, BuddySTL<int32_t>> aviable_fb_pos_; // TODO: remove framebuffer creation and deletion
 
         std::atomic<int32_t> tex_to_del_;
         std::atomic<int32_t> buf_to_del_;

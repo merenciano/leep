@@ -73,7 +73,7 @@ namespace leep
         // and inside the directory the faces must have these names
         if (r.textures_[id].type_ == TexType::SKYBOX)
         {
-            std::string faces[6] = {
+            String faces[6] = {
                 // MEGA TODO: Fix this soon
                 /*r.textures_[id].path_ + "/right.jpg",
                 r.textures_[id].path_ + "/left.jpg",

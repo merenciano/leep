@@ -1,4 +1,5 @@
 // CORE
+#include "../src/core/string.h"
 #include "../src/core/common-defs.h"
 #include "../src/core/manager.h"
 #include "../src/core/window.h"
@@ -8,6 +9,7 @@
 #include "../src/core/scene.h"
 #include "../src/core/logic-thread.h"
 #include "../src/core/memory/memory.h"
+#include "../src/core/memory/buddy-alloc-stl.h"
 
 // ECS
 #include "../src/ecs/entity.h"
@@ -47,6 +49,7 @@
 #include "../src/tools/imgui-tools.h"
 #include "../src/tools/lua-scripting.h"
 #include "../src/tools/resource-map.h"
+#include "../src/tools/helper-functions.h"
 
 //#define MTR_ENABLED
 #include "minitrace.h"
@@ -57,6 +60,7 @@ namespace leep
 {
     void Init();
     void Logic();
+    void Close();
 }
 
 void LeepInit()
@@ -89,6 +93,13 @@ void LeepLogic()
     logic_timer.end();
     leep::GM.ui_tools().calcLogicAverage(logic_timer.duration());
     MTR_END("LEEP", "Logic");
+}
+
+void LeepClose()
+{
+    leep::Close();
+    mtr_flush();
+    mtr_shutdown();
 }
 
 void LeepRender()
@@ -137,8 +148,7 @@ int main(int argc, char **argv)
         leep::GM.ui_tools().calcRenderAverage(swap_timer.duration());
         MTR_END("LEEP", "Swap_Buffers");
     }
-    mtr_flush();
-    mtr_shutdown();
+    LeepClose();
 
     return 0;
 }

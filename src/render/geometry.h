@@ -4,7 +4,7 @@
 #define __LEEP_RENDER_GEOMETRY_H__ 1
 
 #include "buffer.h"
-#include <string>
+#include "core/string.h"
 
 namespace leep
 {
@@ -30,7 +30,7 @@ namespace leep
          * Make sure the obj will be renderer before calling this method
          * or free it manually with vertex/index_buffer().freeSystemRamData()
          */
-        void loadObj(std::string path);
+        void loadObj(String path);
     
     private:
         Buffer vertex_buffer_;

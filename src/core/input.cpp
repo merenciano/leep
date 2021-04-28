@@ -50,7 +50,7 @@ namespace leep
         // The lifetime of this class is the same as the entire program,
         // so I'm not going to slow down the closing process deleting pointers.
 #ifdef LEEP_DEBUG
-        delete data_;
+        GM.memory().generalFree(data_);
 #endif
     }
 
@@ -62,7 +62,7 @@ namespace leep
         if (data_)
             return;
 
-        data_ = new InputData();
+        data_ = GM.memory().generalAllocT<InputData>(1);
         data_->window = (GLFWwindow*)window;
         glfwSetScrollCallback(data_->window, ScrollCallback);
     }

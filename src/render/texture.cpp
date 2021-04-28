@@ -123,7 +123,7 @@ namespace leep
         }
         r.mtx_.unlock();
 
-        int width, height, nchannels;
+        int width, height, nchannels = 0;
         stbi_set_flip_vertically_on_load(1);
         if (t == TexType::RGB_F16 || t == TexType::RGBA_F16 || t ==TexType::LUT)
         {
@@ -134,8 +134,16 @@ namespace leep
         }
         else
         {
+            if (t == TexType::RGB || t == TexType::SRGB)
+            {
+                nchannels = 3;
+            }
+            else if (t == TexType::R)
+            {
+                nchannels = 1;
+            }
             r.textures_[handle_].pix_ = (void*)stbi_load(
-                path, &width, &height, &nchannels, 0);
+                path, &width, &height, &nchannels, nchannels);
             LEEP_CORE_ASSERT(r.textures_[handle_].pix_,
                 "The image couldn't be loaded");
         }
