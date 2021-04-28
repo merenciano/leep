@@ -15,6 +15,8 @@ namespace leep
         lua_register(L, "SetParent", LUA_SetParent);
         lua_register(L, "DetachFromParent", LUA_DetachFromParent);
         lua_register(L, "SetLocation", LUA_SetLocation);
+        lua_register(L, "SetSunDirection", LUA_SetSunDirection);
+        lua_register(L, "SetSunIntensity", LUA_SetSunIntensity);
     }
 
     void LuaScripting::ExecuteScript(String path)

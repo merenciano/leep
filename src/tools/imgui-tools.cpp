@@ -295,6 +295,7 @@ namespace leep
                 ImGui::SliderFloat  ("Use PBR maps"     , &data.use_pbr_maps_   , 0.0f, 1.0f);
                 ImGui::SliderFloat  ("Roughness"        , &data.roughness_      , 0.0f, 1.0f);
                 ImGui::SliderFloat  ("Metallic"         , &data.metallic_       , 0.0f, 1.0f);
+                ImGui::SliderFloat  ("NormalMap intensity", &data.normal_map_intensity_, 0.0f, 1.0f);
                 dw.material_.set_data(data);
             }
         }

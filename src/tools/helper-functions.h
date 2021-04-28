@@ -14,6 +14,8 @@ namespace leep
     void SetParent(String entity_name, String parent_name);
     void DetachFromParent(String entity_name);
     void SetLocation(String entity_name, float x, float y, float z);
+    void SetSunDirection(float x, float y, float z);
+    void SetSunIntensity(float intensity);
 }
 
 #endif // __LEEP_HELPER_FUNCTIONS_H__

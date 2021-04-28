@@ -4,6 +4,7 @@
 #include "core/scene.h"
 #include "ecs/entity.h"
 #include "ecs/components/drawable.h"
+#include "render/renderer.h"
 #include "tools/resource-map.h"
 
 void leep::CreateRenderable(String entity_name,
@@ -58,4 +59,16 @@ void leep::SetLocation(String entity_name, float x, float y, float z)
 {
     LTransform &eltr = Entity::GetEntity(entity_name).getComponent<LTransform>();
     eltr.setLocation(glm::vec3(x, y, z));
+}
+
+void leep::SetSunDirection(float x, float y, float z)
+{
+    GM.renderer().sun_dir_intensity_.x = x;
+    GM.renderer().sun_dir_intensity_.y = y;
+    GM.renderer().sun_dir_intensity_.z = z;
+}
+
+void leep::SetSunIntensity(float intensity)
+{
+    GM.renderer().sun_dir_intensity_.w = intensity;
 }
