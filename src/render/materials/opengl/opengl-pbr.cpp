@@ -49,133 +49,111 @@ static const char* kPbrVertex = R"(
 static const char* kPbrFragment = R"(
     #version 330 core
 
-    #define COLOR				u_entity_data[4].xyz
-    #define USE_ALBEDO_MAP		u_entity_data[4].w
-    #define USE_PBR_MAPS		u_entity_data[5].x
-    #define ROUGHNESS			u_entity_data[6].x
-    #define METALLIC			u_entity_data[6].y
+    #define COLOR                u_entity_data[4].xyz
+    #define USE_ALBEDO_MAP       u_entity_data[4].w
+    #define USE_PBR_MAPS         u_entity_data[5].x
+    #define ROUGHNESS            u_entity_data[6].x
+    #define METALLIC             u_entity_data[6].y
     #define NORMAL_MAP_INTENSITY u_entity_data[6].z
-
-    #define LIGHT_DIRECTION     u_scene_data[5].xyz
-    #define LIGHT_INTENSITY     u_scene_data[5].w
-    #define CAMERA_POSITION     u_scene_data[4].xyz
+    #define LIGHT_DIRECTION      u_scene_data[5].xyz
+    #define LIGHT_INTENSITY      u_scene_data[5].w
+    #define CAMERA_POSITION      u_scene_data[4].xyz
 
     const float kPI = 3.14159265359;
-    const float kEpsilon = 0.00001;
-    // Constant normal incidence Fresnel factor for all dielectrics.
-    const vec3 kFdielectric = vec3(0.04);
-    const int kMaxPrefilterLod = 5;
+    const float kEpsilon = 1e-5;
+    const vec3  kFdielectric = vec3(0.04);
+    const int   kMaxPrefilterLod = 5;
 
     in Vertex
     {
-	    mat3 tbn;
-	    vec3 position;
-	    vec2 uv;
+        mat3 tbn;
+        vec3 position;
+        vec2 uv;
     } v_in;
 
     out vec4 FragColor;
 
-    uniform vec4 u_entity_data[7];
-    uniform vec4 u_scene_data[6];
-    uniform sampler2D u_albedo;
-    uniform sampler2D u_metallic;
-    uniform sampler2D u_roughness;
-    uniform sampler2D u_normal;
+    uniform vec4        u_entity_data[7];
+    uniform vec4        u_scene_data[6];
+    uniform sampler2D   u_albedo;
+    uniform sampler2D   u_metallic;
+    uniform sampler2D   u_roughness;
+    uniform sampler2D   u_normal;
     uniform samplerCube u_irradiance_map;
     uniform samplerCube u_prefilter_map;
-    uniform sampler2D u_lut;
+    uniform sampler2D   u_lut;
 
-    // GGX/Towbridge-Reitz normal distribution function.
-    // Uses Disney's reparametrization of alpha = roughness^2.
-    float NDFGGX(float cos_lh, float roughness)
-    {
-	    float a = roughness * roughness;
-
-	    float denom = (cos_lh * cos_lh) * ((a * a) - 1.0) + 1.0;
-	    return (a * a) / (kPI * denom * denom);
+    // GGX NDF
+    float NormalDistribution(float noh, float roughness) {
+        float a = noh * roughness;
+        float k = roughness / ((1.0 - noh * noh) + a * a);
+        return k * k * (1.0 / kPI);
     }
 
-    // Single term for separable Schlick-GGX below.
-    float GASchlickG1(float cos_theta, float k)
-    {
-	    return cos_theta / (cos_theta * (1.0 - k) + k);
+    // GGX Smith
+    float GeometricAttenuation(float nol, float nov, float roughness) {
+        float a2 = roughness * roughness;
+        float lv = nol * sqrt((nov - a2 * nov) * nov + a2);
+        float ll = nov * sqrt((nol - a2 * nol) * nol + a2);
+        return 0.5 / (lv + ll);
     }
 
-    // Schlick-GGX Geometric Attenuation
-    float GASchlickGGX(float cos_li, float cos_lo, float roughness)
+    // Schlick's approximation
+    vec3 Fresnel(vec3 f0, float u)
     {
-	    float r = roughness + 1.0;
-	    float k = (r * r) / 8.0;
-	    return GASchlickG1(cos_li, k) * GASchlickG1(cos_lo, k);
-    }
-
-    // Shlick's Fresnel
-    vec3 FresnelSchlick(vec3 F0, float cos_theta)
-    {
-	    return F0 + (vec3(1.0) - F0) * pow(1.0 - cos_theta, 5.0);
+        float f = pow(1.0 - u, 5.0);
+        return f + f0 * (1.0 - f);
     }
 
     void main()
     {
-	    // Sample input textures to get shading model params.
-	    vec3 albedo = texture(u_albedo, v_in.uv).rgb;
+        vec3 albedo = texture(u_albedo, v_in.uv).rgb;
         albedo = mix(COLOR, albedo, USE_ALBEDO_MAP);
-	    float metalness = texture(u_metallic, v_in.uv).r;
+        float metalness = texture(u_metallic, v_in.uv).r;
         metalness = mix(METALLIC, metalness, USE_PBR_MAPS);
-	    float roughness = texture(u_roughness, v_in.uv).r;
+        float roughness = texture(u_roughness, v_in.uv).r;
         roughness = mix(ROUGHNESS, roughness, USE_PBR_MAPS);
 
-	    // Outgoing light direction (vector from world-space fragment position to the "eye").
-	    vec3 lo = normalize(CAMERA_POSITION - v_in.position);
-
-	    // Get current fragment's normal and transform to world space.
-	    vec3 normal = normalize(2.0 * texture(u_normal, v_in.uv).rgb - 1.0);
-	    normal = normalize(v_in.tbn * normal);
+        vec3 normal = normalize(2.0 * texture(u_normal, v_in.uv).rgb - 1.0);
+        normal = normalize(v_in.tbn * normal);
         normal = mix(normalize(v_in.tbn[2]), clamp(normal, -1.0, 1.0), NORMAL_MAP_INTENSITY);
     
-	    // Angle between surface normal and outgoing light direction.
-	    float cos_lo = max(0.0, dot(normal, lo));
-		
-	    // Specular reflection vector.
-	    vec3 lr = 2.0 * cos_lo * normal - lo;
 
+        // Fresnel at normal incidence
+        vec3 f0 = mix(kFdielectric, albedo, metalness);
 
-	    // Fresnel reflectance at normal incidence (for metals use albedo color).
-	    vec3 f0 = mix(kFdielectric, albedo, metalness);
+        vec3 view = normalize(CAMERA_POSITION - v_in.position);
+        vec3 light = -LIGHT_DIRECTION;
+        // Half vec between light and view 
+        vec3 hlv = normalize(light + view);
 
-	    // Direct lighting calculation for analytical lights.
-	    vec3 direct_lighting;
-        vec3 li = -LIGHT_DIRECTION;
+        float nov = abs(dot(normal, view)) + kEpsilon;
+        float nol = clamp(dot(normal, light), 0.0, 1.0);
+        float noh = clamp(dot(normal, hlv), 0.0, 1.0);
+        float loh = clamp(dot(light, hlv), 0.0, 1.0);
 
-        // Half-vector between Li and Lo.
-        vec3 lh = normalize(li + lo);
+        roughness = roughness * roughness;
+        vec3  f = Fresnel(f0, loh);
+        float d = NormalDistribution(noh, roughness);
+        float g = GeometricAttenuation(nol, nov, roughness);
 
-        // Calculate angles between surface normal and various light vectors.
-        float cos_li = max(0.0, dot(normal, li));
-        float cos_lh = max(0.0, dot(normal, lh));
-
-        vec3 f = FresnelSchlick(f0, max(0.0, dot(lh, lo)));
-        float d = NDFGGX(cos_lh, roughness);
-        float g = GASchlickGGX(cos_li, cos_lo, roughness);
-
-        // Lambert diffuse BRDF.
+        // Diffuse
         vec3 kd = mix(vec3(1.0) - f, vec3(0.0), metalness);
         vec3 diffuse_brdf = kd * albedo;
 
-        // Cook-Torrance specular BRDF.
-        vec3 specular_brdf = (f * d * g) / max(kEpsilon, 4.0 * cos_li * cos_lo);
-
-        // Total contribution for this light.
-        direct_lighting = (diffuse_brdf + specular_brdf) * LIGHT_INTENSITY * cos_li;
+        // Specular
+        vec3 specular_brdf = ((d*g) * f) / max(kEpsilon, 4.0 * nol * nov);
+        vec3 direct_lighting = (diffuse_brdf + specular_brdf) * LIGHT_INTENSITY * nol;
 
         // IBL
         vec3 irradiance = texture(u_irradiance_map, normal).rgb;
-        vec3 f_ibl = FresnelSchlick(f0, cos_lo);
+        vec3 f_ibl = Fresnel(f0, nov);
         vec3 kd_ibl = mix(vec3(1.0) - f_ibl, vec3(0.0), metalness);
         vec3 diffuse_ibl = kd_ibl * albedo * irradiance;
 
-        vec3 specular_irradiance = textureLod(u_prefilter_map, lr, roughness * kMaxPrefilterLod).rgb;
-        vec2 specular_brdf_ibl = texture(u_lut, vec2(cos_lo, roughness)).rg;
+        vec3 r = reflect(-view, normal);
+        vec3 specular_irradiance = textureLod(u_prefilter_map, r, roughness * kMaxPrefilterLod).rgb;
+        vec2 specular_brdf_ibl = texture(u_lut, vec2(nov, roughness)).rg;
         vec3 specular_ibl = (f0 * specular_brdf_ibl.x + specular_brdf_ibl.y) * specular_irradiance;
         vec3 ambient_lighting = diffuse_ibl + specular_ibl;
 
