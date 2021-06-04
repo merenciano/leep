@@ -4,7 +4,6 @@
 #define __LEEP_TOOLS_LUA_SCRIPTING_H__
 
 #include "core/string.h"
-#include <../src/lua/lua.hpp>
 
 struct lua_State;
 
