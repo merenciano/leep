@@ -9,6 +9,7 @@
  
 namespace leep
 {
+    // TODO: Remove this class and copy this struct to user defined structs
     // Here will go all the uniform values that not change
     // with each entity, like camera and lights
     struct PbrSceneData

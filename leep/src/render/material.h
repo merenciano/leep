@@ -35,18 +35,12 @@ namespace leep
         void set_metallic(Texture tex);
         void set_roughness(Texture tex);
         void set_normal(Texture tex);
-        void set_irradiance(Texture tex);
-        void set_prefilter(Texture tex);
-        void set_lut(Texture tex);
         const MaterialData& data() const;
         const MaterialType type() const;
         Texture albedo() const;
         Texture metallic() const;
         Texture roughness() const;
         Texture normal() const;
-        Texture irradiance() const;
-        Texture prefilter() const;
-        Texture lut() const;
 
     private:
         MaterialData data_; 
@@ -55,9 +49,6 @@ namespace leep
         Texture metallic_;
         Texture roughness_;
         Texture normal_;
-        Texture irradiance_;
-        Texture prefilter_;
-        Texture lut_;
     };
 }
 #endif // __LEEP_RENDER_MATERIAL_H__

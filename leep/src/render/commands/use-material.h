@@ -25,8 +25,8 @@ namespace leep
         virtual void executeCommand() const override;
 
     private:
-        size_t fcount_;
-        size_t icount_;
+        int32_t fcount_;
+        int32_t icount_;
         float *fdata_;
         int32_t *idata_;
         int32_t cube_start_;
