@@ -5,9 +5,8 @@
 
 #include "../extern/glm/glm.hpp"
 #include "../extern/glm/mat4x4.hpp"
-#include "../extern/glm/gtx/transform.hpp" // TODO: REMOVE THIS
+#include "../extern/glm/gtx/transform.hpp"
 #include "../extern/glm/gtc/type_ptr.hpp"
-//#include "../extern/glm/gtc/matrix_transform.hpp"
 
 #ifdef LEEP_DEBUG 
     #define LEEP_ASSERT(x, ...)      { if(!(x)) { LEEP_ERROR("Assertion failed: {0}",__VA_ARGS__); abort(); }}

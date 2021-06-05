@@ -37,6 +37,7 @@
 #include "render/display-list-command.h"
 #include "render/commands/clear.h"
 #include "render/commands/create-buffer.h"
+#include "render/commands/use-material.h"
 #include "render/commands/use-pbr-material.h"
 #include "render/commands/use-skybox-material.h"
 #include "render/commands/use-framebuffer.h"

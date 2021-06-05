@@ -281,11 +281,14 @@ void leep::GameLogic()
         .set_clear_buffer(true, true, false)
         .set_clear_color(0.2f, 0.2f, 0.2f, 1.0f);
 
-    dl.addCommand<UsePbrMaterial>()
-        .set_scene_data(pbr_sd)
-        .set_irradiance_map(GM.resource_map().getTexture("IrradianceEnv"))
-        .set_prefilter_map(GM.resource_map().getTexture("PrefilterSpec"))
-        .set_lut_map(GM.resource_map().getTexture("LutMap"));
+    Texture scene_tex[3];
+    scene_tex[0] = GM.resource_map().getTexture("LutMap");
+    scene_tex[1] = GM.resource_map().getTexture("IrradianceEnv");
+    scene_tex[2] = GM.resource_map().getTexture("PrefilterSpec");
+    dl.addCommand<UseMaterial>()
+        .set_type(MaterialType::MT_PBR)
+        .set_float((float*)&pbr_sd, sizeof(PbrSceneData) / sizeof (float))
+        .set_tex(scene_tex, 3, 1);
 
     dl.submit();
 

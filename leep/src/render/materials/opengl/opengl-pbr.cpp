@@ -59,6 +59,10 @@ static const char* kPbrFragment = R"(
     #define LIGHT_INTENSITY      u_scene_data[5].w
     #define CAMERA_POSITION      u_scene_data[4].xyz
 
+    #define LUT_MAP              u_scene_tex[0]
+    #define IRRADIANCE_MAP       u_scene_cube[0]
+    #define PREFILTER_MAP        u_scene_cube[1]
+
     const float kPI = 3.14159265359;
     const float kEpsilon = 1e-5;
     const vec3  kFdielectric = vec3(0.04);
@@ -79,9 +83,9 @@ static const char* kPbrFragment = R"(
     uniform sampler2D   u_metallic;
     uniform sampler2D   u_roughness;
     uniform sampler2D   u_normal;
-    uniform samplerCube u_irradiance_map;
-    uniform samplerCube u_prefilter_map;
-    uniform sampler2D   u_lut;
+
+    uniform sampler2D   u_scene_tex[1];
+    uniform samplerCube u_scene_cube[2];
 
     // GGX NDF
     float NormalDistribution(float noh, float roughness) {
@@ -146,14 +150,14 @@ static const char* kPbrFragment = R"(
         vec3 direct_lighting = (diffuse_brdf + specular_brdf) * LIGHT_INTENSITY * nol;
 
         // IBL
-        vec3 irradiance = texture(u_irradiance_map, normal).rgb;
+        vec3 irradiance = texture(IRRADIANCE_MAP, normal).rgb;
         vec3 f_ibl = Fresnel(f0, nov);
         vec3 kd_ibl = mix(vec3(1.0) - f_ibl, vec3(0.0), metalness);
         vec3 diffuse_ibl = kd_ibl * albedo * irradiance;
 
         vec3 r = reflect(-view, normal);
-        vec3 specular_irradiance = textureLod(u_prefilter_map, r, roughness * kMaxPrefilterLod).rgb;
-        vec2 specular_brdf_ibl = texture(u_lut, vec2(nov, roughness)).rg;
+        vec3 specular_irradiance = textureLod(PREFILTER_MAP, r, roughness * kMaxPrefilterLod).rgb;
+        vec2 specular_brdf_ibl = texture(LUT_MAP, vec2(nov, roughness)).rg;
         vec3 specular_ibl = (f0 * specular_brdf_ibl.x + specular_brdf_ibl.y) * specular_irradiance;
         vec3 ambient_lighting = diffuse_ibl + specular_ibl;
 
