@@ -31,7 +31,7 @@ UseMaterial &UseMaterial::set_float(float *data, int32_t count)
     int32_t offset = count & 3;
     if (offset)
     {
-        count = 4 - offset;
+        count += 4 - offset;
     }
     size_t size = count * sizeof(float);
     fdata_ = (float*)GM.memory().generalAlloc(size);

@@ -79,11 +79,13 @@ void leep::GameInit()
         Drawable &dw = e.getComponent<Drawable>();
         dw.geometry_ = GM.resource_map().getGeometry("MatBall");
         dw.material_.set_type(MaterialType::MT_PBR);
-        dw.material_.set_data(pbr);
-        dw.material_.set_albedo(GM.resource_map().getTexture("CelticGold_A"));
-        dw.material_.set_metallic(GM.resource_map().getTexture("CelticGold_M"));
-        dw.material_.set_roughness(GM.resource_map().getTexture("CelticGold_R"));
-        dw.material_.set_normal(GM.resource_map().getTexture("CelticGold_N"));
+        dw.material_.set_data((float*)&pbr, sizeof(PbrData) / 4);
+        Texture t[4];
+        t[0] = GM.resource_map().getTexture("CelticGold_A");
+        t[1] = GM.resource_map().getTexture("CelticGold_M");
+        t[2] = GM.resource_map().getTexture("CelticGold_R");
+        t[3] = GM.resource_map().getTexture("CelticGold_N");
+        dw.material_.set_tex(t, 4);
     }
 
     // Shore
@@ -97,11 +99,13 @@ void leep::GameInit()
         Drawable &dw = e.getComponent<Drawable>();
         dw.geometry_ = GM.resource_map().getGeometry("MatBall");
         dw.material_.set_type(MaterialType::MT_PBR);
-        dw.material_.set_data(pbr);
-        dw.material_.set_albedo(   GM.resource_map().getTexture("Shore_A"));
-        dw.material_.set_metallic( GM.resource_map().getTexture("Shore_M"));
-        dw.material_.set_roughness(GM.resource_map().getTexture("Shore_R"));
-        dw.material_.set_normal(   GM.resource_map().getTexture("Shore_N"));
+        dw.material_.set_data((float*)&pbr, sizeof(PbrData) / 4);
+        Texture t[4];
+        t[0] = GM.resource_map().getTexture("Shore_A");
+        t[1] = GM.resource_map().getTexture("Shore_M");
+        t[2] = GM.resource_map().getTexture("Shore_R");
+        t[3] = GM.resource_map().getTexture("Shore_N");
+        dw.material_.set_tex(t, 4);
     }
 
     // Peeling 
@@ -115,11 +119,13 @@ void leep::GameInit()
         Drawable &dw = e.getComponent<Drawable>();
         dw.geometry_ = GM.resource_map().getGeometry("MatBall");
         dw.material_.set_type(MaterialType::MT_PBR);
-        dw.material_.set_data(pbr);
-        dw.material_.set_albedo(   GM.resource_map().getTexture("Peeling_A"));
-        dw.material_.set_metallic( GM.resource_map().getTexture("Peeling_M"));
-        dw.material_.set_roughness(GM.resource_map().getTexture("Peeling_R"));
-        dw.material_.set_normal(   GM.resource_map().getTexture("Peeling_N"));
+        dw.material_.set_data((float*)&pbr, sizeof(PbrData) / 4);
+        Texture t[4];
+        t[0] = GM.resource_map().getTexture("Peeling_A");
+        t[1] = GM.resource_map().getTexture("Peeling_M");
+        t[2] = GM.resource_map().getTexture("Peeling_R");
+        t[3] = GM.resource_map().getTexture("Peeling_N");
+        dw.material_.set_tex(t, 4);
     }
 
     // Rusted
@@ -133,11 +139,13 @@ void leep::GameInit()
         Drawable &dw = e.getComponent<Drawable>();
         dw.geometry_ = GM.resource_map().getGeometry("MatBall");
         dw.material_.set_type(MaterialType::MT_PBR);
-        dw.material_.set_data(pbr);
-        dw.material_.set_albedo(   GM.resource_map().getTexture("Rusted_A"));
-        dw.material_.set_metallic( GM.resource_map().getTexture("Rusted_M"));
-        dw.material_.set_roughness(GM.resource_map().getTexture("Rusted_R"));
-        dw.material_.set_normal(   GM.resource_map().getTexture("Rusted_N"));
+        dw.material_.set_data((float*)&pbr, sizeof(PbrData) / 4);
+        Texture t[4];
+        t[0] = GM.resource_map().getTexture("Rusted_A");
+        t[1] = GM.resource_map().getTexture("Rusted_M");
+        t[2] = GM.resource_map().getTexture("Rusted_R");
+        t[3] = GM.resource_map().getTexture("Rusted_N");
+        dw.material_.set_tex(t, 4);
     }
 
     // Tiles
@@ -151,11 +159,13 @@ void leep::GameInit()
         Drawable &dw = e.getComponent<Drawable>();
         dw.geometry_ = GM.resource_map().getGeometry("MatBall");
         dw.material_.set_type(MaterialType::MT_PBR);
-        dw.material_.set_data(pbr);
-        dw.material_.set_albedo(   GM.resource_map().getTexture("Tiles_A"));
-        dw.material_.set_metallic( GM.resource_map().getTexture("Tiles_M"));
-        dw.material_.set_roughness(GM.resource_map().getTexture("Tiles_R"));
-        dw.material_.set_normal(   GM.resource_map().getTexture("Tiles_N"));
+        dw.material_.set_data((float*)&pbr, sizeof(PbrData) / 4);
+        Texture t[4];
+        t[0] = GM.resource_map().getTexture("Tiles_A");
+        t[1] = GM.resource_map().getTexture("Tiles_M");
+        t[2] = GM.resource_map().getTexture("Tiles_R");
+        t[3] = GM.resource_map().getTexture("Tiles_N");
+        dw.material_.set_tex(t, 4);
     }
 
     // Ship Panels 
@@ -169,11 +179,13 @@ void leep::GameInit()
         Drawable &dw = e.getComponent<Drawable>();
         dw.geometry_ = GM.resource_map().getGeometry("MatBall");
         dw.material_.set_type(MaterialType::MT_PBR);
-        dw.material_.set_data(pbr);
-        dw.material_.set_albedo(   GM.resource_map().getTexture("ShipPanels_A"));
-        dw.material_.set_metallic( GM.resource_map().getTexture("ShipPanels_M"));
-        dw.material_.set_roughness(GM.resource_map().getTexture("ShipPanels_R"));
-        dw.material_.set_normal(   GM.resource_map().getTexture("ShipPanels_N"));
+        dw.material_.set_data((float*)&pbr, sizeof(PbrData) / 4);
+        Texture t[4];
+        t[0] = GM.resource_map().getTexture("ShipPanels_A");
+        t[1] = GM.resource_map().getTexture("ShipPanels_M");
+        t[2] = GM.resource_map().getTexture("ShipPanels_R");
+        t[3] = GM.resource_map().getTexture("ShipPanels_N");
+        dw.material_.set_tex(t, 4);
     }
     
     // Cliff
@@ -187,11 +199,13 @@ void leep::GameInit()
         Drawable &dw = e.getComponent<Drawable>();
         dw.geometry_ = GM.resource_map().getGeometry("MatBall");
         dw.material_.set_type(MaterialType::MT_PBR);
-        dw.material_.set_data(pbr);
-        dw.material_.set_albedo(   GM.resource_map().getTexture("Cliff_A"));
-        dw.material_.set_metallic( GM.resource_map().getTexture("Cliff_M"));
-        dw.material_.set_roughness(GM.resource_map().getTexture("Cliff_R"));
-        dw.material_.set_normal(   GM.resource_map().getTexture("Cliff_N"));
+        dw.material_.set_data((float*)&pbr, sizeof(PbrData) / 4);
+        Texture t[4];
+        t[0] = GM.resource_map().getTexture("Cliff_A");
+        t[1] = GM.resource_map().getTexture("Cliff_M");
+        t[2] = GM.resource_map().getTexture("Cliff_R");
+        t[3] = GM.resource_map().getTexture("Cliff_N");
+        dw.material_.set_tex(t, 4);
     }
 
     // Granite
@@ -205,11 +219,13 @@ void leep::GameInit()
         Drawable &dw = e.getComponent<Drawable>();
         dw.geometry_ = GM.resource_map().getGeometry("MatBall");
         dw.material_.set_type(MaterialType::MT_PBR);
-        dw.material_.set_data(pbr);
-        dw.material_.set_albedo(   GM.resource_map().getTexture("Granite_A"));
-        dw.material_.set_metallic( GM.resource_map().getTexture("Granite_M"));
-        dw.material_.set_roughness(GM.resource_map().getTexture("Granite_R"));
-        dw.material_.set_normal(   GM.resource_map().getTexture("Granite_N"));
+        dw.material_.set_data((float*)&pbr, sizeof(PbrData) / 4);
+        Texture t[4];
+        t[0] = GM.resource_map().getTexture("Granite_A");
+        t[1] = GM.resource_map().getTexture("Granite_M");
+        t[2] = GM.resource_map().getTexture("Granite_R");
+        t[3] = GM.resource_map().getTexture("Granite_N");
+        dw.material_.set_tex(t, 4);
     }
 
     // Foam 
@@ -223,11 +239,13 @@ void leep::GameInit()
         Drawable &dw = e.getComponent<Drawable>();
         dw.geometry_ = GM.resource_map().getGeometry("MatBall");
         dw.material_.set_type(MaterialType::MT_PBR);
-        dw.material_.set_data(pbr);
-        dw.material_.set_albedo(   GM.resource_map().getTexture("Foam_A"));
-        dw.material_.set_metallic( GM.resource_map().getTexture("Foam_M"));
-        dw.material_.set_roughness(GM.resource_map().getTexture("Foam_R"));
-        dw.material_.set_normal(   GM.resource_map().getTexture("Foam_N"));
+        dw.material_.set_data((float*)&pbr, sizeof(PbrData) / 4);
+        Texture t[4];
+        t[0] = GM.resource_map().getTexture("Foam_A");
+        t[1] = GM.resource_map().getTexture("Foam_M");
+        t[2] = GM.resource_map().getTexture("Foam_R");
+        t[3] = GM.resource_map().getTexture("Foam_N");
+        dw.material_.set_tex(t, 4);
     }
 
     DisplayList init_dl;
@@ -265,7 +283,7 @@ void leep::GameLogic()
 
     Material full_screen_img;
     full_screen_img.set_type(MaterialType::MT_FULL_SCREEN_IMAGE);
-    full_screen_img.set_albedo(GM.camera().framebuffer().color());
+    full_screen_img.set_tex(&GM.camera().framebuffer().color(), 1, 0);
     
     dl.addCommand<UseFramebuffer>()
         .set_framebuffer(GM.camera().framebuffer());

@@ -55,9 +55,15 @@ static const char* kPbrFragment = R"(
     #define ROUGHNESS            u_entity_data[6].x
     #define METALLIC             u_entity_data[6].y
     #define NORMAL_MAP_INTENSITY u_entity_data[6].z
+
     #define LIGHT_DIRECTION      u_scene_data[5].xyz
     #define LIGHT_INTENSITY      u_scene_data[5].w
     #define CAMERA_POSITION      u_scene_data[4].xyz
+
+    #define ALBEDO_MAP           u_entity_tex[0]
+    #define METALLIC_MAP         u_entity_tex[1]
+    #define ROUGHNESS_MAP        u_entity_tex[2]
+    #define NORMAL_MAP           u_entity_tex[3]
 
     #define LUT_MAP              u_scene_tex[0]
     #define IRRADIANCE_MAP       u_scene_cube[0]
@@ -79,10 +85,7 @@ static const char* kPbrFragment = R"(
 
     uniform vec4        u_entity_data[7];
     uniform vec4        u_scene_data[6];
-    uniform sampler2D   u_albedo;
-    uniform sampler2D   u_metallic;
-    uniform sampler2D   u_roughness;
-    uniform sampler2D   u_normal;
+    uniform sampler2D   u_entity_tex[4];
 
     uniform sampler2D   u_scene_tex[1];
     uniform samplerCube u_scene_cube[2];
@@ -111,14 +114,14 @@ static const char* kPbrFragment = R"(
 
     void main()
     {
-        vec3 albedo = texture(u_albedo, v_in.uv).rgb;
+        vec3 albedo = texture(ALBEDO_MAP, v_in.uv).rgb;
         albedo = mix(COLOR, albedo, USE_ALBEDO_MAP);
-        float metalness = texture(u_metallic, v_in.uv).r;
+        float metalness = texture(METALLIC_MAP, v_in.uv).r;
         metalness = mix(METALLIC, metalness, USE_PBR_MAPS);
-        float roughness = texture(u_roughness, v_in.uv).r;
+        float roughness = texture(ROUGHNESS_MAP, v_in.uv).r;
         roughness = mix(ROUGHNESS, roughness, USE_PBR_MAPS);
 
-        vec3 normal = normalize(2.0 * texture(u_normal, v_in.uv).rgb - 1.0);
+        vec3 normal = normalize(2.0 * texture(NORMAL_MAP, v_in.uv).rgb - 1.0);
         normal = normalize(v_in.tbn * normal);
         normal = mix(normalize(v_in.tbn[2]), clamp(normal, -1.0, 1.0), NORMAL_MAP_INTENSITY);
     
@@ -146,7 +149,7 @@ static const char* kPbrFragment = R"(
         vec3 diffuse_brdf = kd * albedo;
 
         // Specular
-        vec3 specular_brdf = ((d*g) * f) / max(kEpsilon, 4.0 * nol * nov);
+        vec3 specular_brdf = ((d * g) * f) / max(kEpsilon, 4.0 * nol * nov);
         vec3 direct_lighting = (diffuse_brdf + specular_brdf) * LIGHT_INTENSITY * nol;
 
         // IBL
@@ -208,73 +211,50 @@ namespace leep
         internal_id_ = (uint32_t)program;
     }
 
-    void Pbr::useMaterialData(const Material& material) const
+    void Pbr::useMaterialData(const Material& m) const
     {
         GLuint u_loc;
         Renderer& r = GM.renderer();
-        LEEP_ASSERT(material.type() == MaterialType::MT_PBR,
+        LEEP_CORE_ASSERT(m.type() == m.type(),
 			"Wrong material type");
 
         // Load textures
-        int32_t a_id = material.albedo().handle();
-        if (a_id != CommonDefs::UNINIT_HANDLE)
+        LEEP_CORE_ASSERT(m.tcount() < 16,
+            "So many textures, increase array size");
+        int32_t tex_units[16];
+        for (int32_t i = 0; i < m.tcount(); ++i)
         {
-            LEEP_ASSERT(a_id != -1, "Texture not created");
-            LEEP_ASSERT(r.textures_[a_id].cpu_version_ != -1, "Texture released");
-            if (r.textures_[a_id].gpu_version_ == 0)
+            int32_t handle = m.tex()[i].handle();
+            if (handle != CommonDefs::UNINIT_HANDLE)
             {
-                CreateTexture()
-                    .set_texture(material.albedo()).executeCommand();
+                LEEP_ASSERT(handle != -1, "Texture not created");
+                LEEP_ASSERT(r.textures_[handle].cpu_version_ != -1, "Texture released");
+                if (r.textures_[handle].gpu_version_ == 0)
+                {
+                    CreateTexture()
+                        .set_texture(m.tex()[i]).executeCommand();
+                }
             }
-            u_loc = glGetUniformLocation(internal_id_, "u_albedo");
-            glUniform1i(u_loc, r.textures_[a_id].texture_unit_);
+            tex_units[i] = r.textures_[handle].texture_unit_;
         }
 
-        int32_t m_id = material.metallic().handle();
-        if (m_id != CommonDefs::UNINIT_HANDLE)
-        {
-            LEEP_ASSERT(m_id != -1, "Texture not created");
-            LEEP_ASSERT(r.textures_[m_id].cpu_version_ != -1, "Texture released");
-            if (r.textures_[m_id].gpu_version_ == 0)
-            {
-                CreateTexture()
-                    .set_texture(material.metallic()).executeCommand();
-            }
-            u_loc = glGetUniformLocation(internal_id_, "u_metallic");
-            glUniform1i(u_loc, r.textures_[m_id].texture_unit_);
-        }
-
-        int32_t r_id = material.roughness().handle();
-        if (r_id != CommonDefs::UNINIT_HANDLE)
-        {
-            LEEP_ASSERT(r_id != -1, "Texture not created");
-            LEEP_ASSERT(r.textures_[r_id].cpu_version_!= -1, "Texture released");
-            if (r.textures_[r_id].gpu_version_ == 0)
-            {
-                CreateTexture()
-                    .set_texture(material.roughness()).executeCommand();
-            }
-            u_loc = glGetUniformLocation(internal_id_, "u_roughness");
-            glUniform1i(u_loc, r.textures_[r_id].texture_unit_);
-        }
-
-        int32_t n_id = material.normal().handle();
-        if (n_id != CommonDefs::UNINIT_HANDLE)
-        {
-            LEEP_ASSERT(n_id != -1, "Texture not created");
-            LEEP_ASSERT(r.textures_[n_id].cpu_version_ != -1, "Texture released");
-            if (r.textures_[n_id].gpu_version_ == 0)
-            {
-                CreateTexture()
-                    .set_texture(material.normal()).executeCommand();
-            }
-
-            u_loc = glGetUniformLocation(internal_id_, "u_normal");
-            glUniform1i(u_loc, r.textures_[n_id].texture_unit_);
-        }
-        
         u_loc = glGetUniformLocation(internal_id_, "u_entity_data");
-        glUniform4fv(u_loc, sizeof(PbrData) / sizeof(float) / 4,
-					 (const GLfloat*)&(material.data()));
+        if (u_loc >= 0)
+        {
+            glUniform4fv(u_loc, m.dcount() / 4, m.data());
+        }
+
+        u_loc = glGetUniformLocation(internal_id_, "u_entity_tex");
+        if (u_loc >= 0)
+        {
+            glUniform1iv(u_loc, m.cube_start(), tex_units);
+        }
+
+        u_loc = glGetUniformLocation(internal_id_, "u_entity_cube");
+        if (u_loc >= 0)
+        {
+            glUniform1iv(u_loc, m.tcount() - m.cube_start(),
+                         tex_units + m.cube_start());
+        }
     }
 }

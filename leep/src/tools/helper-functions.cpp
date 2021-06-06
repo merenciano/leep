@@ -30,11 +30,13 @@ void leep::CreateRenderable(String entity_name,
     pbr.normal_map_intensity_ = 0.0f;
     d.geometry_ = GM.resource_map().getGeometry(geometry_name);
     d.material_.set_type(MaterialType::MT_PBR);
-    d.material_.set_data(pbr);
-    d.material_.set_albedo(GM.resource_map().getTexture(texture_name));
-    d.material_.set_normal(GM.resource_map().getTexture(texture_name));
-    d.material_.set_metallic(GM.resource_map().getTexture(texture_name));
-    d.material_.set_roughness(GM.resource_map().getTexture(texture_name));
+    d.material_.set_data((float*)&pbr, sizeof(PbrData) / 4);
+    Texture t[4];
+    for (int32_t i = 0; i < 4; ++i)
+    {
+        t[i] = GM.resource_map().getTexture(texture_name);
+    }
+    d.material_.set_tex(t, 4);
 }
 
 void leep::RemoveEntity(String entity_name)

@@ -1,7 +1,7 @@
 // Lucas Merenciano Martinez <lucasmermar@gmail.com>
 
 #ifndef __LEEP_RENDER_MATERIAL_H__
-#define __LEEP_RENDER_MATERIAL_H__ 1
+#define __LEEP_RENDER_MATERIAL_H__
 
 #include "render/material-types.h"
 #include "render/texture.h"
@@ -27,28 +27,26 @@ namespace leep
         Material& operator=(const Material &other);
 
         void set_type(MaterialType type);
-        void set_model(const glm::mat4 &model);
-        void set_data(const PbrData &data);
-        void set_data(const EquirecToCubeData &data);
-        void set_data(const PrefilterEnvData &data);
-        void set_albedo(Texture tex);
-        void set_metallic(Texture tex);
-        void set_roughness(Texture tex);
-        void set_normal(Texture tex);
-        const MaterialData& data() const;
-        const MaterialType type() const;
-        Texture albedo() const;
-        Texture metallic() const;
-        Texture roughness() const;
-        Texture normal() const;
+        void set_model(float *model);
+        void set_data(float *data, int32_t count);
+        void set_tex(class Texture *tex, int32_t count, int32_t cube_start = -1);
+
+        MaterialType type() const;
+        const float *data() const;
+        const Texture *tex() const;
+        int32_t dcount() const;
+        int32_t tcount() const;
+        int32_t cube_start() const;
 
     private:
-        MaterialData data_; 
+        // TODO: Check if I can merge this with use-material command data
+        // since they are pretty similar
+        float *data_; 
+        Texture *tex_;
         MaterialType type_; // Acts as a handle
-        Texture albedo_;
-        Texture metallic_;
-        Texture roughness_;
-        Texture normal_;
+        int32_t dcount_;
+        int32_t tcount_;
+        int32_t cube_start_;
     };
 }
 #endif // __LEEP_RENDER_MATERIAL_H__

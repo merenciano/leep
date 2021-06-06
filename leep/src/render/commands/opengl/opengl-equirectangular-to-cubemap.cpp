@@ -44,13 +44,14 @@ namespace leep
         Texture equirec;
         equirec.create(path_.c_str(), TexType::RGB_F16);
         CreateTexture().set_texture(equirec).executeCommand();
-        m.set_albedo(equirec);
+        m.set_tex(&equirec, 1);
         m.set_type(MT_EQUIREC_TO_CUBE);
         RenderOptions().set_cull_face(CullFace::DISABLED).executeCommand();
 
         for (int32_t i = 0; i < 6; ++i)
         {
-            m.set_model(proj * views[i]); 
+            glm::mat4 vp = proj * views[i];
+            m.set_data((float*)&vp, 16); 
             glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0,
                 GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, icu.internal_id_, 0);
             glClear(GL_COLOR_BUFFER_BIT);
@@ -67,7 +68,7 @@ namespace leep
             Material m_pref;
             PrefilterEnvData pref_data;
             m_pref.set_type(MT_PREFILTER_ENV);
-            m_pref.set_albedo(out_cube_);
+            m_pref.set_tex((Texture*)&out_cube_, 1, 0);
             for (int32_t i = 0; i < 5; ++i)
             {
                 // mip size
@@ -78,7 +79,7 @@ namespace leep
                 for (int32_t j = 0; j < 6; ++j)
                 {
                     pref_data.vp_ = proj * views[j];
-                    m_pref.set_data(pref_data);
+                    m_pref.set_data((float*)&pref_data, sizeof(PrefilterEnvData) / 4);
                     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0,
                         GL_TEXTURE_CUBE_MAP_POSITIVE_X + j, ipref.internal_id_, i);
                     glClear(GL_COLOR_BUFFER_BIT);

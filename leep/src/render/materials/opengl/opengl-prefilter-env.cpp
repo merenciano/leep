@@ -149,25 +149,25 @@ void PrefilterEnv::useMaterialData(const Material& material) const
         "Wrong material type");
 
     // Load textures
-    int32_t env_id = material.albedo().handle();
+    int32_t env_id = material.tex()[0].handle();
     LEEP_CORE_ASSERT(r.textures_[env_id].cpu_version_ > 0, "Invalid texture");
     glUseProgram(internal_id_);
 
     if (env_id != CommonDefs::UNINIT_HANDLE)
     {
-        LEEP_CHECK_RESOURCE(material.albedo());
+        LEEP_CHECK_RESOURCE(material.tex()[0]);
         LEEP_ASSERT(r.textures_[env_id].cpu_version_ != CommonDefs::DELETED_GPU_RESOURCE, "Texture released");
         if (r.textures_[env_id].gpu_version_ == 0)
         {
-            CreateCubemap().set_texture(material.albedo()).executeCommand();
+            CreateCubemap().set_texture(material.tex()[0]).executeCommand();
         }
     }
 
     GLuint u_loc = glGetUniformLocation(internal_id_, "u_environment_map");
     glUniform1i(u_loc, r.textures_[env_id].texture_unit_);
     u_loc = glGetUniformLocation(internal_id_, "u_roughness");
-    glUniform1f(u_loc, material.data().pref_.roughness_);
+    glUniform1f(u_loc, material.data()[16]);
     u_loc = glGetUniformLocation(internal_id_, "u_vp");
-    glUniformMatrix4fv(u_loc, 1, false, (const GLfloat*)&(material.data()));
+    glUniformMatrix4fv(u_loc, 1, false, material.data());
 }
 }

@@ -302,16 +302,15 @@ namespace leep
             Drawable& dw = e.getComponent<Drawable>();
             if (dw.material_.type() == MaterialType::MT_PBR)
             {
-                PbrData data = dw.material_.data().pbr_;
-                ImGui::ColorEdit3   ("Color"            , glm::value_ptr(data.color_));
-                ImGui::InputFloat   ("Texture tiling X" , &data.tiling_x_);
-                ImGui::InputFloat   ("Texture tiling Y" , &data.tiling_y_);
-                ImGui::SliderFloat  ("Use albedo map"   , &data.use_albedo_map_ , 0.0f, 1.0f);
-                ImGui::SliderFloat  ("Use PBR maps"     , &data.use_pbr_maps_   , 0.0f, 1.0f);
-                ImGui::SliderFloat  ("Roughness"        , &data.roughness_      , 0.0f, 1.0f);
-                ImGui::SliderFloat  ("Metallic"         , &data.metallic_       , 0.0f, 1.0f);
-                ImGui::SliderFloat  ("NormalMap intensity", &data.normal_map_intensity_, 0.0f, 1.0f);
-                dw.material_.set_data(data);
+                PbrData *data = (PbrData*)dw.material_.data();
+                ImGui::ColorEdit3   ("Color"            , glm::value_ptr(data->color_));
+                ImGui::InputFloat   ("Texture tiling X" , &data->tiling_x_);
+                ImGui::InputFloat   ("Texture tiling Y" , &data->tiling_y_);
+                ImGui::SliderFloat  ("Use albedo map"   , &data->use_albedo_map_ , 0.0f, 1.0f);
+                ImGui::SliderFloat  ("Use PBR maps"     , &data->use_pbr_maps_   , 0.0f, 1.0f);
+                ImGui::SliderFloat  ("Roughness"        , &data->roughness_      , 0.0f, 1.0f);
+                ImGui::SliderFloat  ("Metallic"         , &data->metallic_       , 0.0f, 1.0f);
+                ImGui::SliderFloat  ("NormalMap intensity", &data->normal_map_intensity_, 0.0f, 1.0f);
             }
         }
 		ImGui::End();

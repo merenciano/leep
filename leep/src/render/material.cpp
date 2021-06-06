@@ -1,12 +1,18 @@
 #include "material.h"
 
 #include "core/common-defs.h"
+#include "render/renderer.h"
+#include "render/texture.h"
 
 namespace leep {
 
 Material::Material()
 {
     type_ = MaterialType::MT_NONE;
+    dcount_ = 0;
+    tcount_ = 0;
+    data_ = nullptr;
+    tex_ = nullptr;
 }
 
 Material::~Material()
@@ -14,23 +20,25 @@ Material::~Material()
 
 }
 
+// TODO: Delete
 Material::Material(const Material &other)
 {
     type_ = other.type_;
-    albedo_ = other.albedo_;
-    metallic_ = other.metallic_;
-    roughness_ = other.roughness_;
-    normal_ = other.normal_;
+    set_data(other.data_, other.dcount_);
+    set_tex(other.tex_, other.tcount_);
+    dcount_ = other.dcount_;
+    tcount_ = other.tcount_;
 }
 
 Material& Material::operator=(const Material &other)
 {
+    GM.memory().generalFree(data_);
+    GM.memory().generalFree(tex_);
+    set_data(other.data_, other.dcount_);
+    set_tex(other.tex_, other.tcount_);
     type_ = other.type_;
-    albedo_ = other.albedo_;
-    metallic_ = other.metallic_;
-    roughness_ = other.roughness_;
-    normal_ = other.normal_;
-    data_ = other.data_;
+    dcount_ = other.dcount_;
+    tcount_ = other.tcount_;
   
     return *this;
 }
@@ -40,84 +48,63 @@ void Material::set_type(MaterialType type)
     type_ = type;
 }
 
-void Material::set_model(const glm::mat4 &world)
+void Material::set_model(float *model)
 {
-    data_.model_ = world;    
+    LEEP_CORE_ASSERT(data_, "Data ptr should be allocated already");
+    memcpy(data_, model, 16 * sizeof(float));
 }
 
-void Material::set_data(const PbrData &data)
+void Material::set_data(float *data, int32_t count)
 {
-    LEEP_CORE_ASSERT(type_ == MaterialType::MT_PBR,
-        "The material doesn't have the correct type.");
-    data_.pbr_ = data;
+    // Internally each unit will be a vec4
+    int32_t offset = count & 3;
+    if (offset)
+    {
+        count += 4 - offset;
+    }
+    GM.memory().generalFree(data_);
+    data_ = (float*)GM.memory().generalAlloc(count * sizeof(float));
+    dcount_ = count;
+    memcpy(data_, data, count * sizeof(float));
 }
 
-void Material::set_data(const EquirecToCubeData &data)
+void Material::set_tex(Texture *tex, int32_t count, int32_t cube_start)
 {
-    LEEP_CORE_ASSERT(type_ == MaterialType::MT_EQUIREC_TO_CUBE,
-        "The material doesn't have the correct type.");
-    data_.etc_ = data;
+    GM.memory().generalFree(tex_);
+    tex_ = (Texture*)GM.memory().generalAlloc(count * sizeof(Texture));
+    tcount_ = count;
+    cube_start == -1 ? cube_start_ = count : cube_start_ = cube_start;
+    memcpy(tex_, tex, count * sizeof(Texture));
 }
 
-void Material::set_data(const PrefilterEnvData &data)
-{
-    LEEP_CORE_ASSERT(type_ == MaterialType::MT_PREFILTER_ENV,
-        "The material doesn't have the correct type.");
-    data_.pref_ = data;
-}
-
-void Material::set_albedo(Texture t)
-{
-    LEEP_CHECK_RESOURCE(t);
-    albedo_ = t;
-}
-
-void Material::set_metallic(Texture t)
-{
-    LEEP_CHECK_RESOURCE(t);
-    metallic_ = t;
-}
-
-void Material::set_roughness(Texture t)
-{
-    LEEP_CHECK_RESOURCE(t);
-    roughness_ = t;
-}
-
-void Material::set_normal(Texture t)
-{
-    LEEP_CHECK_RESOURCE(t);
-    normal_ = t;
-}
-
-const Material::MaterialData& Material::data() const
-{
-    return data_;
-}
-
-const MaterialType Material::type() const
+MaterialType Material::type() const
 {
     return type_;
 }
 
-Texture Material::albedo() const
+const float *Material::data() const
 {
-    return albedo_;
+    return data_;
 }
 
-Texture Material::metallic() const
+const Texture *Material::tex() const
 {
-    return metallic_;
+    return tex_;
 }
 
-Texture Material::roughness() const
+int32_t Material::dcount() const
 {
-    return roughness_;
+    return dcount_;
 }
 
-Texture Material::normal() const
+int32_t Material::tcount() const
 {
-    return normal_;
+    return tcount_;
+}
+
+int32_t Material::cube_start() const
+{
+    return cube_start_;
 }
 
 } // namespace leep
