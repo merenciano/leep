@@ -87,6 +87,9 @@ project "leep"
             "./extern/src/GLFW/linux_joystick.c",
         }
 
+    filter { "files:**/api-impl/*.cpp" }
+      flags {"ExcludeFromBuild"}
+
     filter "configurations:Debug"
         defines { "LEEP_DEBUG" }
         targetsuffix "-d"

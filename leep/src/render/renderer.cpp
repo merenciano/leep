@@ -3,8 +3,6 @@
 #include "core/memory/memory.h"
 #include "render/display-list.h"
 #include "render/display-list-command.h"
-#include "render/materials/pbr.h"
-#include "render/materials/full-screen-image.h"
 #include "render/materials/skybox.h"
 #include "render/materials/equirec-to-cube.h"
 #include "render/materials/prefilter-env.h"
@@ -39,17 +37,26 @@ void Renderer::init()
     // I dont mind them not being together in memory
     // since the correct usage of this engine will be
     // using the diferent materials in order so only one change per frame
-    materials_[MaterialType::MT_PBR] = matAlloc<Pbr>();
-    materials_[MaterialType::MT_FULL_SCREEN_IMAGE] = matAlloc<FullScreenImage>();
+    materials_[MaterialType::MT_PBR] = allocMaterial();
+    materials_[MaterialType::MT_FULL_SCREEN_IMAGE] = allocMaterial();
     materials_[MaterialType::MT_SKYBOX] = matAlloc<Skybox>();
     materials_[MaterialType::MT_EQUIREC_TO_CUBE] = matAlloc<EquirecToCube>();
     materials_[MaterialType::MT_PREFILTER_ENV] = matAlloc<PrefilterEnv>();
     materials_[MaterialType::MT_LUT_GEN] = matAlloc<LutGen>();
     
-    for (int32_t i = 0; i < MaterialType::MT_MAX; ++i)
+    materials_[0]->init("pbr");
+    materials_[1]->init("fullscreen-img");
+    for (int32_t i = 2; i < MaterialType::MT_MAX; ++i)
     {
         materials_[i]->init();
     }
+}
+
+InternalMaterial *Renderer::allocMaterial()
+{
+    InternalMaterial *im = new(mat_offset_) InternalMaterial();
+    mat_offset_ += sizeof(InternalMaterial);
+    return im;
 }
 
 int32_t Renderer::addTex()

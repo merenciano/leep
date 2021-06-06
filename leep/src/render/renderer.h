@@ -88,6 +88,7 @@ namespace leep
 
         template<typename T>
         InternalMaterial *matAlloc();
+        InternalMaterial *allocMaterial();
         int32_t addTex();
         int32_t addBuf();
 

@@ -14,9 +14,10 @@ namespace leep
     public:
         virtual ~InternalMaterial() {}
 
-        virtual void init() = 0;
-        virtual void useMaterialData(const Material &material) const = 0;
-        virtual uint32_t internal_id() const = 0;
+        virtual void init() {}
+        virtual void init(const char *name);
+        virtual void useMaterialData(const Material &material) const;
+        virtual uint32_t internal_id() const;
 
     protected:
         uint32_t internal_id_;

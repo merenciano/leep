@@ -20,11 +20,11 @@ namespace leep
         };
 
         Material();
-        Material(const Material &other);
+        Material(const Material&) = delete;
         Material(Material&&) = delete;
         ~Material();
 
-        Material& operator=(const Material &other);
+        Material &operator=(const Material &other);
 
         void set_type(MaterialType type);
         void set_model(float *model);

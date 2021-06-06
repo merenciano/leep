@@ -20,16 +20,6 @@ Material::~Material()
 
 }
 
-// TODO: Delete
-Material::Material(const Material &other)
-{
-    type_ = other.type_;
-    set_data(other.data_, other.dcount_);
-    set_tex(other.tex_, other.tcount_);
-    dcount_ = other.dcount_;
-    tcount_ = other.tcount_;
-}
-
 Material& Material::operator=(const Material &other)
 {
     GM.memory().generalFree(data_);
