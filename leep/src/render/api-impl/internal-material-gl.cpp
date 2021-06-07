@@ -83,8 +83,12 @@ void InternalMaterial::useMaterialData(const Material &m) const
         tex_units[i] = r.textures_[handle].texture_unit_;
     }
 
+    // TODO: Change enum values and if type < MT_ENGINE_MAX
     if (m.type() == MaterialType::MT_FULL_SCREEN_IMAGE ||
-        m.type() == MaterialType::MT_SKYBOX)
+        m.type() == MaterialType::MT_SKYBOX ||
+        m.type() == MaterialType::MT_EQUIREC_TO_CUBE ||
+        m.type() == MaterialType::MT_PREFILTER_ENV ||
+        m.type() == MaterialType::MT_LUT_GEN)
     {
         glUseProgram(internal_id_);
     }

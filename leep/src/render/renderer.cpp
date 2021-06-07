@@ -3,10 +3,6 @@
 #include "core/memory/memory.h"
 #include "render/display-list.h"
 #include "render/display-list-command.h"
-#include "render/materials/skybox.h"
-#include "render/materials/equirec-to-cube.h"
-#include "render/materials/prefilter-env.h"
-#include "render/materials/lut-gen.h"
 
 namespace leep {
 
@@ -27,29 +23,17 @@ void Renderer::init()
     rq_.init(&(GM.memory()));
     textures_ = (InternalTexture*)GM.memory().persistentAlloc(sizeof(InternalTexture)*kMaxTextures);
     buffers_ = (InternalBuffer*)GM.memory().persistentAlloc(sizeof(InternalBuffer)*kMaxBuffers);
-    materials_ = (InternalMaterial**)GM.memory().persistentAlloc(MT_MAX * sizeof(int*));
+    materials_ = (InternalMaterial*)GM.memory().persistentAlloc(MT_MAX * sizeof(InternalMaterial));
     mat_pool_ = (int8_t*)GM.memory().persistentAlloc(kMatPoolSize);
     mat_offset_ = mat_pool_;
     buf_count_ = 0;
     tex_count_ = 0;
 
-
-    // I dont mind them not being together in memory
-    // since the correct usage of this engine will be
-    // using the diferent materials in order so only one change per frame
-    materials_[MaterialType::MT_PBR] = allocMaterial();
-    materials_[MaterialType::MT_FULL_SCREEN_IMAGE] = allocMaterial();
-    materials_[MaterialType::MT_SKYBOX] = matAlloc<Skybox>();
-    materials_[MaterialType::MT_EQUIREC_TO_CUBE] = matAlloc<EquirecToCube>();
-    materials_[MaterialType::MT_PREFILTER_ENV] = matAlloc<PrefilterEnv>();
-    materials_[MaterialType::MT_LUT_GEN] = matAlloc<LutGen>();
-    
-    materials_[0]->init("pbr");
-    materials_[1]->init("fullscreen-img");
-    for (int32_t i = 2; i < MaterialType::MT_MAX; ++i)
-    {
-        materials_[i]->init();
-    }
+    materials_[MT_FULL_SCREEN_IMAGE].init("fullscreen-img");
+    materials_[MT_SKYBOX].init("skybox");
+    materials_[MT_EQUIREC_TO_CUBE].init("eqr-to-cube");
+    materials_[MT_PREFILTER_ENV].init("prefilter-env");
+    materials_[MT_LUT_GEN].init("lut-gen");
 }
 
 InternalMaterial *Renderer::allocMaterial()
@@ -57,6 +41,11 @@ InternalMaterial *Renderer::allocMaterial()
     InternalMaterial *im = new(mat_offset_) InternalMaterial();
     mat_offset_ += sizeof(InternalMaterial);
     return im;
+}
+
+void Renderer::initMaterial(MaterialType t, const char *name)
+{
+    materials_[t].init(name);
 }
 
 int32_t Renderer::addTex()

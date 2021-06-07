@@ -68,6 +68,7 @@ void leep::GameInit()
     pbr.normal_map_intensity_ = 1.0f;
 
     GM.renderer().sun_dir_intensity_ = glm::vec4(0.0f, -1.0f, -0.1f, 1.0f);
+    GM.renderer().initMaterial(MaterialType::MT_PBR, "pbr");
 
     GM.scene().createContainer(EntityType::RENDERABLE);
 
@@ -314,7 +315,6 @@ void leep::GameLogic()
     
     dl.addCommand<RenderOptions>()
         .set_cull_face(CullFace::DISABLED);
-    dl.addCommand<UseSkyboxMaterial>();
     dl.addCommand<DrawSkybox>()
         .set_cubemap(GM.resource_map().getTexture("Skybox"));
    

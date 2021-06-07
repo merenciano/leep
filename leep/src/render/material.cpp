@@ -29,6 +29,7 @@ Material& Material::operator=(const Material &other)
     type_ = other.type_;
     dcount_ = other.dcount_;
     tcount_ = other.tcount_;
+    cube_start_ = other.cube_start_;
   
     return *this;
 }

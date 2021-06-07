@@ -86,9 +86,8 @@ namespace leep
         std::atomic<int32_t> tex_to_del_;
         std::atomic<int32_t> buf_to_del_;
 
-        template<typename T>
-        InternalMaterial *matAlloc();
         InternalMaterial *allocMaterial();
+        void initMaterial(MaterialType t, const char *name);
         int32_t addTex();
         int32_t addBuf();
 
@@ -97,7 +96,7 @@ namespace leep
         std::vector<InternalFramebuffer,
                     BuddySTL<InternalFramebuffer>> framebuffers_;
 
-        InternalMaterial **materials_;
+        InternalMaterial *materials_;
         int8_t *mat_pool_;
         int8_t *mat_offset_;
         InternalBuffer *buffers_;
@@ -109,14 +108,6 @@ namespace leep
 
         RenderQueues rq_;
     };
-
-    template<typename T>
-    InternalMaterial* Renderer::matAlloc()
-    {
-        InternalMaterial *im = new(mat_offset_) T();
-        mat_offset_ += sizeof(T);
-        return im;
-    }
 
     template<typename T>
     DLComm *RenderQueues::commandAlloc()

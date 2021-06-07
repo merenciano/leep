@@ -9,17 +9,11 @@
 
 namespace leep
 {
-    class InternalMaterial
+    struct InternalMaterial
     {
-    public:
-        virtual ~InternalMaterial() {}
-
-        virtual void init() {}
-        virtual void init(const char *name);
-        virtual void useMaterialData(const Material &material) const;
-        virtual uint32_t internal_id() const;
-
-    protected:
+        void init(const char *name);
+        void useMaterialData(const Material &material) const;
+        uint32_t internal_id() const;
         uint32_t internal_id_;
     };
 

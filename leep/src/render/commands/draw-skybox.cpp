@@ -1,10 +1,13 @@
 #include "draw-skybox.h"
+#include "core/manager.h"
+#include "render/camera.h"
 
 namespace leep
 {
     DrawSkybox::DrawSkybox()
     {
         material_.set_type(MT_SKYBOX);
+        material_.set_data((float*)&GM.camera().static_view_projection(), 16);
     }
 
     DrawSkybox::~DrawSkybox()

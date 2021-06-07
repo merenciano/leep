@@ -6,7 +6,6 @@
 #include "ecs/components/drawable.h"
 #include "render/display-list.h"
 #include "render/camera.h"
-#include "render/commands/use-pbr-material.h"
 #include "render/commands/clear.h"
 #include "render/commands/draw.h"
 #include "render/commands/use-framebuffer.h"
