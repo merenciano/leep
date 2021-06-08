@@ -6,8 +6,9 @@ namespace leep
 {
     DrawSkybox::DrawSkybox()
     {
+        glm::mat4 view = GM.camera().static_view_projection();
         material_.set_type(MT_SKYBOX);
-        material_.set_data((float*)&GM.camera().static_view_projection(), 16);
+        material_.set_data((float*)&view, 16);
     }
 
     DrawSkybox::~DrawSkybox()

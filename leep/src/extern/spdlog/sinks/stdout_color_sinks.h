@@ -6,7 +6,7 @@
 #ifdef _WIN32
 #include "wincolor_sink.h"
 #else
-#include <spdlog/sinks/ansicolor_sink.h>
+#include "ansicolor_sink.h"
 #endif
 
 #include "../details/synchronous_factory.h"

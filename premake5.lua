@@ -31,8 +31,15 @@ project "TestApp"
     }
 
     files "./src/main.cpp"
+
+    configuration "vs2019"
+        defines {"_CRT_SECURE_NO_WARNINGS", "LEEP_WIN", }
+    configuration "gmake"
+        defines { "LEEP_LINUX", }
+        links { "X11", "dl", "pthread"  }
     
     filter "configurations:Debug"
+        
         targetsuffix "-d"
         symbols "On"
     

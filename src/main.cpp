@@ -284,7 +284,8 @@ void leep::GameLogic()
 
     Material full_screen_img;
     full_screen_img.set_type(MaterialType::MT_FULL_SCREEN_IMAGE);
-    full_screen_img.set_tex(&GM.camera().framebuffer().color(), 1);
+    Texture fb_tex = GM.camera().framebuffer().color();
+    full_screen_img.set_tex(&fb_tex, 1);
     
     dl.addCommand<UseFramebuffer>()
         .set_framebuffer(GM.camera().framebuffer());
