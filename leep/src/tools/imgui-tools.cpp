@@ -2,6 +2,7 @@
 
 #include "core/common-defs.h"
 #include "core/manager.h"
+#include "core/input.h"
 #include "core/memory/memory.h"
 #include "core/scene.h"
 #include "render/renderer.h"
@@ -58,6 +59,11 @@ namespace leep
         ImGui_ImplOpenGL3_NewFrame();
         ImGui_ImplGlfw_NewFrame();
         ImGui::NewFrame();
+
+        ImGuiIO& io = ImGui::GetIO();
+        // TODO: One frame late? Check carefully how it's working
+        // and improve if necessary
+        GM.input().set_capture_input(!io.WantCaptureMouse, !io.WantCaptureKeyboard);
 
         if (callback_)
         {

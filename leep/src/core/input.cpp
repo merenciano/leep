@@ -2,7 +2,6 @@
 
 #include "core/common-defs.h"
 #include "core/manager.h"
-#include "tools/imgui-tools.h"
 
 #include <GLFW/glfw3.h>
 
@@ -13,6 +12,8 @@ namespace leep
         GLFWwindow *window;
         InputState current;
         InputState previous;
+        bool       capture_kb;
+        bool       capture_mouse;
     };
 
     static int32_t ToGLFW(Button b)
@@ -35,8 +36,6 @@ namespace leep
 
     static void ScrollCallback(GLFWwindow *window, double x_offset, double y_offset)
     {
-		if (GM.ui_tools().wantMouse())
-			return;
         GM.input().set_scroll((float)y_offset);
     }
 
@@ -48,7 +47,7 @@ namespace leep
     Input::~Input()
     {
         // The lifetime of this class is the same as the entire program,
-        // so I'm not going to slow down the closing process deleting pointers.
+        // so I'm not going to slow down the closing process freeing pointers.
 #ifdef LEEP_DEBUG
         GM.memory().generalFree(data_);
 #endif
@@ -57,10 +56,14 @@ namespace leep
     void Input::init(void *window)
     {
         if (window == nullptr)
+        {
             return;
+        }
         
         if (data_)
+        {
             return;
+        }
 
         data_ = GM.memory().generalAllocT<InputData>(1);
         data_->window = (GLFWwindow*)window;
@@ -70,7 +73,10 @@ namespace leep
     void Input::set_scroll(float offset)
     {
         LEEP_ASSERT(data_, "A window is needed");
-        data_->current.scroll = offset;
+        if (data_->capture_mouse)
+        {
+            data_->current.scroll = offset;
+        }
     }
 
     float Input::scroll() const
@@ -82,7 +88,8 @@ namespace leep
     bool Input::isButtonPressed(Button b) const
     {
         LEEP_ASSERT(data_, "A window is needed");
-        if (GM.ui_tools().wantKeyboard())
+
+        if (!data_->capture_kb)
         {
             return false;
         }
@@ -106,13 +113,11 @@ namespace leep
     bool Input::isButtonDown(Button b) const
     {
         LEEP_ASSERT(data_, "A window is needed");
-        if (GM.ui_tools().wantKeyboard())
+
+        if (!isButtonPressed(b))
         {
             return false;
         }
-
-        if (!isButtonPressed(b))
-            return false;
 
         switch(b)
         {
@@ -133,13 +138,16 @@ namespace leep
     bool Input::isButtonUp(Button b) const
     {
         LEEP_ASSERT(data_, "A window is needed");
-        if (GM.ui_tools().wantKeyboard())
+
+        if (!data_->capture_kb)
         {
             return false;
         }
 
         if (isButtonPressed(b))
+        {
             return false;
+        }
 
         switch(b)
         {
@@ -200,5 +208,11 @@ namespace leep
     {
         LEEP_ASSERT(data_, "A window is needed");
         glfwSetInputMode(data_->window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+    }
+
+    void Input::set_capture_input(bool mouse, bool kb)
+    {
+        data_->capture_mouse = mouse;
+        data_->capture_kb = kb;
     }
 }

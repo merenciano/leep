@@ -40,6 +40,8 @@ namespace leep
         float mouseY() const;
         float scroll() const;
 
+        void set_capture_input(bool mouse, bool kb);
+
     private:
         struct InputData;
         InputData *data_;
