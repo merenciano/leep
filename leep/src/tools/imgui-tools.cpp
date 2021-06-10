@@ -450,9 +450,9 @@ namespace leep
             // mem and offset are (int8_t*) so no need of sizeof here
             ImGui::Text("%.2f MB", ByteToMega(m.offset_ - m.mem_));
             ImGui::TableSetColumnIndex(2);
-            ImGui::Text("%.2f MB", ByteToMega(kTotalMemSize));
+            ImGui::Text("%.2f MB", ByteToMega(m.capacity_));
             ImGui::TableSetColumnIndex(3);
-            ImGui::Text("%.1f %%", ((m.offset_-m.mem_)/(float)kTotalMemSize) * 100.0f);
+            ImGui::Text("%.1f %%", ((m.offset_-m.mem_)/(float)m.capacity_) * 100.0f);
 
             // Textures
             {
@@ -500,7 +500,7 @@ namespace leep
             {
                 // pool and offset are (int8_t*) so no need of sizeof here
                 size_t offset = r.rq_.next_offset_ - r.rq_.next_pool_;
-                size_t capacity = kRenderPoolSize;
+                size_t capacity = r.rq_.render_pool_size_;
                 ImGui::TableNextRow();
                 ImGui::TableSetColumnIndex(0);
                 ImGui::Text("%s", "Command pool");
@@ -515,7 +515,7 @@ namespace leep
             // Render queue
             {
                 size_t offset = r.rq_.curr_count_ * sizeof(DLComm*);
-                size_t capacity = kRenderQueueMaxCount * sizeof(DLComm*);
+                size_t capacity = r.rq_.render_quque_max_ * sizeof(DLComm*);
                 ImGui::TableNextRow();
                 ImGui::TableSetColumnIndex(0);
                 ImGui::Text("%s", "Render queue");

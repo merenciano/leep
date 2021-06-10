@@ -17,7 +17,8 @@ Material::Material()
 
 Material::~Material()
 {
-
+    GM.memory().generalFree(data_);
+    GM.memory().generalFree(tex_);
 }
 
 Material& Material::operator=(const Material &other)

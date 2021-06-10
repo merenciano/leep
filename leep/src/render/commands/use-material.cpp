@@ -27,6 +27,7 @@ UseMaterial &UseMaterial::set_type(MaterialType type)
 
 UseMaterial &UseMaterial::set_float(float *data, int32_t count)
 {
+    GM.memory().generalFree(fdata_);
     // Internally each unit will be a vec4
     int32_t offset = count & 3;
     if (offset)
@@ -42,6 +43,7 @@ UseMaterial &UseMaterial::set_float(float *data, int32_t count)
 
 UseMaterial &UseMaterial::set_tex(Texture *textures, int32_t count, int32_t cube_start)
 {
+    GM.memory().generalFree(idata_);
     int32_t size = count * sizeof(int32_t);
     idata_ = (int32_t*)GM.memory().generalAlloc(size);
     icount_ = count;

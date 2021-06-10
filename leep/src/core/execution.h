@@ -1,10 +1,12 @@
+#include "core/config.h"
+
 namespace leep 
 {
     void GameInit();
     void GameLogic();
     void GameClose();
 
-    void Init();
+    void Init(const LeepConfig &cnfg);
     void Logic();
     void Close();
     void RenderFrame();

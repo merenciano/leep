@@ -3,22 +3,17 @@
 #ifndef __LEEP_CORE_MEMORY_H__
 #define __LEEP_CORE_MEMORY_H__
 
+#include "core/common-defs.h"
 #include "core/memory/buddy-alloc.h"
-
-#define KILOBYTES(X) ((X) * 1024)
-#define MEGABYTES(X) (KILOBYTES(X) * 1024)
-#define GIGABYTES(X) (MEGABYTES(X) * 1024)
 
 namespace leep
 {
-    const uint64_t kTotalMemSize = MEGABYTES((uint64_t)1224);
-
     class Memory
     {
     public:
         Memory();
         ~Memory();
-        void init();
+        void init(size_t size);
         void freeAll();
         void *persistentAlloc(size_t size);
         // General alloc wrappers
@@ -33,6 +28,9 @@ namespace leep
         int8_t *mem_;
         int8_t *offset_;
         BuddyAlloc buddy_;
+
+        // TODO: Capacity should be private and have a getter only
+        size_t capacity_;
     };
 
     template<typename T>

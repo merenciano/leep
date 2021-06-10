@@ -3,12 +3,10 @@
 #ifndef __LEEP_RENDER_RENDERER_H__
 #define __LEEP_RENDER_RENDERER_H__
 
-#include "core/memory/memory.h"
 #include "core/memory/buddy-alloc-stl.h"
 #include "render/geometry.h"
 #include "render/internal-resources.h"
 #include "render/material-types.h"
-#include "render/commands/draw.h"
 
 #include <stdint.h>
 #include <forward_list>
@@ -17,18 +15,8 @@
 
 namespace leep
 {
-    class Memory;
     class DLComm;
     class DisplayList;
-
-    const int32_t kMaxTextures = 63;
-    const int32_t kMaxBuffers = 128;
-    const int32_t kMatPoolSize = MT_MAX * 16; // Derived materials do not have attributes
-
-    // TODO: Draw command with pointer to material will reduce vastly
-    // the memory stored in the pool (due to materialdata union being big)
-    const uint32_t kRenderQueueMaxCount = 2000;
-    const uint32_t kRenderPoolSize = kRenderQueueMaxCount * sizeof(Draw);
 
     class RenderQueues
     {
@@ -38,7 +26,7 @@ namespace leep
         RenderQueues(RenderQueues&&) = delete;
         ~RenderQueues();
 
-        void init(Memory *m);
+        void init(int32_t capacity);
         void addDL(DisplayList *dl);
         void swapQueues();
 
@@ -47,14 +35,16 @@ namespace leep
 
         DLComm **curr_queue_;
 
-    //private:
         int8_t *curr_pool_; // Main thread renders this
         int8_t *next_pool_; // Logic thread fill this for the next frame
         int8_t *next_offset_;
         DLComm **next_queue_;
         int32_t next_count_;
-    public: // Saving 8 bytes of padding here
         int32_t curr_count_;
+
+        // TODO: This should be private with getters only
+        int32_t render_pool_size_;
+        int32_t render_quque_max_;
     };
 
     class Renderer
@@ -69,7 +59,7 @@ namespace leep
         Renderer(Renderer&&) = delete;
         ~Renderer();
 
-        void init();
+        void init(int32_t queue_capacity);
 
         void renderFrame();
         void submitFrame();
@@ -86,7 +76,6 @@ namespace leep
         std::atomic<int32_t> tex_to_del_;
         std::atomic<int32_t> buf_to_del_;
 
-        InternalMaterial *allocMaterial();
         void initMaterial(MaterialType t, const char *name);
         int32_t addTex();
         int32_t addBuf();
@@ -97,8 +86,6 @@ namespace leep
                     BuddySTL<InternalFramebuffer>> framebuffers_;
 
         InternalMaterial *materials_;
-        int8_t *mat_pool_;
-        int8_t *mat_offset_;
         InternalBuffer *buffers_;
         InternalTexture *textures_;
         int32_t buf_count_;
@@ -113,12 +100,12 @@ namespace leep
     DLComm *RenderQueues::commandAlloc()
     {
         // Here I assume that memory will always be aligned to 8 because
-        // the all the commands have vtable (executeCommand virtual meethod)
+        // the all the commands have vtable (executeCommand virtual method)
         // so the class is aligned to 8 (sizeof(T) will always be multiple of 8)
         LEEP_CORE_ASSERT(((size_t)next_offset_ & (size_t)7) == 0, "Mem not aligned to 8");
         DLComm *mem = new(next_offset_) T();
         next_offset_ += sizeof(T);
-        LEEP_CORE_ASSERT(next_offset_ - next_pool_ < kRenderPoolSize,
+        LEEP_CORE_ASSERT(next_offset_ - next_pool_ < render_pool_size_,
             "Queue doesn't fit in the chunk");
         return mem;
     }

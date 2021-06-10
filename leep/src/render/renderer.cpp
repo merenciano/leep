@@ -3,6 +3,7 @@
 #include "core/memory/memory.h"
 #include "render/display-list.h"
 #include "render/display-list-command.h"
+#include "render/commands/draw.h"
 
 namespace leep {
 
@@ -18,14 +19,12 @@ Renderer::~Renderer()
     LEEP_CORE_ERROR("Render destructor called");
 }
 
-void Renderer::init()
+void Renderer::init(int32_t queue_capacity)
 {
-    rq_.init(&(GM.memory()));
+    rq_.init(queue_capacity);
     textures_ = (InternalTexture*)GM.memory().persistentAlloc(sizeof(InternalTexture)*kMaxTextures);
     buffers_ = (InternalBuffer*)GM.memory().persistentAlloc(sizeof(InternalBuffer)*kMaxBuffers);
     materials_ = (InternalMaterial*)GM.memory().persistentAlloc(MT_MAX * sizeof(InternalMaterial));
-    mat_pool_ = (int8_t*)GM.memory().persistentAlloc(kMatPoolSize);
-    mat_offset_ = mat_pool_;
     buf_count_ = 0;
     tex_count_ = 0;
 
@@ -34,13 +33,6 @@ void Renderer::init()
     materials_[MT_EQUIREC_TO_CUBE].init("eqr-to-cube");
     materials_[MT_PREFILTER_ENV].init("prefilter-env");
     materials_[MT_LUT_GEN].init("lut-gen");
-}
-
-InternalMaterial *Renderer::allocMaterial()
-{
-    InternalMaterial *im = new(mat_offset_) InternalMaterial();
-    mat_offset_ += sizeof(InternalMaterial);
-    return im;
 }
 
 void Renderer::initMaterial(MaterialType t, const char *name)
@@ -67,6 +59,11 @@ void Renderer::renderFrame()
     for (int32_t i = 0; i < rq_.curr_count_; ++i)
     {
         rq_.curr_queue_[i]->executeCommand();
+        // Prevent memory leaks since render queue swaps 
+        // are not calling destructors since each frame override the memory
+        // so calling the commands destructor explicitly frees the
+        // material data pointers on the commands that have materials
+        rq_.curr_queue_[i]->~DLComm();
     }
     deleteResources();
 }
@@ -105,6 +102,9 @@ RenderQueues::RenderQueues()
     next_queue_ = nullptr;
     curr_count_ = 0;
     next_count_ = 0;
+
+    render_pool_size_ = 0;
+    render_quque_max_ = 0;
 }
 
 RenderQueues::~RenderQueues()
@@ -112,24 +112,28 @@ RenderQueues::~RenderQueues()
     LEEP_CORE_ERROR("RenderQueues destructor called");
 }
 
-void RenderQueues::init(Memory *m)
+void RenderQueues::init(int32_t capacity)
 {
     LEEP_CORE_ASSERT(curr_pool_ == nullptr,
         "Already initialized.");
-    curr_pool_ = (int8_t*)m->persistentAlloc(kRenderPoolSize);
-    next_pool_ = (int8_t*)m->persistentAlloc(kRenderPoolSize);
+    int32_t pool_size = capacity * sizeof(Draw);
+    curr_pool_ = (int8_t*)GM.memory().persistentAlloc(pool_size);
+    next_pool_ = (int8_t*)GM.memory().persistentAlloc(pool_size);
     next_offset_ = next_pool_;
 
-    curr_queue_ = (DLComm**)m->persistentAlloc(kRenderQueueMaxCount * sizeof(int*));
-    next_queue_ = (DLComm**)m->persistentAlloc(kRenderQueueMaxCount * sizeof(int*));
+    curr_queue_ = (DLComm**)GM.memory().persistentAlloc(capacity * sizeof(void*));
+    next_queue_ = (DLComm**)GM.memory().persistentAlloc(capacity * sizeof(void*));
     curr_count_ = 0;
     next_count_ = 0;
+
+    render_pool_size_ = pool_size;
+    render_quque_max_ = capacity;
 }
 
 void RenderQueues::addDL(DisplayList *dl)
 {
     LEEP_CORE_ASSERT(next_count_ + dl->commandListCount() < 
-        (int32_t)kRenderQueueMaxCount, "Max queue count reached");
+        render_quque_max_, "Max queue count reached");
     for (int32_t i = 0; i < dl->commandListCount(); ++i)
     {
         next_queue_[next_count_++] = dl->command_list()[i];

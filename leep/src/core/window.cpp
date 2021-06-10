@@ -27,7 +27,7 @@ namespace leep
 #endif
 	}
 
-	bool Window::createWindow(uint16_t w, uint16_t h, bool limit_framerate)
+	bool Window::createWindow(const char *title, uint16_t w, uint16_t h, bool limit_framerate)
 	{
 		if (!glfwInit())
 		{
@@ -40,7 +40,7 @@ namespace leep
 		}
 
 		data_ = GM.memory().generalAllocT<WindowData>(1);
-		data_->window = glfwCreateWindow(w, h, "LEEP", NULL, NULL);
+		data_->window = glfwCreateWindow(w, h, title, NULL, NULL);
 		if (!data_->window)
 		{
 			glfwTerminate();

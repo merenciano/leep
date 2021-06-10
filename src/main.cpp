@@ -342,7 +342,8 @@ void leep::GameClose()
 
 int main(int argc, char **argv)
 {
-    leep::Init();
+    leep::LeepConfig cnfg;
+    leep::Init(cnfg);
     leep::LogicThread lt(leep::Logic);
     leep::GM.startFrameTimer();
     while (!leep::GM.window().windowShouldClose())

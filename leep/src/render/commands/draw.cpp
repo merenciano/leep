@@ -8,7 +8,7 @@ Draw::Draw()
 
 Draw::~Draw()
 {
-
+    
 }
 
 Draw& Draw::set_geometry(const Geometry &geometry)

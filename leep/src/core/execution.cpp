@@ -8,7 +8,7 @@
 //#define MTR_ENABLED
 #include "minitrace.h"
 
-void leep::Init()
+void leep::Init(const LeepConfig &cnfg)
 {
     mtr_init("leep_trace.json");
     MTR_META_PROCESS_NAME("Leep_Profiling");
@@ -17,7 +17,7 @@ void leep::Init()
     leep::Chrono init_timer;
     init_timer.start();
     leep::Logger::Init();
-    leep::GM.init();
+    leep::GM.init(cnfg);
     leep::LuaScripting::Init();
 
     leep::GameInit();

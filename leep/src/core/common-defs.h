@@ -20,6 +20,10 @@
 
 #define MAX_INT32_VALUE = 2147483647
 
+#define KILOBYTES(X) ((X) * 1024)
+#define MEGABYTES(X) (KILOBYTES(X) * 1024)
+#define GIGABYTES(X) (MEGABYTES(X) * 1024)
+
 float constexpr ByteToKilo(size_t x) 
 {
     return x / 1024.0f;

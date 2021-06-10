@@ -7,6 +7,7 @@
 #include "core/memory/memory.h"
 #include "core/scene.h"
 #include "render/renderer.h"
+#include "render/commands/draw.h" // This is needed for sizeof(Draw) /* Change that and remove dependency? */
 #include "render/camera.h"
 #include "tools/imgui-tools.h"
 #include "tools/resource-map.h"
@@ -33,17 +34,20 @@ namespace leep
         Chrono      frame_timer_;
     };
 
-    void Manager::init()
+    void Manager::init(const LeepConfig &cnfg)
     {
         LEEP_ASSERT(IsPow2(kEntitiesPerChunk),
             "This constant value must be power of 2");
-        // TODO: Organize this in a different way in order to use the
-        // generalAlloc for this struct
-        // (maybe memory instantiated inside this class).
-        memory_.init();
+
+        size_t total_mem = kMaxBuffers * sizeof(InternalBuffer) + kMaxTextures * sizeof(InternalTexture);
+        total_mem += MaterialType::MT_MAX * sizeof(InternalMaterial);
+        total_mem += cnfg.render_queue_capacity * 2 * sizeof(void*); // 2 because current and next
+        total_mem += cnfg.render_queue_capacity * 2 * sizeof(Draw);
+        total_mem += cnfg.alloc_capacity;
+        memory_.init(total_mem);
         data_ = memory_.generalAllocT<ManagerData>(1);
-        data_->window_.createWindow(1280, 720, true);
-        data_->renderer_.init();
+        data_->window_.createWindow(kWindowTitle, cnfg.window_width, cnfg.window_height, cnfg.vsync);
+        data_->renderer_.init(cnfg.render_queue_capacity);
         data_->camera_.init();
         data_->delta_time_ = 0.16f;
 

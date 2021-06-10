@@ -3,6 +3,7 @@
 
 #define GM Manager::instance()
 
+#include "core/config.h"
 #include "core/memory/memory.h"
 
 namespace leep 
@@ -16,7 +17,7 @@ namespace leep
         // will live until the end of the program
         ~Manager() {}
 
-        void init();
+        void init(const LeepConfig &cnfg);
         void nextFrame();
         void startFrameTimer();
 

@@ -12,6 +12,7 @@ namespace leep
         static const CompType s_type = COMP_DRAWABLE;
         Drawable() : Component(COMP_DRAWABLE) { }
         ~Drawable() {}
+        // TODO: Make it non-copyable
         Drawable& operator=(const Drawable &other)
         {
             material_ = other.material_;
