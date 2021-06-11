@@ -1,4 +1,5 @@
 #include "leep.h"
+#include "systems/draw-voxels.h"
 
 //#define LEEP_SINGLE_THREAD
 
@@ -312,7 +313,18 @@ void leep::GameLogic()
 
     dl.submit();
 
-    Render(GM.scene().container(EntityType::RENDERABLE)).executeSystem();
+    //Render(GM.scene().container(EntityType::RENDERABLE)).executeSystem();
+    clicktaclysm::Voxel *vx = GM.memory().generalAllocT<clicktaclysm::Voxel>(9);
+    for (int i = 0; i < 3; ++i)
+    {
+        for (int j = 0; j < 3; ++j)
+        {
+            vx[3 * i + j].x = (float)i;
+            vx[3 * i + j].y = 0.0f;
+            vx[3 * i + j].z = (float)j;
+        }
+    }
+    clicktaclysm::DrawVoxels().set_voxels(&vx, 9).executeSystem();
     
     dl.addCommand<RenderOptions>()
         .set_cull_face(CullFace::DISABLED);
