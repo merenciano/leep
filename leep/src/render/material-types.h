@@ -19,6 +19,7 @@ namespace leep
 
         // USER DEFINED MATERIALS START FROM HERE
         MT_PBR,
+        MT_VOXMAT,
 
         MT_MAX,
         // MT_NONE after MT_MAX because MT_MAX is used set the
@@ -44,6 +45,23 @@ namespace leep
     struct PbrSceneData
     {
         glm::mat4x4 view_projection_;
+		glm::vec3 camera_position_;
+		float padding_;
+		glm::vec4 light_direction_intensity_;
+    };
+
+    struct VoxMatData
+    {
+		float model_[16];
+		glm::vec3 color_;
+		float roughness_;
+		float metallic_;
+        float padding[3];
+    };
+
+    struct VoxMatSceneData
+    {
+        glm::mat4 vp_;
 		glm::vec3 camera_position_;
 		float padding_;
 		glm::vec4 light_direction_intensity_;

@@ -57,6 +57,24 @@ namespace leep
 
         switch(geometry_.vertex_buffer().type())
         {
+            case BufferType::VERTEX_BUFFER_3P_3N:
+            {
+                // POSITION
+                GLint attrib_pos = glGetAttribLocation(
+                    r.materials_[material_.type()].internal_id(),"a_position");
+                glVertexAttribPointer(attrib_pos, 3, GL_FLOAT, GL_FALSE,
+                    6 * sizeof(float), (void*)0);
+                glEnableVertexAttribArray(attrib_pos);
+
+                // NORMAL
+                attrib_pos = glGetAttribLocation(
+                    r.materials_[material_.type()].internal_id(), "a_normal");
+                glVertexAttribPointer(attrib_pos, 3, GL_FLOAT, GL_FALSE,
+                    6 * sizeof(float), (void*)(3 * sizeof(float)));
+                glEnableVertexAttribArray(attrib_pos);
+                break;
+            }
+
             case BufferType::VERTEX_BUFFER_3P_2UV:
             {
                 // POSITION

@@ -1,0 +1,9 @@
+Step 1: Open leep/src/render/material-types.h
+Step 2: Add MT_*MATNAME* to MaterialType enum
+Step 3: Create data structs for uniforms
+
+Step 4: Create shaders in assets/shaders named *matname*-vert.glsl and *matname*-frag.glsl (The extension will depend on the rendering API, this example is for OpenGL and Vulkan)
+
+Step 5: Init the material during initialization calling to initMaterial(MaterialType, "matname") method from renderer
+
+Step 6: Now the material can be used with the commands UseMaterial and Draw, etc...

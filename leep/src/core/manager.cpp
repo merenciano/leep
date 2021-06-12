@@ -16,6 +16,7 @@
 namespace leep
 {
     Geometry Renderer::s_cube;
+    Geometry Renderer::s_voxel;
     Geometry Renderer::s_sphere;
     Geometry Renderer::s_quad;
 
@@ -52,6 +53,7 @@ namespace leep
         data_->delta_time_ = 0.16f;
 
         Renderer::s_cube.createCube();
+        Renderer::s_voxel.createVoxel();
 		Renderer::s_sphere.createSphere(32, 32);
 		Renderer::s_quad.createQuad();
     }

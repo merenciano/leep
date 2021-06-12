@@ -12,7 +12,8 @@ void leep::GameInit()
     rm.addTexture("IrradianceEnv", 1024.0f, 1024.0f, TexType::ENVIRONMENT);
     rm.addTexture("PrefilterSpec", 128.0f, 128.0f, TexType::PREFILTER_ENVIRONMENT);
     rm.addTexture("LutMap", 512.0f, 512.0f, TexType::LUT);
-
+    rm.addTexture("Default", tp + "default.jpg", TexType::SRGB);
+    /*
     rm.addTextureAsync("CelticGold_A" ,tp + "celtic-gold/celtic-gold_A.png", TexType::SRGB);
     rm.addTextureAsync("CelticGold_N" ,tp + "celtic-gold/celtic-gold_N.png", TexType::RGB);
     rm.addTextureAsync("CelticGold_M" ,tp + "celtic-gold/celtic-gold_M.png", TexType::RGB);
@@ -57,7 +58,7 @@ void leep::GameInit()
     rm.addTextureAsync("Foam_N" ,tp + "foam/foam_N.png", TexType::RGB);
     rm.addTextureAsync("Foam_M" ,tp + "foam/foam_M.png", TexType::R);
     rm.addTextureAsync("Foam_R" ,tp + "foam/foam_R.png", TexType::R);
-    
+    */    
     PbrData pbr;
     pbr.color_ = glm::vec3(1.0f, 1.0f, 1.0f);
     pbr.tiling_x_ = 4.0f;
@@ -69,11 +70,11 @@ void leep::GameInit()
     pbr.normal_map_intensity_ = 1.0f;
 
     GM.renderer().sun_dir_intensity_ = glm::vec4(0.0f, -1.0f, -0.1f, 1.0f);
-    GM.renderer().initMaterial(MaterialType::MT_PBR, "pbr");
+    GM.renderer().initMaterial(MaterialType::MT_VOXMAT, "voxmat");
 
     GM.scene().createContainer(EntityType::RENDERABLE);
 
-    // CelticGold
+    /* CelticGold
     {
         Entity e = Entity::CreateEntity("CelticGold", EntityType::RENDERABLE);
         LTransform &tr = e.getComponent<LTransform>();
@@ -248,7 +249,7 @@ void leep::GameInit()
         t[2] = GM.resource_map().getTexture("Foam_R");
         t[3] = GM.resource_map().getTexture("Foam_N");
         dw.material_.set_tex(t, 4);
-    }
+    }*/
 
     DisplayList init_dl;
     init_dl.addCommand<RenderOptions>()
@@ -278,10 +279,10 @@ void leep::GameLogic()
 
     // Render commands
     DisplayList dl;
-    PbrSceneData pbr_sd;
-    pbr_sd.view_projection_ = GM.camera().view_projection();
-    pbr_sd.camera_position_ = GM.camera().position();
-    pbr_sd.light_direction_intensity_ = GM.renderer().sun_dir_intensity_;
+    VoxMatSceneData voxmat_sd;
+    voxmat_sd.vp_ = GM.camera().view_projection();
+    voxmat_sd.camera_position_ = GM.camera().position();
+    voxmat_sd.light_direction_intensity_ = GM.renderer().sun_dir_intensity_;
 
     Material full_screen_img;
     full_screen_img.set_type(MaterialType::MT_FULL_SCREEN_IMAGE);
@@ -307,8 +308,8 @@ void leep::GameLogic()
     scene_tex[1] = GM.resource_map().getTexture("IrradianceEnv");
     scene_tex[2] = GM.resource_map().getTexture("PrefilterSpec");
     dl.addCommand<UseMaterial>()
-        .set_type(MaterialType::MT_PBR)
-        .set_float((float*)&pbr_sd, sizeof(PbrSceneData) / sizeof (float))
+        .set_type(MaterialType::MT_VOXMAT)
+        .set_float((float*)&voxmat_sd, sizeof(VoxMatSceneData) / sizeof (float))
         .set_tex(scene_tex, 3, 1);
 
     dl.submit();

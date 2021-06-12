@@ -21,6 +21,8 @@ namespace leep
         Buffer index_buffer() const;
 
         void createCube();
+        // Voxel is like a cube but with only position and normal attributes
+        void createVoxel();
 		void createSphere(uint32_t x_segments, uint32_t y_segments);
         void createQuad();
 
