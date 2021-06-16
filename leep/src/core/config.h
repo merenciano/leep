@@ -18,7 +18,7 @@ namespace leep
         size_t alloc_capacity = GIGABYTES((uint64_t)1);
         // Maximum renderable entities in the scene
         // This is for engine allocation purposes
-        int32_t render_queue_capacity = 2000;
+        int32_t render_queue_capacity = 12000;
         int32_t max_geometries = 128;
         int32_t window_width = 1280;
         int32_t window_height = 720;

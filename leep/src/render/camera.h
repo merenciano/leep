@@ -16,10 +16,12 @@ namespace leep
     {
     public:
         Camera();
+        Camera(float fov, float far);
         ~Camera();
 
         // Framebuffer size will be the screen size and will not be used for shadowmaps
         void init();
+        void init(float fov, float farval);
         // Framebuffer size and set if will be used for shadowmaps (only depth on the fb)
         void init(float width, float height, bool is_light);
         void set_view(const glm::mat4 &view);
@@ -32,6 +34,8 @@ namespace leep
         // Used for the skybox
         glm::mat4 static_view_projection() const;
 		glm::vec3 position() const;
+        float fov() const;
+        float farval() const;
 
         Framebuffer framebuffer() const;
 
@@ -39,6 +43,8 @@ namespace leep
         glm::mat4 view_matrix_;
         glm::mat4 projection_matrix_;
         Framebuffer fb_;
+        float far_;
+        float fov_;
     };
 }
 

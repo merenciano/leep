@@ -13,32 +13,23 @@ using namespace leep;
 
 DrawVoxels::DrawVoxels()
 {
-    vxls_ = nullptr;
     count_ = 0;
 }
 
 DrawVoxels::~DrawVoxels()
 {
-    GM.memory().generalFree(vxls_);
 }
 
-DrawVoxels &DrawVoxels::set_voxels(Voxel **vxl, int32_t count)
+DrawVoxels &DrawVoxels::set_offset_buffer(Buffer buf, int32_t count)
 {
-    vxls_ = *vxl;
+    vxl_offsets_ = buf;
     count_ = count;
-    *vxl = nullptr;
 
     return *this;
 }
 
 void DrawVoxels::executeSystem() const
 {
-    if (!vxls_)
-    {
-        LEEP_WARNING("DrawVoxels system called without voxels setted");
-        return;
-    }
-
     DisplayList dl;
     Material mat;
     VoxMatData data;
@@ -46,16 +37,13 @@ void DrawVoxels::executeSystem() const
     data.roughness_ = 1.0f;
     data.metallic_ = 0.0f;
     mat.set_type(MaterialType::MT_VOXMAT);
+    mat.set_data((float*)&data, sizeof(VoxMatData) / sizeof(float));
 
-    for (int32_t i = 0; i < count_; ++i)
-    {
-        glm::mat4 model(1.0f);
-        model = glm::translate(model, vxls_[i]);
-        mat.set_data((float*)&data, sizeof(VoxMatData) / sizeof(float));
-        mat.set_model((float*)&model);
+    dl.addCommand<Draw>()
+        .set_geometry(Renderer::s_voxel)
+        .set_material(mat)
+        .set_instanced_opts(count_, vxl_offsets_);
 
-        dl.addCommand<Draw>().set_geometry(Renderer::s_voxel).set_material(mat);
-    }
     dl.submit();
 }
 

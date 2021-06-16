@@ -390,4 +390,8 @@ void Geometry::loadObj(String path)
     index_buffer_.set_data(ind, (uint32_t)indices.size());
 }
 
+void Geometry::createMesh(float *v, uint32_t vc, uint32_t *idx, uint32_t idxc)
+{
+}
+
 } // namespace leep

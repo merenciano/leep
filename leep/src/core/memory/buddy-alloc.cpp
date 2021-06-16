@@ -98,6 +98,7 @@ void BuddyAlloc::flipParentSplit(uint32_t index)
 
 uint32_t BuddyAlloc::adequateBlock(size_t request_size)
 {
+    LEEP_CORE_ASSERT(request_size < kMaxAlloc, "Requestez size too big.");
     uint32_t block = kBlockCount - 1;
     size_t size = kMinAlloc;
 

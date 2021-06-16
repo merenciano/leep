@@ -49,7 +49,7 @@ namespace leep
         data_ = memory_.generalAllocT<ManagerData>(1);
         data_->window_.createWindow(kWindowTitle, cnfg.window_width, cnfg.window_height, cnfg.vsync);
         data_->renderer_.init(cnfg.render_queue_capacity);
-        data_->camera_.init();
+        data_->camera_.init(70.0f, 300.0f);
         data_->delta_time_ = 0.16f;
 
         Renderer::s_cube.createCube();

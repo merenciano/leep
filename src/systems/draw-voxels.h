@@ -3,6 +3,7 @@
 
 #include "clicktaclysm.h"
 #include "ecs/system.h"
+#include "render/buffer.h"
 
 namespace clicktaclysm
 {
@@ -11,16 +12,11 @@ namespace clicktaclysm
     public:
         DrawVoxels();
         ~DrawVoxels();
-        // Caller lose ownership !!
-        // Could be done with a simple ptr but I want to set
-        // it back to NULL since that ptr will not be used
-        // by the caller afterwards so I don't want to make
-        // a useless copy
-        DrawVoxels &set_voxels(Voxel **vxl, int32_t count);
+        DrawVoxels &set_offset_buffer(leep::Buffer buf, int32_t count);
         virtual void executeSystem() const override;
 
     private:
-        Voxel *vxls_;
+        leep::Buffer vxl_offsets_;
         int32_t count_;
     };
 }

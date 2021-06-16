@@ -33,6 +33,12 @@ namespace leep
          * or free it manually with vertex/index_buffer().freeSystemRamData()
          */
         void loadObj(String path);
+
+        void createMesh(
+            float *vertex,
+            uint32_t vertex_count,
+            uint32_t *index,
+            uint32_t index_count);
     
     private:
         Buffer vertex_buffer_;

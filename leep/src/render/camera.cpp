@@ -9,6 +9,17 @@ namespace leep
     {
         view_matrix_ = glm::mat4(1.0f);
         projection_matrix_ = glm::mat4(1.0f);
+        fov_ = 70.0f;
+        far_ = 100.0f;
+    }
+
+    // Sorry... far is #defined...
+    Camera::Camera(float fov, float farval)
+    {
+        view_matrix_ = glm::mat4(1.0f);
+        projection_matrix_ = glm::mat4(1.0f);
+        fov_ = fov;
+        far_ = farval;
     }
 
     Camera::~Camera()
@@ -17,15 +28,22 @@ namespace leep
 
     void Camera::init()
     {
+        init(fov_, far_);
+    }
+
+    void Camera::init(float fov, float farval)
+    {
+        fov_ = fov;
+        far_ = farval;
         view_matrix_ = glm::mat4(1.0f);
-        projection_matrix_ = glm::perspective(glm::radians(70.0f), (float)GM.window().width() / GM.window().height(), 0.01f, 80.0f);
+        projection_matrix_ = glm::perspective(glm::radians(fov), (float)GM.window().width() / GM.window().height(), 0.01f, farval);
         fb_.create(GM.window().fwidth(), GM.window().fheight(), true, true);
     }
 
     void Camera::init(float width, float height, bool is_light)
     {
         view_matrix_ = glm::mat4(1.0f);
-        projection_matrix_ = glm::perspective(glm::radians(70.0f), (float)GM.window().fwidth() / GM.window().fheight(), 0.1f, 80.0f);
+        projection_matrix_ = glm::perspective(glm::radians(fov_), (float)GM.window().fwidth() / GM.window().fheight(), 0.1f, far_);
         if (is_light)
             fb_.create(width, height, false, true);
         else
@@ -37,9 +55,11 @@ namespace leep
         view_matrix_ = view;
     }
 
-    void Camera::set_projection(float fovy_rad, float aspect, float near_value, float far_value)
+    void Camera::set_projection(float fov, float aspect, float near_value, float far_value)
     {
-        projection_matrix_ = glm::perspective(fovy_rad, aspect, near_value, far_value);
+        far_ = far_value;
+        fov_ = fov;
+        projection_matrix_ = glm::perspective(glm::radians(fov), aspect, near_value, far_value);
     }
 
     const glm::mat4& Camera::view() const
@@ -71,5 +91,15 @@ namespace leep
     Framebuffer Camera::framebuffer() const
     {
         return fb_;
+    }
+
+    float Camera::fov() const
+    {
+        return fov_;
+    }
+
+    float Camera::farval() const
+    {
+        return far_;
     }
 }

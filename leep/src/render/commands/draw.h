@@ -17,12 +17,16 @@ namespace leep
 
         Draw& set_geometry(const Geometry &geometry);
         Draw& set_material(const Material &material);
+        Draw& set_instanced_opts(uint32_t count, Buffer inst_attr);
 
         virtual void executeCommand() const override;
 
     private:
         Geometry geometry_; 
         Material material_;
+
+        Buffer inst_attr_;
+        uint32_t inst_count_;
     };
 }
 
