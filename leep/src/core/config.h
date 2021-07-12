@@ -7,7 +7,7 @@
 
 namespace leep
 {
-    static const char *kWindowTitle = "Leep";
+    const char kWindowTitle[] = "Leep";
     const int32_t kMaxTextures = 63;
     const int32_t kMaxBuffers = 128;
 

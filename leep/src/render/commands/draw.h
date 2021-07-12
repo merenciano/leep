@@ -1,5 +1,9 @@
 // Lucas Merenciano Martinez <lucasmermar@gmail.com>
 
+// This command can draw instanced, to do so set_instanced_opts
+// must be called before, otherwise only one instance will be drawn.
+// The buffer will store 3 floats per instance (pos X, pos Y and pos Z)
+
 #ifndef __LEEP_RENDER_COMMANDS_DRAW_H__
 #define __LEEP_RENDER_COMMANDS_DRAW_H__
 

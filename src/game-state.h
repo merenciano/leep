@@ -12,7 +12,7 @@ namespace leep
     class GameState
     {
         GameData data_;
-        Config config_;
+        LeepConfig config_;
         Scene scene_;
         Chrono frame_chrono_;
     };

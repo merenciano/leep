@@ -2,7 +2,7 @@
 #include "systems/draw-voxels.h"
 #include "dungeon.h"
 
-#define LEEP_SINGLE_THREAD
+//#define LEEP_SINGLE_THREAD
 using namespace clicktaclysm;
 Dungeon g_dun;
 

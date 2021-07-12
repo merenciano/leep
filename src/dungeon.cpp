@@ -4,6 +4,7 @@
 #include "core/memory/memory.h"
 
 #include <stdlib.h>
+#include <list>
 
 namespace clicktaclysm {
     

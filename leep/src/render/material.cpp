@@ -66,7 +66,13 @@ void Material::set_tex(Texture *tex, int32_t count, int32_t cube_start)
     tex_ = (Texture*)GM.memory().generalAlloc(count * sizeof(Texture));
     tcount_ = count;
     cube_start == -1 ? cube_start_ = count : cube_start_ = cube_start;
-    memcpy(tex_, tex, count * sizeof(Texture));
+
+    // I guess is safer to use the copy assignment here
+    //memcpy(tex_, tex, count * sizeof(Texture));
+    for (int32_t i = 0; i < count; ++i)
+    {
+        tex_[i] = tex[i];
+    }
 }
 
 MaterialType Material::type() const
