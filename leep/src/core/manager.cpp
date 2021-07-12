@@ -16,6 +16,7 @@
 namespace leep
 {
     Geometry Renderer::s_cube;
+    Geometry Renderer::s_voxel;
     Geometry Renderer::s_sphere;
     Geometry Renderer::s_quad;
 
@@ -48,10 +49,11 @@ namespace leep
         data_ = memory_.generalAllocT<ManagerData>(1);
         data_->window_.createWindow(kWindowTitle, cnfg.window_width, cnfg.window_height, cnfg.vsync);
         data_->renderer_.init(cnfg.render_queue_capacity);
-        data_->camera_.init();
+        data_->camera_.init(70.0f, 300.0f);
         data_->delta_time_ = 0.16f;
 
         Renderer::s_cube.createCube();
+        Renderer::s_voxel.createVoxel();
 		Renderer::s_sphere.createSphere(32, 32);
 		Renderer::s_quad.createQuad();
     }

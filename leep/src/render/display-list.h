@@ -14,7 +14,7 @@ namespace leep
     class DLComm;
     // TODO: Do something with the dlmax len to lower it and
     // in the render system slice them up when reaching that limit
-    const int32_t kDLMaxLen = 2000;
+    const uint32_t kDLMaxLen = 12000;
     class DisplayList
     {
     public:
@@ -36,8 +36,10 @@ namespace leep
         void submit();
 
     private:
+        // TODO: Change this... Will be better to sacrifice
+        // performance and use a dynamic container
         DLComm *list_[kDLMaxLen];
-        int32_t i_;
+        uint32_t i_;
     };
 }
 

@@ -51,6 +51,7 @@ namespace leep
     {
     public:
         static Geometry s_cube;
+        static Geometry s_voxel;
         static Geometry s_sphere;
         static Geometry s_quad;
 

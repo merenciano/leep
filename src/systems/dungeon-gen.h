@@ -4,15 +4,10 @@
 #include "clicktaclysm.h"
 #include "ecs/system.h"
 
+#include "dungeon.h"
+
 namespace clicktaclysm
 {
-    struct Dungeon
-    {
-        float x;
-        float y;
-        Voxel *voxels;
-    };
-
     class DungeonGen : public leep::System
     {
         DungeonGen();

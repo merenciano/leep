@@ -25,12 +25,15 @@ project "TestApp"
     objdir "build/"
     includedirs {
         "leep/src",
+        "src",
     }
     libdirs {
         "leep/lib",
     }
 
-    files "./src/main.cpp"
+    files {
+        "./src/**.cpp"
+    }
 
     configuration "vs2019"
         defines {"_CRT_SECURE_NO_WARNINGS", "LEEP_WIN", }
@@ -39,7 +42,7 @@ project "TestApp"
         links { "X11", "dl", "pthread"  }
     
     filter "configurations:Debug"
-        
+        defines { "LEEP_DEBUG", }
         targetsuffix "-d"
         symbols "On"
     

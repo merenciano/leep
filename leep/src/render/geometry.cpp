@@ -105,6 +105,70 @@ void Geometry::createCube()
     index_buffer_.set_data(ind, 36);
 }
 
+void Geometry::createVoxel()
+{
+    int32_t i = 0;
+    float *vert = (float*)GM.memory().generalAlloc(24*6*sizeof(float));
+    uint32_t *ind = (uint32_t*)GM.memory().generalAlloc(36 * sizeof(uint32_t));
+    float vertices[] = {
+        // positions          // normals          
+        -0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f, 
+         0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f, 
+         0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f, 
+        -0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f, 
+
+        -0.5f, -0.5f,  0.5f,  0.0f,  0.0f,  1.0f,   // 4
+         0.5f, -0.5f,  0.5f,  0.0f,  0.0f,  1.0f, 
+         0.5f,  0.5f,  0.5f,  0.0f,  0.0f,  1.0f, 
+        -0.5f,  0.5f,  0.5f,  0.0f,  0.0f,  1.0f, 
+
+        -0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f,   // 8
+        -0.5f,  0.5f, -0.5f, -1.0f,  0.0f,  0.0f, 
+        -0.5f, -0.5f, -0.5f, -1.0f,  0.0f,  0.0f, 
+        -0.5f, -0.5f,  0.5f, -1.0f,  0.0f,  0.0f, 
+
+         0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f,  // 12
+         0.5f,  0.5f, -0.5f,  1.0f,  0.0f,  0.0f, 
+         0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f, 
+         0.5f, -0.5f,  0.5f,  1.0f,  0.0f,  0.0f, 
+
+        -0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,  // 16
+         0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f, 
+         0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f, 
+        -0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f, 
+
+        -0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,  // 20
+         0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f, 
+         0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f, 
+        -0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f, 
+    };
+
+    for (float f : vertices)
+    {
+        vert[i++] = f;
+    }
+
+    uint32_t indices[] = {
+         0,  2,  1,  2,  0,  3,
+         4,  5,  6,  6,  7,  4,
+         8,  9, 10, 10, 11,  8,
+        13, 12, 14, 12, 15, 14,
+        16, 17, 18, 18, 19, 16,
+        23, 22, 20, 22, 21, 20,
+    };
+
+    i = 0;
+    for (uint32_t idx : indices)
+    {
+        ind[i++] = idx;
+    }
+
+    vertex_buffer_.create();
+    vertex_buffer_.set_data(vert, 24*6, BufferType::VERTEX_BUFFER_3P_3N);
+    index_buffer_.create();
+    index_buffer_.set_data(ind, 36);
+}
+
 void Geometry::createSphere(uint32_t x_segments, uint32_t y_segments)
 {
     const float PI = 3.14159265359f;
@@ -324,6 +388,10 @@ void Geometry::loadObj(String path)
     vertex_buffer_.set_data(v, (uint32_t)vertices.size(), 
         BufferType::VERTEX_BUFFER_3P_3N_3T_3B_2UV);
     index_buffer_.set_data(ind, (uint32_t)indices.size());
+}
+
+void Geometry::createMesh(float *v, uint32_t vc, uint32_t *idx, uint32_t idxc)
+{
 }
 
 } // namespace leep

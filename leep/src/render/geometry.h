@@ -21,6 +21,8 @@ namespace leep
         Buffer index_buffer() const;
 
         void createCube();
+        // Voxel is like a cube but with only position and normal attributes
+        void createVoxel();
 		void createSphere(uint32_t x_segments, uint32_t y_segments);
         void createQuad();
 
@@ -31,6 +33,12 @@ namespace leep
          * or free it manually with vertex/index_buffer().freeSystemRamData()
          */
         void loadObj(String path);
+
+        void createMesh(
+            float *vertex,
+            uint32_t vertex_count,
+            uint32_t *index,
+            uint32_t index_count);
     
     private:
         Buffer vertex_buffer_;

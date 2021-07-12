@@ -16,6 +16,8 @@ namespace leep
     enum class BufferType
     {
         NONE = 0,
+        VERTEX_BUFFER_3P,
+        VERTEX_BUFFER_3P_3N,
         VERTEX_BUFFER_3P_2UV,
         VERTEX_BUFFER_3P_3N_2UV,
         VERTEX_BUFFER_3P_3N_3T_3B_2UV,

@@ -89,8 +89,8 @@ namespace leep
         if (GM.input().scroll() != 0.0f)
         {
             fov -= GM.input().scroll() * scroll_sensibility;
-            fov = glm::clamp(fov, 1.0f, 70.0f);
-            GM.camera().set_projection(glm::radians(fov), (float)GM.window().width() / GM.window().height(), 0.1f, 80.0f);
+            fov = glm::clamp(fov, 1.0f, 120.0f);
+            GM.camera().set_projection(fov, (float)GM.window().width() / GM.window().height(), 0.1f, GM.camera().farval());
         }
 
         GM.camera().set_view(glm::inverse(tr.transform_));

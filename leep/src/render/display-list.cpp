@@ -33,7 +33,7 @@ namespace leep
         // DisplayList can be used again after submit
         i_ = 0;
 #ifdef LEEP_DEBUG
-        for (int32_t i = 0; i < kDLMaxLen; ++i)
+        for (uint32_t i = 0; i < kDLMaxLen; ++i)
         {
             list_[i] = nullptr;
         }

@@ -3,12 +3,11 @@
 namespace leep {
 Draw::Draw()
 {
-
+    inst_count_ = 1;
 }
 
 Draw::~Draw()
 {
-    
 }
 
 Draw& Draw::set_geometry(const Geometry &geometry)
@@ -22,6 +21,14 @@ Draw& Draw::set_material(const Material &material)
     material_ = material;
     return *this;
 }
+
+Draw& Draw::set_instanced_opts(uint32_t inst_count, Buffer inst_attr)
+{
+    inst_attr_ = inst_attr;
+    inst_count_ = inst_count;
+    return *this;
+}
+
 } // namespace leep
 
 #ifdef LEEP_OPENGL
