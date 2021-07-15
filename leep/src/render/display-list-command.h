@@ -1,7 +1,7 @@
 // Lucas Merenciano Martinez <lucasmermar@gmail.com>
 
 #ifndef __LEEP_DISPLAY_LIST_COMMAND_H__
-#define __LEEP_DISPLAY_LIST_COMMAND_H__ 1
+#define __LEEP_DISPLAY_LIST_COMMAND_H__
 
 namespace leep
 {
