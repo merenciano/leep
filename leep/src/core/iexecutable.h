@@ -15,4 +15,4 @@ namespace leep
     };
 }
 
-#ifndef // __LEEP_CORE_INTERFACE_EXECUTABLE_H__
+#endif // __LEEP_CORE_INTERFACE_EXECUTABLE_H__

@@ -13,6 +13,7 @@ namespace leep {
         ~Composer();
 
 
+
         // NOTE(Lucas): I dont know if I should maintain this two
         // addEffect methods or choose one of them.
 
@@ -24,14 +25,15 @@ namespace leep {
         // Usage: Call this method with the proper effect (type)
         // and use the return to set its properties
         template<typename T>
-        T& addEffect()
+        T& createAndAddEffect()
         {
             pp_list_.emplace_back(T());
             return *(*(T*)(pp_list_.back()));
         }
 
-        std::list<IExecutable*> pp_list_; // post process list
+        void reset();
 
+        std::list<IExecutable*> pp_list_; // post process list
     };
 }
 
