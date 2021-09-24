@@ -1,6 +1,6 @@
 #include "core/config.h"
 
-namespace leep 
+namespace leep
 {
     void GameInit();
     void GameLogic();
