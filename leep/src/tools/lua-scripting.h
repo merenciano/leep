@@ -3,7 +3,7 @@
 #ifndef __LEEP_TOOLS_LUA_SCRIPTING_H__
 #define __LEEP_TOOLS_LUA_SCRIPTING_H__
 
-#include "core/string.h"
+#include "core/leep-string.h"
 
 struct lua_State;
 

@@ -4,7 +4,7 @@
 
 #include "render/display-list-command.h"
 #include "render/texture.h"
-#include "core/string.h"
+#include "core/leep-string.h"
 
 namespace leep
 {

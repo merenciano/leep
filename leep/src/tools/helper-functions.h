@@ -3,7 +3,7 @@
 #ifndef __LEEP_HELPER_FUNCTIONS_H__
 #define __LEEP_HELPER_FUNCTIONS_H__
 
-#include "core/string.h"
+#include "core/leep-string.h"
 
 namespace leep
 {

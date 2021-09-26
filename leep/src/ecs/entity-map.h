@@ -4,7 +4,7 @@
 #define __LEEP_ECS_ENTITY_MAP_H__
 
 #include "core/common-defs.h"
-#include "core/string.h"
+#include "core/leep-string.h"
 #include "core/memory/buddy-alloc-stl.h"
 
 #include <stdint.h>

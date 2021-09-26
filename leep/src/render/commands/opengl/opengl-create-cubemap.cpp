@@ -2,6 +2,7 @@
 #include "core/manager.h"
 #include "render/renderer.h"
 #include <glad/glad.h>
+#include <stb_image.h>
 
 namespace leep
 {
@@ -57,7 +58,6 @@ namespace leep
             config.mag_filter = GL_LINEAR;
             config.wrap = GL_CLAMP_TO_EDGE;
             break;
-
 
         default:
             LEEP_CORE_ERROR("Trying to create a cubemap with an invalid format");

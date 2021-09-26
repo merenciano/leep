@@ -1,7 +1,7 @@
 #ifndef __LEEP_TOOLS_IMGUI_TOOLS_H__
 #define __LEEP_TOOLS_IMGUI_TOOLS_H__ 1
 
-#include "core/string.h"
+#include "core/leep-string.h"
 #include <stdint.h>
 
 namespace leep

@@ -8,6 +8,7 @@ project "leep"
     includedirs {
         "src/",
         "extern/include/",
+        "src/extern/"
     }
 
     defines { "LEEP_" .. _OPTIONS["graphics-api"] }

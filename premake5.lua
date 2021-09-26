@@ -25,16 +25,15 @@ project "TestApp"
     objdir "build/"
     includedirs {
         "leep/src/",
-        "leep/src/**",
         "src/",
-        "src/**",
     }
     libdirs {
         "leep/lib",
     }
 
     files {
-        "./src/**.cpp"
+        "./src/**.cpp",
+        "./src/**.h"
     }
 
     configuration "vs2019"

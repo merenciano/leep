@@ -4,7 +4,7 @@
 #define __LEEP_RENDER_GEOMETRY_H__ 1
 
 #include "buffer.h"
-#include "core/string.h"
+#include "core/leep-string.h"
 
 namespace leep
 {

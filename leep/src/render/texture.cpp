@@ -5,10 +5,12 @@
 #include "core/window.h"
 #include "render/renderer.h"
 
-#define STB_IMAGE_IMPLEMENTATION
-#define STBI_MALLOC(sz)           GM.memory().generalAlloc(sz)
-#define STBI_REALLOC(p,newsz)     GM.memory().generalRealloc(p,newsz)
-#define STBI_FREE(p)              GM.memory().generalFree(p)
+#ifndef STB_IMAGE_IMPLEMENTATION
+    #define STB_IMAGE_IMPLEMENTATION
+    #define STBI_MALLOC(sz)           GM.memory().generalAlloc(sz)
+    #define STBI_REALLOC(p,newsz)     GM.memory().generalRealloc(p,newsz)
+    #define STBI_FREE(p)              GM.memory().generalFree(p)
+#endif
 #include "stb_image.h"
 
 namespace leep

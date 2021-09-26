@@ -3,7 +3,7 @@
 #ifndef __LEEP_RENDER_COMMANDS_PREFILTER_MIPS_H__
 #define __LEEP_RENDER_COMMANDS_PREFILTER_MIPS_H__
 
-#include "core/string.h"
+#include "core/leep-string.h"
 #include "render/display-list-command.h"
 #include "render/texture.h"
 

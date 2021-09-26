@@ -1,7 +1,5 @@
 #include "create-cubemap.h"
 
-#include "stb_image.h"
-
 namespace leep
 {
     CreateCubemap& CreateCubemap::set_texture(const Texture &texture)
