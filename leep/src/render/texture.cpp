@@ -146,8 +146,7 @@ namespace leep
             }
             r.textures_[handle_].pix_ = (void*)stbi_load(
                 path, &width, &height, &nchannels, nchannels);
-            LEEP_CORE_ASSERT(r.textures_[handle_].pix_,
-                "The image couldn't be loaded");
+            LEEP_CORE_ASSERT(r.textures_[handle_].pix_,"The image couldn't be loaded.");
         }
 
         r.textures_[handle_].internal_id_ = CommonDefs::UNINIT_INTERNAL_ID;

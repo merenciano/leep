@@ -12,50 +12,50 @@ void leep::GameInit()
     rm.addTexture("PrefilterSpec", 128.0f, 128.0f, TexType::PREFILTER_ENVIRONMENT);
     rm.addTexture("LutMap", 512.0f, 512.0f, TexType::LUT);
 
-    rm.addTextureAsync("CelticGold_A" ,tp + "celtic-gold/celtic-gold_A.png", TexType::SRGB);
-    rm.addTextureAsync("CelticGold_N" ,tp + "celtic-gold/celtic-gold_N.png", TexType::RGB);
-    rm.addTextureAsync("CelticGold_M" ,tp + "celtic-gold/celtic-gold_M.png", TexType::RGB);
-    rm.addTextureAsync("CelticGold_R" ,tp + "celtic-gold/celtic-gold_R.png", TexType::RGB);
+    rm.addTexture("CelticGold_A" ,tp + "celtic-gold/celtic-gold_A.png", TexType::SRGB);
+    rm.addTexture("CelticGold_N" ,tp + "celtic-gold/celtic-gold_N.png", TexType::RGB);
+    rm.addTexture("CelticGold_M" ,tp + "celtic-gold/celtic-gold_M.png", TexType::RGB);
+    rm.addTexture("CelticGold_R" ,tp + "celtic-gold/celtic-gold_R.png", TexType::RGB);
 
-    rm.addTextureAsync("Peeling_A" ,tp + "peeling/peeling_A.png", TexType::SRGB);
-    rm.addTextureAsync("Peeling_N" ,tp + "peeling/peeling_N.png", TexType::RGB);
-    rm.addTextureAsync("Peeling_M" ,tp + "peeling/peeling_M.png", TexType::R);
-    rm.addTextureAsync("Peeling_R" ,tp + "peeling/peeling_R.png", TexType::R);
+    rm.addTexture("Peeling_A" ,tp + "peeling/peeling_A.png", TexType::SRGB);
+    rm.addTexture("Peeling_N" ,tp + "peeling/peeling_N.png", TexType::RGB);
+    rm.addTexture("Peeling_M" ,tp + "peeling/peeling_M.png", TexType::R);
+    rm.addTexture("Peeling_R" ,tp + "peeling/peeling_R.png", TexType::R);
 
-    rm.addTextureAsync("Rusted_A" ,tp + "rusted/rusted_A.png", TexType::SRGB);
-    rm.addTextureAsync("Rusted_N" ,tp + "rusted/rusted_N.png", TexType::RGB);
-    rm.addTextureAsync("Rusted_M" ,tp + "rusted/rusted_M.png", TexType::R);
-    rm.addTextureAsync("Rusted_R" ,tp + "rusted/rusted_R.png", TexType::R);
+    rm.addTexture("Rusted_A" ,tp + "rusted/rusted_A.png", TexType::SRGB);
+    rm.addTexture("Rusted_N" ,tp + "rusted/rusted_N.png", TexType::RGB);
+    rm.addTexture("Rusted_M" ,tp + "rusted/rusted_M.png", TexType::R);
+    rm.addTexture("Rusted_R" ,tp + "rusted/rusted_R.png", TexType::R);
 
-    rm.addTextureAsync("Tiles_A" ,tp + "tiles/tiles_A.png", TexType::SRGB);
-    rm.addTextureAsync("Tiles_N" ,tp + "tiles/tiles_N.png", TexType::RGB);
-    rm.addTextureAsync("Tiles_M" ,tp + "tiles/tiles_M.png", TexType::R);
-    rm.addTextureAsync("Tiles_R" ,tp + "tiles/tiles_R.png", TexType::R);
+    rm.addTexture("Tiles_A" ,tp + "tiles/tiles_A.png", TexType::SRGB);
+    rm.addTexture("Tiles_N" ,tp + "tiles/tiles_N.png", TexType::RGB);
+    rm.addTexture("Tiles_M" ,tp + "tiles/tiles_M.png", TexType::R);
+    rm.addTexture("Tiles_R" ,tp + "tiles/tiles_R.png", TexType::R);
 
-    rm.addTextureAsync("ShipPanels_A" ,tp + "ship-panels/ship-panels_A.png", TexType::SRGB);
-    rm.addTextureAsync("ShipPanels_N" ,tp + "ship-panels/ship-panels_N.png", TexType::RGB);
-    rm.addTextureAsync("ShipPanels_M" ,tp + "ship-panels/ship-panels_M.png", TexType::R);
-    rm.addTextureAsync("ShipPanels_R" ,tp + "ship-panels/ship-panels_R.png", TexType::R);
+    rm.addTexture("ShipPanels_A" ,tp + "ship-panels/ship-panels_A.png", TexType::SRGB);
+    rm.addTexture("ShipPanels_N" ,tp + "ship-panels/ship-panels_N.png", TexType::RGB);
+    rm.addTexture("ShipPanels_M" ,tp + "ship-panels/ship-panels_M.png", TexType::R);
+    rm.addTexture("ShipPanels_R" ,tp + "ship-panels/ship-panels_R.png", TexType::R);
 
-    rm.addTextureAsync("Shore_A" ,tp + "shore/shore_A.png", TexType::SRGB);
-    rm.addTextureAsync("Shore_N" ,tp + "shore/shore_N.png", TexType::RGB);
-    rm.addTextureAsync("Shore_M" ,tp + "shore/shore_M.png", TexType::R);
-    rm.addTextureAsync("Shore_R" ,tp + "shore/shore_R.png", TexType::R);
+    rm.addTexture("Shore_A" ,tp + "shore/shore_A.png", TexType::SRGB);
+    rm.addTexture("Shore_N" ,tp + "shore/shore_N.png", TexType::RGB);
+    rm.addTexture("Shore_M" ,tp + "shore/shore_M.png", TexType::R);
+    rm.addTexture("Shore_R" ,tp + "shore/shore_R.png", TexType::R);
 
-    rm.addTextureAsync("Cliff_A" ,tp + "cliff/cliff_A.png", TexType::SRGB);
-    rm.addTextureAsync("Cliff_N" ,tp + "cliff/cliff_N.png", TexType::RGB);
-    rm.addTextureAsync("Cliff_M" ,tp + "cliff/cliff_M.png", TexType::R);
-    rm.addTextureAsync("Cliff_R" ,tp + "cliff/cliff_R.png", TexType::R);
+    rm.addTexture("Cliff_A" ,tp + "cliff/cliff_A.png", TexType::SRGB);
+    rm.addTexture("Cliff_N" ,tp + "cliff/cliff_N.png", TexType::RGB);
+    rm.addTexture("Cliff_M" ,tp + "cliff/cliff_M.png", TexType::R);
+    rm.addTexture("Cliff_R" ,tp + "cliff/cliff_R.png", TexType::R);
 
-    rm.addTextureAsync("Granite_A" ,tp + "granite/granite_A.png", TexType::SRGB);
-    rm.addTextureAsync("Granite_N" ,tp + "granite/granite_N.png", TexType::RGB);
-    rm.addTextureAsync("Granite_M" ,tp + "granite/granite_M.png", TexType::R);
-    rm.addTextureAsync("Granite_R" ,tp + "granite/granite_R.png", TexType::R);
+    rm.addTexture("Granite_A" ,tp + "granite/granite_A.png", TexType::SRGB);
+    rm.addTexture("Granite_N" ,tp + "granite/granite_N.png", TexType::RGB);
+    rm.addTexture("Granite_M" ,tp + "granite/granite_M.png", TexType::R);
+    rm.addTexture("Granite_R" ,tp + "granite/granite_R.png", TexType::R);
 
-    rm.addTextureAsync("Foam_A" ,tp + "foam/foam_A.png", TexType::SRGB);
-    rm.addTextureAsync("Foam_N" ,tp + "foam/foam_N.png", TexType::RGB);
-    rm.addTextureAsync("Foam_M" ,tp + "foam/foam_M.png", TexType::R);
-    rm.addTextureAsync("Foam_R" ,tp + "foam/foam_R.png", TexType::R);
+    rm.addTexture("Foam_A" ,tp + "foam/foam_A.png", TexType::SRGB);
+    rm.addTexture("Foam_N" ,tp + "foam/foam_N.png", TexType::RGB);
+    rm.addTexture("Foam_M" ,tp + "foam/foam_M.png", TexType::R);
+    rm.addTexture("Foam_R" ,tp + "foam/foam_R.png", TexType::R);
 
     PbrData pbr;
     pbr.color_ = glm::vec3(1.0f, 1.0f, 1.0f);
