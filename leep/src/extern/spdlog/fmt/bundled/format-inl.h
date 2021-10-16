@@ -1103,8 +1103,8 @@ int format_float(T value, int precision, float_specs specs, buffer<char>& buf) {
     boundaries.lower = multiply(boundaries.lower, cached_pow.f);
     boundaries.upper = multiply(boundaries.upper, cached_pow.f);
     assert(min_exp <= fp_value.e && fp_value.e <= -32);
-    --boundaries.lower;  // \tilde{M}^- - 1 ulp -> M^-_{\downarrow}.
-    ++boundaries.upper;  // \tilde{M}^+ + 1 ulp -> M^+_{\uparrow}.
+    --boundaries.lower;  // \tilde{M}^- - 1 ulp -> M^-gpu_materials_{\downarrow}.
+    ++boundaries.upper;  // \tilde{M}^+ + 1 ulp -> M^+gpu_materials_{\uparrow}.
     // Numbers outside of (lower, upper) definitely do not round to value.
     grisu_shortest_handler handler{buf.data(), 0,
                                    boundaries.upper - fp_value.f};

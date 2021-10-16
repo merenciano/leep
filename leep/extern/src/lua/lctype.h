@@ -52,7 +52,7 @@
 #define testprop(c,p)	(luai_ctype_[(c)+1] & (p))
 
 /*
-** 'lalpha' (Lua alphabetic) and 'lalnum' (Lua alphanumeric) both include '_'
+** 'lalpha' (Lua alphabetic) and 'lalnum' (Lua alphanumeric) both include 'gpu_materials_'
 */
 #define lislalpha(c)	testprop(c, MASK(ALPHABIT))
 #define lislalnum(c)	testprop(c, (MASK(ALPHABIT) | MASK(DIGITBIT)))
@@ -80,8 +80,8 @@ LUAI_DDEC const lu_byte luai_ctype_[UCHAR_MAX + 2];
 #include <ctype.h>
 
 
-#define lislalpha(c)	(isalpha(c) || (c) == '_')
-#define lislalnum(c)	(isalnum(c) || (c) == '_')
+#define lislalpha(c)	(isalpha(c) || (c) == 'gpu_materials_')
+#define lislalnum(c)	(isalnum(c) || (c) == 'gpu_materials_')
 #define lisdigit(c)	(isdigit(c))
 #define lisspace(c)	(isspace(c))
 #define lisprint(c)	(isprint(c))

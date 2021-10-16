@@ -9,7 +9,7 @@ namespace leep
     void UseMaterial::executeCommand() const
     {
         Renderer &r = GM.renderer();
-        GLuint program = r.materials_[type_].internal_id();
+        GLuint program = r.gpu_materials_[type_].internal_id();
         glUseProgram(program);
         uint32_t uniform_pos = glGetUniformLocation(program, "u_scene_data");
         glUniform4fv(uniform_pos, fcount_ / 4, fdata_);

@@ -52,7 +52,7 @@
 #define LUA_POF		"luaopen_"
 
 /* separator for open functions in C libraries */
-#define LUA_OFSEP	"_"
+#define LUA_OFSEP	"gpu_materials_"
 
 
 /*
@@ -503,7 +503,7 @@ static int searcher_Lua (lua_State *L) {
 
 /*
 ** Try to find a load function for module 'modname' at file 'filename'.
-** First, change '.' to '_' in 'modname'; then, if 'modname' has
+** First, change '.' to 'gpu_materials_' in 'modname'; then, if 'modname' has
 ** the form X-Y (that is, it has an "ignore mark"), build a function
 ** name "luaopen_X" and look for it. (For compatibility, if that
 ** fails, it also tries "luaopen_Y".) If there is no ignore mark,

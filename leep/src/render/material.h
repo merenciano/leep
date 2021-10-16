@@ -8,28 +8,22 @@
 
 namespace leep
 {
+    class Texture;
+
     class Material
     {
     public:
-        union MaterialData
-        {
-            glm::mat4 model_;
-            PbrData pbr_;
-            EquirecToCubeData etc_;
-            PrefilterEnvData pref_;
-        };
-
         Material();
-        Material(const Material&) = delete;
-        Material(Material&&) = delete;
         ~Material();
 
-        Material &operator=(const Material &other);
+        Material(const Material&) = default;
+        Material(Material&&) = delete;
+        Material &operator=(const Material &other) = default;
 
-        void set_type(MaterialType type);
-        void set_model(float *model);
-        void set_data(float *data, int32_t count);
-        void set_tex(class Texture *tex, int32_t count, int32_t cube_start = -1);
+        void create(MaterialType type, float *data, int32_t dcount,
+                    Texture *tex, int32_t tcount, int32_t cube_start = -1);
+
+        void set_model(const float *model) const;
 
         MaterialType type() const;
         const float *data() const;
@@ -39,14 +33,7 @@ namespace leep
         int32_t cube_start() const;
 
     private:
-        // TODO: Check if I can merge this with use-material command data
-        // since they are pretty similar
-        float *data_; 
-        Texture *tex_;
-        MaterialType type_; // Acts as a handle
-        int32_t dcount_;
-        int32_t tcount_;
-        int32_t cube_start_;
+        int32_t handle_;
     };
 }
 #endif // __LEEP_RENDER_MATERIAL_H__

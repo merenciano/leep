@@ -9,12 +9,22 @@
 
 namespace leep
 {
-    struct InternalMaterial
+    struct GPUMaterial
     {
         void init(const char *name);
         void useMaterialData(const Material &material) const;
         uint32_t internal_id() const;
         uint32_t internal_id_;
+    };
+
+    struct InternalMaterial
+    {
+        float *data_;
+        Texture *tex_;
+        MaterialType type_; // Acts as a handle (GPU material/program)
+        int32_t dcount_;
+        int32_t tcount_;
+        int32_t cube_start_;
     };
 
     struct InternalTexture

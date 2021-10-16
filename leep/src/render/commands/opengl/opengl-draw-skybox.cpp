@@ -32,7 +32,7 @@ namespace leep
             "Material type not setted");
 
         // Set the uniforms
-        r.materials_[material_.type()].useMaterialData(material_);
+        r.gpu_materials_[material_.type()].useMaterialData(material_);
 
         // Create the OpenGL vertex buffer if it has not been created yet
         if (r.buffers_[vertex_handler].gpu_version_ == 0)
@@ -69,7 +69,7 @@ namespace leep
         }
 
         GLint attrib_pos = glGetAttribLocation(
-            r.materials_[material_.type()].internal_id(), "a_position");
+                r.gpu_materials_[material_.type()].internal_id(), "a_position");
         glVertexAttribPointer(attrib_pos, 3, GL_FLOAT, GL_FALSE,
             8 * sizeof(float), (void*)0);
         glEnableVertexAttribArray(attrib_pos);

@@ -28,12 +28,12 @@ static void LoadFile(const char *path, char **buffer) noexcept
 
 namespace leep
 {
-    uint32_t InternalMaterial::internal_id() const
+    uint32_t GPUMaterial::internal_id() const
     {
         return internal_id_;
     }
 }
 
 #if defined(LEEP_OPENGL) || defined(LEEP_OPENGL_ES)
-    #include "api-impl/internal-material-gl.cpp"
+    #include "api-impl/gpu-material-gl.cpp"
 #endif

@@ -12,7 +12,7 @@
 
 
 /* version suffix for environment variable names */
-#define LUA_VERSUFFIX          "_" LUA_VERSION_MAJOR "_" LUA_VERSION_MINOR
+#define LUA_VERSUFFIX          "gpu_materials_" LUA_VERSION_MAJOR "gpu_materials_" LUA_VERSION_MINOR
 
 
 LUAMOD_API int (luaopen_base) (lua_State *L);

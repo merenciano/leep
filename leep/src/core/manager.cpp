@@ -41,7 +41,7 @@ namespace leep
             "This constant value must be power of 2");
 
         size_t total_mem = kMaxBuffers * sizeof(InternalBuffer) + kMaxTextures * sizeof(InternalTexture);
-        total_mem += MaterialType::MT_MAX * sizeof(InternalMaterial);
+        total_mem += MaterialType::MT_MAX * sizeof(GPUMaterial);
         total_mem += cnfg.render_queue_capacity * 2 * sizeof(void*); // 2 because current and next
         total_mem += cnfg.render_queue_capacity * 2 * sizeof(Draw);
         total_mem += cnfg.alloc_capacity;

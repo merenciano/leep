@@ -19,8 +19,8 @@ namespace leep
         Draw();
         ~Draw();
 
-        Draw& set_geometry(const Geometry &geometry);
-        Draw& set_material(const Material &material);
+        Draw& set_geometry(Geometry geometry);
+        Draw& set_material(Material material);
         Draw& set_instanced_opts(uint32_t count, Buffer inst_attr);
 
         virtual void executeCommand() const override;

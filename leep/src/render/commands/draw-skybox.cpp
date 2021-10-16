@@ -7,8 +7,7 @@ namespace leep
     DrawSkybox::DrawSkybox()
     {
         glm::mat4 view = GM.camera().static_view_projection();
-        material_.set_type(MT_SKYBOX);
-        material_.set_data((float*)&view, 16);
+        material_.create(MT_SKYBOX, (float*)&view, 16, nullptr, 0, 0);
     }
 
     DrawSkybox::~DrawSkybox()
@@ -18,7 +17,8 @@ namespace leep
 
     DrawSkybox& DrawSkybox::set_cubemap(const Texture &cubemap)
     {
-        material_.set_tex((Texture*)&cubemap, 1, 0);
+        glm::mat4 view = GM.camera().static_view_projection();
+        material_.create(MT_SKYBOX, (float*)&view, 16, (Texture*)&cubemap, 1, 0);
         return *this;
     }
 }

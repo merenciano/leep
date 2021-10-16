@@ -31,7 +31,7 @@ namespace leep
             "Material type not setted");
 
         // Set the uniforms
-        r.materials_[material_.type()].useMaterialData(material_);
+        r.gpu_materials_[material_.type()].useMaterialData(material_);
 
         // Create the OpenGL vertex buffer if it has not been created yet
         if (r.buffers_[vertex_handle].gpu_version_ == 0)
@@ -61,7 +61,7 @@ namespace leep
             {
                 // POSITION
                 GLint attrib_pos = glGetAttribLocation(
-                    r.materials_[material_.type()].internal_id(),"a_position");
+                        r.gpu_materials_[material_.type()].internal_id(), "a_position");
                 glEnableVertexAttribArray(attrib_pos);
                 glVertexAttribPointer(attrib_pos, 3, GL_FLOAT, GL_FALSE,
                     6 * sizeof(float), (void*)0);
@@ -69,7 +69,7 @@ namespace leep
 
                 // NORMAL
                 attrib_pos = glGetAttribLocation(
-                    r.materials_[material_.type()].internal_id(), "a_normal");
+                        r.gpu_materials_[material_.type()].internal_id(), "a_normal");
                 glEnableVertexAttribArray(attrib_pos);
                 glVertexAttribPointer(attrib_pos, 3, GL_FLOAT, GL_FALSE,
                     6 * sizeof(float), (void*)(3 * sizeof(float)));
@@ -81,7 +81,7 @@ namespace leep
             {
                 // POSITION
                 GLint attrib_pos = glGetAttribLocation(
-                    r.materials_[material_.type()].internal_id(),"a_position");
+                        r.gpu_materials_[material_.type()].internal_id(), "a_position");
                 glEnableVertexAttribArray(attrib_pos);
                 glVertexAttribPointer(attrib_pos, 3, GL_FLOAT, GL_FALSE,
                     5 * sizeof(float), (void*)0);
@@ -89,7 +89,7 @@ namespace leep
 
                 // UV
                 attrib_pos = glGetAttribLocation(
-                    r.materials_[material_.type()].internal_id(), "a_uv");
+                        r.gpu_materials_[material_.type()].internal_id(), "a_uv");
                 glEnableVertexAttribArray(attrib_pos);
                 glVertexAttribPointer(attrib_pos, 2, GL_FLOAT, GL_FALSE,
                     5 * sizeof(float), (void*)(3 * sizeof(float)));
@@ -100,7 +100,7 @@ namespace leep
             {
                 // POSITION
                 GLint attrib_pos = glGetAttribLocation(
-                    r.materials_[material_.type()].internal_id(),"a_position");
+                        r.gpu_materials_[material_.type()].internal_id(), "a_position");
                 glEnableVertexAttribArray(attrib_pos);
                 glVertexAttribPointer(attrib_pos, 3, GL_FLOAT, GL_FALSE,
                     8 * sizeof(float), (void*)0);
@@ -108,7 +108,7 @@ namespace leep
 
                 // NORMAL
                 attrib_pos = glGetAttribLocation(
-                    r.materials_[material_.type()].internal_id(), "a_normal"); 
+                        r.gpu_materials_[material_.type()].internal_id(), "a_normal");
                 glEnableVertexAttribArray(attrib_pos);
                 glVertexAttribPointer(attrib_pos, 3, GL_FLOAT, GL_FALSE,
                     8 * sizeof(float), (void*)(3 * sizeof(float)));
@@ -116,7 +116,7 @@ namespace leep
 
                 // UV
                 attrib_pos = glGetAttribLocation(
-                    r.materials_[material_.type()].internal_id(), "a_uv");
+                        r.gpu_materials_[material_.type()].internal_id(), "a_uv");
                 glEnableVertexAttribArray(attrib_pos);
                 glVertexAttribPointer(attrib_pos, 2, GL_FLOAT, GL_FALSE,
                     8 * sizeof(float), (void*)(6 * sizeof(float)));
@@ -128,7 +128,7 @@ namespace leep
             {
                 // POSITION
                 GLint attrib_pos = glGetAttribLocation(
-                    r.materials_[material_.type()].internal_id(),"a_position");
+                        r.gpu_materials_[material_.type()].internal_id(), "a_position");
                 glEnableVertexAttribArray(attrib_pos);
                 glVertexAttribPointer(attrib_pos, 3, GL_FLOAT, GL_FALSE,
                     14 * sizeof(float), (void*)0);
@@ -136,7 +136,7 @@ namespace leep
 
                 // NORMAL
                 attrib_pos = glGetAttribLocation(
-                    r.materials_[material_.type()].internal_id(), "a_normal"); 
+                        r.gpu_materials_[material_.type()].internal_id(), "a_normal");
                 glEnableVertexAttribArray(attrib_pos);
                 glVertexAttribPointer(attrib_pos, 3, GL_FLOAT, GL_FALSE,
                     14 * sizeof(float), (void*)(3 * sizeof(float)));
@@ -144,7 +144,7 @@ namespace leep
 
                 // TANGENT
                 attrib_pos = glGetAttribLocation(
-                    r.materials_[material_.type()].internal_id(),"a_tangent"); 
+                        r.gpu_materials_[material_.type()].internal_id(), "a_tangent");
                 glEnableVertexAttribArray(attrib_pos);
                 glVertexAttribPointer(attrib_pos, 3, GL_FLOAT, GL_FALSE,
                     14 * sizeof(float), (void*)(6 * sizeof(float)));
@@ -152,7 +152,7 @@ namespace leep
                 
                 // BITANGENT
                 attrib_pos = glGetAttribLocation(
-                    r.materials_[material_.type()].internal_id(),"a_bitangent"); 
+                        r.gpu_materials_[material_.type()].internal_id(), "a_bitangent");
                 glEnableVertexAttribArray(attrib_pos);
                 glVertexAttribPointer(attrib_pos, 3, GL_FLOAT, GL_FALSE,
                     14 * sizeof(float), (void*)(9 * sizeof(float)));
@@ -160,7 +160,7 @@ namespace leep
 
                 // UV
                 attrib_pos = glGetAttribLocation(
-                    r.materials_[material_.type()].internal_id(), "a_uv");
+                        r.gpu_materials_[material_.type()].internal_id(), "a_uv");
                 glEnableVertexAttribArray(attrib_pos);
                 glVertexAttribPointer(attrib_pos, 2, GL_FLOAT, GL_FALSE,
                     14 * sizeof(float), (void*)(12 * sizeof(float)));
@@ -189,7 +189,7 @@ namespace leep
             }
 
             GLint attrib_pos = glGetAttribLocation(
-                r.materials_[material_.type()].internal_id(),"a_offset");
+                    r.gpu_materials_[material_.type()].internal_id(), "a_offset");
             glEnableVertexAttribArray(attrib_pos);
             glVertexAttribPointer(attrib_pos, 3, GL_FLOAT, GL_FALSE,
                 3 * sizeof(float), (void*)0);

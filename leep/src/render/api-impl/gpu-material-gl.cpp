@@ -6,7 +6,7 @@
 
 namespace leep {
 
-void InternalMaterial::init(const char *name)
+void GPUMaterial::init(const char *name)
 {
     char *vert, *frag;
     String path("../assets/shaders/");
@@ -58,10 +58,11 @@ void InternalMaterial::init(const char *name)
     GM.memory().generalFree(frag);
 }
 
-void InternalMaterial::useMaterialData(const Material &m) const
+void GPUMaterial::useMaterialData(Material m) const
 {
     GLint u_loc;
     Renderer& r = GM.renderer();
+    const InternalMaterial &m = r.materials_[m.handle()];
 
     // Load textures
     LEEP_CORE_ASSERT(m.tcount() < 16,

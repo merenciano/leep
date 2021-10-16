@@ -10,6 +10,7 @@
 
 #include <stdint.h>
 #include <forward_list>
+#include <vector>
 #include <atomic>
 #include <mutex>
 
@@ -77,20 +78,22 @@ namespace leep
         std::atomic<int32_t> tex_to_del_;
         std::atomic<int32_t> buf_to_del_;
 
-        void initMaterial(MaterialType t, const char *name);
         int32_t addTex();
         int32_t addBuf();
+        int32_t addMat();
 
         // TODO: Move the camera here
         InternalFramebuffer framebuffer_;
         std::vector<InternalFramebuffer,
                     BuddySTL<InternalFramebuffer>> framebuffers_;
 
-        InternalMaterial *materials_;
+        GPUMaterial *gpu_materials_;
         InternalBuffer *buffers_;
         InternalTexture *textures_;
+        InternalMaterial *materials_;
         int32_t buf_count_;
         int32_t tex_count_;
+        int32_t mat_count_;
 
         std::mutex mtx_;
 

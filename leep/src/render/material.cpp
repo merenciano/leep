@@ -8,101 +8,63 @@ namespace leep {
 
 Material::Material()
 {
-    type_ = MaterialType::MT_NONE;
-    dcount_ = 0;
-    tcount_ = 0;
-    data_ = nullptr;
-    tex_ = nullptr;
+    handle_ = UNINIT_HANDLE;
 }
 
 Material::~Material()
 {
-    GM.memory().generalFree(data_);
-    GM.memory().generalFree(tex_);
+    handle_ = DELETED_HANDLE;
 }
 
-Material& Material::operator=(const Material &other)
+void Material::create(MaterialType type, float *data, int32_t dcount,
+                      Texture *tex, int32_t tcount, int32_t cube_start)
 {
-    GM.memory().generalFree(data_);
-    GM.memory().generalFree(tex_);
-    set_data(other.data_, other.dcount_);
-    set_tex(other.tex_, other.tcount_);
-    type_ = other.type_;
-    dcount_ = other.dcount_;
-    tcount_ = other.tcount_;
-    cube_start_ = other.cube_start_;
-  
-    return *this;
+    LEEP_ASSERT(handle_ == UNINIT_HANDLE, "This material has been created already");
+    handle_ = GM.renderer().addMat();
+    InternalMaterial &mat = GM.renderer().materials_[handle_];
+    mat.type_ = type;
+    mat.data_ = data;
+    mat.dcount_ = dcount;
+    mat.tex_ = tex;
+    mat.tcount_ = tcount;
+    mat.cube_start_ = cube_start;
 }
 
-void Material::set_type(MaterialType type)
+void Material::set_model(const float *model) const
 {
-    type_ = type;
-}
-
-void Material::set_model(float *model)
-{
-    LEEP_CORE_ASSERT(data_, "Data ptr should be allocated already");
-    memcpy(data_, model, 16 * sizeof(float));
-}
-
-void Material::set_data(float *data, int32_t count)
-{
-    // Internally each unit will be a vec4
-    int32_t offset = count & 3;
-    if (offset)
-    {
-        count += 4 - offset;
-    }
-    GM.memory().generalFree(data_);
-    data_ = (float*)GM.memory().generalAlloc(count * sizeof(float));
-    dcount_ = count;
-    memcpy(data_, data, count * sizeof(float));
-}
-
-void Material::set_tex(Texture *tex, int32_t count, int32_t cube_start)
-{
-    GM.memory().generalFree(tex_);
-    tex_ = (Texture*)GM.memory().generalAlloc(count * sizeof(Texture));
-    tcount_ = count;
-    cube_start == -1 ? cube_start_ = count : cube_start_ = cube_start;
-
-    // I guess is safer to use the copy assignment here
-    //memcpy(tex_, tex, count * sizeof(Texture));
-    for (int32_t i = 0; i < count; ++i)
-    {
-        tex_[i] = tex[i];
-    }
+    LEEP_ASSERT(model, "Null ptr");
+    InternalMaterial &mat = GM.renderer().materials_[handle_];
+    memcpy(mat.data_, model, 64); // 4x4 matrix of float
 }
 
 MaterialType Material::type() const
 {
-    return type_;
+    return GM.renderer().materials_[handle_].type_;
 }
 
 const float *Material::data() const
 {
-    return data_;
+    return GM.renderer().materials_[handle_].data_;
 }
 
 const Texture *Material::tex() const
 {
-    return tex_;
+    return GM.renderer().materials_[handle_].tex_;
 }
 
 int32_t Material::dcount() const
 {
-    return dcount_;
+    return GM.renderer().materials_[handle_].dcount_;
 }
 
 int32_t Material::tcount() const
 {
-    return tcount_;
+    return GM.renderer().materials_[handle_].tcount_;
 }
 
 int32_t Material::cube_start() const
 {
-    return cube_start_;
+    return GM.renderer().materials_[handle_].cube_start_;
 }
 
 } // namespace leep

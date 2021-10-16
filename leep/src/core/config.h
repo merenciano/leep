@@ -10,6 +10,7 @@ namespace leep
     const char kWindowTitle[] = "Leep";
     const int32_t kMaxTextures = 63;
     const int32_t kMaxBuffers = 128;
+    const int32_t kMaxMaterials = 64;
 
     // TODO: Change to Config since is inside leep namespace
     struct LeepConfig

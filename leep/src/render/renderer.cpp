@@ -24,20 +24,17 @@ void Renderer::init(int32_t queue_capacity)
     rq_.init(queue_capacity);
     textures_ = (InternalTexture*)GM.memory().persistentAlloc(sizeof(InternalTexture)*kMaxTextures);
     buffers_ = (InternalBuffer*)GM.memory().persistentAlloc(sizeof(InternalBuffer)*kMaxBuffers);
-    materials_ = (InternalMaterial*)GM.memory().persistentAlloc(MT_MAX * sizeof(InternalMaterial));
+    materials_ = (InternalMaterial*)GM.memory().persistentAlloc(sizeof(InternalMaterial)*kMaxMaterials);
+    gpu_materials_ = (GPUMaterial*)GM.memory().persistentAlloc(MT_MAX * sizeof(GPUMaterial));
     buf_count_ = 0;
     tex_count_ = 0;
 
-    materials_[MT_FULL_SCREEN_IMAGE].init("fullscreen-img");
-    materials_[MT_SKYBOX].init("skybox");
-    materials_[MT_EQUIREC_TO_CUBE].init("eqr-to-cube");
-    materials_[MT_PREFILTER_ENV].init("prefilter-env");
-    materials_[MT_LUT_GEN].init("lut-gen");
-}
-
-void Renderer::initMaterial(MaterialType t, const char *name)
-{
-    materials_[t].init(name);
+    gpu_materials_[MT_FULL_SCREEN_IMAGE].init("fullscreen-img");
+    gpu_materials_[MT_SKYBOX].init("skybox");
+    gpu_materials_[MT_EQUIREC_TO_CUBE].init("eqr-to-cube");
+    gpu_materials_[MT_PREFILTER_ENV].init("prefilter-env");
+    gpu_materials_[MT_LUT_GEN].init("lut-gen");
+    gpu_materials_[MT_PBR].init("pbr");
 }
 
 int32_t Renderer::addTex()
@@ -52,6 +49,13 @@ int32_t Renderer::addBuf()
     LEEP_CORE_ASSERT(buf_count_ < kMaxBuffers, "Max buffers");
     new(buffers_ + buf_count_) InternalBuffer();
     return buf_count_++;
+}
+
+int32_t Renderer::addMat()
+{
+    LEEP_CORE_ASSERT(mat_count_ < kMaxMaterials, "Max materials");
+    new(materials_ + mat_count_) InternalMaterial();
+    return mat_count_++;
 }
 
 void Renderer::renderFrame()

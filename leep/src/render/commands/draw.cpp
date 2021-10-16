@@ -10,13 +10,13 @@ Draw::~Draw()
 {
 }
 
-Draw& Draw::set_geometry(const Geometry &geometry)
+Draw& Draw::set_geometry(Geometry geometry)
 {
     geometry_ = geometry;
     return *this;
 }
 
-Draw& Draw::set_material(const Material &material)
+Draw& Draw::set_material(Material material)
 {
     material_ = material;
     return *this;
