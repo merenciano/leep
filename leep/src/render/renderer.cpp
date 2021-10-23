@@ -26,6 +26,9 @@ void Renderer::init(int32_t queue_capacity)
     buffers_ = (InternalBuffer*)GM.memory().persistentAlloc(sizeof(InternalBuffer)*kMaxBuffers);
     materials_ = (InternalMaterial*)GM.memory().persistentAlloc(sizeof(InternalMaterial)*kMaxMaterials);
     gpu_materials_ = (GPUMaterial*)GM.memory().persistentAlloc(MT_MAX * sizeof(GPUMaterial));
+    frame_mem_[0] = (uint8_t*)GM.memory().persistentAlloc(kFrameMemorySize);
+    frame_mem_[1] = (uint8_t*)GM.memory().persistentAlloc(kFrameMemorySize);
+    frame_mem_render_ = 0;
     buf_count_ = 0;
     tex_count_ = 0;
 
@@ -67,14 +70,26 @@ void Renderer::renderFrame()
         // are not calling destructors since each frame override the memory
         // so calling the commands destructor explicitly frees the
         // material data pointers on the commands that have materials
+        // TODO: Commands have changed so remove this
         rq_.curr_queue_[i]->~DLComm();
     }
     deleteResources();
 }
 
+void *Renderer::allocFrameData(size_t size)
+{
+    void *ret = frame_mem_last_;
+    frame_mem_last_ += size;
+    LEEP_ASSERT(frame_mem_last_ - frame_mem_[!frame_mem_render_] < kFrameMemorySize,
+                "Not enough frame memory");
+    return ret;
+}
+
 void Renderer::submitFrame()
 {
     rq_.swapQueues();
+    frame_mem_last_ = frame_mem_[frame_mem_render_];
+    frame_mem_render_ = !frame_mem_render_;
 }
 
 // TODO IMPORTANT: make a command with this...

@@ -16,6 +16,7 @@
 
 namespace leep
 {
+    const size_t kFrameMemorySize = 1024 * 64;
     class DLComm;
     class DisplayList;
 
@@ -35,13 +36,13 @@ namespace leep
         DLComm *commandAlloc();
 
         DLComm **curr_queue_;
+        DLComm **next_queue_;
 
+        int32_t next_count_;
+        int32_t curr_count_;
         int8_t *curr_pool_; // Main thread renders this
         int8_t *next_pool_; // Logic thread fill this for the next frame
         int8_t *next_offset_;
-        DLComm **next_queue_;
-        int32_t next_count_;
-        int32_t curr_count_;
 
         // TODO: This should be private with getters only
         int32_t render_pool_size_;
@@ -98,6 +99,13 @@ namespace leep
         std::mutex mtx_;
 
         RenderQueues rq_;
+
+        void *allocFrameData(size_t size);
+
+    private:
+        uint8_t frame_mem_render_; // switch, each frame changes between 0 and 1. It indicates which buffer has the render data
+        uint8_t *frame_mem_[2];
+        uint8_t *frame_mem_last_;
     };
 
     template<typename T>

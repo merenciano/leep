@@ -24,6 +24,8 @@ namespace leep
                     Texture *tex, int32_t tcount, int32_t cube_start = -1);
 
         void set_model(const float *model) const;
+        void set_data(const float *data, int32_t dcount) const;
+        void set_tex(const Texture *tex, int32_t tcount) const;
 
         MaterialType type() const;
         const float *data() const;

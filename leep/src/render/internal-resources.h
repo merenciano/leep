@@ -19,6 +19,7 @@ namespace leep
 
     struct InternalMaterial
     {
+        // CONTINUE por aqui... como anyado el las matrices de frame-mem?
         float *data_;
         Texture *tex_;
         MaterialType type_; // Acts as a handle (GPU material/program)

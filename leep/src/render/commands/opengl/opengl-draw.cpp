@@ -196,8 +196,7 @@ namespace leep
             glVertexAttribDivisor(attrib_pos, 1);
         }
 
-        uint32_t index_count = 
-            (uint32_t)r.buffers_[geometry_.index_buffer().handle()].count_;
-        glDrawElementsInstanced(GL_TRIANGLES, index_count, GL_UNSIGNED_INT, 0, inst_count_);
+        int32_t index_count = r.buffers_[geometry_.index_buffer().handle()].count_;
+        glDrawElementsInstanced(GL_TRIANGLES, index_count, GL_UNSIGNED_INT, nullptr, inst_count_);
     }
 }

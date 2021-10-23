@@ -30,7 +30,7 @@ namespace leep
         Material material_;
 
         Buffer inst_attr_;
-        uint32_t inst_count_;
+        int32_t inst_count_;
     };
 }
 

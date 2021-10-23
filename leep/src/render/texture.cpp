@@ -20,22 +20,6 @@ namespace leep
         handle_ = CommonDefs::UNINIT_HANDLE;
     }
 
-    Texture::Texture(const Texture &t)
-    {
-        handle_ = t.handle_;
-    }
-
-    Texture::~Texture()
-    {
-
-    }
-
-    Texture& Texture::operator=(const Texture &t)
-    {
-        handle_ = t.handle_;
-        return *this;
-    }
-
     void Texture::create(const char *path, TexType t)
     {
         LEEP_ASSERT(handle_ == CommonDefs::UNINIT_HANDLE,

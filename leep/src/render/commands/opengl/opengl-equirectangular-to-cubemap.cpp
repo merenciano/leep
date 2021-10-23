@@ -44,6 +44,7 @@ namespace leep
         Texture equirec;
         equirec.create(path_.c_str(), TexType::RGB_F16);
         CreateTexture().set_texture(equirec).executeCommand();
+        m.create(MT_EQUIREC_TO_CUBE, nullptr, 16, )
         m.set_tex(&equirec, 1);
         m.set_type(MT_EQUIREC_TO_CUBE);
         RenderOptions().set_cull_face(CullFace::DISABLED).executeCommand();

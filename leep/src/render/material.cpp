@@ -23,11 +23,21 @@ void Material::create(MaterialType type, float *data, int32_t dcount,
     handle_ = GM.renderer().addMat();
     InternalMaterial &mat = GM.renderer().materials_[handle_];
     mat.type_ = type;
-    mat.data_ = data;
+    mat.data_ = (float*)GM.memory().generalAlloc(dcount * sizeof(float));
+    memcpy(mat.data_, data, dcount * sizeof(float));
     mat.dcount_ = dcount;
-    mat.tex_ = tex;
+    mat.tex_ = (Texture*)GM.memory().generalAlloc(tcount * sizeof(Texture));
+    memcpy(mat.tex_, tex, tcount * sizeof(Texture));
     mat.tcount_ = tcount;
     mat.cube_start_ = cube_start;
+}
+
+void Material::set_tex(Texture *tex, int32_t tcount) const
+{
+    InternalMaterial &mat = GM.renderer().materials_[handle_];
+    LEEP_ASSERT(handle_ != UNINIT_HANDLE, "This material has not been created already");
+    LEEP_ASSERT(tcount == mat.tcount_, "The src and dst size must be the same");
+    memcpy(mat.tex_, tex, tcount * sizeof(Texture));
 }
 
 void Material::set_model(const float *model) const

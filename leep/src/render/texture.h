@@ -25,10 +25,10 @@ namespace leep
     {
     public:
         Texture();
-        Texture(const Texture &t);
-        ~Texture();
+        Texture(const Texture &t) = default;
+        ~Texture() = default;
 
-        Texture& operator=(const Texture &t);
+        Texture& operator=(const Texture &t) = default;
         void create(const char *path, TexType t);
         void createAndLoad(const char *path, TexType t);
         void createEmpty(float width, float height, TexType t);
