@@ -11,7 +11,10 @@ project "leep"
         "src/extern/"
     }
 
-    defines { "LEEP_" .. _OPTIONS["graphics-api"] }
+    defines { "LEEP_" .. _OPTIONS["graphics-api"],
+   	"THE_" .. _OPTIONS["graphics-api"],
+	"THE_OPENGL"
+    }
 
     files {
         "src/*.h",

@@ -38,6 +38,8 @@ project "TestApp"
 
     configuration "vs2019"
         defines {"_CRT_SECURE_NO_WARNINGS", "LEEP_WIN", }
+    configuration "vs2017"
+        defines {"_CRT_SECURE_NO_WARNINGS", "LEEP_WIN", "THE_OPENGL"}
     configuration "gmake"
         defines { "LEEP_LINUX", }
         links { "X11", "dl", "pthread"  }
