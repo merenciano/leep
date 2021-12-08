@@ -19,12 +19,12 @@ Material::~Material()
 {
     GM.memory().generalFree(data_);
     GM.memory().generalFree(tex_);
+	data_ = nullptr;
+	tex_ = nullptr;
 }
 
 Material& Material::operator=(const Material &other)
 {
-    GM.memory().generalFree(data_);
-    GM.memory().generalFree(tex_);
     set_data(other.data_, other.dcount_);
     set_tex(other.tex_, other.tcount_);
     type_ = other.type_;

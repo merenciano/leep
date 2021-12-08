@@ -38,9 +38,7 @@ namespace leep
         int32_t tcount() const;
         int32_t cube_start() const;
 
-    private:
-        // TODO: Check if I can merge this with use-material command data
-        // since they are pretty similar
+	// TODO: Cambiar nombres por fdata y idata(int data para tex)
         float *data_; 
         Texture *tex_;
         MaterialType type_; // Acts as a handle

@@ -8,6 +8,8 @@
 #include "render/internal-resources.h"
 #include "render/material-types.h"
 
+#include "Crendercommands.h"
+
 #include <stdint.h>
 #include <forward_list>
 #include <atomic>
@@ -95,6 +97,11 @@ namespace leep
         std::mutex mtx_;
 
         RenderQueues rq_;
+
+		struct THE_RenderCommand *curr;
+		struct THE_RenderCommand *curr_last;
+		struct THE_RenderCommand *next;
+		struct THE_RenderCommand *next_last;
     };
 
     template<typename T>

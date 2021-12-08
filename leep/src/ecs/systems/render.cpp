@@ -9,6 +9,8 @@
 #include "render/commands/clear.h"
 #include "render/commands/draw.h"
 #include "render/commands/use-framebuffer.h"
+#include "render/Crendercommands.h"
+#include "render/Crenderer.h"
 
 namespace leep
 {
@@ -19,21 +21,40 @@ namespace leep
         LEEP_ASSERT((container_.mask() & mask) == mask, "This type of entity is not valid for this system");
 #endif
         DisplayList displayl;
+	THE_RenderCommand *first = NULL;
+	THE_RenderCommand *prev = NULL;
 
+	// TODO: En realidad estoy yendo de uno en uno..
+	// deberia poder coger el chunk entero y renderizarlo en un
+	// solo comando.
         for (auto &chunk : container_.blocks_)
         {
             GTransform *tr_array = chunk->template component<GTransform>();
             Drawable *dw_array = chunk->template component<Drawable>();
+
             for(int32_t i = 0; i < chunk->last_; ++i)
             {
-                const glm::mat4 &tr = tr_array[i].gtr_;
+		THE_RenderCommand *comm = (THE_RenderCommand*)malloc(sizeof(*comm));
+		comm->next = NULL;
+		if (!first) {
+			first = comm;
+		}
 
-                dw_array[i].material_.set_model((float*)&tr);
-                displayl.addCommand<Draw>()
-                    .set_geometry(dw_array[i].geometry_)
-                    .set_material(dw_array[i].material_);
+		const glm::mat4 &tr = tr_array[i].gtr_;
+		dw_array[i].material_.set_model((float*)&tr);
+		// TODO: Quitar esta mierda
+		comm->data.draw.mat = *(new (&comm->data.draw.mat) Material());
+		comm->data.draw.mat = dw_array[i].material_;
+		comm->data.draw.geometry = dw_array[i].geometry_;
+		comm->data.draw.inst_count = 1;
+		comm->execute = THE_DrawExecute;
+		if (prev) {
+			prev->next = comm;
+		}
+
+		prev = comm;
             }
         }
-        displayl.submit();
+	THE_AddCommands(GM.rendererptr(), first);
     }
 }

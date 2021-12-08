@@ -14,6 +14,7 @@ namespace leep
         GLenum type;
         GLenum wrap;
         GLenum filter;
+	int32_t channels;
     };
 
     void CreateTexture::executeCommand() const
@@ -36,6 +37,7 @@ namespace leep
                 config.type = GL_UNSIGNED_BYTE;
                 config.filter = GL_LINEAR;
                 config.wrap = GL_REPEAT;
+		config.channels = 1;
                 break;
 
             case TexType::LUT:
@@ -44,6 +46,7 @@ namespace leep
                 config.type = GL_FLOAT;
                 config.filter = GL_LINEAR;
                 config.wrap = GL_CLAMP_TO_EDGE;
+		config.channels = 2;
                 break;
 
             case TexType::RGB: 
@@ -52,6 +55,7 @@ namespace leep
                 config.type = GL_UNSIGNED_BYTE;
                 config.filter = GL_LINEAR;
                 config.wrap = GL_REPEAT;
+		config.channels = 3;
                 break;
 
             case TexType::SRGB: 
@@ -60,6 +64,7 @@ namespace leep
                 config.type = GL_UNSIGNED_BYTE;
                 config.filter = GL_LINEAR;
                 config.wrap = GL_REPEAT;
+		config.channels = 3;
                 break;
 
             case TexType::RGBA_F16:
@@ -68,6 +73,7 @@ namespace leep
                 config.type = GL_FLOAT;
                 config.filter = GL_LINEAR;
                 config.wrap = GL_CLAMP_TO_EDGE;
+		config.channels = 4;
                 break;
 
             case TexType::DEPTH:
@@ -76,6 +82,7 @@ namespace leep
                 config.type = GL_FLOAT;
                 config.filter = GL_LINEAR;
                 config.wrap = GL_CLAMP_TO_BORDER;
+		config.channels = 1;
                 break;
 
             case TexType::RGB_F16:
@@ -84,6 +91,7 @@ namespace leep
                 config.type = GL_FLOAT;
                 config.filter = GL_LINEAR;
                 config.wrap = GL_CLAMP_TO_EDGE;
+		config.channels = 3;
                 break;
 
             default: 
@@ -93,6 +101,7 @@ namespace leep
                 config.type = GL_INVALID_ENUM;
                 config.filter = GL_INVALID_ENUM;
                 config.wrap = GL_INVALID_ENUM;
+		config.channels = 0;
                 break;
         }
 
@@ -102,46 +111,31 @@ namespace leep
         glActiveTexture(GL_TEXTURE0 + itex.texture_unit_);
         glBindTexture(GL_TEXTURE_2D, itex.internal_id_);
         
-        if (itex.type_ == TexType::RGB_F16)
-        {
-            if (!itex.pix_)
-            {
-                stbi_set_flip_vertically_on_load(1);
-                int width, height, nchannels;
-                itex.pix_ = stbi_loadf(
-                    itex.path_, &width, &height, &nchannels, 0);
-                itex.width_ = width;
-                itex.height_ = height;
-            }
-            LEEP_CORE_ASSERT(itex.pix_, "The image couldn't be loaded");
-            glTexImage2D(GL_TEXTURE_2D, 0, config.internal_format, itex.width_,
-                itex.height_, 0, config.format, config.type, itex.pix_);
-            if (release_ram_data_)
-            {
-                stbi_image_free(itex.pix_);
-                itex.pix_ = nullptr;
-            }
-        }
-        else if (itex.path_[0] != '\0')
-        {
-            if (!itex.pix_)
-            {
-                stbi_set_flip_vertically_on_load(1);
-                int width, height, nchannels;
-                itex.pix_ = stbi_load(
-                    itex.path_, &width, &height, &nchannels, STBI_rgb);
-                itex.width_ = width;
-                itex.height_ = height;
-            }
-            LEEP_CORE_ASSERT(itex.pix_, "The image couldn't be loaded");
-            glTexImage2D(GL_TEXTURE_2D, 0, config.internal_format, itex.width_,
-                itex.height_, 0, config.format, config.type, itex.pix_);
-            glGenerateMipmap(GL_TEXTURE_2D);
-            if (release_ram_data_)
-            {
-                stbi_image_free(itex.pix_);
-                itex.pix_ = nullptr;
-            }
+        if (itex.path_[0] != '\0')
+	{
+        	if (!itex.pix_)
+        	{
+        		stbi_set_flip_vertically_on_load(1);
+        		int width, height, nchannels;
+			if (itex.type_ > TexType::RGB_F16)
+			{
+				itex.pix_ = stbi_loadf(itex.path_, &width, &height, &nchannels, 0);
+			}
+			else
+			{
+				itex.pix_ = stbi_load(itex.path_, &width, &height, &nchannels, config.channels);
+			}
+        		itex.width_ = width;
+        		itex.height_ = height;
+        	}
+        	LEEP_CORE_ASSERT(itex.pix_, "The image couldn't be loaded");
+        	glTexImage2D(GL_TEXTURE_2D, 0, config.internal_format, itex.width_,
+        	    itex.height_, 0, config.format, config.type, itex.pix_);
+        	if (release_ram_data_)
+        	{
+        	    stbi_image_free(itex.pix_);
+        	    itex.pix_ = nullptr;
+        	}
         }
         else
         {

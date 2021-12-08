@@ -136,16 +136,19 @@ namespace leep
         }
         else
         {
+			int a = 0;
             if (t == TexType::RGB || t == TexType::SRGB)
             {
+				a = 3;
                 nchannels = 3;
             }
             else if (t == TexType::R)
             {
+				a = 1;
                 nchannels = 1;
             }
             r.textures_[handle_].pix_ = (void*)stbi_load(
-                path, &width, &height, &nchannels, nchannels);
+                path, &width, &height, &nchannels, a);
             LEEP_CORE_ASSERT(r.textures_[handle_].pix_,"The image couldn't be loaded.");
         }
 

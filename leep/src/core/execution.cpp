@@ -2,6 +2,7 @@
 #include "core/common-defs.h"
 #include "core/chrono.h"
 #include "render/renderer.h"
+#include "render/Crenderer.h"
 #include "tools/imgui-tools.h"
 #include "tools/lua-scripting.h"
 
@@ -48,7 +49,8 @@ void leep::RenderFrame()
     MTR_BEGIN("LEEP", "Render");
     leep::Chrono render_timer;
     render_timer.start();
-    leep::GM.renderer().renderFrame();
+    //leep::GM.renderer().renderFrame();
+    THE_RenderFrame(leep::GM.rendererptr());
 
     leep::GM.ui_tools().update();
     render_timer.end();

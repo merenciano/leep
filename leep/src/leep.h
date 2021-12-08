@@ -50,3 +50,8 @@
 #include "tools/lua-scripting.h"
 #include "tools/resource-map.h"
 #include "tools/helper-functions.h"
+
+
+// C
+#include "render/Crendercommands.h"
+#include "render/Crenderer.h"

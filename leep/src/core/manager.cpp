@@ -7,6 +7,7 @@
 #include "core/memory/memory.h"
 #include "core/scene.h"
 #include "render/renderer.h"
+#include "render/Crenderer.h"
 #include "render/commands/draw.h" // This is needed for sizeof(Draw) /* Change that and remove dependency? */
 #include "render/camera.h"
 #include "tools/imgui-tools.h"
@@ -67,7 +68,8 @@ namespace leep
     {
         window().swap();
         window().pollEvents();
-        renderer().submitFrame();
+	THE_RenderSubmitFrame(rendererptr());
+        //renderer().submitFrame();
         data_->frame_timer_.end();
         data_->delta_time_ = data_->frame_timer_.duration() / 1000.0f;
         data_->frame_timer_.start();
@@ -89,4 +91,8 @@ namespace leep
     Scene&       Manager::scene()         { return data_->scene_; }
     ResourceMap& Manager::resource_map()  { return data_->resource_map_; }
     ToolsData&   Manager::tools_data()    { return data_->tools_data_; }
+
+
+
+    Renderer*    Manager::rendererptr()      { return &(data_->renderer_); }
 }

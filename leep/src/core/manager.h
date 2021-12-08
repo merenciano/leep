@@ -23,6 +23,7 @@ namespace leep
 
         class Window&      window();
         class Renderer&    renderer();
+        class Renderer*    rendererptr();
         class Camera&      camera(); // TODO: Move camera to renderer
         class Input&       input();
         class Memory&      memory();
@@ -32,11 +33,12 @@ namespace leep
         struct ToolsData&  tools_data();
         float delta_time() const;
 
-    private:
+private:
         Manager() = default;
         Manager(const Manager&) = default;
         Manager& operator=(const Manager&) { return *this; }
 
+public:
         struct ManagerData;
         ManagerData *data_;
         Memory memory_;

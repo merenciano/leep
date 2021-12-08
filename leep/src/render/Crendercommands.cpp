@@ -1,7 +1,5 @@
 #include "Crendercommands.h"
 
-#include "render/commands/create-texture.h"
-#include "render/commands/create-buffer.h"
 #include "render/camera.h"
 
 
@@ -30,6 +28,7 @@ struct THE_TextureConfig
 	GLenum type;
 	GLenum wrap;
 	GLenum filter;
+	int32_t channels;
 };
 
 void THE_ClearExecute(THE_CommandData *data)
@@ -197,7 +196,10 @@ void THE_CreateFramebufferExecute(THE_CommandData *data)
 
 	if (ifb.color_) {
 		if (r.textures_[fb.color().handle()].gpu_version_ == 0) {
-			CreateTexture().set_texture(fb.color()).executeCommand();
+			THE_CommandData texcd;
+			texcd.createtex.tex = fb.color();
+			texcd.createtex.release_ram = 0;
+			THE_CreateTextureExecute(&texcd);
 		}
 		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0,
 		GL_TEXTURE_2D, r.textures_[fb.color().handle()].internal_id_, 0);
@@ -206,7 +208,10 @@ void THE_CreateFramebufferExecute(THE_CommandData *data)
 	}
 	if (ifb.depth_) {
 		if (r.textures_[fb.depth().handle()].gpu_version_ == 0) {
-			CreateTexture().set_texture(fb.depth()).executeCommand();
+			THE_CommandData texcd;
+			texcd.createtex.tex = fb.depth();
+			texcd.createtex.release_ram = 0;
+			THE_CreateTextureExecute(&texcd);
 		}
 		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT,
 			GL_TEXTURE_2D, r.textures_[fb.depth().handle()].internal_id_, 0);
@@ -235,6 +240,7 @@ void THE_CreateTextureExecute(THE_CommandData *data)
 		config.type = GL_UNSIGNED_BYTE;
 		config.filter = GL_LINEAR;
 		config.wrap = GL_REPEAT;
+		config.channels = 1;
 		break;
 
 	case TexType::LUT:
@@ -243,6 +249,7 @@ void THE_CreateTextureExecute(THE_CommandData *data)
 		config.type = GL_FLOAT;
 		config.filter = GL_LINEAR;
 		config.wrap = GL_CLAMP_TO_EDGE;
+		config.channels = 2;
 		break;
 
 	case TexType::RGB: 
@@ -251,6 +258,7 @@ void THE_CreateTextureExecute(THE_CommandData *data)
 		config.type = GL_UNSIGNED_BYTE;
 		config.filter = GL_LINEAR;
 		config.wrap = GL_REPEAT;
+		config.channels = 3;
 		break;
 
 	case TexType::SRGB: 
@@ -259,6 +267,7 @@ void THE_CreateTextureExecute(THE_CommandData *data)
 		config.type = GL_UNSIGNED_BYTE;
 		config.filter = GL_LINEAR;
 		config.wrap = GL_REPEAT;
+		config.channels = 3;
 		break;
 
 	case TexType::RGBA_F16:
@@ -267,6 +276,7 @@ void THE_CreateTextureExecute(THE_CommandData *data)
 		config.type = GL_FLOAT;
 		config.filter = GL_LINEAR;
 		config.wrap = GL_CLAMP_TO_EDGE;
+		config.channels = 4;
 		break;
 
 	case TexType::DEPTH:
@@ -275,6 +285,7 @@ void THE_CreateTextureExecute(THE_CommandData *data)
 		config.type = GL_FLOAT;
 		config.filter = GL_LINEAR;
 		config.wrap = GL_CLAMP_TO_BORDER;
+		config.channels = 1;
 		break;
 
 	case TexType::RGB_F16:
@@ -283,6 +294,7 @@ void THE_CreateTextureExecute(THE_CommandData *data)
 		config.type = GL_FLOAT;
 		config.filter = GL_LINEAR;
 		config.wrap = GL_CLAMP_TO_EDGE;
+		config.channels = 3;
 		break;
 
 	default: 
@@ -292,6 +304,7 @@ void THE_CreateTextureExecute(THE_CommandData *data)
 		config.type = GL_INVALID_ENUM;
 		config.filter = GL_INVALID_ENUM;
 		config.wrap = GL_INVALID_ENUM;
+		config.channels = 0;
 		break;
 	}
 
@@ -321,7 +334,7 @@ void THE_CreateTextureExecute(THE_CommandData *data)
 			stbi_set_flip_vertically_on_load(1);
 			int width, height, nchannels;
 			itex.pix_ = stbi_load(
-				itex.path_, &width, &height, &nchannels, STBI_rgb);
+				itex.path_, &width, &height, &nchannels, config.channels);
 			itex.width_ = width;
 			itex.height_ = height;
 		}
@@ -426,7 +439,8 @@ void THE_DrawExecute(THE_CommandData *data)
 {
 	LEEP_ASSERT(data->draw.inst_count > 0, "Set inst count");
 	leep::Geometry geo = data->draw.geometry;
-	leep::Material mat = data->draw.mat;
+	leep::Material mat;
+	mat = data->draw.mat;
 
 	Renderer& r = GM.renderer();
 	int32_t vertex_handle = geo.vertex_buffer().handle();
@@ -452,7 +466,9 @@ void THE_DrawExecute(THE_CommandData *data)
 
 	// Create the OpenGL vertex buffer if it has not been created yet
 	if (r.buffers_[vertex_handle].gpu_version_ == 0) {
-		CreateBuffer().set_buffer(geo.vertex_buffer()).executeCommand();
+		THE_CommandData cbcd;
+		cbcd.createbuff.buffer = geo.vertex_buffer();
+		THE_CreateBufferExecute(&cbcd);
 	} else {
 	    glBindBuffer(GL_ARRAY_BUFFER,
 	        r.buffers_[geo.vertex_buffer().handle()].internal_id_);
@@ -460,7 +476,9 @@ void THE_DrawExecute(THE_CommandData *data)
 
 	// Create the OpenGL index buffer if it has not been created yet
 	if (r.buffers_[index_handle].gpu_version_ == 0) {
-	    CreateBuffer().set_buffer(geo.index_buffer()).executeCommand();
+		THE_CommandData cbcd;
+		cbcd.createbuff.buffer = geo.index_buffer();
+		THE_CreateBufferExecute(&cbcd);
 	} else {
 	    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,
 	        r.buffers_[geo.index_buffer().handle()].internal_id_);
@@ -470,7 +488,7 @@ void THE_DrawExecute(THE_CommandData *data)
 	case BufferType::VERTEX_BUFFER_3P_3N: {
 		// POSITION
 		GLint attrib_pos = glGetAttribLocation(
-			r.materials_[material_.type()].internal_id(),"a_position");
+			r.materials_[mat.type()].internal_id(),"a_position");
 		glEnableVertexAttribArray(attrib_pos);
 		glVertexAttribPointer(attrib_pos, 3, GL_FLOAT, GL_FALSE,
 			6 * sizeof(float), (void*)0);
@@ -478,7 +496,7 @@ void THE_DrawExecute(THE_CommandData *data)
 
 		// NORMAL
 		attrib_pos = glGetAttribLocation(
-			r.materials_[material_.type()].internal_id(), "a_normal");
+			r.materials_[mat.type()].internal_id(), "a_normal");
 		glEnableVertexAttribArray(attrib_pos);
 		glVertexAttribPointer(attrib_pos, 3, GL_FLOAT, GL_FALSE,
 			6 * sizeof(float), (void*)(3 * sizeof(float)));
@@ -489,7 +507,7 @@ void THE_DrawExecute(THE_CommandData *data)
 	case BufferType::VERTEX_BUFFER_3P_2UV: {
 		// POSITION
 		GLint attrib_pos = glGetAttribLocation(
-			r.materials_[material_.type()].internal_id(),"a_position");
+			r.materials_[mat.type()].internal_id(),"a_position");
 		glEnableVertexAttribArray(attrib_pos);
 		glVertexAttribPointer(attrib_pos, 3, GL_FLOAT, GL_FALSE,
 			5 * sizeof(float), (void*)0);
@@ -497,7 +515,7 @@ void THE_DrawExecute(THE_CommandData *data)
 
 		// UV
 		attrib_pos = glGetAttribLocation(
-			r.materials_[material_.type()].internal_id(), "a_uv");
+			r.materials_[mat.type()].internal_id(), "a_uv");
 		glEnableVertexAttribArray(attrib_pos);
 		glVertexAttribPointer(attrib_pos, 2, GL_FLOAT, GL_FALSE,
 			5 * sizeof(float), (void*)(3 * sizeof(float)));
@@ -507,7 +525,7 @@ void THE_DrawExecute(THE_CommandData *data)
 	case BufferType::VERTEX_BUFFER_3P_3N_2UV: {
 		// POSITION
 		GLint attrib_pos = glGetAttribLocation(
-			r.materials_[material_.type()].internal_id(),"a_position");
+			r.materials_[mat.type()].internal_id(),"a_position");
 		glEnableVertexAttribArray(attrib_pos);
 		glVertexAttribPointer(attrib_pos, 3, GL_FLOAT, GL_FALSE,
 			8 * sizeof(float), (void*)0);
@@ -515,7 +533,7 @@ void THE_DrawExecute(THE_CommandData *data)
 
 		// NORMAL
 		attrib_pos = glGetAttribLocation(
-			r.materials_[material_.type()].internal_id(), "a_normal"); 
+			r.materials_[mat.type()].internal_id(), "a_normal"); 
 		glEnableVertexAttribArray(attrib_pos);
 		glVertexAttribPointer(attrib_pos, 3, GL_FLOAT, GL_FALSE,
 			8 * sizeof(float), (void*)(3 * sizeof(float)));
@@ -523,7 +541,7 @@ void THE_DrawExecute(THE_CommandData *data)
 
 		// UV
 		attrib_pos = glGetAttribLocation(
-			r.materials_[material_.type()].internal_id(), "a_uv");
+			r.materials_[mat.type()].internal_id(), "a_uv");
 		glEnableVertexAttribArray(attrib_pos);
 		glVertexAttribPointer(attrib_pos, 2, GL_FLOAT, GL_FALSE,
 			8 * sizeof(float), (void*)(6 * sizeof(float)));
@@ -534,7 +552,7 @@ void THE_DrawExecute(THE_CommandData *data)
 	case BufferType::VERTEX_BUFFER_3P_3N_3T_3B_2UV: {
 		// POSITION
 		GLint attrib_pos = glGetAttribLocation(
-			r.materials_[material_.type()].internal_id(),"a_position");
+			r.materials_[mat.type()].internal_id(),"a_position");
 		glEnableVertexAttribArray(attrib_pos);
 		glVertexAttribPointer(attrib_pos, 3, GL_FLOAT, GL_FALSE,
 			14 * sizeof(float), (void*)0);
@@ -542,7 +560,7 @@ void THE_DrawExecute(THE_CommandData *data)
 
 		// NORMAL
 		attrib_pos = glGetAttribLocation(
-			r.materials_[material_.type()].internal_id(), "a_normal"); 
+			r.materials_[mat.type()].internal_id(), "a_normal"); 
 		glEnableVertexAttribArray(attrib_pos);
 		glVertexAttribPointer(attrib_pos, 3, GL_FLOAT, GL_FALSE,
 			14 * sizeof(float), (void*)(3 * sizeof(float)));
@@ -550,7 +568,7 @@ void THE_DrawExecute(THE_CommandData *data)
 
 		// TANGENT
 		attrib_pos = glGetAttribLocation(
-			r.materials_[material_.type()].internal_id(),"a_tangent"); 
+			r.materials_[mat.type()].internal_id(),"a_tangent"); 
 		glEnableVertexAttribArray(attrib_pos);
 		glVertexAttribPointer(attrib_pos, 3, GL_FLOAT, GL_FALSE,
 			14 * sizeof(float), (void*)(6 * sizeof(float)));
@@ -558,7 +576,7 @@ void THE_DrawExecute(THE_CommandData *data)
 	
 		// BITANGENT
 		attrib_pos = glGetAttribLocation(
-			r.materials_[material_.type()].internal_id(),"a_bitangent"); 
+			r.materials_[mat.type()].internal_id(),"a_bitangent"); 
 		glEnableVertexAttribArray(attrib_pos);
 		glVertexAttribPointer(attrib_pos, 3, GL_FLOAT, GL_FALSE,
 			14 * sizeof(float), (void*)(9 * sizeof(float)));
@@ -566,7 +584,7 @@ void THE_DrawExecute(THE_CommandData *data)
 
 		// UV
 		attrib_pos = glGetAttribLocation(
-			r.materials_[material_.type()].internal_id(), "a_uv");
+			r.materials_[mat.type()].internal_id(), "a_uv");
 		glEnableVertexAttribArray(attrib_pos);
 		glVertexAttribPointer(attrib_pos, 2, GL_FLOAT, GL_FALSE,
 			14 * sizeof(float), (void*)(12 * sizeof(float)));
@@ -585,7 +603,9 @@ void THE_DrawExecute(THE_CommandData *data)
 			"The instance attributes buffer has the wrong type.");
 
 		if (r.buffers_[attr.handle()].gpu_version_ == 0) {
-			CreateBuffer().set_buffer(attr).executeCommand();
+			THE_CommandData cbcd;
+			cbcd.createbuff.buffer = attr;
+			THE_CreateBufferExecute(&cbcd);
 		} else {
 			glBindBuffer(GL_ARRAY_BUFFER,
 				r.buffers_[attr.handle()].internal_id_);
@@ -599,8 +619,306 @@ void THE_DrawExecute(THE_CommandData *data)
 		glVertexAttribDivisor(attrib_pos, 1);
 	}
 
-	uint32_t index_count = (uint32_t)r.buffers_[geometry_.index_buffer().handle()].count_;
-	glDrawElementsInstanced(GL_TRIANGLES, index_count, GL_UNSIGNED_INT, 0, inst_count_);
+	uint32_t index_count = (uint32_t)r.buffers_[geo.index_buffer().handle()].count_;
+	glDrawElementsInstanced(GL_TRIANGLES, index_count, GL_UNSIGNED_INT, 0, data->draw.inst_count);
+}
+
+void THE_EquirectToCubeExecute(THE_CommandData *data)
+{
+	Renderer &r = GM.renderer();
+	leep::Texture o_cube = data->eqr_cube.out_cube;
+	leep::Texture o_pref = data->eqr_cube.out_prefilt;
+	leep::Texture o_lut = data->eqr_cube.out_lut;
+	const char *path = data->eqr_cube.in_path;
+	InternalTexture &icu = r.textures_[o_cube.handle()];
+
+	if (icu.cpu_version_ > icu.gpu_version_) {
+		THE_CommandData cccd;
+		cccd.createcubemap.texture = o_cube;
+		THE_CreateCubemapExecute(&cccd);
+	}
+
+	glm::mat4 proj = glm::perspective(glm::radians(90.0f), 1.0f, 0.1f, 10.0f);
+	glm::mat4 views[] = {
+		glm::lookAt(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f, 0.0f, 0.0f), glm::vec3(0.0f, -1.0f, 0.0f)),
+		glm::lookAt(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(-1.0f, 0.0f, 0.0f), glm::vec3(0.0f, -1.0f, 0.0f)),
+		glm::lookAt(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f)),
+		glm::lookAt(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, -1.0f, 0.0f), glm::vec3(0.0f, 0.0f, -1.0f)),
+		glm::lookAt(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f), glm::vec3(0.0f, -1.0f, 0.0f)),
+		glm::lookAt(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, -1.0f), glm::vec3(0.0f, -1.0f, 0.0f)),
+	};
+
+	GLuint fb;
+	glGenFramebuffers(1, &fb);
+	glBindFramebuffer(GL_FRAMEBUFFER, fb);
+	glViewport(0, 0, icu.width_, icu.height_);
+	// Manually sync framebuffer here after changing textures
+	Material m;
+	Texture equirec;
+	equirec.create(path, TexType::RGB_F16);
+	THE_CommandData ctcd;
+	ctcd.createtex.release_ram = 0;
+	ctcd.createtex.tex = equirec;
+	THE_CreateTextureExecute(&ctcd);
+	m.set_tex(&equirec, 1);
+	m.set_type(MT_EQUIREC_TO_CUBE);
+	THE_CommandData ro;
+	ro.renderops.cull_face = THE_CULLFACE_DISABLED;
+	ro.renderops.changed_mask = THE_CULL_FACE_BIT;
+	THE_RenderOptionsExecute(&ro);
+
+	THE_CommandData dcd;
+	dcd.draw.inst_count = 1U;
+	dcd.draw.geometry = Renderer::s_cube;
+	for (int32_t i = 0; i < 6; ++i) {
+		glm::mat4 vp = proj * views[i];
+		m.set_data((float*)&vp, 16); 
+		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0,
+			GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, icu.internal_id_, 0);
+		glClear(GL_COLOR_BUFFER_BIT);
+		// TODO quitar esta shitten
+		dcd.draw.mat = *(new (&dcd.draw.mat) Material());
+		dcd.draw.mat = m;
+		THE_DrawExecute(&dcd);
+	}
+
+	if (o_pref.handle() != CommonDefs::UNINIT_HANDLE) {
+		InternalTexture &ipref = r.textures_[o_pref.handle()];
+		if (ipref.cpu_version_ > ipref.gpu_version_) {
+			THE_CommandData cccd;
+			cccd.createcubemap.texture = o_pref;
+			THE_CreateCubemapExecute(&cccd);
+		}
+		Material m_pref;
+		PrefilterEnvData pref_data;
+		m_pref.set_type(MT_PREFILTER_ENV);
+		m_pref.set_tex((Texture*)&o_cube, 1, 0);
+		for (int32_t i = 0; i < 5; ++i) {
+			// mip size
+			uint32_t s = (uint32_t)((float)ipref.width_ * powf(0.5f, (float)i));
+			glViewport(0, 0, s, s);
+			pref_data.roughness_ = (float)i / 4.0f;  // mip / max mip levels - 1
+
+			THE_CommandData dcd;
+			dcd.draw.inst_count = 1U;
+			dcd.draw.geometry = Renderer::s_cube;
+			for (int32_t j = 0; j < 6; ++j) {
+				pref_data.vp_ = proj * views[j];
+				m_pref.set_data((float*)&pref_data, sizeof(PrefilterEnvData) / 4);
+				glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0,
+				    GL_TEXTURE_CUBE_MAP_POSITIVE_X + j, ipref.internal_id_, i);
+				glClear(GL_COLOR_BUFFER_BIT);
+				// TODO quitar esta shitten
+				dcd.draw.mat = *(new (&dcd.draw.mat) Material());
+				dcd.draw.mat = m_pref;
+				THE_DrawExecute(&dcd);
+			}
+		}
+	}
+
+	if (o_lut.handle() != CommonDefs::UNINIT_HANDLE) {
+		InternalTexture &ilut = r.textures_[o_lut.handle()];
+		Material mlut;
+		mlut.set_type(MT_LUT_GEN);
+		if (ilut.cpu_version_ > ilut.gpu_version_) {
+			THE_CommandData ctcd;
+			ctcd.createtex.tex = o_lut;
+			ctcd.createtex.release_ram = 0;
+			THE_CreateTextureExecute(&ctcd);
+		}
+		glViewport(0, 0, ilut.width_, ilut.height_);
+		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, ilut.internal_id_, 0);
+		glClear(GL_COLOR_BUFFER_BIT);
+		THE_CommandData dcd;
+		dcd.draw.geometry = Renderer::s_quad;
+		dcd.draw.inst_count = 1U;
+		// TODO quitar esta shitten
+		dcd.draw.mat = *(new (&dcd.draw.mat) Material());
+		dcd.draw.mat = mlut;
+		THE_DrawExecute(&dcd);
+	}
+
+	glDeleteFramebuffers(1, &fb);
+	equirec.release();
+}
+
+void THE_RenderOptionsExecute(THE_CommandData *data)
+{
+	// Blend options
+	if (data->renderops.changed_mask & THE_BLEND_FUNC_BIT) {
+		GLuint sfac, dfac;
+		switch(data->renderops.sfactor) {
+		case THE_BLENDFUNC_ONE:
+			sfac = GL_ONE;
+			break;
+
+		case THE_BLENDFUNC_SRC_ALPHA:
+			sfac = GL_SRC_ALPHA;
+			break;
+
+		case THE_BLENDFUNC_ONE_MINUS_SRC_ALPHA:
+			sfac = GL_ONE_MINUS_SRC_ALPHA;
+			break;
+
+		case THE_BLENDFUNC_ZERO:
+			sfac = GL_ZERO;
+			break;
+
+		default:
+			LEEP_CORE_ASSERT(false, "RenderOption invalid BlendCommand S value");
+			break;
+		}
+
+		switch(data->renderops.dfactor) {
+		case THE_BLENDFUNC_ONE:
+			dfac = GL_ONE;
+			break;
+
+		case THE_BLENDFUNC_SRC_ALPHA:
+			dfac = GL_SRC_ALPHA;
+			break;
+
+		case THE_BLENDFUNC_ONE_MINUS_SRC_ALPHA:
+			dfac = GL_ONE_MINUS_SRC_ALPHA;
+			break;
+
+		case THE_BLENDFUNC_ZERO:
+			dfac = GL_ZERO;
+			break;
+
+		default:
+			LEEP_CORE_ASSERT(false, "RenderOption invalid BlendCommand D value");
+			break;
+		}
+
+		glBlendFunc(sfac, dfac);
+	}
+
+	if (data->renderops.changed_mask & THE_ENABLE_BLEND_BIT) {
+		if (data->renderops.blend)
+			glEnable(GL_BLEND);
+		else
+			glDisable(GL_BLEND);
+	}
+
+	// Cull options
+	if (data->renderops.changed_mask & THE_CULL_FACE_BIT) {
+		switch(data->renderops.cull_face) {
+		case THE_CULLFACE_DISABLED:
+			glDisable(GL_CULL_FACE);
+			break;
+
+		case THE_CULLFACE_FRONT:
+			glEnable(GL_CULL_FACE);
+			glCullFace(GL_FRONT);
+			break;
+
+		case THE_CULLFACE_BACK:
+			glEnable(GL_CULL_FACE);
+			glCullFace(GL_BACK);
+			break;
+
+		case THE_CULLFACE_FRONT_AND_BACK:
+			glEnable(GL_CULL_FACE);
+			glCullFace(GL_FRONT_AND_BACK);
+			break;
+
+		default:
+			LEEP_CORE_ASSERT(false, "RenderOption invalid CullFace value");
+			break;
+		}
+	}
+
+	// Depth options
+	if (data->renderops.changed_mask & THE_WRITE_DEPTH_BIT) {
+		// GL_TRUE is 1 and GL_FALSE 0 so this should work...
+		glDepthMask(data->renderops.write_depth);
+	}
+	if (data->renderops.changed_mask & THE_DEPTH_TEST_BIT) {
+		if (data->renderops.depth_test)
+			glEnable(GL_DEPTH_TEST);
+		else
+			glDisable(GL_DEPTH_TEST);
+	}
+}
+
+void THE_UseFramebufferExecute(THE_CommandData *data)
+{
+	if (data->usefb.def) {
+		glBindFramebuffer(GL_FRAMEBUFFER, 0);
+		return;
+	}
+
+	Renderer &r = GM.renderer();
+	InternalFramebuffer &ifb = r.framebuffers_[data->usefb.fb.handle()];
+	GLsizei width;
+	GLsizei height;
+
+	if (ifb.gpu_version_ == 0) {
+		LEEP_CORE_ASSERT(data->usefb.fb.handle() >= 0 && ifb.cpu_version_ > 0, "Framebuffer not created");
+		glGenFramebuffers(1, (GLuint*)&(ifb.internal_id_));
+		THE_CommandData ctcd;
+		ctcd.createtex.release_ram = 0;
+		if (ifb.color_) {
+			ctcd.createtex.tex = data->usefb.fb.color();
+			THE_CreateTextureExecute(&ctcd);
+		}
+		if (ifb.depth_) {
+			ctcd.createtex.tex = data->usefb.fb.depth();
+			THE_CreateTextureExecute(&ctcd);
+		}
+	}
+	glBindFramebuffer(GL_FRAMEBUFFER, ifb.internal_id_);
+
+	// Set viewport
+	if (ifb.color_) {
+		width = r.textures_[data->usefb.fb.color().handle()].width_;
+		height = r.textures_[data->usefb.fb.color().handle()].height_;
+		glViewport(0, 0, width, height);
+	}
+
+	if (ifb.depth_) {
+		if (ifb.color_) {
+			LEEP_CORE_ASSERT(width == (GLsizei)r.textures_[data->usefb.fb.depth().handle()].width_ &&
+		        	height == (GLsizei)r.textures_[data->usefb.fb.depth().handle()].height_,
+				"Color and depth texture sizes of framebuffer not matching");
+		} else {
+			width = r.textures_[data->usefb.fb.depth().handle()].width_;
+			height = r.textures_[data->usefb.fb.depth().handle()].height_;
+			glViewport(0, 0, width, height);
+		}
+	}
+
+	// Update framebuffer if the textures have been changed
+	if (ifb.gpu_version_ < ifb.cpu_version_) {
+		if (ifb.color_) {
+			glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D,
+				r.textures_[data->usefb.fb.color().handle()].internal_id_, 0); 
+		}
+		if (ifb.depth_) {
+			glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D,
+				r.textures_[data->usefb.fb.depth().handle()].internal_id_, 0);
+		}
+		ifb.gpu_version_ = ifb.cpu_version_;
+	}
+}
+
+void THE_UseMaterialExecute(THE_CommandData *data)
+{
+	GLint *tu = (GLint*)malloc(data->usemat.mat.tcount_ * sizeof(GLint));
+	for (int i = 0; i < data->usemat.mat.tcount_; ++i) {
+		tu[i] = data->usemat.mat.tex_[i].handle() + 1;
+	}
+	Renderer &r = GM.renderer();
+	GLuint program = r.materials_[data->usemat.mat.type_].internal_id();
+	glUseProgram(program);
+	uint32_t uniform_pos = glGetUniformLocation(program, "u_scene_data");
+	glUniform4fv(uniform_pos, data->usemat.mat.dcount_ / 4, data->usemat.mat.data_);
+	uniform_pos = glGetUniformLocation(program, "u_scene_tex");
+	glUniform1iv(uniform_pos, data->usemat.mat.cube_start_, tu);
+	uniform_pos = glGetUniformLocation(program, "u_scene_cube");
+	glUniform1iv(uniform_pos, data->usemat.mat.tcount_ - data->usemat.mat.cube_start_,
+		tu + data->usemat.mat.cube_start_);
 }
 
 #endif // THE_OPENGL
