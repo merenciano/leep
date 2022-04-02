@@ -12,6 +12,9 @@
 #include "tools/lua-scripting.h"
 #include "tools/resource-map.h"
 
+#include "render/Crendercommands.h"
+#include "render/Crenderer.h"
+
 #include <vector>
 #include <deque>
 
@@ -499,8 +502,8 @@ namespace leep
 
             {
                 // pool and offset are (int8_t*) so no need of sizeof here
-                size_t offset = r.rq_.next_offset_ - r.rq_.next_pool_;
-                size_t capacity = r.rq_.render_pool_size_;
+                size_t offset = THE_RenderQueueUsed() * sizeof(THE_RenderCommand);
+                size_t capacity = THE_RENDER_QUEUE_CAPACITY * sizeof(THE_RenderCommand);
                 ImGui::TableNextRow();
                 ImGui::TableSetColumnIndex(0);
                 ImGui::Text("%s", "Command pool");
@@ -512,10 +515,10 @@ namespace leep
                 ImGui::Text("%.1f %%", (offset / (float)capacity) * 100.0f);
             }
 
-            // Render queue
+            /* Render queue
             {
-                size_t offset = r.rq_.curr_count_ * sizeof(DLComm*);
-                size_t capacity = r.rq_.render_quque_max_ * sizeof(DLComm*);
+                size_t offset = (render_queue->curr_last - render_queue->curr) * sizeof(THE_RenderCommand*);
+                size_t capacity = (render_queue->curr_last - render_queue->curr) * sizeof(THE_RenderCommand*);
                 ImGui::TableNextRow();
                 ImGui::TableSetColumnIndex(0);
                 ImGui::Text("%s", "Render queue");
@@ -525,7 +528,7 @@ namespace leep
                 ImGui::Text("%.2f KB", ByteToKilo(capacity));
                 ImGui::TableSetColumnIndex(3);
                 ImGui::Text("%.1f %%", (offset / (float)capacity) * 100.0f);
-            }
+            }*/
 
             // Buddy allocator
             {

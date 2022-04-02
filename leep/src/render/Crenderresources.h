@@ -5,11 +5,6 @@
 
 #include "render/texture.h"
 
-typedef THE_Texture int32_t;
 
-THE_LoadTex(leep::Texture *tex)
-{
-	
-}
 
 #endif

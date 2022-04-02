@@ -50,7 +50,7 @@ void leep::RenderFrame()
     leep::Chrono render_timer;
     render_timer.start();
     //leep::GM.renderer().renderFrame();
-    THE_RenderFrame(leep::GM.rendererptr());
+    THE_RenderFrame();
 
     leep::GM.ui_tools().update();
     render_timer.end();

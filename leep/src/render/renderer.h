@@ -20,7 +20,7 @@ namespace leep
     class DLComm;
     class DisplayList;
 
-    class RenderQueues
+    /*class RenderQueues
     {
     public:
         RenderQueues();
@@ -47,7 +47,7 @@ namespace leep
         // TODO: This should be private with getters only
         int32_t render_pool_size_;
         int32_t render_quque_max_;
-    };
+    };*/
 
     class Renderer
     {
@@ -64,9 +64,9 @@ namespace leep
 
         void init(int32_t queue_capacity);
 
-        void renderFrame();
+        /*void renderFrame();
         void submitFrame();
-        void deleteResources();
+        void deleteResources();*/
 
         glm::vec4 sun_dir_intensity_;
 
@@ -76,8 +76,8 @@ namespace leep
         std::forward_list<int32_t, BuddySTL<int32_t>> aviable_tex_pos_;
         std::forward_list<int32_t, BuddySTL<int32_t>> aviable_fb_pos_; // TODO: remove framebuffer creation and deletion
 
-        std::atomic<int32_t> tex_to_del_;
-        std::atomic<int32_t> buf_to_del_;
+        //std::atomic<int32_t> tex_to_del_;
+        //std::atomic<int32_t> buf_to_del_;
 
         void initMaterial(MaterialType t, const char *name);
         int32_t addTex();
@@ -96,15 +96,10 @@ namespace leep
 
         std::mutex mtx_;
 
-        RenderQueues rq_;
-
-		struct THE_RenderCommand *curr;
-		struct THE_RenderCommand *curr_last;
-		struct THE_RenderCommand *next;
-		struct THE_RenderCommand *next_last;
+        //RenderQueues rq_;
     };
 
-    template<typename T>
+    /*template<typename T>
     DLComm *RenderQueues::commandAlloc()
     {
         // Here I assume that memory will always be aligned to 8 because
@@ -116,7 +111,7 @@ namespace leep
         LEEP_CORE_ASSERT(next_offset_ - next_pool_ < render_pool_size_,
             "Queue doesn't fit in the chunk");
         return mem;
-    }
+    }*/
 }
 
 #endif // __LEEP_RENDER_RENDERER_H__

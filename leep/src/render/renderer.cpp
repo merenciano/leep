@@ -9,8 +9,8 @@ namespace leep {
 
 Renderer::Renderer()
 {
-    tex_to_del_.store(-1);
-    buf_to_del_.store(-1);
+    //tex_to_del_.store(-1);
+    //buf_to_del_.store(-1);
     sun_dir_intensity_ = glm::vec4(1.0f, -1.0f, 0.0f, 1.0f);
 }
 
@@ -21,7 +21,7 @@ Renderer::~Renderer()
 
 void Renderer::init(int32_t queue_capacity)
 {
-    rq_.init(queue_capacity);
+//    rq_.init(queue_capacity);
     textures_ = (InternalTexture*)GM.memory().persistentAlloc(sizeof(InternalTexture)*kMaxTextures);
     buffers_ = (InternalBuffer*)GM.memory().persistentAlloc(sizeof(InternalBuffer)*kMaxBuffers);
     materials_ = (InternalMaterial*)GM.memory().persistentAlloc(MT_MAX * sizeof(InternalMaterial));
@@ -54,7 +54,7 @@ int32_t Renderer::addBuf()
     return buf_count_++;
 }
 
-void Renderer::renderFrame()
+/*void Renderer::renderFrame()
 {
     for (int32_t i = 0; i < rq_.curr_count_; ++i)
     {
@@ -92,7 +92,6 @@ void Renderer::deleteResources()
         buf_to_del_.store(-1);
     }
 }
-
 RenderQueues::RenderQueues()
 {
     curr_pool_ = nullptr;
@@ -153,5 +152,6 @@ void RenderQueues::swapQueues()
     next_queue_ = tmp2;
     next_count_ = 0;
 }
+*/
 
 } // namespace leep

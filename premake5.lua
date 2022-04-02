@@ -36,6 +36,8 @@ project "TestApp"
         "./src/**.h"
     }
 
+    configuration "vs2022"
+        defines {"_CRT_SECURE_NO_WARNINGS", "LEEP_WIN", "THE_OPENGL" }
     configuration "vs2019"
         defines {"_CRT_SECURE_NO_WARNINGS", "LEEP_WIN", }
     configuration "vs2017"

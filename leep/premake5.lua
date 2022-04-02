@@ -52,6 +52,22 @@ project "leep"
 
 
     }
+
+    configuration "vs2022"
+        defines {"_CRT_SECURE_NO_WARNINGS", "_GLFW_WIN32", "LEEP_WIN", }
+
+        files {
+            "./extern/src/GLFW/win32_platform.h",
+            "./extern/src/GLFW/win32_joystick.h",
+            "./extern/src/GLFW/wgl_context.h",
+            "./extern/src/GLFW/win32_init.c",
+            "./extern/src/GLFW/win32_joystick.c",
+            "./extern/src/GLFW/win32_monitor.c",
+            "./extern/src/GLFW/win32_time.c",
+            "./extern/src/GLFW/win32_thread.c",
+            "./extern/src/GLFW/win32_window.c",
+            "./extern/src/GLFW/wgl_context.c",
+        }
     
     configuration "vs2019"
         defines {"_CRT_SECURE_NO_WARNINGS", "_GLFW_WIN32", "LEEP_WIN", }

@@ -1,5 +1,5 @@
 #include "Crendercommands.h"
-
+#include "Crenderer.h" // TODO Move frame allocator to rendercommands and remove this include 
 #include "render/camera.h"
 
 
@@ -364,10 +364,11 @@ void THE_SkyboxExecute(THE_CommandData *data)
 {
         Renderer &r = GM.renderer();
 	glm::mat4 view = leep::GM.camera().static_view_projection();
-	leep::Material mat;
-	mat.set_type(MT_SKYBOX);
-	mat.set_data((float*)&view, 16);
-	mat.set_tex((Texture*)&(data->skybox.cubemap), 1, 0);
+	leep::Material *mat = (Material*)THE_AllocateFrameResource(sizeof(Material));
+	mat = (new (mat) Material());
+	mat->set_type(MT_SKYBOX);
+	mat->set_data((float*)&view, 16);
+	mat->set_tex((Texture*)&(data->skybox.cubemap), 1, 0);
 
 	int32_t vertex_handler = Renderer::s_cube.vertex_buffer().handle();
 	int32_t index_handler = Renderer::s_cube.index_buffer().handle();
@@ -384,11 +385,11 @@ void THE_SkyboxExecute(THE_CommandData *data)
 	LEEP_CORE_ASSERT(r.buffers_[index_handler].cpu_version_ > 0, 
 		"Index buffer without data");
 
-	LEEP_CORE_ASSERT(mat.type() != MaterialType::MT_NONE,
+	LEEP_CORE_ASSERT(mat->type() != MaterialType::MT_NONE,
 		"Material type not setted");
 
 	// Set the uniforms
-	r.materials_[mat.type()].useMaterialData(mat);
+	r.materials_[mat->type()].useMaterialData(*mat);
 
 	// Create the OpenGL vertex buffer if it has not been created yet
 	if (r.buffers_[vertex_handler].gpu_version_ == 0) {
@@ -419,7 +420,7 @@ void THE_SkyboxExecute(THE_CommandData *data)
 	}
 
 	GLint attrib_pos = glGetAttribLocation(
-		r.materials_[mat.type()].internal_id(), "a_position");
+		r.materials_[mat->type()].internal_id(), "a_position");
 	glVertexAttribPointer(attrib_pos, 3, GL_FLOAT, GL_FALSE,
 		8 * sizeof(float), (void*)0);
 	glEnableVertexAttribArray(attrib_pos);
@@ -439,8 +440,7 @@ void THE_DrawExecute(THE_CommandData *data)
 {
 	LEEP_ASSERT(data->draw.inst_count > 0, "Set inst count");
 	leep::Geometry geo = data->draw.geometry;
-	leep::Material mat;
-	mat = data->draw.mat;
+	leep::Material &mat = *(data->draw.mat);
 
 	Renderer& r = GM.renderer();
 	int32_t vertex_handle = geo.vertex_buffer().handle();
@@ -653,15 +653,12 @@ void THE_EquirectToCubeExecute(THE_CommandData *data)
 	glBindFramebuffer(GL_FRAMEBUFFER, fb);
 	glViewport(0, 0, icu.width_, icu.height_);
 	// Manually sync framebuffer here after changing textures
-	Material m;
 	Texture equirec;
 	equirec.create(path, TexType::RGB_F16);
 	THE_CommandData ctcd;
 	ctcd.createtex.release_ram = 0;
 	ctcd.createtex.tex = equirec;
 	THE_CreateTextureExecute(&ctcd);
-	m.set_tex(&equirec, 1);
-	m.set_type(MT_EQUIREC_TO_CUBE);
 	THE_CommandData ro;
 	ro.renderops.cull_face = THE_CULLFACE_DISABLED;
 	ro.renderops.changed_mask = THE_CULL_FACE_BIT;
@@ -672,13 +669,14 @@ void THE_EquirectToCubeExecute(THE_CommandData *data)
 	dcd.draw.geometry = Renderer::s_cube;
 	for (int32_t i = 0; i < 6; ++i) {
 		glm::mat4 vp = proj * views[i];
-		m.set_data((float*)&vp, 16); 
 		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0,
 			GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, icu.internal_id_, 0);
 		glClear(GL_COLOR_BUFFER_BIT);
-		// TODO quitar esta shitten
-		dcd.draw.mat = *(new (&dcd.draw.mat) Material());
-		dcd.draw.mat = m;
+		dcd.draw.mat = (Material*)THE_AllocateFrameResource(sizeof(Material));
+		dcd.draw.mat = (new (dcd.draw.mat) Material());
+		dcd.draw.mat->set_tex(&equirec, 1);
+		dcd.draw.mat->set_type(MT_EQUIREC_TO_CUBE);
+		dcd.draw.mat->set_data((float*)&vp, 16);
 		THE_DrawExecute(&dcd);
 	}
 
@@ -689,10 +687,8 @@ void THE_EquirectToCubeExecute(THE_CommandData *data)
 			cccd.createcubemap.texture = o_pref;
 			THE_CreateCubemapExecute(&cccd);
 		}
-		Material m_pref;
+
 		PrefilterEnvData pref_data;
-		m_pref.set_type(MT_PREFILTER_ENV);
-		m_pref.set_tex((Texture*)&o_cube, 1, 0);
 		for (int32_t i = 0; i < 5; ++i) {
 			// mip size
 			uint32_t s = (uint32_t)((float)ipref.width_ * powf(0.5f, (float)i));
@@ -704,13 +700,14 @@ void THE_EquirectToCubeExecute(THE_CommandData *data)
 			dcd.draw.geometry = Renderer::s_cube;
 			for (int32_t j = 0; j < 6; ++j) {
 				pref_data.vp_ = proj * views[j];
-				m_pref.set_data((float*)&pref_data, sizeof(PrefilterEnvData) / 4);
 				glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0,
 				    GL_TEXTURE_CUBE_MAP_POSITIVE_X + j, ipref.internal_id_, i);
 				glClear(GL_COLOR_BUFFER_BIT);
-				// TODO quitar esta shitten
-				dcd.draw.mat = *(new (&dcd.draw.mat) Material());
-				dcd.draw.mat = m_pref;
+				dcd.draw.mat = (Material*)THE_AllocateFrameResource(sizeof(Material));
+				dcd.draw.mat = (new (dcd.draw.mat) Material());
+				dcd.draw.mat->set_type(MT_PREFILTER_ENV);
+				dcd.draw.mat->set_tex((Texture*)&o_cube, 1, 0);
+				dcd.draw.mat->set_data((float*)&pref_data, sizeof(PrefilterEnvData) / 4);
 				THE_DrawExecute(&dcd);
 			}
 		}
@@ -718,8 +715,6 @@ void THE_EquirectToCubeExecute(THE_CommandData *data)
 
 	if (o_lut.handle() != CommonDefs::UNINIT_HANDLE) {
 		InternalTexture &ilut = r.textures_[o_lut.handle()];
-		Material mlut;
-		mlut.set_type(MT_LUT_GEN);
 		if (ilut.cpu_version_ > ilut.gpu_version_) {
 			THE_CommandData ctcd;
 			ctcd.createtex.tex = o_lut;
@@ -732,9 +727,9 @@ void THE_EquirectToCubeExecute(THE_CommandData *data)
 		THE_CommandData dcd;
 		dcd.draw.geometry = Renderer::s_quad;
 		dcd.draw.inst_count = 1U;
-		// TODO quitar esta shitten
-		dcd.draw.mat = *(new (&dcd.draw.mat) Material());
-		dcd.draw.mat = mlut;
+		dcd.draw.mat = (Material*)THE_AllocateFrameResource(sizeof(Material));
+		dcd.draw.mat = (new (dcd.draw.mat) Material());
+		dcd.draw.mat->set_type(MT_LUT_GEN);
 		THE_DrawExecute(&dcd);
 	}
 

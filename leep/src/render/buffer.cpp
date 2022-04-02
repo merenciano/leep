@@ -92,7 +92,7 @@ namespace leep
     void Buffer::set_data(uint32_t *d, uint32_t c)
     {
         LEEP_CORE_ASSERT(GM.renderer().buffers_[handle_].data_.indices_
-             == nullptr, "There is data to be freed before setting new one");
+             == 0, "There is data to be freed before setting new one");
         type_ = BufferType::INDEX_BUFFER;
         GM.renderer().buffers_[handle_].count_ = c;
         GM.renderer().buffers_[handle_].data_.indices_ = d;

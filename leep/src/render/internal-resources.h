@@ -52,6 +52,7 @@ namespace leep
             gpu_version_ = 0;
             count_ = 0;
             data_.vertices_ = nullptr;
+	    data_.indices_ = nullptr;
         }
 
         InternalBuffer(const InternalBuffer& other) = delete;

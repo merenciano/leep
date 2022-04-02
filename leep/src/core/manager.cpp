@@ -49,6 +49,7 @@ namespace leep
         memory_.init(total_mem);
         data_ = memory_.generalAllocT<ManagerData>(1);
         data_->window_.createWindow(kWindowTitle, cnfg.window_width, cnfg.window_height, cnfg.vsync);
+	THE_InitRender();
         data_->renderer_.init(cnfg.render_queue_capacity);
         data_->camera_.init(70.0f, 300.0f);
         data_->delta_time_ = 0.16f;
@@ -68,7 +69,7 @@ namespace leep
     {
         window().swap();
         window().pollEvents();
-	THE_RenderSubmitFrame(rendererptr());
+	THE_SubmitFrame();
         //renderer().submitFrame();
         data_->frame_timer_.end();
         data_->delta_time_ = data_->frame_timer_.duration() / 1000.0f;

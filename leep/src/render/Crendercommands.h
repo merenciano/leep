@@ -14,7 +14,7 @@
 #define THE_DEPTH_TEST_BIT     1 << 3
 #define THE_CULL_FACE_BIT      1 << 4
 
-enum THE_CommandDataType {
+typedef enum {
 	THE_CDT_CLEAR,
 	THE_CDT_CREATE_BUFFER,
 	THE_CDT_CREATE_CUBEMAP,
@@ -23,52 +23,52 @@ enum THE_CommandDataType {
 	THE_CDT_SKYBOX,
 	THE_CDT_DRAW,
 	THE_CDT_EQUIREC_CUBEMAP,
-};
+} THE_CommandDataType;
 
-struct THE_ClearCommandData {
+typedef struct {
 	float color[4];
 	int8_t bcolor;
 	int8_t bdepth;
 	int8_t bstencil;
-};
+} THE_ClearCommandData;
 
-struct THE_CreateBufferCommandData {
+typedef struct {
 	leep::Buffer buffer;
-};
+} THE_CreateBufferCommandData;
 
-struct THE_CreateCubemapCommandData {
+typedef struct {
 	leep::Texture texture;
-};
+} THE_CreateCubemapCommandData;
 
 // TODO: Hide framebuffer concept from API
-struct THE_CreateFramebufferCommandData {
+typedef struct {
 	leep::Framebuffer fb;
-};
+} THE_CreateFramebufferCommandData;
 
-struct THE_CreateTextureCommandData {
+typedef struct {
 	leep::Texture tex;
 	int32_t release_ram;
-};
+} THE_CreateTextureCommandData;
 
-struct THE_SkyboxCommandData {
+typedef struct {
 	leep::Texture cubemap;
-};
+} THE_SkyboxCommandData;
 
-struct THE_DrawCommandData {
+typedef struct {
 	leep::Geometry geometry;
-	leep::Material mat;
+	leep::Material *mat;
 	leep::Buffer inst_attr;
 	uint32_t inst_count;
-};
+} THE_DrawCommandData;
 
-struct THE_EquirectToCubeData {
+typedef struct {
 	char in_path[128];
 	leep::Texture out_cube;
 	leep::Texture out_prefilt;
 	leep::Texture out_lut;
-};
+} THE_EquirectToCubeData;
 
-enum THE_RenderOptions {
+typedef enum {
 	THE_BLENDFUNC_ONE,
 	THE_BLENDFUNC_SRC_ALPHA,
 	THE_BLENDFUNC_ONE_MINUS_SRC_ALPHA,
@@ -78,9 +78,9 @@ enum THE_RenderOptions {
 	THE_CULLFACE_FRONT,
 	THE_CULLFACE_BACK,
 	THE_CULLFACE_FRONT_AND_BACK,
-};
+} THE_RenderOptions;
 
-struct THE_RenderOptionsData {
+typedef struct {
 	uint32_t changed_mask;
 	THE_RenderOptions sfactor;
 	THE_RenderOptions dfactor;
@@ -88,18 +88,19 @@ struct THE_RenderOptionsData {
 	int8_t depth_test;
 	int8_t write_depth;
 	int8_t blend;
-};
+} THE_RenderOptionsData;
 
-struct THE_UseFramebufferData {
+typedef struct {
 	leep::Framebuffer fb;
 	int8_t def;
-};
+} THE_UseFramebufferData;
 
-struct THE_UseMaterialData {
+typedef struct {
 	leep::Material mat;
-};
+} THE_UseMaterialData;
 
-union THE_CommandData {
+//typedef union {
+typedef union THE_CommandData {
 	// TODO: Quitar los putos construc y destruc para que no maree
 	// el IDE pensando que es C++
 	THE_CommandData() {};
@@ -115,14 +116,15 @@ union THE_CommandData {
 	THE_RenderOptionsData renderops;
 	THE_UseFramebufferData usefb;
 	THE_UseMaterialData usemat;
-};
+} THE_CommandData;// THE_CommandData;
 
-struct THE_RenderCommand {
-	void (*execute)(THE_CommandData *data);
-	THE_RenderCommand *next;
+//struct THE_RenderCommand {
+typedef struct THE_RenderCommand {
+	void (*execute)(THE_CommandData* data);
+	THE_RenderCommand* next;
 	THE_CommandData data;
 	THE_CommandDataType type;
-};
+} THE_RenderCommand;
 
 void THE_ClearExecute(THE_CommandData *data);
 

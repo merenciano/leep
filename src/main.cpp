@@ -249,7 +249,7 @@ void leep::GameInit()
 	    dw.material_.set_tex(t, 4);
 	}
 
-	THE_RenderCommand *rendops = (THE_RenderCommand*)malloc(sizeof(THE_RenderCommand));
+	THE_RenderCommand *rendops = THE_AllocateCommand();
 	rendops->data.renderops.depth_test = 1;
 	rendops->data.renderops.write_depth = 1;
 	rendops->data.renderops.cull_face = THE_CULLFACE_BACK;
@@ -259,7 +259,7 @@ void leep::GameInit()
 	rendops->data.renderops.changed_mask = 0xFF; // Changed all
 	rendops->execute = THE_RenderOptionsExecute;
 
-	THE_RenderCommand *sky = (THE_RenderCommand*)malloc(sizeof(THE_RenderCommand));
+	THE_RenderCommand *sky = THE_AllocateCommand();
 	strcpy(sky->data.eqr_cube.in_path, "../assets/tex/env/helipad-env.hdr");
 	sky->data.eqr_cube.out_cube = GM.resource_map().getTexture("Skybox");
 	sky->data.eqr_cube.out_prefilt = GM.resource_map().getTexture("PrefilterSpec");
@@ -267,7 +267,7 @@ void leep::GameInit()
 	sky->execute = THE_EquirectToCubeExecute;
 	rendops->next = sky;
 
-	THE_RenderCommand *irradiance = (THE_RenderCommand*)malloc(sizeof(THE_RenderCommand));
+	THE_RenderCommand *irradiance = THE_AllocateCommand();
 	strcpy(irradiance->data.eqr_cube.in_path, "../assets/tex/env/helipad-dif.hdr");
 	irradiance->data.eqr_cube.out_cube = GM.resource_map().getTexture("IrradianceEnv");
 	irradiance->data.eqr_cube.out_prefilt = *(new (&(irradiance->data.eqr_cube.out_prefilt)) Texture());
@@ -276,7 +276,7 @@ void leep::GameInit()
 	sky->next = irradiance;
 	irradiance->next = NULL;
 
-	THE_AddCommands(GM.rendererptr(), rendops);
+	THE_AddCommands(rendops);
 }
 
 void leep::GameLogic()
@@ -293,17 +293,19 @@ void leep::GameLogic()
 	pbr_sd.camera_position_ = GM.camera().position();
 	pbr_sd.light_direction_intensity_ = GM.renderer().sun_dir_intensity_;
 
-	Material full_screen_img;
-	full_screen_img.set_type(MaterialType::MT_FULL_SCREEN_IMAGE);
+	Material *full_screen_img = (Material*)THE_AllocateFrameResource(sizeof(Material));
+	full_screen_img = (new (full_screen_img) Material());
+	full_screen_img->set_type(MaterialType::MT_FULL_SCREEN_IMAGE);
 	Texture fbtex = GM.camera().framebuffer().color();
-	full_screen_img.set_tex(&fbtex, 1);
+	full_screen_img->set_tex(&fbtex, 1);
 
-	THE_RenderCommand *fbuff = (THE_RenderCommand*)malloc(sizeof(THE_RenderCommand));
+	//THE_RenderCommand *fbuff = (THE_RenderCommand*)malloc(sizeof(THE_RenderCommand));
+	THE_RenderCommand* fbuff = THE_AllocateCommand();
 	fbuff->data.usefb.fb = GM.camera().framebuffer();
 	fbuff->data.usefb.def = 0;
 	fbuff->execute = THE_UseFramebufferExecute;
 
-	THE_RenderCommand *rops = (THE_RenderCommand*)malloc(sizeof(THE_RenderCommand));
+	THE_RenderCommand *rops = THE_AllocateCommand();
 	rops->data.renderops.blend = 1;
 	rops->data.renderops.sfactor = THE_BLENDFUNC_ONE;
 	rops->data.renderops.dfactor = THE_BLENDFUNC_ZERO;
@@ -314,7 +316,7 @@ void leep::GameLogic()
 	rops->execute = THE_RenderOptionsExecute;
 	fbuff->next = rops;
 
-	THE_RenderCommand *clear = (THE_RenderCommand*)malloc(sizeof(THE_RenderCommand));
+	THE_RenderCommand *clear = THE_AllocateCommand();
 	clear->data.clear.bcolor = 1;
 	clear->data.clear.bdepth = 1;
 	clear->data.clear.bstencil = 0;
@@ -330,7 +332,7 @@ void leep::GameLogic()
 	scene_tex[1] = GM.resource_map().getTexture("IrradianceEnv");
 	scene_tex[2] = GM.resource_map().getTexture("PrefilterSpec");
 
-	THE_RenderCommand *usemat = (THE_RenderCommand*)malloc(sizeof(THE_RenderCommand));
+	THE_RenderCommand *usemat = THE_AllocateCommand();
 	usemat->data.usemat.mat = *(new (&(usemat->data.usemat.mat)) Material());
 	usemat->data.usemat.mat.set_type(MaterialType::MT_PBR);
 	usemat->data.usemat.mat.set_data((float*)&pbr_sd, sizeof(PbrSceneData) / sizeof (float));
@@ -339,32 +341,32 @@ void leep::GameLogic()
 	clear->next = usemat;
 	usemat->next = NULL;
 
-	THE_AddCommands(GM.rendererptr(), fbuff);
+	THE_AddCommands(fbuff);
 
 	Render(GM.scene().container(EntityType::RENDERABLE)).executeSystem();
 
-	rops = (THE_RenderCommand*)malloc(sizeof(THE_RenderCommand));
+	rops = THE_AllocateCommand();
 	rops->data.renderops.cull_face = THE_CULLFACE_DISABLED;
 	rops->data.renderops.changed_mask = THE_CULL_FACE_BIT;
 	rops->execute = THE_RenderOptionsExecute;
 
-	THE_RenderCommand *sky = (THE_RenderCommand*)malloc(sizeof(THE_RenderCommand));
+	THE_RenderCommand *sky = THE_AllocateCommand();
 	sky->data.skybox.cubemap = GM.resource_map().getTexture("Skybox");
 	sky->execute = THE_SkyboxExecute;
 	rops->next = sky;
 
-	fbuff = (THE_RenderCommand*)malloc(sizeof(THE_RenderCommand));
+	fbuff = THE_AllocateCommand();
 	fbuff->data.usefb.def = 1;
 	fbuff->execute = THE_UseFramebufferExecute;
 	sky->next = fbuff;
 
-	THE_RenderCommand *rops2 = (THE_RenderCommand*)malloc(sizeof(THE_RenderCommand));
+	THE_RenderCommand *rops2 = THE_AllocateCommand();
 	rops2->data.renderops.depth_test = 0;
 	rops2->data.renderops.changed_mask = THE_DEPTH_TEST_BIT;
 	rops2->execute = THE_RenderOptionsExecute;
 	fbuff->next = rops2;
 
-	clear = (THE_RenderCommand*)malloc(sizeof(THE_RenderCommand));
+	clear = THE_AllocateCommand();
 	clear->data.clear.bcolor = 1;
 	clear->data.clear.bdepth = 0;
 	clear->data.clear.bstencil = 0;
@@ -375,17 +377,15 @@ void leep::GameLogic()
 	clear->execute = THE_ClearExecute;
 	rops2->next = clear;
 
-	THE_RenderCommand *draw = (THE_RenderCommand*)malloc(sizeof(THE_RenderCommand));
+	THE_RenderCommand *draw = THE_AllocateCommand();
 	draw->data.draw.geometry = GM.resource_map().getGeometry("Quad");
-	// TODO quitar esta shiiiiet
-	draw->data.draw.mat = *(new (&draw->data.draw.mat) Material());
 	draw->data.draw.mat = full_screen_img;
 	draw->data.draw.inst_count = 1;
 	draw->execute = THE_DrawExecute;
 	clear->next = draw;
 	draw->next = NULL;
 
-	THE_AddCommands(GM.rendererptr(), rops);
+	THE_AddCommands(rops);
 }
 
 void leep::GameClose()
