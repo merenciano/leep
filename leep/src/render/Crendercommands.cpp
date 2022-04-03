@@ -900,20 +900,20 @@ void THE_UseFramebufferExecute(THE_CommandData *data)
 
 void THE_UseMaterialExecute(THE_CommandData *data)
 {
-	GLint *tu = (GLint*)malloc(data->usemat.mat.tcount_ * sizeof(GLint));
-	for (int i = 0; i < data->usemat.mat.tcount_; ++i) {
-		tu[i] = data->usemat.mat.tex_[i].handle() + 1;
+	GLint *tu = (GLint*)malloc(data->usemat.mat->tcount_ * sizeof(GLint));
+	for (int i = 0; i < data->usemat.mat->tcount_; ++i) {
+		tu[i] = data->usemat.mat->tex_[i].handle() + 1;
 	}
 	Renderer &r = GM.renderer();
-	GLuint program = r.materials_[data->usemat.mat.type_].internal_id();
+	GLuint program = r.materials_[data->usemat.mat->type_].internal_id();
 	glUseProgram(program);
 	uint32_t uniform_pos = glGetUniformLocation(program, "u_scene_data");
-	glUniform4fv(uniform_pos, data->usemat.mat.dcount_ / 4, data->usemat.mat.data_);
+	glUniform4fv(uniform_pos, data->usemat.mat->dcount_ / 4, data->usemat.mat->data_);
 	uniform_pos = glGetUniformLocation(program, "u_scene_tex");
-	glUniform1iv(uniform_pos, data->usemat.mat.cube_start_, tu);
+	glUniform1iv(uniform_pos, data->usemat.mat->cube_start_, tu);
 	uniform_pos = glGetUniformLocation(program, "u_scene_cube");
-	glUniform1iv(uniform_pos, data->usemat.mat.tcount_ - data->usemat.mat.cube_start_,
-		tu + data->usemat.mat.cube_start_);
+	glUniform1iv(uniform_pos, data->usemat.mat->tcount_ - data->usemat.mat->cube_start_,
+		tu + data->usemat.mat->cube_start_);
 }
 
 #endif // THE_OPENGL

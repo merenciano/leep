@@ -96,7 +96,7 @@ typedef struct {
 } THE_UseFramebufferData;
 
 typedef struct {
-	leep::Material mat;
+	leep::Material *mat;
 } THE_UseMaterialData;
 
 //typedef union {
@@ -123,7 +123,7 @@ typedef struct THE_RenderCommand {
 	void (*execute)(THE_CommandData* data);
 	THE_RenderCommand* next;
 	THE_CommandData data;
-	THE_CommandDataType type;
+	//THE_CommandDataType type;
 } THE_RenderCommand;
 
 void THE_ClearExecute(THE_CommandData *data);

@@ -80,13 +80,13 @@ void leep::GameInit()
 	    Drawable &dw = e.getComponent<Drawable>();
 	    dw.geometry_ = GM.resource_map().getGeometry("MatBall");
 	    dw.material_.set_type(MaterialType::MT_PBR);
-	    dw.material_.set_data((float*)&pbr, sizeof(PbrData) / 4);
+	    dw.material_.set_persistent_data((float*)&pbr, sizeof(PbrData) / 4);
 	    Texture t[4];
 	    t[0] = GM.resource_map().getTexture("CelticGold_A");
 	    t[1] = GM.resource_map().getTexture("CelticGold_M");
 	    t[2] = GM.resource_map().getTexture("CelticGold_R");
 	    t[3] = GM.resource_map().getTexture("CelticGold_N");
-	    dw.material_.set_tex(t, 4);
+	    dw.material_.set_persistent_tex(t, 4);
 	}
 
 	// Shore
@@ -100,13 +100,13 @@ void leep::GameInit()
 	    Drawable &dw = e.getComponent<Drawable>();
 	    dw.geometry_ = GM.resource_map().getGeometry("MatBall");
 	    dw.material_.set_type(MaterialType::MT_PBR);
-	    dw.material_.set_data((float*)&pbr, sizeof(PbrData) / 4);
+	    dw.material_.set_persistent_data((float*)&pbr, sizeof(PbrData) / 4);
 	    Texture t[4];
 	    t[0] = GM.resource_map().getTexture("Shore_A");
 	    t[1] = GM.resource_map().getTexture("Shore_M");
 	    t[2] = GM.resource_map().getTexture("Shore_R");
 	    t[3] = GM.resource_map().getTexture("Shore_N");
-	    dw.material_.set_tex(t, 4);
+	    dw.material_.set_persistent_tex(t, 4);
 	}
 
 	// Peeling
@@ -120,13 +120,13 @@ void leep::GameInit()
 	    Drawable &dw = e.getComponent<Drawable>();
 	    dw.geometry_ = GM.resource_map().getGeometry("MatBall");
 	    dw.material_.set_type(MaterialType::MT_PBR);
-	    dw.material_.set_data((float*)&pbr, sizeof(PbrData) / 4);
+	    dw.material_.set_persistent_data((float*)&pbr, sizeof(PbrData) / 4);
 	    Texture t[4];
 	    t[0] = GM.resource_map().getTexture("Peeling_A");
 	    t[1] = GM.resource_map().getTexture("Peeling_M");
 	    t[2] = GM.resource_map().getTexture("Peeling_R");
 	    t[3] = GM.resource_map().getTexture("Peeling_N");
-	    dw.material_.set_tex(t, 4);
+	    dw.material_.set_persistent_tex(t, 4);
 	}
 
 	// Rusted
@@ -140,13 +140,13 @@ void leep::GameInit()
 	    Drawable &dw = e.getComponent<Drawable>();
 	    dw.geometry_ = GM.resource_map().getGeometry("MatBall");
 	    dw.material_.set_type(MaterialType::MT_PBR);
-	    dw.material_.set_data((float*)&pbr, sizeof(PbrData) / 4);
+	    dw.material_.set_persistent_data((float*)&pbr, sizeof(PbrData) / 4);
 	    Texture t[4];
 	    t[0] = GM.resource_map().getTexture("Rusted_A");
 	    t[1] = GM.resource_map().getTexture("Rusted_M");
 	    t[2] = GM.resource_map().getTexture("Rusted_R");
 	    t[3] = GM.resource_map().getTexture("Rusted_N");
-	    dw.material_.set_tex(t, 4);
+	    dw.material_.set_persistent_tex(t, 4);
 	}
 
 	// Tiles
@@ -160,13 +160,13 @@ void leep::GameInit()
 	    Drawable &dw = e.getComponent<Drawable>();
 	    dw.geometry_ = GM.resource_map().getGeometry("MatBall");
 	    dw.material_.set_type(MaterialType::MT_PBR);
-	    dw.material_.set_data((float*)&pbr, sizeof(PbrData) / 4);
+	    dw.material_.set_persistent_data((float*)&pbr, sizeof(PbrData) / 4);
 	    Texture t[4];
 	    t[0] = GM.resource_map().getTexture("Tiles_A");
 	    t[1] = GM.resource_map().getTexture("Tiles_M");
 	    t[2] = GM.resource_map().getTexture("Tiles_R");
 	    t[3] = GM.resource_map().getTexture("Tiles_N");
-	    dw.material_.set_tex(t, 4);
+	    dw.material_.set_persistent_tex(t, 4);
 	}
 
 	// Ship Panels
@@ -180,13 +180,13 @@ void leep::GameInit()
 	    Drawable &dw = e.getComponent<Drawable>();
 	    dw.geometry_ = GM.resource_map().getGeometry("MatBall");
 	    dw.material_.set_type(MaterialType::MT_PBR);
-	    dw.material_.set_data((float*)&pbr, sizeof(PbrData) / 4);
+	    dw.material_.set_persistent_data((float*)&pbr, sizeof(PbrData) / 4);
 	    Texture t[4];
 	    t[0] = GM.resource_map().getTexture("ShipPanels_A");
 	    t[1] = GM.resource_map().getTexture("ShipPanels_M");
 	    t[2] = GM.resource_map().getTexture("ShipPanels_R");
 	    t[3] = GM.resource_map().getTexture("ShipPanels_N");
-	    dw.material_.set_tex(t, 4);
+	    dw.material_.set_persistent_tex(t, 4);
 	}
 
 	// Cliff
@@ -200,13 +200,13 @@ void leep::GameInit()
 	    Drawable &dw = e.getComponent<Drawable>();
 	    dw.geometry_ = GM.resource_map().getGeometry("MatBall");
 	    dw.material_.set_type(MaterialType::MT_PBR);
-	    dw.material_.set_data((float*)&pbr, sizeof(PbrData) / 4);
+	    dw.material_.set_persistent_data((float*)&pbr, sizeof(PbrData) / 4);
 	    Texture t[4];
 	    t[0] = GM.resource_map().getTexture("Cliff_A");
 	    t[1] = GM.resource_map().getTexture("Cliff_M");
 	    t[2] = GM.resource_map().getTexture("Cliff_R");
 	    t[3] = GM.resource_map().getTexture("Cliff_N");
-	    dw.material_.set_tex(t, 4);
+	    dw.material_.set_persistent_tex(t, 4);
 	}
 
 	// Granite
@@ -220,13 +220,13 @@ void leep::GameInit()
 	    Drawable &dw = e.getComponent<Drawable>();
 	    dw.geometry_ = GM.resource_map().getGeometry("MatBall");
 	    dw.material_.set_type(MaterialType::MT_PBR);
-	    dw.material_.set_data((float*)&pbr, sizeof(PbrData) / 4);
+	    dw.material_.set_persistent_data((float*)&pbr, sizeof(PbrData) / 4);
 	    Texture t[4];
 	    t[0] = GM.resource_map().getTexture("Granite_A");
 	    t[1] = GM.resource_map().getTexture("Granite_M");
 	    t[2] = GM.resource_map().getTexture("Granite_R");
 	    t[3] = GM.resource_map().getTexture("Granite_N");
-	    dw.material_.set_tex(t, 4);
+	    dw.material_.set_persistent_tex(t, 4);
 	}
 
 	// Foam
@@ -240,13 +240,13 @@ void leep::GameInit()
 	    Drawable &dw = e.getComponent<Drawable>();
 	    dw.geometry_ = GM.resource_map().getGeometry("MatBall");
 	    dw.material_.set_type(MaterialType::MT_PBR);
-	    dw.material_.set_data((float*)&pbr, sizeof(PbrData) / 4);
+	    dw.material_.set_persistent_data((float*)&pbr, sizeof(PbrData) / 4);
 	    Texture t[4];
 	    t[0] = GM.resource_map().getTexture("Foam_A");
 	    t[1] = GM.resource_map().getTexture("Foam_M");
 	    t[2] = GM.resource_map().getTexture("Foam_R");
 	    t[3] = GM.resource_map().getTexture("Foam_N");
-	    dw.material_.set_tex(t, 4);
+	    dw.material_.set_persistent_tex(t, 4);
 	}
 
 	THE_RenderCommand *rendops = THE_AllocateCommand();
@@ -333,10 +333,11 @@ void leep::GameLogic()
 	scene_tex[2] = GM.resource_map().getTexture("PrefilterSpec");
 
 	THE_RenderCommand *usemat = THE_AllocateCommand();
-	usemat->data.usemat.mat = *(new (&(usemat->data.usemat.mat)) Material());
-	usemat->data.usemat.mat.set_type(MaterialType::MT_PBR);
-	usemat->data.usemat.mat.set_data((float*)&pbr_sd, sizeof(PbrSceneData) / sizeof (float));
-	usemat->data.usemat.mat.set_tex(scene_tex, 3, 1);
+	usemat->data.usemat.mat = (Material*)THE_AllocateFrameResource(sizeof(Material));
+	usemat->data.usemat.mat = (new (usemat->data.usemat.mat) Material());
+	usemat->data.usemat.mat->set_type(MaterialType::MT_PBR);
+	usemat->data.usemat.mat->set_data((float*)&pbr_sd, sizeof(PbrSceneData) / sizeof (float));
+	usemat->data.usemat.mat->set_tex(scene_tex, 3, 1);
 	usemat->execute = THE_UseMaterialExecute;
 	clear->next = usemat;
 	usemat->next = NULL;

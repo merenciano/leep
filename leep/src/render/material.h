@@ -29,7 +29,9 @@ namespace leep
         void set_type(MaterialType type);
         void set_model(float *model);
         void set_data(float *data, int32_t count);
+	void set_persistent_data(float* data, int32_t count); // Using generalAlloc
         void set_tex(class Texture *tex, int32_t count, int32_t cube_start = -1);
+	void set_persistent_tex(class Texture* tex, int32_t count, int32_t cube_start = -1); // Using generalAlloc
 
         MaterialType type() const;
         const float *data() const;

@@ -37,6 +37,7 @@ void THE_InitRender()
 	frame_pool[0] = (int8_t*)malloc(THE_FRAME_POOL_SIZE);
 	frame_pool[1] = frame_pool[0] + THE_FRAME_POOL_SIZE / 2;
 	frame_pool_last = frame_pool[0];
+	frame_switch = 0;
 }
 
 /*
@@ -85,11 +86,12 @@ void THE_SubmitFrame()
 	curr_pool_last = next_pool_last;
 	next_pool = tmp;
 	next_pool_last = tmp; /* Free rendered commands */
-	//memset(next_pool, '\0', THE_RENDER_QUEUE_CAPACITY * sizeof(THE_RenderCommand));
+	memset(next_pool, '\0', THE_RENDER_QUEUE_CAPACITY * sizeof(THE_RenderCommand));
 
 	
 	frame_switch = !frame_switch;
 	frame_pool_last = frame_pool[frame_switch];
+	memset(frame_pool_last, '\0', THE_FRAME_POOL_SIZE / 2);
 }
 
 THE_RenderCommand *THE_AllocateCommand()
@@ -106,6 +108,11 @@ void *THE_AllocateFrameResource(size_t size)
 	void *ret = frame_pool_last;
 	frame_pool_last += size;
 	return ret;
+}
+
+int32_t THE_IsInsideFramePool(void *address)
+{
+	return address > frame_pool && address < frame_pool + THE_FRAME_POOL_SIZE;
 }
 
 size_t THE_RenderQueueUsed()

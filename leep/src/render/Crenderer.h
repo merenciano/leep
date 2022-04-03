@@ -37,6 +37,8 @@ THE_RenderCommand *THE_AllocateCommand();
 
 void *THE_AllocateFrameResource(size_t size);
 
+int32_t THE_IsInsideFramePool(void *address);
+
 size_t THE_RenderQueueUsed();
 
 #endif
