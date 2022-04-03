@@ -1,7 +1,19 @@
 #include "Crenderer.h"
 #include "Crendercommands.h"
+#include "core/Cdefinitions.h"
+#include "Cinternalresources.h"
+#include "core/memory/memory.h"
+#include "core/manager.h"
 
 THE_RenderQueue render_queue;
+
+typedef struct THE_AvailableNode {
+	THE_AvailableNode *next;
+	s32 value;
+} THE_AvailableNode;
+
+static THE_AvailableNode *available_buffer;
+static THE_AvailableNode *available_tex;
 
 static THE_RenderCommand *curr_pool;
 static THE_RenderCommand *curr_pool_last;
@@ -11,6 +23,23 @@ static THE_RenderCommand *next_pool_last;
 static int8_t *frame_pool[2];
 static int8_t *frame_pool_last;
 static int8_t frame_switch;
+
+static THE_InternalBuffer *buffers;
+static THE_InternalTexture *textures;
+static u16 buffer_count;
+static u16 texture_count;
+
+static THE_Buffer AddBuffer()
+{
+	LEEP_CORE_ASSERT(buffer_count < THE_MAX_BUFFERS, "Max buffers");
+	return buffer_count++;
+}
+
+static THE_Texture AddTexture()
+{
+	LEEP_CORE_ASSERT(texture_count < THE_MAX_TEXTURES, "Max textures");
+	return texture_count++;
+}
 
 void THE_InitRender()
 {
@@ -22,6 +51,13 @@ void THE_InitRender()
 	curr_pool_last = curr_pool;
 	next_pool_last = next_pool;
 
+	buffers = (THE_InternalBuffer*)leep::GM.memory().persistentAlloc(sizeof(THE_InternalBuffer) * THE_MAX_BUFFERS);
+	textures = (THE_InternalTexture*)leep::GM.memory().persistentAlloc(sizeof(THE_InternalTexture) * THE_MAX_TEXTURES);
+	buffer_count = 0;
+	texture_count = 0;
+
+	available_buffer = NULL;
+	available_tex = NULL;
 	//curr = NULL;
 	//curr_last = NULL;
 	//next = NULL;
@@ -118,4 +154,86 @@ int32_t THE_IsInsideFramePool(void *address)
 size_t THE_RenderQueueUsed()
 {
 	return curr_pool_last - curr_pool;
+}
+
+// BUFFER FUNCTIONS
+THE_Buffer THE_CreateBuffer()
+{
+	THE_Buffer ret;
+	if (available_buffer != NULL)
+	{
+		THE_AvailableNode *node = available_buffer;
+		available_buffer = available_buffer->next;
+		ret = node->value;
+		leep::GM.memory().generalFree(node);
+	}
+	else
+	{
+		ret = AddBuffer();
+	}
+
+	buffers[ret].vertices = NULL;
+	buffers[ret].count = 0;
+	buffers[ret].cpu_version = 0;
+	buffers[ret].gpu_version = 0;
+	buffers[ret].type = THE_BUFFER_NONE;
+	buffers[ret].internal_id = THE_UNINIT;
+	return ret;
+}
+
+THE_Buffer THE_CreateBuffer(void *data, uint32_t count, THE_BufferType type)
+{
+	LEEP_CORE_ASSERT(type != THE_BUFFER_NONE, "Invalid buffer type");
+	THE_Buffer ret;
+	if (available_buffer != NULL) {
+		THE_AvailableNode *node = available_buffer;
+		available_buffer = available_buffer->next;
+		ret = node->value;
+		leep::GM.memory().generalFree(node);
+	} else {
+		ret = AddBuffer();
+	}
+
+	if (type == THE_BUFFER_INDEX) {
+		buffers[ret].indices = (u32*)data;
+	} else {
+		buffers[ret].vertices = (float*)data;
+	}
+	buffers[ret].count = count;
+	buffers[ret].cpu_version = 1;
+	buffers[ret].gpu_version = 0;
+	buffers[ret].type = type;
+	buffers[ret].internal_id = THE_UNINIT;
+	return ret;
+}
+
+void THE_SetBufferData(THE_Buffer buff, void *data, uint32_t count, THE_BufferType t)
+{
+	LEEP_CORE_ASSERT(t != THE_BUFFER_NONE, "Invalid buffer type");
+	LEEP_CORE_ASSERT(data != NULL, "Invalid data (NULL)");
+	LEEP_CORE_ASSERT(buffers[buff].vertices == NULL, "There is data to be freed before setting new one");
+	buffers[buff].type = t;
+	buffers[buff].count = count;
+	if (t == THE_BUFFER_INDEX) {
+		buffers[buff].indices = (u32*)data;
+	} else {
+		buffers[buff].vertices = (float*)data;
+	}
+	buffers[buff].cpu_version++;
+}
+
+void THE_ReleaseBuffer(THE_Buffer buff)
+{
+	// TODO System that seeks MARKED FOR DELETE resources and deletes them in GPU
+	// and adds the index to avaiable resource list
+	buffers[buff].cpu_version = THE_MARKED_FOR_DELETE;
+	THE_FreeBufferData(buff);
+	buffers[buff].type = THE_BUFFER_NONE;
+}
+
+void THE_FreeBufferData(THE_Buffer buff)
+{
+	leep::GM.memory().generalFree(buffers[buff].vertices);
+	buffers[buff].vertices = NULL;
+	buffers[buff].count = 0;
 }
