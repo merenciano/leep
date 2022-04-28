@@ -5,6 +5,7 @@
 
 #include "buffer.h"
 #include "core/leep-string.h"
+#include "Crenderer.h"
 
 namespace leep
 {

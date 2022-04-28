@@ -5,19 +5,12 @@
 #include "core/window.h"
 #include "render/renderer.h"
 
-#ifndef STB_IMAGE_IMPLEMENTATION
-    #define STB_IMAGE_IMPLEMENTATION
-    #define STBI_MALLOC(sz)           GM.memory().generalAlloc(sz)
-    #define STBI_REALLOC(p,newsz)     GM.memory().generalRealloc(p,newsz)
-    #define STBI_FREE(p)              GM.memory().generalFree(p)
-#endif
-#include "stb_image.h"
-
 namespace leep
 {
     Texture::Texture()
     {
-        handle_ = CommonDefs::UNINIT_HANDLE;
+        //handle_ = CommonDefs::UNINIT_HANDLE;
+	    handle_ = THE_UNINIT;
     }
 
     Texture::Texture(const Texture &t)
@@ -36,8 +29,28 @@ namespace leep
         return *this;
     }
 
+    THE_TexType ToCType(TexType t)
+    {
+	    switch (t)
+	    {
+	    case TexType::DEPTH: return THE_TEX_DEPTH;
+	    case TexType::ENVIRONMENT: return THE_TEX_ENVIRONMENT;
+	    case TexType::LUT: return THE_TEX_LUT;
+	    case TexType::NONE: return THE_TEX_NONE;
+	    case TexType::PREFILTER_ENVIRONMENT: return THE_TEX_PREFILTER_ENVIRONMENT;
+	    case TexType::R: return THE_TEX_R;
+	    case TexType::RGB: return THE_TEX_RGB;
+	    case TexType::RGB_F16: return THE_TEX_RGB_F16;
+	    case TexType::SRGB: return THE_TEX_SRGB;
+	    case TexType::RGBA_F16: return THE_TEX_RGBA_F16;
+	    case TexType::SKYBOX: return THE_TEX_SKYBOX;
+	    }
+    }
+
     void Texture::create(const char *path, TexType t)
     {
+	    handle_ = THE_CreateTexture(path, ToCType(t));
+	    /*
         LEEP_ASSERT(handle_ == CommonDefs::UNINIT_HANDLE,
             "This texture is currently in use");
         LEEP_ASSERT(*path != '\0', "For empty textures use createEmpty");
@@ -61,12 +74,21 @@ namespace leep
         r.textures_[handle_].gpu_version_ = 0;
         r.textures_[handle_].width_ = 0;
         r.textures_[handle_].height_ = 0;
-        r.textures_[handle_].type_ = t;
+        r.textures_[handle_].type_ = t*/
     }
 
     void Texture::createEmpty(float width, float height, TexType t)
     {
-        LEEP_ASSERT(handle_ == CommonDefs::UNINIT_HANDLE, "This texture is currently in use");
+	    if (width > 1.0f)
+	    {
+		    handle_ = THE_CreateEmptyTexture((u32)width, (u32)height, ToCType(t));
+	    }
+	    else
+	    {
+		    handle_ = THE_CreateEmptyTexture(width, height, ToCType(t));
+	    }
+	   
+        /*LEEP_ASSERT(handle_ == CommonDefs::UNINIT_HANDLE, "This texture is currently in use");
 		LEEP_ASSERT(width > 0.0f && height > 0.0f,
             "Width and height of the texture must be greater than 0");
         Renderer &r = GM.renderer();
@@ -100,11 +122,14 @@ namespace leep
         r.textures_[handle_].pix_ = nullptr;
         r.textures_[handle_].cpu_version_ = 1;
         r.textures_[handle_].gpu_version_ = 0;
-		r.textures_[handle_].type_ = t;
+		r.textures_[handle_].type_ = t;*/
     }
 
     void Texture::createAndLoad(const char *path, TexType t)
     {
+	    handle_ = THE_CreateTexture(path, ToCType(t));
+	    THE_LoadTexture(handle_, path);
+	    /*
         LEEP_ASSERT(handle_ == CommonDefs::UNINIT_HANDLE,
             "This texture is currently in use");
         LEEP_ASSERT(*path != '\0', "For empty textures use createEmpty");
@@ -164,28 +189,33 @@ namespace leep
         {
             GM.memory().generalFree((void*)path);
         }
+	*/
     }
 
     void Texture::releasePixels()
     {
+	    THE_FreeTextureData(handle_);
+	    /*
         if (GM.renderer().textures_[handle_].pix_)
         {
             stbi_image_free(GM.renderer().textures_[handle_].pix_);
             //GM.memory().generalFree(GM.renderer().textures_[handle_].pix_);
             GM.renderer().textures_[handle_].pix_ = nullptr;
         }
+	*/
     }
 
     void Texture::release()
     {
-        if (handle_ >= 0)
+	    THE_ReleaseTexture(handle_);
+        /*if (handle_ >= 0)
         {
             GM.renderer().textures_[handle_].cpu_version_ = CommonDefs::DELETED_GPU_RESOURCE;
             GM.renderer().textures_[handle_].gpu_version_ = CommonDefs::DELETED_GPU_RESOURCE;
             releasePixels();
 
 			handle_ = CommonDefs::DELETED_HANDLE;
-        }
+        }*/
     }
 
     int32_t Texture::handle() const

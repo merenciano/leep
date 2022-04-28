@@ -3,8 +3,8 @@
 #include "core/manager.h"
 #include "core/memory/memory.h"
 
-#define TINYOBJLOADER_IMPLEMENTATION
-#include "tiny_obj_loader.h"
+//#define TINYOBJLOADER_IMPLEMENTATION
+//#include "tiny_obj_loader.h"
 
 namespace leep {
 
@@ -43,7 +43,10 @@ Buffer Geometry::index_buffer() const
 
 void Geometry::createCube()
 {
-    int32_t i = 0;
+	THE_Mesh m = THE_CreateCubeMesh();
+	vertex_buffer_.setFromC(m.vertex);
+	index_buffer_.setFromC(m.index);
+	/*int32_t i = 0;
     float *vert = (float*)GM.memory().generalAlloc(24*8*sizeof(float));
     uint32_t *ind = (uint32_t*)GM.memory().generalAlloc(36 * sizeof(uint32_t));
     float vertices[] = {
@@ -102,12 +105,13 @@ void Geometry::createCube()
     vertex_buffer_.create();
     vertex_buffer_.set_data(vert, 24*8, BufferType::VERTEX_BUFFER_3P_3N_2UV);
     index_buffer_.create();
-    index_buffer_.set_data(ind, 36);
+    index_buffer_.set_data(ind, 36);*/
+    
 }
 
 void Geometry::createVoxel()
 {
-    int32_t i = 0;
+	/*int32_t i = 0;
     float *vert = (float*)GM.memory().generalAlloc(24*6*sizeof(float));
     uint32_t *ind = (uint32_t*)GM.memory().generalAlloc(36 * sizeof(uint32_t));
     float vertices[] = {
@@ -166,12 +170,16 @@ void Geometry::createVoxel()
     vertex_buffer_.create();
     vertex_buffer_.set_data(vert, 24*6, BufferType::VERTEX_BUFFER_3P_3N);
     index_buffer_.create();
-    index_buffer_.set_data(ind, 36);
+    index_buffer_.set_data(ind, 36);*/
+    
 }
 
 void Geometry::createSphere(uint32_t x_segments, uint32_t y_segments)
 {
-    const float PI = 3.14159265359f;
+	THE_Mesh m = THE_CreateSphereMesh(x_segments, y_segments);
+	vertex_buffer_.setFromC(m.vertex);
+	index_buffer_.setFromC(m.index);
+    /*const float PI = 3.14159265359f;
     // Using the raw alloc because for basic types I dont need to call the constructors
     float *vert = (float*)GM.memory().generalAlloc(((1+x_segments) * (1+y_segments) * 8)*sizeof(float));
     uint32_t *ind = (uint32_t*)GM.memory().generalAlloc((x_segments * y_segments * 6) * sizeof(uint32_t));
@@ -223,12 +231,15 @@ void Geometry::createSphere(uint32_t x_segments, uint32_t y_segments)
     vertex_buffer_.set_data(vert, (1+x_segments)*(1+y_segments)*8,
         BufferType::VERTEX_BUFFER_3P_3N_2UV);
     index_buffer_.create();
-    index_buffer_.set_data(ind, x_segments*y_segments * 6);
+    index_buffer_.set_data(ind, x_segments*y_segments * 6);*/
 }
 
 void Geometry::createQuad()
 {
-    float *v = (float*)GM.memory().generalAlloc(32 * sizeof(float));
+	THE_Mesh m = THE_CreateQuadMesh();
+	vertex_buffer_.setFromC(m.vertex);
+	index_buffer_.setFromC(m.index);
+	/*float *v = (float*)GM.memory().generalAlloc(32 * sizeof(float));
     uint32_t *ind = (uint32_t*)GM.memory().generalAlloc(6 * sizeof(uint32_t));
     float vertices[]{
         -1.0f, -1.0f, 0.0f, 0.0f, 0.0f, -1.0f, 0.0f,  0.0f,
@@ -253,12 +264,16 @@ void Geometry::createQuad()
     vertex_buffer_.create();
     vertex_buffer_.set_data(v, 32, BufferType::VERTEX_BUFFER_3P_3N_2UV);
     index_buffer_.create();
-    index_buffer_.set_data(ind, 6);
+    index_buffer_.set_data(ind, 6);*/
+    
 }
 
 void Geometry::loadObj(String path)
 {
-    tinyobj::ObjReaderConfig reader_config;
+	THE_Mesh m = THE_CreateMeshFromFile_OBJ(path.c_str());
+	vertex_buffer_.setFromC(m.vertex);
+	index_buffer_.setFromC(m.index);
+    /*tinyobj::ObjReaderConfig reader_config;
     reader_config.mtl_search_path = "./"; // Path to material files
     tinyobj::ObjReader reader;
 
@@ -387,7 +402,7 @@ void Geometry::loadObj(String path)
     index_buffer_.create();
     vertex_buffer_.set_data(v, (uint32_t)vertices.size(), 
         BufferType::VERTEX_BUFFER_3P_3N_3T_3B_2UV);
-    index_buffer_.set_data(ind, (uint32_t)indices.size());
+    index_buffer_.set_data(ind, (uint32_t)indices.size());*/
 }
 
 void Geometry::createMesh(float *v, uint32_t vc, uint32_t *idx, uint32_t idxc)

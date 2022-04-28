@@ -2,30 +2,7 @@
 #define __THE_RENDER_INTERNAL_RESOURCES_H__
 
 #include "core/Cdefinitions.h"
-
-typedef enum {
-	THE_BUFFER_NONE = 0,
-	THE_BUFFER_VERTEX_3P,
-	THE_BUFFER_VERTEX_3P_3N,
-	THE_BUFFER_VERTEX_3P_2UV,
-	THE_BUFFER_VERTEX_3P_3N_2UV,
-	THE_BUFFER_VERTEX_3P_3N_3T_3B_2UV,
-	THE_BUFFER_INDEX,
-} THE_BufferType;
-
-typedef enum {
-	THE_TEX_NONE = 0,
-	THE_TEX_R,
-	THE_TEX_RGB,
-	THE_TEX_SRGB,
-	THE_TEX_DEPTH,
-	THE_TEX_SKYBOX,
-	THE_TEX_RGB_F16,
-	THE_TEX_RGBA_F16,
-	THE_TEX_LUT,
-	THE_TEX_ENVIRONMENT,
-	THE_TEX_PREFILTER_ENVIRONMENT,
-} THE_TexType;
+#include "Crenderer.h" // TODO: Solo por THE_BufferType y THE_TexType... revisar
 
 typedef struct {
 	union {
@@ -41,15 +18,38 @@ typedef struct {
 } THE_InternalBuffer;
 
 typedef struct {
-        s8 path_[64];
-        void *pix_;
-        s32 internal_id_;
-        s32 cpu_version_;
-        s32 gpu_version_;
-        u32 texture_unit_;
-        u32 width_;
-        u32 height_;
-        THE_TexType type_;
+        char path[64];
+        void *pix;
+        s32 internal_id;
+        s32 cpu_version;
+        s32 gpu_version;
+        u32 texture_unit;
+        u32 width;
+        u32 height;
+        THE_TexType type;
 } THE_InternalTexture;
+
+typedef struct {
+	s32 internal_id;
+	s32 cpu_version;
+	s32 gpu_version;
+	u32 width;
+	u32 height;
+	THE_Texture color_tex;
+	THE_Texture depth_tex;
+	u8 color;
+	u8 depth;
+} THE_InternalFramebuffer;
+
+extern THE_InternalBuffer *buffers;
+extern THE_InternalTexture *textures;
+extern THE_InternalFramebuffer *framebuffers;
+extern u16 buffer_count;
+extern u16 texture_count;
+extern u16 framebuffer_count;
+
+s32 IsValidBuffer(THE_Buffer buff);
+s32 IsValidTexture(THE_Texture tex);
+s32 IsValidFramebuffer(THE_Framebuffer fb);
 
 #endif

@@ -2,8 +2,9 @@
 #define __THE_RENDER_MATERIAL_H__
 
 #include "core/Cdefinitions.h"
+#include "mathc.h"
 
-typedef s32 THE_Texture
+typedef s32 THE_Texture;
 
 typedef enum
 {
@@ -24,18 +25,18 @@ typedef enum
 
 typedef struct  
 {
-        float *data_; 
-        THE_Texture *tex_;
-        MaterialType type_; // Acts as a handle
-        s32 dcount_;
-        s32 tcount_;
-        s32 cube_start_;
+        float *data; 
+        THE_Texture *tex;
+        THE_MaterialType type; // Acts as a handle
+        s32 dcount;
+        s32 tcount;
+        s32 cube_start;
 } THE_Material;
 
 typedef struct
 {
 	float model_[16];
-	glm::vec3 color;
+	struct vec3 color;
 	float use_albedo_map;
 	float use_pbr_maps;
 	float tiling_x;
@@ -49,16 +50,16 @@ typedef struct
 
 typedef struct
 {
-	glm::mat4x4 view_projection;
-	glm::vec3 camera_position;
+	struct mat4 view_projection;
+	struct vec3 camera_position;
 	float padding;
-	glm::vec4 light_direction_intensity;
+	struct vec4 light_direction_intensity;
 } THE_PbrSceneData;
 
 typedef struct
 {
 	float model[16];
-	glm::vec3 color;
+	struct vec3 color;
 	float roughness;
 	float metallic;
 	float padding[3];
@@ -66,20 +67,20 @@ typedef struct
 
 typedef struct
 {
-	glm::mat4 vp;
-	glm::vec3 camera_position;
+	struct mat4 vp;
+	struct vec3 camera_position;
 	float padding;
-	glm::vec4 light_direction_intensity;
+	struct vec4 light_direction_intensity;
 } THE_VoxMatSceneData;
 
 typedef struct
 {
-	glm::mat4 vp;
+	struct mat4 vp;
 } THE_EquirecToCubeData;
 
 typedef struct
 {
-	glm::mat4 vp;
+	struct mat4 vp;
 	float roughness;
 	float padding[3];
 } THE_PrefilterEnvData;

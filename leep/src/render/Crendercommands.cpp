@@ -1,5 +1,6 @@
 #include "Crendercommands.h"
 #include "Crenderer.h" // TODO Move frame allocator to rendercommands and remove this include 
+#include "Cinternalresources.h"
 #include "render/camera.h"
 
 
@@ -11,29 +12,27 @@
 #include "glad/glad.h"
 #include "stb_image.h"
 
-struct THE_CubeConfig
-{
+typedef struct {
 	GLenum internal_format;
 	GLenum format;
 	GLenum type;
 	GLenum wrap;
 	GLenum min_filter;
 	GLenum mag_filter;
-};
+} THE_CubeConfig;
 
-struct THE_TextureConfig
-{
+typedef struct {
 	GLenum internal_format;
 	GLenum format;
 	GLenum type;
 	GLenum wrap;
 	GLenum filter;
-	int32_t channels;
-};
+	s32 channels;
+} THE_TextureConfig;
 
 void THE_ClearExecute(THE_CommandData *data)
 {
-	uint32_t mask = 0U;
+	u32 mask = 0;
 	if (data->clear.bcolor)
 		mask |= GL_COLOR_BUFFER_BIT;
 	if (data->clear.bdepth)
@@ -47,50 +46,40 @@ void THE_ClearExecute(THE_CommandData *data)
 
 void THE_CreateBufferExecute(THE_CommandData *data)
 {
-	leep::Renderer &r = leep::Manager::instance().renderer();
-	leep::Buffer buff = data->createbuff.buffer;
+	THE_InternalBuffer b = buffers[data->createbuff.buffer];
+	THE_ASSERT(b.cpu_version > 0 && "This buffer hasn't got any data yet");
+	THE_ASSERT(b.internal_id == THE_UNINIT);
 
-	LEEP_CORE_ASSERT(r.buffers_[buff.handle()].cpu_version_ > 0,
-		"This buffer hasn't got any data yet");
-
-	glGenBuffers(1, &(r.buffers_[buff.handle()].internal_id_));
-
-	if (buff.type() == leep::BufferType::INDEX_BUFFER) {
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, r.buffers_[buff.handle()].internal_id_);
-		glBufferData(GL_ELEMENT_ARRAY_BUFFER,
-			r.buffers_[buff.handle()].count_ * sizeof(uint32_t),
-			(const void*)r.buffers_[buff.handle()].data_.indices_,
-			GL_STATIC_DRAW);
-	} else if (buff.type() != leep::BufferType::NONE) {
-		glBindBuffer(GL_ARRAY_BUFFER, r.buffers_[buff.handle()].internal_id_);
-		glBufferData(GL_ARRAY_BUFFER,
-			r.buffers_[buff.handle()].count_ * sizeof(float),
-			(const void*)r.buffers_[buff.handle()].data_.vertices_,
-			GL_STATIC_DRAW);
+	glGenBuffers(1, &b.internal_id);
+	if (b.type == THE_BUFFER_INDEX) {
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, b.internal_id);
+		glBufferData(GL_ELEMENT_ARRAY_BUFFER, b.count * sizeof(u32),
+			(const void*)b.indices, GL_STATIC_DRAW);
+	} else if (b.type != THE_BUFFER_NONE) {
+		glBindBuffer(GL_ARRAY_BUFFER, b.internal_id);
+		glBufferData(GL_ARRAY_BUFFER, b.count * sizeof(float),
+			(const void*)b.vertices, GL_STATIC_DRAW);
 	}
 
-	r.buffers_[buff.handle()].gpu_version_ = r.buffers_[buff.handle()].cpu_version_;
+	b.gpu_version = b.cpu_version;
 
 	// Delete ram data now that has been copied into the vram
-	buff.freeSystemRamData();
+	THE_FreeBufferData(data->createbuff.buffer);
 }
 
 void THE_CreateCubemapExecute(THE_CommandData *data)
 {
 	THE_CubeConfig config;
-	leep::Renderer &r = leep::GM.renderer();
-	int32_t id = data->createcubemap.texture.handle();
+	THE_Texture tex = data->createcubemap.texture;
+	THE_InternalTexture t = textures[tex];
 
-	LEEP_CORE_ASSERT(r.textures_[id].cpu_version_ > r.textures_[id].gpu_version_,
-		"Texture created before (CPU)");
-	LEEP_CORE_ASSERT(id < 62,
-		"Start thinking about the max textures");
-	LEEP_CORE_ASSERT(id >= 0, "Texture not initialized");
-	LEEP_CORE_ASSERT(r.textures_[id].internal_id_ == CommonDefs::UNINIT_INTERNAL_ID,
-		"Texture already created in the gpu");
+	THE_ASSERT(IsValidTexture(tex));
+	THE_ASSERT(t.cpu_version > t.gpu_version && "Texture not created on CPU or already created on GPU");
+	THE_ASSERT(tex < 62 && "Start thinking about the max textures");
+	THE_ASSERT(t.internal_id == THE_UNINIT && "Texture already created in the gpu");
 
-	switch (r.textures_[id].type_) {
-	case leep::TexType::SKYBOX:
+	switch (t.type) {
+	case THE_TEX_SKYBOX:
 		config.format = GL_RGB;
 		config.internal_format = GL_SRGB;
 		config.type = GL_UNSIGNED_BYTE;
@@ -99,7 +88,7 @@ void THE_CreateCubemapExecute(THE_CommandData *data)
 		config.wrap = GL_CLAMP_TO_EDGE;
 		break;
 
-	case leep::TexType::ENVIRONMENT:
+	case THE_TEX_ENVIRONMENT:
 		config.format = GL_RGB;
 		config.internal_format = GL_RGB16F;
 		config.type = GL_FLOAT;
@@ -108,7 +97,7 @@ void THE_CreateCubemapExecute(THE_CommandData *data)
 		config.wrap = GL_CLAMP_TO_EDGE;
 		break;
 
-	case leep::TexType::PREFILTER_ENVIRONMENT:
+	case THE_TEX_PREFILTER_ENVIRONMENT:
 		config.format = GL_RGB;
 		config.internal_format = GL_RGB16F;
 		config.type = GL_FLOAT;
@@ -122,45 +111,45 @@ void THE_CreateCubemapExecute(THE_CommandData *data)
 		return;
 	}
 
-	glGenTextures(1, (GLuint*)&(r.textures_[id].internal_id_));
-	r.textures_[id].texture_unit_ = id + 1;
-	glActiveTexture(GL_TEXTURE0 + r.textures_[id].texture_unit_);
-	glBindTexture(GL_TEXTURE_CUBE_MAP, r.textures_[id].internal_id_);
+	glGenTextures(1, (GLuint*)&(t.internal_id));
+	t.texture_unit = tex + 1;
+	glActiveTexture(GL_TEXTURE0 + t.texture_unit);
+	glBindTexture(GL_TEXTURE_CUBE_MAP, t.internal_id);
 
 	// The path for cubemaps will be the directory where the skyboxfaces are
 	// and inside the directory the faces must have these names
-	if (r.textures_[id].type_ == leep::TexType::SKYBOX) {
-		leep::String faces[6] = {
+	if (t.type == THE_TEX_SKYBOX) {
+		char *faces[6] = {
 			// MEGA TODO: Fix this soon
-			/*r.textures_[id].path_ + "/right.jpg",
-			r.textures_[id].path_ + "/left.jpg",
-			r.textures_[id].path_ + "/up.jpg",
-			r.textures_[id].path_ + "/down.jpg",
-			r.textures_[id].path_ + "/front.jpg",
-			r.textures_[id].path_ + "/back.jpg",*/
+			/*
+			strcat(t.path, "/right.jpg"),
+			strcat(t.path, "/left.jpg"),
+			strcat(t.path, "/up.jpg"),
+			strcat(t.path, "/down.jpg"),
+			strcat(t.path, "/front.jpg"),
+			strcat(t.path, "/back.jpg"),*/
 	
 		};
 	
 		int width, height, nchannels;
 		stbi_set_flip_vertically_on_load(0);
-		for (uint32_t i = 0; i < 6; ++i) {
-			uint8_t* img_data = stbi_load(
-				faces[i].c_str(), &width, &height, &nchannels, 0);
-			LEEP_CORE_ASSERT(img_data,"Couldn't load the image to the cubemap");
+		for (u32 i = 0; i < 6; ++i) {
+			u8 *img_data = stbi_load(faces[i], &width, &height, &nchannels, 0);
+			THE_ASSERT(img_data && "Couldn't load the image to the cubemap");
 			glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0,
 				config.internal_format, width, height, 0,
 				config.format, config.type, img_data);
 			stbi_image_free(img_data);
 		}
-		r.textures_[id].width_ = width;
-		r.textures_[id].height_ = height;
+		t.width = width;
+		t.height = height;
 	} else {
-		LEEP_CORE_ASSERT(r.textures_[id].width_ > 0 && r.textures_[id].height_ > 0,
+		THE_ASSERT(t.width > 0 && t.height > 0 &&
 			"The texture have to have size for the empty environment");
-		for (uint32_t i = 0; i < 6; ++i) {
+		for (u32 i = 0; i < 6; ++i) {
 			glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0,
-				config.internal_format, r.textures_[id].width_,
-				r.textures_[id].height_, 0, config.format, config.type, 0);
+				config.internal_format, t.width,
+				t.height, 0, config.format, config.type, 0);
 		}
 	}
 
@@ -169,10 +158,10 @@ void THE_CreateCubemapExecute(THE_CommandData *data)
 	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, config.wrap);
 	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, config.min_filter);
 	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, config.mag_filter);
-	if (r.textures_[id].type_ == TexType::PREFILTER_ENVIRONMENT) {
+	if (t.type == THE_TEX_PREFILTER_ENVIRONMENT) {
 		glGenerateMipmap(GL_TEXTURE_CUBE_MAP);
 	}
-	r.textures_[id].gpu_version_ = r.textures_[id].cpu_version_;
+	t.gpu_version = t.cpu_version;
 }
 
 void THE_CreateFramebufferExecute(THE_CommandData *data)
@@ -224,17 +213,16 @@ void THE_CreateFramebufferExecute(THE_CommandData *data)
 void THE_CreateTextureExecute(THE_CommandData *data)
 {
 	THE_TextureConfig config;
-	int32_t id = data->createtex.tex.handle();
-	InternalTexture &itex = GM.renderer().textures_[id];
+	THE_Texture tex = data->createtex.tex;
+	THE_InternalTexture t = textures[tex];
 
-	LEEP_CORE_ASSERT(itex.cpu_version_ == 1, "Texture created before?");
-	LEEP_CORE_ASSERT(id < 62, "Max texture units"); // Tex unit is id + 1
-	LEEP_CORE_ASSERT(id >= 0, "Texture not initialized");
-	LEEP_CORE_ASSERT(itex.internal_id_ == CommonDefs::UNINIT_INTERNAL_ID,
-		"Texture already created on GPU");
+	THE_ASSERT(IsValidTexture(tex));
+	THE_ASSERT(t.cpu_version == 1 && "Texture created before?");
+	THE_ASSERT(tex < 62, "Max texture units"); // Tex unit is id + 1
+	THE_ASSERT(t.internal_id == THE_UNINIT && "Texture already created on GPU");
 
-	switch(itex.type_) {
-	case TexType::R:
+	switch(t.type) {
+	case THE_TEX_R:
 		config.format = GL_RED;
 		config.internal_format = GL_R8;
 		config.type = GL_UNSIGNED_BYTE;
@@ -243,7 +231,7 @@ void THE_CreateTextureExecute(THE_CommandData *data)
 		config.channels = 1;
 		break;
 
-	case TexType::LUT:
+	case THE_TEX_LUT:
 		config.format = GL_RG;
 		config.internal_format = GL_RG16F;
 		config.type = GL_FLOAT;
@@ -252,7 +240,7 @@ void THE_CreateTextureExecute(THE_CommandData *data)
 		config.channels = 2;
 		break;
 
-	case TexType::RGB: 
+	case THE_TEX_RGB: 
 		config.format = GL_RGB;
 		config.internal_format = GL_RGB;
 		config.type = GL_UNSIGNED_BYTE;
@@ -261,7 +249,7 @@ void THE_CreateTextureExecute(THE_CommandData *data)
 		config.channels = 3;
 		break;
 
-	case TexType::SRGB: 
+	case THE_TEX_SRGB: 
 		config.format = GL_RGB;
 		config.internal_format = GL_SRGB;
 		config.type = GL_UNSIGNED_BYTE;
@@ -270,7 +258,7 @@ void THE_CreateTextureExecute(THE_CommandData *data)
 		config.channels = 3;
 		break;
 
-	case TexType::RGBA_F16:
+	case THE_TEX_RGBA_F16:
 		config.format = GL_RGBA;
 		config.internal_format = GL_RGBA16F;
 		config.type = GL_FLOAT;
@@ -279,7 +267,7 @@ void THE_CreateTextureExecute(THE_CommandData *data)
 		config.channels = 4;
 		break;
 
-	case TexType::DEPTH:
+	case THE_TEX_DEPTH:
 		config.format = GL_DEPTH_COMPONENT;
 		config.internal_format = GL_DEPTH_COMPONENT;
 		config.type = GL_FLOAT;
@@ -288,7 +276,7 @@ void THE_CreateTextureExecute(THE_CommandData *data)
 		config.channels = 1;
 		break;
 
-	case TexType::RGB_F16:
+	case THE_TEX_RGB_F16:
 		config.format = GL_RGB;
 		config.internal_format = GL_RGB16F;
 		config.type = GL_FLOAT;
@@ -308,47 +296,46 @@ void THE_CreateTextureExecute(THE_CommandData *data)
 		break;
 	}
 
-	glGenTextures(1, (GLuint*)&(itex.internal_id_));
-	itex.texture_unit_ = id + 1;
-	glActiveTexture(GL_TEXTURE0 + itex.texture_unit_);
-	glBindTexture(GL_TEXTURE_2D, itex.internal_id_);
+	glGenTextures(1, (GLuint*)&(t.internal_id));
+	t.texture_unit = tex + 1;
+	glActiveTexture(GL_TEXTURE0 + t.texture_unit);
+	glBindTexture(GL_TEXTURE_2D, t.internal_id);
 
-	if (itex.type_ == TexType::RGB_F16) {
-		if (!itex.pix_) {
+	if (t.type == THE_TEX_RGB_F16) {
+		if (!t.pix) {
 			stbi_set_flip_vertically_on_load(1);
 			int width, height, nchannels;
-			itex.pix_ = stbi_loadf(
-				itex.path_, &width, &height, &nchannels, 0);
-			itex.width_ = width;
-			itex.height_ = height;
+			t.pix = stbi_loadf(
+				t.path, &width, &height, &nchannels, 0);
+			t.width = width;
+			t.height = height;
 		}
-		LEEP_CORE_ASSERT(itex.pix_, "The image couldn't be loaded");
-		glTexImage2D(GL_TEXTURE_2D, 0, config.internal_format, itex.width_,
-			itex.height_, 0, config.format, config.type, itex.pix_);
+		THE_ASSERT(t.pix && "The image couldn't be loaded");
+		glTexImage2D(GL_TEXTURE_2D, 0, config.internal_format, t.width, t.height, 0, 
+			config.format, config.type, t.pix);
 		if (data->createtex.release_ram) {
-			stbi_image_free(itex.pix_);
-			itex.pix_ = nullptr;
+			stbi_image_free(t.pix);
+			t.pix = NULL;
 		}
-	} else if (itex.path_[0] != '\0') {
-		if (!itex.pix_) {
+	} else if (*(t.path) != '\0') {
+		if (!t.pix) {
 			stbi_set_flip_vertically_on_load(1);
 			int width, height, nchannels;
-			itex.pix_ = stbi_load(
-				itex.path_, &width, &height, &nchannels, config.channels);
-			itex.width_ = width;
-			itex.height_ = height;
+			t.pix = stbi_load(t.path, &width, &height, &nchannels, config.channels);
+			t.width = width;
+			t.height = height;
 		}
-		LEEP_CORE_ASSERT(itex.pix_, "The image couldn't be loaded");
-		glTexImage2D(GL_TEXTURE_2D, 0, config.internal_format, itex.width_,
-			itex.height_, 0, config.format, config.type, itex.pix_);
+		THE_ASSERT(t.pix && "The image couldn't be loaded");
+		glTexImage2D(GL_TEXTURE_2D, 0, config.internal_format, t.width, t.height, 0,
+			config.format, config.type, t.pix);
 		glGenerateMipmap(GL_TEXTURE_2D);
 		if (data->createtex.release_ram) {
-			stbi_image_free(itex.pix_);
-			itex.pix_ = nullptr;
+			stbi_image_free(t.pix);
+			t.pix = NULL;
 		}
 	} else {
-		glTexImage2D(GL_TEXTURE_2D, 0, config.internal_format, itex.width_,
-			itex.height_, 0, config.format, config.type, NULL);
+		glTexImage2D(GL_TEXTURE_2D, 0, config.internal_format, t.width, t.height, 0,
+			config.format, config.type, NULL);
 	}
 	// No shadows outside shadow maps
 	float border_color[] = { 1.0f, 1.0f, 1.0f, 1.0f };
@@ -357,21 +344,24 @@ void THE_CreateTextureExecute(THE_CommandData *data)
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, config.filter);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, config.wrap);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, config.wrap);
-	itex.gpu_version_ = itex.cpu_version_;
+	t.gpu_version = t.cpu_version;
 }
 
 void THE_SkyboxExecute(THE_CommandData *data)
 {
-        Renderer &r = GM.renderer();
-	glm::mat4 view = leep::GM.camera().static_view_projection();
-	leep::Material *mat = (Material*)THE_AllocateFrameResource(sizeof(Material));
-	mat = (new (mat) Material());
-	mat->set_type(MT_SKYBOX);
-	mat->set_data((float*)&view, 16);
-	mat->set_tex((Texture*)&(data->skybox.cubemap), 1, 0);
+	THE_Material *mat = (THE_Material*)THE_AllocateFrameResource(sizeof(THE_Material));
+	mat->type = THE_MT_SKYBOX;
+	mat->data = THE_AllocateFrameResource(16 * sizeof(float));
+	mat4_assign(mat->data, leep::GM.camera().static_view_projection());
+	mat->dcount = 16;
+	mat->tex = THE_AllocateFrameResource(sizeof(THE_Texture));
+	*(mat->tex) = data->skybox.cubemap;
+	mat->tcount = 1;
+	mat->cube_start = 0;
+	// TODO: VOY POR AQUI
 
-	int32_t vertex_handler = Renderer::s_cube.vertex_buffer().handle();
-	int32_t index_handler = Renderer::s_cube.index_buffer().handle();
+	s32 vertex_handler = Renderer::s_cube.vertex_buffer().handle();
+	s32 index_handler = Renderer::s_cube.index_buffer().handle();
 
 	LEEP_CORE_ASSERT(vertex_handler != CommonDefs::UNINIT_HANDLE,
 		"You are trying to draw with an uninitialized vertex buffer");

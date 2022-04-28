@@ -33,11 +33,11 @@ typedef struct {
 } THE_ClearCommandData;
 
 typedef struct {
-	leep::Buffer buffer;
+	THE_Buffer buffer;
 } THE_CreateBufferCommandData;
 
 typedef struct {
-	leep::Texture texture;
+	THE_Texture texture;
 } THE_CreateCubemapCommandData;
 
 // TODO: Hide framebuffer concept from API
@@ -46,7 +46,7 @@ typedef struct {
 } THE_CreateFramebufferCommandData;
 
 typedef struct {
-	leep::Texture tex;
+	THE_Texture tex;
 	int32_t release_ram;
 } THE_CreateTextureCommandData;
 

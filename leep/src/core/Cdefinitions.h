@@ -1,4 +1,7 @@
 #include <stdint.h>
+#include <assert.h>
+
+#define THE_ASSERT(X) assert(X)
 
 #define THE_UNINIT -5000
 #define THE_DELETED -5001

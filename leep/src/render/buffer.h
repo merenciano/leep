@@ -10,6 +10,7 @@
 
 #include <stdint.h>
 #include <vector>
+#include "Crenderer.h"
 
 namespace leep
 {
@@ -34,6 +35,8 @@ namespace leep
 
         Buffer& operator=(const Buffer &other);
 
+	void setFromC(THE_Buffer b) { handle_ = b; }
+
         void create();
         void create(float* data, uint32_t count, BufferType type);
         void create(uint32_t* data, uint32_t count);
@@ -45,8 +48,8 @@ namespace leep
         void release();
 
     private:
-        BufferType type_;
-        int32_t handle_; 
+        //BufferType type_;
+        THE_Buffer handle_; 
     };
 }
 

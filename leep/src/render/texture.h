@@ -4,6 +4,7 @@
 #define __LEEP_RENDER_TEXTURE_H__
 
 #include <stdint.h>
+#include "Crenderer.h"
 
 namespace leep
 {
@@ -37,7 +38,8 @@ namespace leep
         int32_t handle() const;
 
     private:
-        int32_t handle_;
+        //int32_t handle_;
+	THE_Texture handle_;
     };
 }
 
