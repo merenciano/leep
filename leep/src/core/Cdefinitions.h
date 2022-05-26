@@ -1,7 +1,10 @@
 #include <stdint.h>
 #include <assert.h>
+#include <stdio.h>
 
 #define THE_ASSERT(X) assert(X)
+#define THE_LOG_ERROR(FMT, ...) printf("ERROR @ %s(%u): \n\t" FMT "\n", __FILE__, __LINE__, __VA_ARGS__)
+#define THE_LOG(FMT, ...) printf(FMT "\n", __VA_ARGS__)
 
 #define THE_UNINIT -5000
 #define THE_DELETED -5001

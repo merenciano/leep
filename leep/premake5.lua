@@ -3,6 +3,7 @@ project "leep"
     kind "StaticLib"
     language "C++"
     cppdialect "C++17"
+    cdialect "C11"
     targetdir "lib/"
     objdir "build/"
     includedirs {

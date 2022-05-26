@@ -16,7 +16,12 @@
 #define TINYOBJLOADER_IMPLEMENTATION
 #include "tiny_obj_loader.h"
 
+const THE_Mesh SPHERE_MESH = THE_CreateSphereMesh(32, 32);
+const THE_Mesh CUBE_MESH = THE_CreateCubeMesh();
+const THE_Mesh QUAD_MESH = THE_CreateQuadMesh();
+
 THE_RenderQueue render_queue;
+THE_Camera camera;
 
 typedef struct THE_AvailableNode {
 	THE_AvailableNode *next;
@@ -90,6 +95,14 @@ void THE_InitRender()
 	frame_pool[1] = frame_pool[0] + THE_FRAME_POOL_SIZE / 2;
 	frame_pool_last = frame_pool[0];
 	frame_switch = 0;
+
+	// InternalMaterial initialization
+	materials = (THE_InternalMaterial*)leep::GM.memory().persistentAlloc(sizeof(THE_InternalMaterial) * THE_MT_MAX);
+	materials[MT_FULL_SCREEN_IMAGE] = InitInternalMaterial("fullscreen-img");
+	materials[MT_SKYBOX] = InitInternalMaterial("skybox");
+	materials[MT_EQUIREC_TO_CUBE] = InitInternalMaterial("eqr-to-cube");
+	materials[MT_PREFILTER_ENV] = InitInternalMaterial("prefilter-env");
+	materials[MT_LUT_GEN] = InitInternalMaterial("lut-gen");
 }
 
 /*
@@ -783,4 +796,100 @@ void THE_ReleaseFramebuffer(THE_Framebuffer fb)
 	framebuffers[fb].cpu_version = THE_MARKED_FOR_DELETE;
 	THE_ReleaseTexture(framebuffers[fb].color_tex);
 	THE_ReleaseTexture(framebuffers[fb].depth_tex);
+}
+
+void THE_InitMaterial(THE_MaterialType t, const char* name)
+{
+	materials[t] = InitInternalMaterial(name);
+}
+
+// InternalResources Private functions
+//.....................................
+
+#include "glad/glad.h"
+
+static void LoadFile(const char *path, char **buffer)
+{
+	s32 length;
+	FILE* fp = fopen(path, "r");
+
+	if (fp)
+	{
+		fseek(fp, 0, SEEK_END);
+		length = ftell(fp);
+		fseek(fp, 0, SEEK_SET);
+		*buffer = (char*)leep::GM.memory().generalAlloc(length + 1);
+		if (*buffer)
+		{
+			memset(*buffer, '\0', length + 1);
+			fread(*buffer, 1, length, fp);
+			// TODO: Check wtf is happening here because
+			// the fucking VisualStudio is throwing exception
+			// here. When fixed remember to delete the memset call
+			//*buffer[length] = '\0';
+		}
+		fclose(fp);
+	}
+}
+
+u32 InitInternalMaterial(const char* shader_name)
+{
+	char *vert, *frag;
+	char vert_path[256], frag_path[256];
+	memset(frag_path, '\0', 256);
+	strcpy(frag_path, "../assets/shaders/");
+	strcat(frag_path, shader_name);
+
+#ifdef LEEP_OPENGL
+	strcpy(vert_path, frag_path);
+	strcat(vert_path, "-vert.glsl");
+	strcat(frag_path, "-frag.glsl");
+	LoadFile(vert_path, &vert);
+	LoadFile(frag_path, &frag);
+#else
+	strcpy(vert_path, frag_path);
+	strcat(vert_path, "-vert-es.glsl");
+	strcat(frag_path, "-frag-es.glsl");
+	LoadFile(vert_path, &vert);
+	LoadFile(frag_path, &frag);
+#endif
+
+	GLint err;
+	GLchar output_log[512];
+	//  Create and compile vertex shader and print if compilation errors
+	GLuint vert_shader = glCreateShader(GL_VERTEX_SHADER);
+	glShaderSource(vert_shader, 1, &vert, nullptr);
+	glCompileShader(vert_shader);
+	glGetShaderiv(vert_shader, GL_COMPILE_STATUS, &err);
+	if (!err)
+	{
+		glGetShaderInfoLog(vert_shader, 512, nullptr, output_log);
+		THE_LOG_ERROR("%s vertex shader compilation failed:\n%s\n", shader_name, output_log);
+	}
+	//  Create and compile fragment shader and print if compilation errors
+	GLuint frag_shader = glCreateShader(GL_FRAGMENT_SHADER);
+	glShaderSource(frag_shader, 1, &frag, nullptr);
+	glCompileShader(frag_shader);
+	glGetShaderiv(frag_shader, GL_COMPILE_STATUS, &err);
+	if (!err)
+	{
+		glGetShaderInfoLog(frag_shader, 512, nullptr, output_log);
+		THE_LOG_ERROR("%s fragment shader compilation failed:\n%s\n", shader_name, output_log);
+	}
+	//  Create the program with both shaders
+	GLuint program = glCreateProgram();
+	glAttachShader(program, vert_shader);
+	glAttachShader(program, frag_shader);
+	glLinkProgram(program);
+	glGetProgramiv(program, GL_LINK_STATUS, &err);
+	if (!err)
+	{
+		glGetProgramInfoLog(program, 512, nullptr, output_log);
+		THE_LOG_ERROR("%s program error:\n%s\n", shader_name, output_log);
+	}
+
+	GM.memory().generalFree(vert);
+	GM.memory().generalFree(frag);
+
+	return program;
 }

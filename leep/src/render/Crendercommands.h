@@ -42,7 +42,7 @@ typedef struct {
 
 // TODO: Hide framebuffer concept from API
 typedef struct {
-	leep::Framebuffer fb;
+	THE_Framebuffer fb;
 } THE_CreateFramebufferCommandData;
 
 typedef struct {
@@ -51,7 +51,7 @@ typedef struct {
 } THE_CreateTextureCommandData;
 
 typedef struct {
-	leep::Texture cubemap;
+	THE_Texture cubemap;
 } THE_SkyboxCommandData;
 
 typedef struct {

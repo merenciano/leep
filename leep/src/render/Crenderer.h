@@ -3,6 +3,7 @@
 
 #include "core/Cdefinitions.h"
 #include "Cmaterial.h"
+#include "Ccamera.h"
 
 #define THE_RENDER_QUEUE_CAPACITY 12000
 #define THE_FRAME_POOL_SIZE 1048576
@@ -51,7 +52,11 @@ typedef struct {
 	THE_RenderCommand *next_last;
 } THE_RenderQueue;
 
+extern const THE_Mesh SPHERE_MESH;
+extern const THE_Mesh CUBE_MESH;
+extern const THE_Mesh QUAD_MESH;
 extern THE_RenderQueue render_queue;
+extern THE_Camera camera;
 
 void THE_InitRender();
 void THE_AddCommands(THE_RenderCommand *rc);
@@ -89,7 +94,10 @@ void THE_ReleaseMesh(THE_Mesh mesh);
 void THE_FreeMeshData(THE_Mesh mesh); // Frees the data from Ram (not the VRAM)
 
 // Framebuffer
-THE_Framebuffer THE_CreateFramebuffer(float width, float height, u8 color = true, u8 depth = true);
+THE_Framebuffer THE_CreateFramebuffer(u32 width, u32 height, u8 color = 1, u8 depth = 1);
 void THE_ReleaseFramebuffer(THE_Framebuffer);
+
+// Material
+void THE_InitMaterial(THE_MaterialType t, const char* name); // name is the name of the shader files without extensions
 
 #endif
