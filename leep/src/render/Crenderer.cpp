@@ -803,6 +803,55 @@ void THE_InitMaterial(THE_MaterialType t, const char* name)
 	materials[t] = InitInternalMaterial(name);
 }
 
+void THE_MaterialSetData(THE_Material *mat, float* data, s32 count)
+{
+	THE_ASSERT(!mat->data || THE_IsInsideFramePool(mat->data) && 
+		"There are some non-temporary data in this material that must be freed");
+
+	// Align to fvec4
+	s32 offset = count & 3;
+	if (offset) {
+		count += 4 - offset;
+	}
+
+	mat->data = (float*)THE_AllocateFrameResource(count * sizeof(float));
+	mat->dcount = count;
+	memcpy(mat->data, data, count * sizeof(float));
+}
+
+void THE_MaterialSetFrameData(THE_Material* mat, float* data, s32 count)
+{
+	// Align to fvec4
+	s32 offset = count & 3;
+	if (offset) {
+		count += 4 - offset;
+	}
+	GM.memory().generalFree(mat->data);
+	mat->data = (float*)GM.memory().generalAlloc(count * sizeof(float));
+	mat->dcount = count;
+	memcpy(mat->data, data, count * sizeof(float));
+}
+
+void THE_MaterialSetTexture(THE_Material* mat, THE_Texture* tex, s32 count, s32 cube_start = -1)
+{
+	THE_ASSERT(!mat->tex || THE_IsInsideFramePool(mat->tex) &&
+		"There are some non-temporary textures in this material that must be freed");
+
+	mat->tex = (THE_Texture*)THE_AllocateFrameResource(count * sizeof(THE_Texture));
+	mat->tcount = count;
+	mat->cube_start = cube_start == -1 ? count : cube_start;
+	memcpy(mat->tex, tex, count * sizeof(THE_Texture));
+}
+
+void THE_MaterialSetFrameTexture(THE_Material* mat, THE_Texture* tex, s32 count, s32 cube_start = -1)
+{
+	GM.memory().generalFree(mat->tex);
+	mat->tex = (THE_Texture*)GM.memory().generalAlloc(count * sizeof(THE_Texture));
+	mat->tcount = count;
+	mat->cube_start = cube_start == -1 ? count : cube_start;
+	memcpy(mat->tex, tex, count * sizeof(THE_Texture));
+}
+
 // InternalResources Private functions
 //.....................................
 
@@ -892,4 +941,63 @@ u32 InitInternalMaterial(const char* shader_name)
 	GM.memory().generalFree(frag);
 
 	return program;
+}
+
+void UseMaterial(THE_Material* mat)
+{
+	GLint u_loc;
+
+	// Load textures
+	THE_ASSERT(mat->tcount < 16 && "So many textures, increase array size");
+	s32 tex_units[16];
+	for (s32 i = 0; i < mat->tcount; ++i)
+	{
+		if (mat->tex[i] != THE_UNINIT)
+		{
+			THE_ASSERT(mat->tex[i] != -1 && "Texture not created");
+			THE_ASSERT(textures[mat->tex[i]].cpu_version != -1 && "Texture released");
+			if (textures[mat->tex[i]].gpu_version == 0)
+			{
+				THE_CommandData cd;
+				cd.createtex.release_ram = true;
+				cd.createtex.tex = mat->tex[i];
+				THE_CreateTextureExecute(&cd);
+			}
+		}
+		tex_units[i] = textures[mat->tex[i]].texture_unit;
+	}
+
+	// TODO: Change enum values and if type < MT_ENGINE_MAX
+	if (mat->type == THE_MT_FULL_SCREEN_IMAGE ||
+		mat->type == MT_SKYBOX ||
+		mat->type == MT_EQUIREC_TO_CUBE ||
+		mat->type == MT_PREFILTER_ENV ||
+		mat->type == MT_LUT_GEN)
+	{
+		glUseProgram(materials[mat->type]);
+	}
+
+	u_loc = glGetUniformLocation(materials[mat->type], "u_entity_data");
+	if (u_loc >= 0)
+	{
+		glUniform4fv(u_loc, mat->dcount / 4, mat->data);
+	}
+
+	u_loc = glGetUniformLocation(materials[mat->type], "u_entity_tex");
+	if (u_loc >= 0)
+	{
+		glUniform1iv(u_loc, mat->cube_start, tex_units);
+	}
+
+	u_loc = glGetUniformLocation(materials[mat->type], "u_entity_cube");
+	if (u_loc >= 0)
+	{
+		glUniform1iv(u_loc, mat->tcount - mat->cube_start,
+			tex_units + mat->cube_start);
+	}
+
+	if (mat->type == MT_FULL_SCREEN_IMAGE)
+	{
+		glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	}
 }

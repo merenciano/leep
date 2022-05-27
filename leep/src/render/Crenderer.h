@@ -99,5 +99,6 @@ void THE_ReleaseFramebuffer(THE_Framebuffer);
 
 // Material
 void THE_InitMaterial(THE_MaterialType t, const char* name); // name is the name of the shader files without extensions
+void THE_UseMaterial(THE_Material* mat);
 
 #endif

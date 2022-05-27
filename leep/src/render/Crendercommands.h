@@ -55,17 +55,17 @@ typedef struct {
 } THE_SkyboxCommandData;
 
 typedef struct {
-	leep::Geometry geometry;
-	leep::Material *mat;
-	leep::Buffer inst_attr;
-	uint32_t inst_count;
+	THE_Mesh mesh;
+	THE_Material *mat;
+	THE_Buffer inst_attr;
+	u32 inst_count;
 } THE_DrawCommandData;
 
 typedef struct {
 	char in_path[128];
-	leep::Texture out_cube;
-	leep::Texture out_prefilt;
-	leep::Texture out_lut;
+	THE_Texture out_cube;
+	THE_Texture out_prefilt;
+	THE_Texture out_lut;
 } THE_EquirectToCubeData;
 
 typedef enum {

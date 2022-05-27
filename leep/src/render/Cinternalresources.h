@@ -56,5 +56,6 @@ s32 IsValidTexture(THE_Texture tex);
 s32 IsValidFramebuffer(THE_Framebuffer fb);
 
 u32 InitInternalMaterial(const char* shader_name);
+void UseMaterial(THE_Material* mat);
 
 #endif
