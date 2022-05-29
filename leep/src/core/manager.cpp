@@ -8,7 +8,6 @@
 #include "core/scene.h"
 #include "render/renderer.h"
 #include "render/Crenderer.h"
-#include "render/commands/draw.h" // This is needed for sizeof(Draw) /* Change that and remove dependency? */
 #include "render/camera.h"
 #include "tools/imgui-tools.h"
 #include "tools/resource-map.h"
@@ -25,7 +24,7 @@ namespace leep
     {
         Window      window_;
         Renderer    renderer_;
-        Camera      camera_;
+        //Camera      camera_;
         Input       input_;
         ImguiTools  ui_tools_;
         Scene       scene_;
@@ -44,14 +43,14 @@ namespace leep
         size_t total_mem = kMaxBuffers * sizeof(InternalBuffer) + kMaxTextures * sizeof(InternalTexture);
         total_mem += MaterialType::MT_MAX * sizeof(InternalMaterial);
         total_mem += cnfg.render_queue_capacity * 2 * sizeof(void*); // 2 because current and next
-        total_mem += cnfg.render_queue_capacity * 2 * sizeof(Draw);
+        total_mem += cnfg.render_queue_capacity * 2 * sizeof(THE_CommandData);
         total_mem += cnfg.alloc_capacity;
         memory_.init(total_mem);
         data_ = memory_.generalAllocT<ManagerData>(1);
         data_->window_.createWindow(kWindowTitle, cnfg.window_width, cnfg.window_height, cnfg.vsync);
 	THE_InitRender();
         data_->renderer_.init(cnfg.render_queue_capacity);
-        data_->camera_.init(70.0f, 300.0f);
+        //data_->camera_.init(70.0f, 300.0f);
         data_->delta_time_ = 0.16f;
 
         Renderer::s_cube.createCube();
@@ -85,7 +84,7 @@ namespace leep
 
     Window&      Manager::window()        { return data_->window_; }
     Renderer&    Manager::renderer()      { return data_->renderer_; }
-    Camera&      Manager::camera()        { return data_->camera_; }
+    //Camera&      Manager::camera()        { return data_->camera_; }
     Input&       Manager::input()         { return data_->input_; }
     Memory&      Manager::memory()        { return memory_; }
     ImguiTools&  Manager::ui_tools()      { return data_->ui_tools_; }

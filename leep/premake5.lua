@@ -42,6 +42,9 @@ project "leep"
         --glad
         "./extern/src/glad.c",
 
+        --mathc
+        "./extern/src/mathc.c",
+
         --minitrace
         "./extern/src/minitrace.c",
 

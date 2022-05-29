@@ -1,7 +1,7 @@
 #include "Crendercommands.h"
 #include "Crenderer.h" // TODO Move frame allocator to rendercommands and remove this include 
 #include "Cinternalresources.h"
-#include "render/camera.h"
+#include "Ccamera.h"
 
 
 #ifdef THE_OPENGL
@@ -166,7 +166,6 @@ void THE_CreateCubemapExecute(THE_CommandData *data)
 
 void THE_CreateFramebufferExecute(THE_CommandData *data)
 {
-	Renderer &r = GM.renderer();
 	THE_Framebuffer fb = data->createfb.fb;
 	THE_InternalFramebuffer *ifb = framebuffers + fb;
 
@@ -222,7 +221,7 @@ void THE_CreateTextureExecute(THE_CommandData *data)
 
 	THE_ASSERT(IsValidTexture(tex));
 	THE_ASSERT(t->cpu_version == 1 && "Texture created before?");
-	THE_ASSERT(tex < 62, "Max texture units"); // Tex unit is id + 1
+	THE_ASSERT(tex < 62 && "Max texture units"); // Tex unit is id + 1
 	THE_ASSERT(t->internal_id == THE_UNINIT && "Texture already created on GPU");
 
 	switch(t->type) {
@@ -433,7 +432,7 @@ void THE_DrawExecute(THE_CommandData *data)
 
 	THE_ASSERT(buffers[mesh.vertex].cpu_version > 0 && "Vertex buffer without data");
 	THE_ASSERT(buffers[mesh.index].cpu_version > 0 && "Index buffer without data");
-	THE_ASSERT(mat->type != MT_NONE && "Material type not setted");
+	THE_ASSERT(mat->type != THE_MT_NONE && "Material type not setted");
 
 	// Set the uniforms
 	UseMaterial(mat);
@@ -634,63 +633,61 @@ void THE_EquirectToCubeExecute(THE_CommandData *data)
 		dcd.draw.mat->type = THE_MT_EQUIREC_TO_CUBE;
 		THE_MaterialSetFrameData(dcd.draw.mat, (float*)&vp, 16);
 		THE_DrawExecute(&dcd);
-	}// TODO VOY POR AQUI
+	}
 
-	if (o_pref.handle() != CommonDefs::UNINIT_HANDLE) {
-		InternalTexture &ipref = r.textures_[o_pref.handle()];
-		if (ipref.cpu_version_ > ipref.gpu_version_) {
+	if (o_pref != THE_UNINIT) {
+		THE_InternalTexture ipref = textures[o_pref];
+		if (ipref.cpu_version > ipref.gpu_version) {
 			THE_CommandData cccd;
 			cccd.createcubemap.texture = o_pref;
 			THE_CreateCubemapExecute(&cccd);
 		}
 
-		PrefilterEnvData pref_data;
-		for (int32_t i = 0; i < 5; ++i) {
+		THE_PrefilterEnvData pref_data;
+		for (s32 i = 0; i < 5; ++i) {
 			// mip size
-			uint32_t s = (uint32_t)((float)ipref.width_ * powf(0.5f, (float)i));
+			s32 s = (s32)((float)ipref.width * powf(0.5f, (float)i));
 			glViewport(0, 0, s, s);
-			pref_data.roughness_ = (float)i / 4.0f;  // mip / max mip levels - 1
+			pref_data.roughness = (float)i / 4.0f;  // mip / max mip levels - 1
 
-			THE_CommandData dcd;
-			dcd.draw.inst_count = 1U;
-			dcd.draw.geometry = Renderer::s_cube;
-			for (int32_t j = 0; j < 6; ++j) {
-				pref_data.vp_ = proj * views[j];
+			THE_CommandData draw_cd;
+			draw_cd.draw.inst_count = 1U;
+			draw_cd.draw.mesh = CUBE_MESH;
+			for (s32 j = 0; j < 6; ++j) {
+                pref_data.vp = smat4_multiply(proj, views[j]);
 				glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0,
-				    GL_TEXTURE_CUBE_MAP_POSITIVE_X + j, ipref.internal_id_, i);
+				    GL_TEXTURE_CUBE_MAP_POSITIVE_X + j, ipref.internal_id, i);
 				glClear(GL_COLOR_BUFFER_BIT);
-				dcd.draw.mat = (Material*)THE_AllocateFrameResource(sizeof(Material));
-				dcd.draw.mat = (new (dcd.draw.mat) Material());
-				dcd.draw.mat->set_type(MT_PREFILTER_ENV);
-				dcd.draw.mat->set_tex((Texture*)&o_cube, 1, 0);
-				dcd.draw.mat->set_data((float*)&pref_data, sizeof(PrefilterEnvData) / 4);
-				THE_DrawExecute(&dcd);
+				draw_cd.draw.mat = (THE_Material*)THE_AllocateFrameResource(sizeof(THE_Material));
+				draw_cd.draw.mat->type = THE_MT_PREFILTER_ENV;
+                THE_MaterialSetFrameTexture(draw_cd.draw.mat, &o_cube, 1, 0);
+                THE_MaterialSetFrameData(draw_cd.draw.mat, (float*)&pref_data, sizeof(THE_PrefilterEnvData) / 4);
+				THE_DrawExecute(&draw_cd);
 			}
 		}
 	}
 
-	if (o_lut.handle() != CommonDefs::UNINIT_HANDLE) {
-		InternalTexture &ilut = r.textures_[o_lut.handle()];
-		if (ilut.cpu_version_ > ilut.gpu_version_) {
-			THE_CommandData ctcd;
-			ctcd.createtex.tex = o_lut;
-			ctcd.createtex.release_ram = 0;
-			THE_CreateTextureExecute(&ctcd);
+	if (o_lut != THE_UNINIT) {
+		THE_InternalTexture ilut = textures[o_lut];
+		if (ilut.cpu_version > ilut.gpu_version) {
+			THE_CommandData createtex_cd;
+			createtex_cd.createtex.tex = o_lut;
+			createtex_cd.createtex.release_ram = 0;
+			THE_CreateTextureExecute(&createtex_cd);
 		}
-		glViewport(0, 0, ilut.width_, ilut.height_);
-		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, ilut.internal_id_, 0);
+		glViewport(0, 0, ilut.width, ilut.height);
+		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, ilut.internal_id, 0);
 		glClear(GL_COLOR_BUFFER_BIT);
-		THE_CommandData dcd;
-		dcd.draw.geometry = Renderer::s_quad;
-		dcd.draw.inst_count = 1U;
-		dcd.draw.mat = (Material*)THE_AllocateFrameResource(sizeof(Material));
-		dcd.draw.mat = (new (dcd.draw.mat) Material());
-		dcd.draw.mat->set_type(MT_LUT_GEN);
-		THE_DrawExecute(&dcd);
+		THE_CommandData draw_cd;
+		draw_cd.draw.mesh = QUAD_MESH;
+		draw_cd.draw.inst_count = 1U;
+		draw_cd.draw.mat = (THE_Material*)THE_AllocateFrameResource(sizeof(THE_Material));
+		draw_cd.draw.mat->type = THE_MT_LUT_GEN;
+		THE_DrawExecute(&draw_cd);
 	}
 
 	glDeleteFramebuffers(1, &fb);
-	equirec.release();
+	THE_ReleaseTexture(equirec);
 }
 
 void THE_RenderOptionsExecute(THE_CommandData *data)
@@ -800,76 +797,75 @@ void THE_UseFramebufferExecute(THE_CommandData *data)
 		return;
 	}
 
-	Renderer &r = GM.renderer();
-	InternalFramebuffer &ifb = r.framebuffers_[data->usefb.fb.handle()];
+	THE_InternalFramebuffer ifb = framebuffers[data->usefb.fb];
 	GLsizei width;
 	GLsizei height;
 
-	if (ifb.gpu_version_ == 0) {
-		LEEP_CORE_ASSERT(data->usefb.fb.handle() >= 0 && ifb.cpu_version_ > 0, "Framebuffer not created");
-		glGenFramebuffers(1, (GLuint*)&(ifb.internal_id_));
+	if (ifb.gpu_version == 0) {
+		THE_ASSERT(data->usefb.fb >= 0 && ifb.cpu_version > 0 && "Framebuffer not created");
+		glGenFramebuffers(1, (GLuint*)&(ifb.internal_id));
 		THE_CommandData ctcd;
 		ctcd.createtex.release_ram = 0;
-		if (ifb.color_) {
-			ctcd.createtex.tex = data->usefb.fb.color();
+		if (ifb.color) {
+			ctcd.createtex.tex = ifb.color_tex;
 			THE_CreateTextureExecute(&ctcd);
 		}
-		if (ifb.depth_) {
-			ctcd.createtex.tex = data->usefb.fb.depth();
+		if (ifb.depth) {
+			ctcd.createtex.tex = ifb.depth_tex;
 			THE_CreateTextureExecute(&ctcd);
 		}
 	}
-	glBindFramebuffer(GL_FRAMEBUFFER, ifb.internal_id_);
+	glBindFramebuffer(GL_FRAMEBUFFER, ifb.internal_id);
 
 	// Set viewport
-	if (ifb.color_) {
-		width = r.textures_[data->usefb.fb.color().handle()].width_;
-		height = r.textures_[data->usefb.fb.color().handle()].height_;
+	if (ifb.color) {
+		width = (s32)textures[ifb.color_tex].width;
+		height = (s32)textures[ifb.color_tex].height;
 		glViewport(0, 0, width, height);
 	}
 
-	if (ifb.depth_) {
-		if (ifb.color_) {
-			LEEP_CORE_ASSERT(width == (GLsizei)r.textures_[data->usefb.fb.depth().handle()].width_ &&
-		        	height == (GLsizei)r.textures_[data->usefb.fb.depth().handle()].height_,
+	if (ifb.depth) {
+		if (ifb.color) {
+			THE_ASSERT(width == (GLsizei)textures[ifb.depth_tex].width &&
+                height == (GLsizei)textures[ifb.depth_tex].height &&
 				"Color and depth texture sizes of framebuffer not matching");
 		} else {
-			width = r.textures_[data->usefb.fb.depth().handle()].width_;
-			height = r.textures_[data->usefb.fb.depth().handle()].height_;
+			width = (s32)textures[ifb.depth_tex].width;
+			height = (s32)textures[ifb.depth_tex].height;
 			glViewport(0, 0, width, height);
 		}
 	}
 
 	// Update framebuffer if the textures have been changed
-	if (ifb.gpu_version_ < ifb.cpu_version_) {
-		if (ifb.color_) {
+	if (ifb.gpu_version < ifb.cpu_version) {
+		if (ifb.color) {
 			glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D,
-				r.textures_[data->usefb.fb.color().handle()].internal_id_, 0); 
+				textures[ifb.color_tex].internal_id, 0);
 		}
-		if (ifb.depth_) {
+		if (ifb.depth) {
 			glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D,
-				r.textures_[data->usefb.fb.depth().handle()].internal_id_, 0);
+				textures[ifb.depth_tex].internal_id, 0);
 		}
-		ifb.gpu_version_ = ifb.cpu_version_;
+		ifb.gpu_version = ifb.cpu_version;
 	}
 }
 
 void THE_UseMaterialExecute(THE_CommandData *data)
 {
-	GLint *tu = (GLint*)malloc(data->usemat.mat->tcount_ * sizeof(GLint));
-	for (int i = 0; i < data->usemat.mat->tcount_; ++i) {
-		tu[i] = data->usemat.mat->tex_[i].handle() + 1;
+	GLint *tu = (GLint*)malloc(data->usemat.mat->tcount * sizeof(GLint));
+	for (s32 i = 0; i < data->usemat.mat->tcount; ++i) {
+		tu[i] = data->usemat.mat->tex[i] + 1;
 	}
-	Renderer &r = GM.renderer();
-	GLuint program = r.materials_[data->usemat.mat->type_].internal_id();
+
+	GLuint program = materials[data->usemat.mat->type];
 	glUseProgram(program);
-	uint32_t uniform_pos = glGetUniformLocation(program, "u_scene_data");
-	glUniform4fv(uniform_pos, data->usemat.mat->dcount_ / 4, data->usemat.mat->data_);
+	s32 uniform_pos = glGetUniformLocation(program, "u_scene_data");
+	glUniform4fv(uniform_pos, data->usemat.mat->dcount / 4, data->usemat.mat->data);
 	uniform_pos = glGetUniformLocation(program, "u_scene_tex");
-	glUniform1iv(uniform_pos, data->usemat.mat->cube_start_, tu);
+	glUniform1iv(uniform_pos, data->usemat.mat->cube_start, tu);
 	uniform_pos = glGetUniformLocation(program, "u_scene_cube");
-	glUniform1iv(uniform_pos, data->usemat.mat->tcount_ - data->usemat.mat->cube_start_,
-		tu + data->usemat.mat->cube_start_);
+	glUniform1iv(uniform_pos, data->usemat.mat->tcount - data->usemat.mat->cube_start,
+		tu + data->usemat.mat->cube_start);
 }
 
 #endif // THE_OPENGL

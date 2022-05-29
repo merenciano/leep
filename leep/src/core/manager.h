@@ -24,7 +24,7 @@ namespace leep
         class Window&      window();
         class Renderer&    renderer();
         class Renderer*    rendererptr();
-        class Camera&      camera(); // TODO: Move camera to renderer
+        //class Camera&      camera(); // TODO: Move camera to renderer
         class Input&       input();
         class Memory&      memory();
         class ImguiTools&  ui_tools();

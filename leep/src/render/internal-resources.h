@@ -11,8 +11,8 @@ namespace leep
 {
     struct InternalMaterial
     {
-        void init(const char *name);
-        void useMaterialData(const Material &material) const;
+        //void init(const char *name);
+        //void useMaterialData(const Material &material) const;
         uint32_t internal_id() const;
         uint32_t internal_id_;
     };

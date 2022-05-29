@@ -33,7 +33,8 @@ namespace leep
         return internal_id_;
     }
 }
-
+/*
 #if defined(LEEP_OPENGL) || defined(LEEP_OPENGL_ES)
     #include "api-impl/internal-material-gl.cpp"
 #endif
+ */

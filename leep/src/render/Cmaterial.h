@@ -2,9 +2,8 @@
 #define __THE_RENDER_MATERIAL_H__
 
 #include "core/Cdefinitions.h"
+#include "render/Crenderertypes.h"
 #include "mathc.h"
-
-typedef s32 THE_Texture;
 
 typedef enum
 {
@@ -33,10 +32,11 @@ typedef struct
         s32 cube_start;
 } THE_Material;
 
-void THE_MaterialSetData(THE_Material* mat, float *data, s32 count); // General allocator. It will not free itself
-void THE_MaterialSetFrameData(THE_Material* mat, float *data, s32 count); // Like above but with frame allocator
-void THE_MaterialSetTexture(THE_Material* mat, THE_Texture* tex, s32 count, s32 cube_start = -1); // General allocator. It will not free itself
-void THE_MaterialSetFrameTexture(THE_Material* mat, THE_Texture* tex, s32 count, s32 cube_start = -1); // Like above but with frame allocator
+void THE_MaterialSetModel(THE_Material *mat, float *data); // This funcion copies a mat4 in the first 64 bytes of the already allocated data.
+void THE_MaterialSetData(THE_Material *mat, float *data, s32 count); // General allocator. It will not free itself
+void THE_MaterialSetFrameData(THE_Material *mat, float *data, s32 count); // Like above but with frame allocator
+void THE_MaterialSetTexture(THE_Material *mat, THE_Texture *tex, s32 count, s32 cube_start = -1); // General allocator. It will not free itself
+void THE_MaterialSetFrameTexture(THE_Material *mat, THE_Texture *tex, s32 count, s32 cube_start = -1); // Like above but with frame allocator
 
 typedef struct
 {

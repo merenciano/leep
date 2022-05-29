@@ -1,7 +1,9 @@
 #include "Crenderer.h"
 #include "Crendercommands.h"
 #include "Cinternalresources.h"
+#include "Ccamera.h"
 #include "core/memory/memory.h"
+#include "core/memory/buddy-alloc-stl.h"
 #include "core/manager.h"
 #include "core/window.h"
 
@@ -98,11 +100,13 @@ void THE_InitRender()
 
 	// InternalMaterial initialization
 	materials = (THE_InternalMaterial*)leep::GM.memory().persistentAlloc(sizeof(THE_InternalMaterial) * THE_MT_MAX);
-	materials[MT_FULL_SCREEN_IMAGE] = InitInternalMaterial("fullscreen-img");
-	materials[MT_SKYBOX] = InitInternalMaterial("skybox");
-	materials[MT_EQUIREC_TO_CUBE] = InitInternalMaterial("eqr-to-cube");
-	materials[MT_PREFILTER_ENV] = InitInternalMaterial("prefilter-env");
-	materials[MT_LUT_GEN] = InitInternalMaterial("lut-gen");
+	materials[THE_MT_FULL_SCREEN_IMAGE] = InitInternalMaterial("fullscreen-img");
+	materials[THE_MT_SKYBOX] = InitInternalMaterial("skybox");
+	materials[THE_MT_EQUIREC_TO_CUBE] = InitInternalMaterial("eqr-to-cube");
+	materials[THE_MT_PREFILTER_ENV] = InitInternalMaterial("prefilter-env");
+	materials[THE_MT_LUT_GEN] = InitInternalMaterial("lut-gen");
+
+	THE_CameraInit(&camera, 70.0f, 300.0f, GM.window().width(), GM.window().height(), 0);
 }
 
 /*
@@ -803,6 +807,13 @@ void THE_InitMaterial(THE_MaterialType t, const char* name)
 	materials[t] = InitInternalMaterial(name);
 }
 
+void THE_MaterialSetModel(THE_Material *mat, float *data)
+{
+	THE_ASSERT(data && "Invalid data parameter");
+	THE_ASSERT(mat->data && "This function expects at least 64B allocated in mat->data");
+	memcpy(mat->data, data, 64);
+}
+
 void THE_MaterialSetData(THE_Material *mat, float* data, s32 count)
 {
 	THE_ASSERT(!mat->data || THE_IsInsideFramePool(mat->data) && 
@@ -832,7 +843,7 @@ void THE_MaterialSetFrameData(THE_Material* mat, float* data, s32 count)
 	memcpy(mat->data, data, count * sizeof(float));
 }
 
-void THE_MaterialSetTexture(THE_Material* mat, THE_Texture* tex, s32 count, s32 cube_start = -1)
+void THE_MaterialSetTexture(THE_Material* mat, THE_Texture* tex, s32 count, s32 cube_start)
 {
 	THE_ASSERT(!mat->tex || THE_IsInsideFramePool(mat->tex) &&
 		"There are some non-temporary textures in this material that must be freed");
@@ -843,7 +854,7 @@ void THE_MaterialSetTexture(THE_Material* mat, THE_Texture* tex, s32 count, s32 
 	memcpy(mat->tex, tex, count * sizeof(THE_Texture));
 }
 
-void THE_MaterialSetFrameTexture(THE_Material* mat, THE_Texture* tex, s32 count, s32 cube_start = -1)
+void THE_MaterialSetFrameTexture(THE_Material* mat, THE_Texture* tex, s32 count, s32 cube_start)
 {
 	GM.memory().generalFree(mat->tex);
 	mat->tex = (THE_Texture*)GM.memory().generalAlloc(count * sizeof(THE_Texture));
@@ -969,10 +980,10 @@ void UseMaterial(THE_Material* mat)
 
 	// TODO: Change enum values and if type < MT_ENGINE_MAX
 	if (mat->type == THE_MT_FULL_SCREEN_IMAGE ||
-		mat->type == MT_SKYBOX ||
-		mat->type == MT_EQUIREC_TO_CUBE ||
-		mat->type == MT_PREFILTER_ENV ||
-		mat->type == MT_LUT_GEN)
+		mat->type == THE_MT_SKYBOX ||
+		mat->type == THE_MT_EQUIREC_TO_CUBE ||
+		mat->type == THE_MT_PREFILTER_ENV ||
+		mat->type == THE_MT_LUT_GEN)
 	{
 		glUseProgram(materials[mat->type]);
 	}
@@ -996,7 +1007,7 @@ void UseMaterial(THE_Material* mat)
 			tex_units + mat->cube_start);
 	}
 
-	if (mat->type == MT_FULL_SCREEN_IMAGE)
+	if (mat->type == THE_MT_FULL_SCREEN_IMAGE)
 	{
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	}

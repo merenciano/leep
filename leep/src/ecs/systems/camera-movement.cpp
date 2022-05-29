@@ -5,7 +5,8 @@
 #include "core/manager.h"
 #include "core/window.h"
 #include "ecs/components/ltransform.h"
-#include "render/camera.h"
+#include "render/Crenderer.h"
+#include "render/Ccamera.h"
 
 namespace leep
 {
@@ -29,7 +30,7 @@ namespace leep
         float speed = speed_ * GM.delta_time();
         float scroll_sensibility = 1.0f;
         LTransform tr;
-        tr.transform_ = glm::inverse(GM.camera().view());
+	tr.transform = smat4_inverse(camera.view_mat);
 
         // Rotation
         if (GM.input().isButtonDown(Button::MOUSE_RIGHT))
@@ -90,9 +91,9 @@ namespace leep
         {
             fov -= GM.input().scroll() * scroll_sensibility;
             fov = glm::clamp(fov, 1.0f, 120.0f);
-            GM.camera().set_projection(fov, (float)GM.window().width() / GM.window().height(), 0.1f, GM.camera().farval());
+	    camera.proj_mat = smat4_perspective(to_radians(fov), (float)GM.window().width() / GM.window().height(), 0.1f, camera.far);
         }
 
-        GM.camera().set_view(glm::inverse(tr.transform_));
+	camera.view_mat = smat4_inverse(tr.transform);
     }
 }

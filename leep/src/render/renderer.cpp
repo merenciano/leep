@@ -2,8 +2,6 @@
 
 #include "core/memory/memory.h"
 #include "render/display-list.h"
-#include "render/display-list-command.h"
-#include "render/commands/draw.h"
 
 namespace leep {
 
@@ -28,16 +26,16 @@ void Renderer::init(int32_t queue_capacity)
     buf_count_ = 0;
     tex_count_ = 0;
 
-    materials_[MT_FULL_SCREEN_IMAGE].init("fullscreen-img");
+    /*materials_[MT_FULL_SCREEN_IMAGE].init("fullscreen-img");
     materials_[MT_SKYBOX].init("skybox");
     materials_[MT_EQUIREC_TO_CUBE].init("eqr-to-cube");
     materials_[MT_PREFILTER_ENV].init("prefilter-env");
-    materials_[MT_LUT_GEN].init("lut-gen");
+    materials_[MT_LUT_GEN].init("lut-gen");*/
 }
 
 void Renderer::initMaterial(MaterialType t, const char *name)
 {
-    materials_[t].init(name);
+   // materials_[t].init(name);
 }
 
 int32_t Renderer::addTex()

@@ -2,46 +2,14 @@
 #define __THE_RENDER_RENDERER_H__
 
 #include "core/Cdefinitions.h"
+#include "Crenderertypes.h"
 #include "Cmaterial.h"
-#include "Ccamera.h"
 
 #define THE_RENDER_QUEUE_CAPACITY 12000
 #define THE_FRAME_POOL_SIZE 1048576
 #define THE_MAX_TEXTURES 63
 #define THE_MAX_BUFFERS 127
 #define THE_MAX_FRAMEBUFFERS 8
-
-typedef enum {
-	THE_BUFFER_NONE = 0,
-	THE_BUFFER_VERTEX_3P,
-	THE_BUFFER_VERTEX_3P_3N,
-	THE_BUFFER_VERTEX_3P_2UV,
-	THE_BUFFER_VERTEX_3P_3N_2UV,
-	THE_BUFFER_VERTEX_3P_3N_3T_3B_2UV,
-	THE_BUFFER_INDEX,
-} THE_BufferType;
-
-typedef enum {
-	THE_TEX_NONE = 0,
-	THE_TEX_R,
-	THE_TEX_RGB,
-	THE_TEX_SRGB,
-	THE_TEX_DEPTH,
-	THE_TEX_SKYBOX,
-	THE_TEX_RGB_F16,
-	THE_TEX_RGBA_F16,
-	THE_TEX_LUT,
-	THE_TEX_ENVIRONMENT,
-	THE_TEX_PREFILTER_ENVIRONMENT,
-} THE_TexType;
-
-typedef s32 THE_Texture;
-typedef s32 THE_Buffer;
-typedef s32 THE_Framebuffer;
-typedef struct THE_Mesh {
-	THE_Buffer vertex;
-	THE_Buffer index;
-} THE_Mesh;
 
 struct THE_RenderCommand;
 

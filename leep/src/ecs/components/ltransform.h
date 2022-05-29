@@ -5,6 +5,7 @@
 
 #include "ecs/component.h"
 #include "core/common-defs.h"
+#include "mathc.h"
 
 namespace leep 
 {
@@ -19,6 +20,7 @@ namespace leep
         glm::vec3 localLocation() const;
         void setLocation(glm::vec3 new_location);
         glm::mat4 transform_;
+	struct mat4 transform;
     };
 }
 

@@ -3,6 +3,7 @@
 
 #include "render/geometry.h"
 #include "render/texture.h"
+#include "render/Crenderertypes.h"
 #include "core/memory/buddy-alloc-stl.h"
 
 #include <unordered_map>
@@ -45,6 +46,19 @@ namespace leep
             std::hash<String>,
             std::equal_to<String>,
             BuddySTL<std::pair<const String, FuTexture>>> textures_;
+
+	    std::unordered_map<
+		    String,
+		    THE_Mesh,
+		    std::hash<String>,
+		    std::equal_to<String>,
+		    BuddySTL<std::pair<const String, THE_Mesh>>> meshes;
+	    std::unordered_map<
+		    String,
+		    THE_Texture,
+		    std::hash<String>,
+		    std::equal_to<String>,
+		    BuddySTL<std::pair<const String, THE_Texture>>> textures;
     };
 }
 

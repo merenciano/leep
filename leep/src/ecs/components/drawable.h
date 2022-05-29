@@ -2,8 +2,7 @@
 #define __LEEP_ECS_COMPONENTS_DRAWABLE_H__ 1
 
 #include "ecs/component.h"
-#include "render/material.h"
-#include "render/geometry.h"
+#include "render/Cmaterial.h"
 
 namespace leep 
 {
@@ -11,16 +10,15 @@ namespace leep
     {
         static const CompType s_type = COMP_DRAWABLE;
         Drawable() : Component(COMP_DRAWABLE) { }
-        ~Drawable() {}
-        // TODO: Make it non-copyable
+
         Drawable& operator=(const Drawable &other)
         {
-            material_ = other.material_;
-            geometry_ = other.geometry_;
+            mat = other.mat;
+            mesh = other.mesh;
             return *this;
         }
-        Material material_;
-        Geometry geometry_;
+        THE_Material mat;
+        THE_Mesh mesh;
     };
 }
 

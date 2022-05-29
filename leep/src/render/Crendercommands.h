@@ -1,12 +1,7 @@
 #ifndef __THE_RENDER_COMMANDS_H__
 #define __THE_RENDER_COMMANDS_H__
 
-#include <stdint.h>
-
-#include "render/buffer.h"
-#include "render/renderer.h"
-#include "render/framebuffer.h"
-#include "core/manager.h"
+#include "Crenderer.h"
 
 #define THE_BLEND_FUNC_BIT     1
 #define THE_ENABLE_BLEND_BIT   1 << 1
@@ -14,6 +9,7 @@
 #define THE_DEPTH_TEST_BIT     1 << 3
 #define THE_CULL_FACE_BIT      1 << 4
 
+/* TODO: Remove this at the end of the C conversion if not needed
 typedef enum {
 	THE_CDT_CLEAR,
 	THE_CDT_CREATE_BUFFER,
@@ -24,12 +20,13 @@ typedef enum {
 	THE_CDT_DRAW,
 	THE_CDT_EQUIREC_CUBEMAP,
 } THE_CommandDataType;
+ */
 
 typedef struct {
 	float color[4];
-	int8_t bcolor;
-	int8_t bdepth;
-	int8_t bstencil;
+	s8 bcolor;
+	s8 bdepth;
+	s8 bstencil;
 } THE_ClearCommandData;
 
 typedef struct {
@@ -47,7 +44,7 @@ typedef struct {
 
 typedef struct {
 	THE_Texture tex;
-	int32_t release_ram;
+	s32 release_ram;
 } THE_CreateTextureCommandData;
 
 typedef struct {
@@ -81,30 +78,30 @@ typedef enum {
 } THE_RenderOptions;
 
 typedef struct {
-	uint32_t changed_mask;
+	u32 changed_mask;
 	THE_RenderOptions sfactor;
 	THE_RenderOptions dfactor;
 	THE_RenderOptions cull_face;
-	int8_t depth_test;
-	int8_t write_depth;
-	int8_t blend;
+	s8 depth_test;
+	s8 write_depth;
+	s8 blend;
 } THE_RenderOptionsData;
 
 typedef struct {
-	leep::Framebuffer fb;
-	int8_t def;
+	THE_Framebuffer fb;
+	s8 def;
 } THE_UseFramebufferData;
 
 typedef struct {
-	leep::Material *mat;
+	THE_Material *mat;
 } THE_UseMaterialData;
 
 //typedef union {
-typedef union THE_CommandData {
+typedef union {
 	// TODO: Quitar los putos construc y destruc para que no maree
 	// el IDE pensando que es C++
-	THE_CommandData() {};
-	~THE_CommandData() {};
+	//THE_CommandData() {};
+	//~THE_CommandData() {};
 	THE_ClearCommandData clear;
 	THE_CreateBufferCommandData createbuff;
 	THE_CreateCubemapCommandData createcubemap;
@@ -118,7 +115,6 @@ typedef union THE_CommandData {
 	THE_UseMaterialData usemat;
 } THE_CommandData;// THE_CommandData;
 
-//struct THE_RenderCommand {
 typedef struct THE_RenderCommand {
 	void (*execute)(THE_CommandData* data);
 	THE_RenderCommand* next;
