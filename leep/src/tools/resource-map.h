@@ -27,10 +27,10 @@ namespace leep
 
         void addGeometry(String name, String path);
         void addGeometry(String name, Geometry geometry);
-        void addTexture(String name, String path, TexType type);
+        void addTexture(String name, String path, THE_TexType type);
         void addTextureAsync(String name, String path, TexType);
         void addTexture(String name, Texture texture);
-        void addTexture(String name, float width, float height, TexType type);
+        void addTexture(String name, u32 width, u32 height, THE_TexType type);
         Geometry getGeometry(String name) const;
         Texture getTexture(String name) const;
 

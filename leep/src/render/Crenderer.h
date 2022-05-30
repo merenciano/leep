@@ -25,6 +25,7 @@ extern const THE_Mesh CUBE_MESH;
 extern const THE_Mesh QUAD_MESH;
 extern THE_RenderQueue render_queue;
 extern THE_Camera camera;
+extern struct vec4 sun_dir_intensity;
 
 void THE_InitRender();
 void THE_AddCommands(THE_RenderCommand *rc);

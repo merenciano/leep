@@ -2,7 +2,6 @@
 #define THE_RENDERER_TYPES_H
 
 #include "core/Cdefinitions.h"
-#include "mathc.h"
 
 typedef enum {
 	THE_BUFFER_NONE = 0,

@@ -309,9 +309,9 @@ namespace leep
         if (e.hasComponent<Drawable>())
         {
             Drawable& dw = e.getComponent<Drawable>();
-            if (dw.material_.type() == MaterialType::MT_PBR)
+            if (dw.mat.type == THE_MT_PBR)
             {
-                PbrData *data = (PbrData*)dw.material_.data();
+                PbrData *data = (PbrData*)dw.mat.data;
                 ImGui::ColorEdit3   ("Color"            , glm::value_ptr(data->color_));
                 ImGui::InputFloat   ("Texture tiling X" , &data->tiling_x_);
                 ImGui::InputFloat   ("Texture tiling Y" , &data->tiling_y_);

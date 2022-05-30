@@ -11,7 +11,6 @@ typedef struct {
 		float *vertices;
 		u32 *indices;
 	};
-	
 	s32 count;
 	u32 internal_id;
 	s32 cpu_version;
@@ -46,7 +45,7 @@ typedef struct {
 extern THE_InternalBuffer *buffers;
 extern THE_InternalTexture *textures;
 extern THE_InternalFramebuffer *framebuffers;
-extern THE_InternalMaterial* materials;
+extern THE_InternalMaterial *materials;
 extern u16 buffer_count;
 extern u16 texture_count;
 extern u16 framebuffer_count;

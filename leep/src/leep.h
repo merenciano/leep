@@ -35,15 +35,6 @@
 #include "render/texture.h"
 #include "render/display-list.h"
 #include "render/display-list-command.h"
-#include "render/commands/clear.h"
-#include "render/commands/create-buffer.h"
-#include "render/commands/use-material.h"
-#include "render/commands/use-framebuffer.h"
-#include "render/commands/draw.h"
-#include "render/commands/draw-skybox.h"
-#include "render/commands/create-texture.h"
-#include "render/commands/render-options.h"
-#include "render/commands/equirectangular-to-cubemap.h"
 
 // TOOLS
 #include "tools/imgui-tools.h"
@@ -54,4 +45,4 @@
 
 // C
 #include "render/Crendercommands.h"
-#include "render/Crenderer.h"
+#include "render/Ccamera.h"

@@ -1,5 +1,6 @@
 #include "resource-map.h"
 #include "render/renderer.h"
+#include "render/Crenderer.h"
 
 namespace leep
 {
@@ -34,61 +35,33 @@ namespace leep
         }
     }
 
-    void ResourceMap::addTexture(
-            String name,
-            String path,
-            TexType t)
-    {
-        LEEP_CORE_ASSERT(path != "", "For the creation of empty textures call with size params");
-        bool inserted =
-            textures_.emplace(std::make_pair(name, FuTexture())).second;
-        if (inserted)
-        {
-            textures_[name].tex_.create((const char*)path.c_str(), t);
-        }
-        else
-        {
-            LEEP_CORE_WARNING("Texture couldn't be inserted");
-        }
-    }
+void ResourceMap::addTexture(String name, String path, THE_TexType t)
+{
+	THE_ASSERT(!path.empty() && "For the creation of empty textures call with size params");
+
+	THE_Texture tex = THE_CreateTexture(path.c_str(), t);
+	if (!textures.emplace(std::make_pair(name, tex)).second)
+	{
+		THE_LOG_ERROR("Texture couldn't be inserted%c", ' ');
+	}
+}
 
     void ResourceMap::addTextureAsync(String name,
                                       String path,
                                       TexType t)
     {
-        LEEP_CORE_ASSERT(path != "",
-            "For the creation of empty textures call with size params");
-        bool inserted =
-            textures_.emplace(std::make_pair(name, FuTexture())).second;
-        if (inserted)
-        {
-            char* cpath = (char*)GM.memory().generalAlloc(64);
-            strcpy(cpath, path.c_str());
-            textures_[name].fut_ = std::async(
-                std::launch::async,
-                &Texture::createAndLoad,
-                (Texture*)&textures_[name].tex_,
-                (const char*)cpath, t);
-        }
-        else
-        {
-            LEEP_CORE_WARNING("Texture couldn't be inserted");
-        }
+
     }
 
-    void ResourceMap::addTexture(String n, float w, float h, TexType t)
-    {
-        LEEP_CORE_ASSERT(w > 0.0f && h > 0.0f, "0,0 size texture is no texture");
-        bool inserted = textures_.emplace(std::make_pair(n, FuTexture())).second;
-        if (inserted)
-        {
-            textures_[n].tex_.createEmpty(w, h, t);
-        }
-        else
-        {
-            LEEP_CORE_WARNING("Texture couldn't be inserted");
-        }
-    }
+void ResourceMap::addTexture(String name, u32 w, u32 h, THE_TexType t)
+{
+	THE_ASSERT(w > 0 && h > 0 && "0,0 size texture is no texture");
+	THE_Texture tex = THE_CreateEmptyTexture(w, h, t);
+	if (!textures.emplace(std::make_pair(name, tex)).second)
+	{
+		THE_LOG_ERROR("Texture couldn't be inserted%c", ' ');
+	}
+}
 
     void ResourceMap::addTexture(String name, Texture tex)
     {

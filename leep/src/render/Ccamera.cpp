@@ -1,4 +1,5 @@
 #include "Ccamera.h"
+#include "Cinternalresources.h"
 
 void THE_CameraInit(THE_Camera *cam, float fov, float far, u32 width, u32 height, u8 is_light)
 {
@@ -24,4 +25,9 @@ struct vec3 THE_CameraPosition(THE_Camera *cam)
 {
 	struct mat4 inv = smat4_inverse(cam->view_mat);
 	return svec3(inv.m41, inv.m42, inv.m43);
+}
+
+THE_Texture THE_CameraOutputColorTexture(THE_Camera *cam)
+{
+	return framebuffers[cam->fb].color_tex;
 }

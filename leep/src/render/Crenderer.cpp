@@ -24,6 +24,7 @@ const THE_Mesh QUAD_MESH = THE_CreateQuadMesh();
 
 THE_RenderQueue render_queue;
 THE_Camera camera;
+struct vec4 sun_dir_intensity;
 
 typedef struct THE_AvailableNode {
 	THE_AvailableNode *next;
@@ -107,6 +108,7 @@ void THE_InitRender()
 	materials[THE_MT_LUT_GEN] = InitInternalMaterial("lut-gen");
 
 	THE_CameraInit(&camera, 70.0f, 300.0f, GM.window().width(), GM.window().height(), 0);
+	sun_dir_intensity = svec4(1.0f, -1.0f, 0.0f, 1.0f);
 }
 
 /*

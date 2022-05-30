@@ -24,6 +24,7 @@ project "TestApp"
     targetdir "bin/"
     objdir "build/"
     includedirs {
+        "leep/extern/include",
         "leep/src/",
         "src/",
     }

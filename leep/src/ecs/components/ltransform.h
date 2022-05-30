@@ -5,7 +5,7 @@
 
 #include "ecs/component.h"
 #include "core/common-defs.h"
-#include "mathc.h"
+#include "core/Cdefinitions.h"
 
 namespace leep 
 {

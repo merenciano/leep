@@ -3,7 +3,6 @@
 
 #include "core/Cdefinitions.h"
 #include "render/Crenderertypes.h"
-#include "mathc.h"
 
 typedef enum
 {
