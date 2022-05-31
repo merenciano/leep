@@ -4,7 +4,7 @@
 void THE_CameraInit(THE_Camera *cam, float fov, float far, u32 width, u32 height, u8 is_light)
 {
 	cam->fov = fov;
-	cam->far = far;
+	cam->far_value = far;
 	cam->view_mat = smat4_identity();
 	cam->proj_mat = smat4_perspective_fov(to_radians(fov), (float)width, (float)height, 0.01f, far);
 	cam->fb = THE_CreateFramebuffer(width, height, !is_light, true);

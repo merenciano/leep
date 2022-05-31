@@ -91,7 +91,7 @@ namespace leep
         {
             fov -= GM.input().scroll() * scroll_sensibility;
             fov = glm::clamp(fov, 1.0f, 120.0f);
-	    camera.proj_mat = smat4_perspective(to_radians(fov), (float)GM.window().width() / GM.window().height(), 0.1f, camera.far);
+	    camera.proj_mat = smat4_perspective(to_radians(fov), (float)GM.window().width() / GM.window().height(), 0.1f, camera.far_value);
         }
 
 	camera.view_mat = smat4_inverse(tr.transform);

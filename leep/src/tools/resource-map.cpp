@@ -4,22 +4,18 @@
 
 namespace leep
 {
-    void ResourceMap::addGeometry(String name, String path)
-    {
-        LEEP_ASSERT(name != "Cube", "There is already a cube named Cube");
-        LEEP_ASSERT(name != "Sphere", "There is already a sphere named Sphere");
-        LEEP_ASSERT(name != "Quad", "There is already a quad named Quad");
-        bool inserted = 
-            geometries_.emplace(std::make_pair(name, Geometry())).second;
-        if (inserted)
-        {
-            geometries_[name].loadObj(path);
-        }
-        else
-        {
-            LEEP_CORE_WARNING("There is already a geometry with that name");
-        }
-    }
+void ResourceMap::addGeometry(String name, String path)
+{
+	THE_ASSERT(name != "Cube" && "There is already a cube named Cube");
+	THE_ASSERT(name != "Sphere" && "There is already a sphere named Sphere");
+	THE_ASSERT(name != "Quad" && "There is already a quad named Quad");
+
+	THE_Mesh mesh = THE_CreateMeshFromFile_OBJ(path.c_str());
+	if (!meshes.emplace(std::make_pair(name, mesh)).second)
+	{
+		THE_LOG_ERROR("Mesh %s couldn't be inserted", name.c_str());
+	}
+}
 
     void ResourceMap::addGeometry(String name, Geometry g)
     {
@@ -42,7 +38,7 @@ void ResourceMap::addTexture(String name, String path, THE_TexType t)
 	THE_Texture tex = THE_CreateTexture(path.c_str(), t);
 	if (!textures.emplace(std::make_pair(name, tex)).second)
 	{
-		THE_LOG_ERROR("Texture couldn't be inserted%c", ' ');
+		THE_LOG_ERROR("Texture %s couldn't be inserted", name.c_str());
 	}
 }
 
@@ -59,7 +55,7 @@ void ResourceMap::addTexture(String name, u32 w, u32 h, THE_TexType t)
 	THE_Texture tex = THE_CreateEmptyTexture(w, h, t);
 	if (!textures.emplace(std::make_pair(name, tex)).second)
 	{
-		THE_LOG_ERROR("Texture couldn't be inserted%c", ' ');
+		THE_LOG_ERROR("Texture %s couldn't be inserted", name.c_str());
 	}
 }
 

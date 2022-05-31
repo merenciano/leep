@@ -39,7 +39,7 @@ typedef struct {
 typedef struct {
 	struct mat4 view_mat;
 	struct mat4 proj_mat;
-	float far;
+	float far_value;
 	float fov;
 	THE_Framebuffer fb;
 } THE_Camera;

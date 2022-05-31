@@ -18,9 +18,9 @@
 #define TINYOBJLOADER_IMPLEMENTATION
 #include "tiny_obj_loader.h"
 
-const THE_Mesh SPHERE_MESH = THE_CreateSphereMesh(32, 32);
-const THE_Mesh CUBE_MESH = THE_CreateCubeMesh();
-const THE_Mesh QUAD_MESH = THE_CreateQuadMesh();
+THE_Mesh SPHERE_MESH;
+THE_Mesh CUBE_MESH;
+THE_Mesh QUAD_MESH;
 
 THE_RenderQueue render_queue;
 THE_Camera camera;
@@ -109,6 +109,10 @@ void THE_InitRender()
 
 	THE_CameraInit(&camera, 70.0f, 300.0f, GM.window().width(), GM.window().height(), 0);
 	sun_dir_intensity = svec4(1.0f, -1.0f, 0.0f, 1.0f);
+
+	SPHERE_MESH = THE_CreateSphereMesh(32, 32);
+	CUBE_MESH = THE_CreateCubeMesh();
+	QUAD_MESH = THE_CreateQuadMesh();
 }
 
 /*
