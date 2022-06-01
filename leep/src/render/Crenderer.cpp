@@ -450,6 +450,14 @@ void THE_FreeTextureData(THE_Texture tex)
 }
 
 // MESH FUNCTIONS
+THE_Mesh THE_GetNewMesh()
+{
+	THE_Mesh m;
+	m.index = THE_UNINIT;
+	m.vertex = THE_UNINIT;
+	return m;
+}
+
 THE_Mesh THE_CreateCubeMesh()
 {
 	static const s32 VTX_COUNT = 24 * 8;
@@ -813,6 +821,28 @@ void THE_InitMaterial(THE_MaterialType t, const char* name)
 	materials[t] = InitInternalMaterial(name);
 }
 
+THE_Material THE_GetNewMaterial()
+{
+	THE_Material mat;
+	mat.data = NULL;
+	mat.tex = NULL;
+	mat.cube_start = -1;
+	mat.dcount = 0;
+	mat.tcount = 0;
+	mat.type = THE_MT_NONE;
+	return mat;
+}
+
+void THE_InitNewMaterial(THE_Material* mat)
+{
+	mat->data = NULL;
+	mat->tex = NULL;
+	mat->cube_start = -1;
+	mat->dcount = 0;
+	mat->tcount = 0;
+	mat->type = THE_MT_NONE;
+}
+
 void THE_MaterialSetModel(THE_Material *mat, float *data)
 {
 	THE_ASSERT(data && "Invalid data parameter");
@@ -820,7 +850,7 @@ void THE_MaterialSetModel(THE_Material *mat, float *data)
 	memcpy(mat->data, data, 64);
 }
 
-void THE_MaterialSetData(THE_Material *mat, float* data, s32 count)
+void THE_MaterialSetFrameData(THE_Material *mat, float* data, s32 count)
 {
 	THE_ASSERT(!mat->data || THE_IsInsideFramePool(mat->data) && 
 		"There are some non-temporary data in this material that must be freed");
@@ -836,7 +866,7 @@ void THE_MaterialSetData(THE_Material *mat, float* data, s32 count)
 	memcpy(mat->data, data, count * sizeof(float));
 }
 
-void THE_MaterialSetFrameData(THE_Material* mat, float* data, s32 count)
+void THE_MaterialSetData(THE_Material* mat, float* data, s32 count)
 {
 	// Align to fvec4
 	s32 offset = count & 3;
@@ -849,7 +879,7 @@ void THE_MaterialSetFrameData(THE_Material* mat, float* data, s32 count)
 	memcpy(mat->data, data, count * sizeof(float));
 }
 
-void THE_MaterialSetTexture(THE_Material* mat, THE_Texture* tex, s32 count, s32 cube_start)
+void THE_MaterialSetFrameTexture(THE_Material* mat, THE_Texture* tex, s32 count, s32 cube_start)
 {
 	THE_ASSERT(!mat->tex || THE_IsInsideFramePool(mat->tex) &&
 		"There are some non-temporary textures in this material that must be freed");
@@ -860,7 +890,7 @@ void THE_MaterialSetTexture(THE_Material* mat, THE_Texture* tex, s32 count, s32 
 	memcpy(mat->tex, tex, count * sizeof(THE_Texture));
 }
 
-void THE_MaterialSetFrameTexture(THE_Material* mat, THE_Texture* tex, s32 count, s32 cube_start)
+void THE_MaterialSetTexture(THE_Material* mat, THE_Texture* tex, s32 count, s32 cube_start)
 {
 	GM.memory().generalFree(mat->tex);
 	mat->tex = (THE_Texture*)GM.memory().generalAlloc(count * sizeof(THE_Texture));

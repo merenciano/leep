@@ -3,13 +3,14 @@
 
 #include "ecs/component.h"
 #include "render/Cmaterial.h"
+#include "render/Crenderer.h"
 
 namespace leep 
 {
     struct Drawable : public Component
     {
         static const CompType s_type = COMP_DRAWABLE;
-        Drawable() : Component(COMP_DRAWABLE) {  }
+	Drawable() : Component(COMP_DRAWABLE) { mat = THE_GetNewMaterial(); mesh = THE_GetNewMesh(); }
 
         Drawable& operator=(const Drawable &other)
         {

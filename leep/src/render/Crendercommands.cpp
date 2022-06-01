@@ -797,56 +797,56 @@ void THE_UseFramebufferExecute(THE_CommandData *data)
 		return;
 	}
 
-	THE_InternalFramebuffer ifb = framebuffers[data->usefb.fb];
+	THE_InternalFramebuffer *ifb = framebuffers + data->usefb.fb;
 	GLsizei width;
 	GLsizei height;
 
-	if (ifb.gpu_version == 0) {
-		THE_ASSERT(data->usefb.fb >= 0 && ifb.cpu_version > 0 && "Framebuffer not created");
-		glGenFramebuffers(1, (GLuint*)&(ifb.internal_id));
+	if (ifb->gpu_version == 0) {
+		THE_ASSERT(data->usefb.fb >= 0 && ifb->cpu_version > 0 && "Framebuffer not created");
+		glGenFramebuffers(1, (GLuint*)&(ifb->internal_id));
 		THE_CommandData ctcd;
 		ctcd.createtex.release_ram = 0;
-		if (ifb.color) {
-			ctcd.createtex.tex = ifb.color_tex;
+		if (ifb->color) {
+			ctcd.createtex.tex = ifb->color_tex;
 			THE_CreateTextureExecute(&ctcd);
 		}
-		if (ifb.depth) {
-			ctcd.createtex.tex = ifb.depth_tex;
+		if (ifb->depth) {
+			ctcd.createtex.tex = ifb->depth_tex;
 			THE_CreateTextureExecute(&ctcd);
 		}
 	}
-	glBindFramebuffer(GL_FRAMEBUFFER, ifb.internal_id);
+	glBindFramebuffer(GL_FRAMEBUFFER, ifb->internal_id);
 
 	// Set viewport
-	if (ifb.color) {
-		width = (s32)textures[ifb.color_tex].width;
-		height = (s32)textures[ifb.color_tex].height;
+	if (ifb->color) {
+		width = (s32)textures[ifb->color_tex].width;
+		height = (s32)textures[ifb->color_tex].height;
 		glViewport(0, 0, width, height);
 	}
 
-	if (ifb.depth) {
-		if (ifb.color) {
-			THE_ASSERT(width == (GLsizei)textures[ifb.depth_tex].width &&
-                height == (GLsizei)textures[ifb.depth_tex].height &&
+	if (ifb->depth) {
+		if (ifb->color) {
+			THE_ASSERT(width == (GLsizei)textures[ifb->depth_tex].width &&
+                height == (GLsizei)textures[ifb->depth_tex].height &&
 				"Color and depth texture sizes of framebuffer not matching");
 		} else {
-			width = (s32)textures[ifb.depth_tex].width;
-			height = (s32)textures[ifb.depth_tex].height;
+			width = (s32)textures[ifb->depth_tex].width;
+			height = (s32)textures[ifb->depth_tex].height;
 			glViewport(0, 0, width, height);
 		}
 	}
 
 	// Update framebuffer if the textures have been changed
-	if (ifb.gpu_version < ifb.cpu_version) {
-		if (ifb.color) {
+	if (ifb->gpu_version < ifb->cpu_version) {
+		if (ifb->color) {
 			glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D,
-				textures[ifb.color_tex].internal_id, 0);
+				textures[ifb->color_tex].internal_id, 0);
 		}
-		if (ifb.depth) {
+		if (ifb->depth) {
 			glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D,
-				textures[ifb.depth_tex].internal_id, 0);
+				textures[ifb->depth_tex].internal_id, 0);
 		}
-		ifb.gpu_version = ifb.cpu_version;
+		ifb->gpu_version = ifb->cpu_version;
 	}
 }
 

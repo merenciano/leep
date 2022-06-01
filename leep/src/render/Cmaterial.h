@@ -31,6 +31,8 @@ typedef struct
         s32 cube_start;
 } THE_Material;
 
+THE_Material THE_GetNewMaterial();
+void THE_InitNewMaterial(THE_Material* mat);
 void THE_MaterialSetModel(THE_Material *mat, float *data); // This funcion copies a mat4 in the first 64 bytes of the already allocated data.
 void THE_MaterialSetData(THE_Material *mat, float *data, s32 count); // General allocator. It will not free itself
 void THE_MaterialSetFrameData(THE_Material *mat, float *data, s32 count); // Like above but with frame allocator

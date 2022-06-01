@@ -55,6 +55,7 @@ void THE_FreeTextureData(THE_Texture tex); // Frees the texture from RAM (not th
 s32 IsValidTexture(THE_Texture tex);
 
 // Mesh
+THE_Mesh THE_GetNewMesh();
 THE_Mesh THE_CreateCubeMesh();
 THE_Mesh THE_CreateSphereMesh(s32 x_segments, s32 y_segments);
 THE_Mesh THE_CreateQuadMesh();

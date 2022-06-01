@@ -294,6 +294,7 @@ void leep::GameLogic()
 	pbr_sd.light_direction_intensity = sun_dir_intensity;
 
 	THE_Material *full_screen_img = (THE_Material*)THE_AllocateFrameResource(sizeof(THE_Material));
+	THE_InitNewMaterial(full_screen_img);
 	full_screen_img->type = THE_MT_FULL_SCREEN_IMAGE;
 	THE_Texture fbtex = THE_CameraOutputColorTexture(&camera); // TODO: Revisar si deberia hacerse en aqui algo tan low level del renderer (algo como link camera to tex?)
 	THE_MaterialSetFrameTexture(full_screen_img, &fbtex, 1);
@@ -333,6 +334,7 @@ void leep::GameLogic()
 
 	THE_RenderCommand *usemat = THE_AllocateCommand();
 	usemat->data.usemat.mat = (THE_Material*)THE_AllocateFrameResource(sizeof(THE_Material));
+	THE_InitNewMaterial(usemat->data.usemat.mat);
 	usemat->data.usemat.mat->type = THE_MT_PBR;
 	THE_MaterialSetFrameData(usemat->data.usemat.mat, (float*)&pbr_sd, sizeof(PbrSceneData) / sizeof (float));
 	THE_MaterialSetFrameTexture(usemat->data.usemat.mat, scene_tex, 3, 1);
