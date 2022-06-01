@@ -170,14 +170,14 @@ void THE_SubmitFrame()
 
 THE_RenderCommand *THE_AllocateCommand()
 {
-	THE_ASSERT(next_pool_last - next_pool < THE_RENDER_QUEUE_CAPACITY - 1 &&
+	THE_ASSERT((next_pool_last - next_pool) < THE_RENDER_QUEUE_CAPACITY - 1 &&
 		"Not enough memory in the RenderQueue pool");
 	return next_pool_last++;
 }
 
 void *THE_AllocateFrameResource(size_t size)
 {
-	THE_ASSERT((frame_pool_last + size) - frame_pool[frame_switch] < THE_FRAME_POOL_SIZE / 2 &&
+	THE_ASSERT(((frame_pool_last + size) - frame_pool[frame_switch]) < THE_FRAME_POOL_SIZE / 2 &&
 		"Not enough memory in the frame pool");
 	void *ret = frame_pool_last;
 	frame_pool_last += size;
