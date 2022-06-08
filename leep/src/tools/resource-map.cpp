@@ -17,6 +17,18 @@ void ResourceMap::addGeometry(String name, String path)
 	}
 }
 
+void ResourceMap::addGeometry(String name, THE_Mesh mesh)
+{
+	THE_ASSERT(name != "Cube" && "There is already a cube named Cube");
+	THE_ASSERT(name != "Sphere" && "There is already a sphere named Sphere");
+	THE_ASSERT(name != "Quad" && "There is already a quad named Quad");
+
+	if (!meshes.emplace(std::make_pair(name, mesh)).second)
+	{
+		THE_LOG_ERROR("Mesh %s couldn't be inserted", name.c_str());
+	}
+}
+
     void ResourceMap::addGeometry(String name, Geometry g)
     {
         LEEP_CHECK_RESOURCE(g.vertex_buffer());

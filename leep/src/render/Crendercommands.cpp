@@ -46,25 +46,26 @@ void THE_ClearExecute(THE_CommandData *data)
 
 void THE_CreateBufferExecute(THE_CommandData *data)
 {
-	THE_InternalBuffer b = buffers[data->createbuff.buffer];
-	THE_ASSERT(b.cpu_version > 0 && "This buffer hasn't got any data yet");
-	THE_ASSERT(b.internal_id == THE_UNINIT);
+	THE_InternalBuffer *b = buffers + (data->createbuff.buffer);
+	THE_ASSERT(b->cpu_version > 0 && "This buffer hasn't got any data yet");
+	THE_ASSERT(b->internal_id == THE_UNINIT);
 
-	glGenBuffers(1, &b.internal_id);
-	if (b.type == THE_BUFFER_INDEX) {
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, b.internal_id);
-		glBufferData(GL_ELEMENT_ARRAY_BUFFER, b.count * sizeof(u32),
-			(const void*)b.indices, GL_STATIC_DRAW);
-	} else if (b.type != THE_BUFFER_NONE) {
-		glBindBuffer(GL_ARRAY_BUFFER, b.internal_id);
-		glBufferData(GL_ARRAY_BUFFER, b.count * sizeof(float),
-			(const void*)b.vertices, GL_STATIC_DRAW);
+	glGenBuffers(1, &b->internal_id);
+	if (b->type == THE_BUFFER_INDEX) {
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, b->internal_id);
+		glBufferData(GL_ELEMENT_ARRAY_BUFFER, b->count * sizeof(u32),
+			(const void*)b->indices, GL_STATIC_DRAW);
+	} else if (b->type != THE_BUFFER_NONE) {
+		glBindBuffer(GL_ARRAY_BUFFER, b->internal_id);
+		glBufferData(GL_ARRAY_BUFFER, b->count * sizeof(float),
+			(const void*)b->vertices, GL_STATIC_DRAW);
 	}
 
-	b.gpu_version = b.cpu_version;
+	b->gpu_version = b->cpu_version;
 
 	// Delete ram data now that has been copied into the vram
-	THE_FreeBufferData(data->createbuff.buffer);
+	// TODO: Uncomment this... Im just testing
+	//THE_FreeBufferData(data->createbuff.buffer);
 }
 
 void THE_CreateCubemapExecute(THE_CommandData *data)

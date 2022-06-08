@@ -26,6 +26,7 @@ namespace leep
         ResourceMap(ResourceMap &&rm) = delete;
 
         void addGeometry(String name, String path);
+	void addGeometry(String name, THE_Mesh mesh);
         void addGeometry(String name, Geometry geometry);
         void addTexture(String name, String path, THE_TexType type);
         void addTextureAsync(String name, String path, TexType);

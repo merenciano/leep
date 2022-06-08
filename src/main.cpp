@@ -6,7 +6,7 @@ void leep::GameInit()
 {
 	ResourceMap &rm = GM.resource_map();
 	const String tp = "../assets/tex/";
-	rm.addGeometry("MatBall", "../assets/obj/matball-n.obj");
+	rm.addGeometry("MatBall", CUBE_MESH);
 	rm.addTexture("Skybox", 1024, 1024, THE_TEX_ENVIRONMENT);
 	rm.addTexture("IrradianceEnv", 1024, 1024, THE_TEX_ENVIRONMENT);
 	rm.addTexture("PrefilterSpec", 128, 128, THE_TEX_PREFILTER_ENVIRONMENT);
