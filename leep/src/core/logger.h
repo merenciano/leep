@@ -6,8 +6,8 @@
 #include <stdint.h>
 #include <string>
 
-#include "../extern/spdlog/spdlog.h"
-#include "../extern/spdlog/fmt/ostr.h"
+//#include "../extern/spdlog/spdlog.h"
+//#include "../extern/spdlog/fmt/ostr.h"
 
 namespace leep
 {
@@ -15,16 +15,16 @@ namespace leep
 	{
 	public:
 		static void Init();
-		static std::shared_ptr<spdlog::logger>& GetCoreLogger() { return s_core_logger; }
-		static std::shared_ptr<spdlog::logger>& GetAppLogger()  { return s_app_logger; }
+		//static std::shared_ptr<spdlog::logger>& GetCoreLogger() { return s_core_logger; }
+		//static std::shared_ptr<spdlog::logger>& GetAppLogger()  { return s_app_logger; }
 		
 	private:
-		static std::shared_ptr<spdlog::logger> s_core_logger;
-		static std::shared_ptr<spdlog::logger> s_app_logger;
+		//static std::shared_ptr<spdlog::logger> s_core_logger;
+		//static std::shared_ptr<spdlog::logger> s_app_logger;
 	};
 }
 
-#ifndef LEEP_RELEASE
+/*#ifndef LEEP_RELEASE
 	// Engine macros
 	#define LEEP_CORE_TRACE(...)    ::leep::Logger::GetCoreLogger()->trace(__VA_ARGS__)
 	#define LEEP_CORE_INFO(...)     ::leep::Logger::GetCoreLogger()->info(__VA_ARGS__)
@@ -38,7 +38,7 @@ namespace leep
 	#define LEEP_WARNING(...)  ::leep::Logger::GetAppLogger()->warn(__VA_ARGS__)
 	#define LEEP_ERROR(...)    ::leep::Logger::GetAppLogger()->error(__VA_ARGS__)
 	#define LEEP_CRITICAL(...) ::leep::Logger::GetAppLogger()->critical(__VA_ARGS__)
-#else
+#else*/
 	#define LEEP_CORE_TRACE(...)
 	#define LEEP_CORE_INFO(...)
 	#define LEEP_CORE_WARNING(...)
@@ -49,6 +49,6 @@ namespace leep
 	#define LEEP_WARNING(...)
 	#define LEEP_ERROR(...)
 	#define LEEP_CRITICAL(...)
-#endif
+//#endif
 
 #endif // __LEEP_CORE_LOGGER_H__

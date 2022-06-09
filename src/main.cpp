@@ -1,6 +1,6 @@
 #include "leep.h"
 
-//#define LEEP_SINGLE_THREAD
+#define LEEP_SINGLE_THREAD
 
 void leep::GameInit()
 {

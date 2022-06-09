@@ -9,22 +9,22 @@ Renderer::Renderer()
 {
     //tex_to_del_.store(-1);
     //buf_to_del_.store(-1);
-    sun_dir_intensity_ = glm::vec4(1.0f, -1.0f, 0.0f, 1.0f);
+    //sun_dir_intensity_ = glm::vec4(1.0f, -1.0f, 0.0f, 1.0f);
 }
 
 Renderer::~Renderer()
 {
-    LEEP_CORE_ERROR("Render destructor called");
+    //LEEP_CORE_ERROR("Render destructor called");
 }
 
 void Renderer::init(int32_t queue_capacity)
 {
 //    rq_.init(queue_capacity);
-    textures_ = (InternalTexture*)GM.memory().persistentAlloc(sizeof(InternalTexture)*kMaxTextures);
-    buffers_ = (InternalBuffer*)GM.memory().persistentAlloc(sizeof(InternalBuffer)*kMaxBuffers);
-    materials_ = (InternalMaterial*)GM.memory().persistentAlloc(MT_MAX * sizeof(InternalMaterial));
-    buf_count_ = 0;
-    tex_count_ = 0;
+    //textures_ = (InternalTexture*)GM.memory().persistentAlloc(sizeof(InternalTexture)*kMaxTextures);
+    //buffers_ = (InternalBuffer*)GM.memory().persistentAlloc(sizeof(InternalBuffer)*kMaxBuffers);
+    //materials_ = (InternalMaterial*)GM.memory().persistentAlloc(MT_MAX * sizeof(InternalMaterial));
+    //buf_count_ = 0;
+    //tex_count_ = 0;
 
     /*materials_[MT_FULL_SCREEN_IMAGE].init("fullscreen-img");
     materials_[MT_SKYBOX].init("skybox");
@@ -38,18 +38,18 @@ void Renderer::initMaterial(MaterialType t, const char *name)
    // materials_[t].init(name);
 }
 
-int32_t Renderer::addTex()
+void Renderer::addTex()
 {
-    LEEP_CORE_ASSERT(tex_count_ < kMaxTextures, "Max textures");
-    new(textures_ + tex_count_) InternalTexture(); // Only on debug?
-    return tex_count_++;
+    //LEEP_CORE_ASSERT(tex_count_ < kMaxTextures, "Max textures");
+   // new(textures_ + tex_count_) InternalTexture(); // Only on debug?
+    //return tex_count_++;
 }
 
-int32_t Renderer::addBuf()
+void Renderer::addBuf()
 {
-    LEEP_CORE_ASSERT(buf_count_ < kMaxBuffers, "Max buffers");
-    new(buffers_ + buf_count_) InternalBuffer();
-    return buf_count_++;
+   // LEEP_CORE_ASSERT(buf_count_ < kMaxBuffers, "Max buffers");
+   // new(buffers_ + buf_count_) InternalBuffer();
+    //return buf_count_++;
 }
 
 /*void Renderer::renderFrame()

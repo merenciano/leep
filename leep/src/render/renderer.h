@@ -80,8 +80,8 @@ namespace leep
         //std::atomic<int32_t> buf_to_del_;
 
         void initMaterial(MaterialType t, const char *name);
-        int32_t addTex();
-        int32_t addBuf();
+	void addTex();
+	void addBuf();
 
         // TODO: Move the camera here
         InternalFramebuffer framebuffer_;

@@ -24,7 +24,7 @@ struct mat4 THE_CameraStaticViewProjection(THE_Camera *cam)
 struct vec3 THE_CameraPosition(THE_Camera *cam)
 {
 	struct mat4 inv = smat4_inverse(cam->view_mat);
-	return svec3(inv.m41, inv.m42, inv.m43);
+	return svec3(inv.m14, inv.m24, inv.m34);
 }
 
 THE_Texture THE_CameraOutputColorTexture(THE_Camera *cam)

@@ -637,8 +637,8 @@ void THE_EquirectToCubeExecute(THE_CommandData *data)
 	}
 
 	if (o_pref != THE_UNINIT) {
-		THE_InternalTexture ipref = textures[o_pref];
-		if (ipref.cpu_version > ipref.gpu_version) {
+		THE_InternalTexture *ipref = textures + o_pref;
+		if (ipref->cpu_version > ipref->gpu_version) {
 			THE_CommandData cccd;
 			cccd.createcubemap.texture = o_pref;
 			THE_CreateCubemapExecute(&cccd);
@@ -647,7 +647,7 @@ void THE_EquirectToCubeExecute(THE_CommandData *data)
 		THE_PrefilterEnvData pref_data;
 		for (s32 i = 0; i < 5; ++i) {
 			// mip size
-			s32 s = (s32)((float)ipref.width * powf(0.5f, (float)i));
+			s32 s = (s32)((float)ipref->width * powf(0.5f, (float)i));
 			glViewport(0, 0, s, s);
 			pref_data.roughness = (float)i / 4.0f;  // mip / max mip levels - 1
 
@@ -657,7 +657,7 @@ void THE_EquirectToCubeExecute(THE_CommandData *data)
 			for (s32 j = 0; j < 6; ++j) {
                 pref_data.vp = smat4_multiply(proj, views[j]);
 				glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0,
-				    GL_TEXTURE_CUBE_MAP_POSITIVE_X + j, ipref.internal_id, i);
+				    GL_TEXTURE_CUBE_MAP_POSITIVE_X + j, ipref->internal_id, i);
 				glClear(GL_COLOR_BUFFER_BIT);
 				draw_cd.draw.mat = (THE_Material*)THE_AllocateFrameResource(sizeof(THE_Material));
 				draw_cd.draw.mat->type = THE_MT_PREFILTER_ENV;
@@ -669,15 +669,15 @@ void THE_EquirectToCubeExecute(THE_CommandData *data)
 	}
 
 	if (o_lut != THE_UNINIT) {
-		THE_InternalTexture ilut = textures[o_lut];
-		if (ilut.cpu_version > ilut.gpu_version) {
+		THE_InternalTexture *ilut = textures + o_lut;
+		if (ilut->cpu_version > ilut->gpu_version) {
 			THE_CommandData createtex_cd;
 			createtex_cd.createtex.tex = o_lut;
 			createtex_cd.createtex.release_ram = 0;
 			THE_CreateTextureExecute(&createtex_cd);
 		}
-		glViewport(0, 0, ilut.width, ilut.height);
-		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, ilut.internal_id, 0);
+		glViewport(0, 0, ilut->width, ilut->height);
+		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, ilut->internal_id, 0);
 		glClear(GL_COLOR_BUFFER_BIT);
 		THE_CommandData draw_cd;
 		draw_cd.draw.mesh = QUAD_MESH;

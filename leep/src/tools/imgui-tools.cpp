@@ -14,6 +14,7 @@
 
 #include "render/Crendercommands.h"
 #include "render/Crenderer.h"
+#include "render/Cinternalresources.h"
 
 #include <vector>
 #include <deque>
@@ -340,7 +341,6 @@ namespace leep
             return;
         }
 
-        Renderer &r = GM.renderer();
         if (ImGui::CollapsingHeader("Textures"))
         {
             ImVec2 size = ImVec2(-FLT_MIN, ImGui::GetTextLineHeightWithSpacing() * 6);
@@ -351,26 +351,26 @@ namespace leep
                 ImGui::TableSetupColumn("State", ImGuiTableColumnFlags_None);
                 ImGui::TableHeadersRow();
 
-                for (int32_t i = 0; i < r.tex_count_; ++i)
+                for (int32_t i = 0; i < texture_count; ++i)
                 {
-                    const InternalTexture &t = r.textures_[i];
+                    THE_InternalTexture *t = textures + i;
                     ImGui::TableNextRow();
                     ImGui::TableSetColumnIndex(0);
                     ImGui::Text("%d", i);
                     ImGui::TableSetColumnIndex(1);
-                    if (t.internal_id_ == CommonDefs::UNINIT_INTERNAL_ID)
+                    if (t->internal_id == THE_UNINIT)
                     {
                         ImGui::Text("Not created");
                     }
-                    else if (t.gpu_version_ == CommonDefs::DELETED_GPU_RESOURCE)
+                    else if (t->gpu_version == THE_DELETED)
                     {
                         ImGui::Text("Marked for deletion");
                     }
-                    else if (t.gpu_version_ < t.cpu_version_)
+                    else if (t->gpu_version < t->cpu_version)
                     {
                         ImGui::Text("Outdated");
                     }
-                    else if (t.cpu_version_ == t.gpu_version_)
+                    else if (t->cpu_version == t->gpu_version)
                     {
                         ImGui::Text("Updated");
                     }
@@ -389,26 +389,26 @@ namespace leep
                 ImGui::TableSetupColumn("State", ImGuiTableColumnFlags_None);
                 ImGui::TableHeadersRow();
 
-                for (int32_t i = 0; i < r.buf_count_; ++i)
+                for (int32_t i = 0; i < buffer_count; ++i)
                 {
-                    const InternalBuffer &b = r.buffers_[i];
+                    THE_InternalBuffer *b = buffers + i;
                     ImGui::TableNextRow();
                     ImGui::TableSetColumnIndex(0);
                     ImGui::Text("%d", i);
                     ImGui::TableSetColumnIndex(1);
-                    if (b.internal_id_ == CommonDefs::UNINIT_INTERNAL_ID)
+                    if (b->internal_id == THE_UNINIT)
                     {
                         ImGui::Text("Not created");
                     }
-                    else if (b.gpu_version_ == CommonDefs::DELETED_GPU_RESOURCE)
+                    else if (b->gpu_version == THE_DELETED)
                     {
                         ImGui::Text("Marked for deletion");
                     }
-                    else if (b.gpu_version_ < b. cpu_version_)
+                    else if (b->gpu_version < b->cpu_version)
                     {
                         ImGui::Text("Outdated");
                     }
-                    else if (b.cpu_version_ == b.gpu_version_)
+                    else if (b->cpu_version == b->gpu_version)
                     {
                         ImGui::Text("Updated");
                     }
@@ -426,7 +426,6 @@ namespace leep
             ImGuiTableFlags_BordersV | ImGuiTableFlags_Resizable |
             ImGuiTableFlags_Reorderable | ImGuiTableFlags_Hideable;
         Memory &m = GM.memory();
-        Renderer &r = GM.renderer();
         ImGui::SetNextWindowPos(ImVec2(10, 560), ImGuiCond_FirstUseEver);
         if (!ImGui::Begin("Memory usage", &show_memory_usage_, ImGuiWindowFlags_AlwaysAutoResize))
         {
@@ -459,8 +458,8 @@ namespace leep
 
             // Textures
             {
-                size_t offset = r.tex_count_ * sizeof(InternalTexture);
-                size_t capacity = kMaxTextures * sizeof(InternalTexture);
+                size_t offset = texture_count * sizeof(THE_InternalTexture);
+                size_t capacity = kMaxTextures * sizeof(THE_InternalTexture);
                 ImGui::TableNextRow();
                 ImGui::TableSetColumnIndex(0);
                 ImGui::Text("%s", "Textures");
@@ -474,8 +473,8 @@ namespace leep
 
             // Buffers
             {
-                size_t offset = r.buf_count_ * sizeof(InternalBuffer);
-                size_t capacity = kMaxBuffers * sizeof(InternalBuffer);
+                size_t offset = buffer_count * sizeof(THE_InternalBuffer);
+                size_t capacity = kMaxBuffers * sizeof(THE_InternalBuffer);
                 ImGui::TableNextRow();
                 ImGui::TableSetColumnIndex(0);
                 ImGui::Text("%s", "Buffers");

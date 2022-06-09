@@ -19,15 +19,15 @@ void leep::CreateRenderable(String entity_name,
         return;
     }
     Drawable &d = e.getComponent<Drawable>();
-    PbrData pbr;
-    pbr.color_ = glm::vec3(1.0f, 1.0f, 1.0f);
-    pbr.use_albedo_map_ = 1.0f;
-    pbr.use_pbr_maps_ = 0.0f;
-    pbr.tiling_x_ = 1.0f;
-    pbr.tiling_y_ = 1.0f;
-    pbr.metallic_ = 0.5f;
-    pbr.roughness_ = 0.5f;
-    pbr.normal_map_intensity_ = 0.0f;
+    THE_PbrData pbr;
+    pbr.color = svec3(1.0f, 1.0f, 1.0f);
+    pbr.use_albedo_map = 1.0f;
+    pbr.use_pbr_maps = 0.0f;
+    pbr.tiling_x = 1.0f;
+    pbr.tiling_y = 1.0f;
+    pbr.metallic = 0.5f;
+    pbr.roughness = 0.5f;
+    pbr.normal_map_intensity = 0.0f;
     //d.mesh = GM.resource_map().getGeometry(geometry_name);
     d.mesh = GM.resource_map().meshes.at(geometry_name);
     d.mat.type = THE_MT_PBR;
@@ -73,12 +73,12 @@ void leep::SetLocation(String entity_name, float x, float y, float z)
 
 void leep::SetSunDirection(float x, float y, float z)
 {
-    GM.renderer().sun_dir_intensity_.x = x;
-    GM.renderer().sun_dir_intensity_.y = y;
-    GM.renderer().sun_dir_intensity_.z = z;
+	sun_dir_intensity.x = x;
+	sun_dir_intensity.y = y;
+	sun_dir_intensity.z = z;
 }
 
 void leep::SetSunIntensity(float intensity)
 {
-    GM.renderer().sun_dir_intensity_.w = intensity;
+	sun_dir_intensity.w = intensity;
 }
