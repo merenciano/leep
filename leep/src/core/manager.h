@@ -6,6 +6,8 @@
 #include "core/config.h"
 #include "core/memory/memory.h"
 
+struct THE_ResourceMap;
+
 namespace leep 
 {
     class Manager
@@ -29,7 +31,7 @@ namespace leep
         class Memory&      memory();
         class ImguiTools&  ui_tools();
         class Scene&       scene();
-        class ResourceMap& resource_map();
+        struct THE_ResourceMap* resource_map();
         struct ToolsData&  tools_data();
         float delta_time() const;
 

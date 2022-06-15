@@ -4,20 +4,20 @@
 
 void leep::GameInit()
 {
-	ResourceMap &rm = GM.resource_map();
+	THE_ResourceMap *rm = GM.resource_map();
 	const String tp = "../assets/tex/";
-	rm.addGeometry("MatBall", CUBE_MESH);
-	rm.addTexture("Skybox", 1024, 1024, THE_TEX_ENVIRONMENT);
-	rm.addTexture("IrradianceEnv", 1024, 1024, THE_TEX_ENVIRONMENT);
-	rm.addTexture("PrefilterSpec", 128, 128, THE_TEX_PREFILTER_ENVIRONMENT);
-	rm.addTexture("LutMap", 512, 512, THE_TEX_LUT);
+	THE_ResourceMapAddMesh(rm, "MatBall", "../assets/obj/matball-n.obj");
+	THE_ResourceMapAddTexture(rm, "Skybox", 1024, 1024, THE_TEX_ENVIRONMENT);
+	THE_ResourceMapAddTexture(rm, "IrradianceEnv", 1024, 1024, THE_TEX_ENVIRONMENT);
+	THE_ResourceMapAddTexture(rm, "PrefilterSpec", 128, 128, THE_TEX_PREFILTER_ENVIRONMENT);
+	THE_ResourceMapAddTexture(rm, "LutMap", 512, 512, THE_TEX_LUT);
 
-	rm.addTexture("CelticGold_A" ,tp + "celtic-gold/celtic-gold_A.png", THE_TEX_SRGB);
-	rm.addTexture("CelticGold_N" ,tp + "celtic-gold/celtic-gold_N.png", THE_TEX_RGB);
-	rm.addTexture("CelticGold_M" ,tp + "celtic-gold/celtic-gold_M.png", THE_TEX_R);
-	rm.addTexture("CelticGold_R" ,tp + "celtic-gold/celtic-gold_R.png", THE_TEX_R);
+	THE_ResourceMapAddTexture(rm, "CelticGold_A" ,tp + "celtic-gold/celtic-gold_A.png", THE_TEX_SRGB);
+	THE_ResourceMapAddTexture(rm, "CelticGold_N" ,tp + "celtic-gold/celtic-gold_N.png", THE_TEX_RGB);
+	THE_ResourceMapAddTexture(rm, "CelticGold_M" ,tp + "celtic-gold/celtic-gold_M.png", THE_TEX_R);
+	THE_ResourceMapAddTexture(rm, "CelticGold_R" ,tp + "celtic-gold/celtic-gold_R.png", THE_TEX_R);
 
-	rm.addTexture("Peeling_A" ,tp + "peeling/peeling_A.png", THE_TEX_SRGB);
+	/*rm.addTexture("Peeling_A", tp + "peeling/peeling_A.png", THE_TEX_SRGB);
 	rm.addTexture("Peeling_N" ,tp + "peeling/peeling_N.png", THE_TEX_RGB);
 	rm.addTexture("Peeling_M" ,tp + "peeling/peeling_M.png", THE_TEX_R);
 	rm.addTexture("Peeling_R" ,tp + "peeling/peeling_R.png", THE_TEX_R);
@@ -55,7 +55,7 @@ void leep::GameInit()
 	rm.addTexture("Foam_A" ,tp + "foam/foam_A.png", THE_TEX_SRGB);
 	rm.addTexture("Foam_N" ,tp + "foam/foam_N.png", THE_TEX_RGB);
 	rm.addTexture("Foam_M" ,tp + "foam/foam_M.png", THE_TEX_R);
-	rm.addTexture("Foam_R" ,tp + "foam/foam_R.png", THE_TEX_R);
+	rm.addTexture("Foam_R" ,tp + "foam/foam_R.png", THE_TEX_R);*/
 
 	THE_PbrData pbr;
 	pbr.color = svec3(1.0f, 1.0f, 1.0f);
@@ -78,19 +78,19 @@ void leep::GameInit()
 		LTransform &tr = e.getComponent<LTransform>();
 		tr.transform_ = glm::translate(tr.transform_, glm::vec3(2.0f, 0.0f, 0.0f));
 		Drawable &dw = e.getComponent<Drawable>();
-		dw.mesh = GM.resource_map().meshes.at("MatBall");
+		dw.mesh = rm->meshes.at("MatBall");
 		dw.mat.type = THE_MT_PBR;
 		THE_MaterialSetData(&dw.mat, (float*)&pbr, sizeof(PbrData) / 4);
 		THE_Texture t[4];
-		t[0] = GM.resource_map().textures.at("CelticGold_A");
-		t[1] = GM.resource_map().textures.at("CelticGold_M");
-		t[2] = GM.resource_map().textures.at("CelticGold_R");
-		t[3] = GM.resource_map().textures.at("CelticGold_N");
+		t[0] = GM.resource_map()->textures.at("CelticGold_A");
+		t[1] = GM.resource_map()->textures.at("CelticGold_M");
+		t[2] = GM.resource_map()->textures.at("CelticGold_R");
+		t[3] = GM.resource_map()->textures.at("CelticGold_N");
 		THE_MaterialSetTexture(&dw.mat, t, 4);
 	}
 
 	// Shore
-	{
+	/* {
 		pbr.tiling_x = 2.0f;
 		pbr.tiling_y = 2.0f;
 		pbr.normal_map_intensity = 0.5f;
@@ -247,7 +247,7 @@ void leep::GameInit()
 		t[2] = GM.resource_map().textures.at("Foam_R");
 		t[3] = GM.resource_map().textures.at("Foam_N");
 		THE_MaterialSetTexture(&dw.mat, t, 4);
-	}
+	}*/
 
 	THE_RenderCommand *rendops = THE_AllocateCommand();
 	rendops->data.renderops.depth_test = 1;
@@ -261,15 +261,15 @@ void leep::GameInit()
 
 	THE_RenderCommand *sky = THE_AllocateCommand();
 	strcpy(sky->data.eqr_cube.in_path, "../assets/tex/env/helipad-env.hdr");
-	sky->data.eqr_cube.out_cube = GM.resource_map().textures.at("Skybox");
-	sky->data.eqr_cube.out_prefilt = GM.resource_map().textures.at("PrefilterSpec");
-	sky->data.eqr_cube.out_lut = GM.resource_map().textures.at("LutMap");
+	sky->data.eqr_cube.out_cube = GM.resource_map()->textures.at("Skybox");
+	sky->data.eqr_cube.out_prefilt = GM.resource_map()->textures.at("PrefilterSpec");
+	sky->data.eqr_cube.out_lut = GM.resource_map()->textures.at("LutMap");
 	sky->execute = THE_EquirectToCubeExecute;
 	rendops->next = sky;
 
 	THE_RenderCommand *irradiance = THE_AllocateCommand();
 	strcpy(irradiance->data.eqr_cube.in_path, "../assets/tex/env/helipad-dif.hdr");
-	irradiance->data.eqr_cube.out_cube = GM.resource_map().textures.at("IrradianceEnv");
+	irradiance->data.eqr_cube.out_cube = GM.resource_map()->textures.at("IrradianceEnv");
 	irradiance->data.eqr_cube.out_prefilt = THE_UNINIT;
 	irradiance->data.eqr_cube.out_lut = THE_UNINIT;
 	irradiance->execute = THE_EquirectToCubeExecute;
@@ -289,7 +289,7 @@ void leep::GameLogic()
 
 	// Render commands
 	THE_PbrSceneData pbr_sd;
-	pbr_sd.view_projection = smat4_multiply(camera.view_mat, camera.proj_mat);
+	pbr_sd.view_projection = smat4_multiply(camera.proj_mat, camera.view_mat);
 	pbr_sd.camera_position = THE_CameraPosition(&camera);
 	pbr_sd.light_direction_intensity = sun_dir_intensity;
 
@@ -328,9 +328,9 @@ void leep::GameLogic()
 	rops->next = clear;
 
 	THE_Texture scene_tex[3];
-	scene_tex[0] = GM.resource_map().textures.at("LutMap");
-	scene_tex[1] = GM.resource_map().textures.at("IrradianceEnv");
-	scene_tex[2] = GM.resource_map().textures.at("PrefilterSpec");
+	scene_tex[0] = GM.resource_map()->textures.at("LutMap");
+	scene_tex[1] = GM.resource_map()->textures.at("IrradianceEnv");
+	scene_tex[2] = GM.resource_map()->textures.at("PrefilterSpec");
 
 	THE_RenderCommand *usemat = THE_AllocateCommand();
 	usemat->data.usemat.mat = (THE_Material*)THE_AllocateFrameResource(sizeof(THE_Material));
@@ -352,7 +352,7 @@ void leep::GameLogic()
 	rops->execute = THE_RenderOptionsExecute;
 
 	THE_RenderCommand *sky = THE_AllocateCommand();
-	sky->data.skybox.cubemap = GM.resource_map().textures.at("Skybox");
+	sky->data.skybox.cubemap = GM.resource_map()->textures.at("Skybox");
 	sky->execute = THE_SkyboxExecute;
 	rops->next = sky;
 

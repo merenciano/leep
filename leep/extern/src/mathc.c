@@ -5166,21 +5166,21 @@ struct mat4 smat4_cofactor(struct mat4 m0)
 
 struct mat4 smat4_rotation_x(mfloat_t f)
 {
-	struct mat4 result;
+	struct mat4 result = smat4_identity();
 	mat4_rotation_x((mfloat_t *)&result, f);
 	return result;
 }
 
 struct mat4 smat4_rotation_y(mfloat_t f)
 {
-	struct mat4 result;
+	struct mat4 result = smat4_identity();
 	mat4_rotation_y((mfloat_t *)&result, f);
 	return result;
 }
 
 struct mat4 smat4_rotation_z(mfloat_t f)
 {
-	struct mat4 result;
+	struct mat4 result = smat4_identity();
 	mat4_rotation_z((mfloat_t *)&result, f);
 	return result;
 }

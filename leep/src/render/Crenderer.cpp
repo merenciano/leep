@@ -741,7 +741,7 @@ THE_Mesh THE_CreateMeshFromFile_OBJ(const char *path)
 	}
 
 	ret.vertex = THE_CreateBuffer();
-	THE_SetBufferData(ret.vertex, v, (u32)vertices.size(), THE_BUFFER_VERTEX_3P_3N_2UV);
+	THE_SetBufferData(ret.vertex, v, (u32)vertices.size(), THE_BUFFER_VERTEX_3P_3N_3T_3B_2UV);
 	ret.index = THE_CreateBuffer();
 	THE_SetBufferData(ret.index, ind, (u32)indices.size(), THE_BUFFER_INDEX);
 

@@ -34,6 +34,7 @@ struct mat4 LTransform::rotateYWorld(struct mat4 tr, float radians)
 	temp.m34 = 0.0f;
 	// Rotate in world space (because of the order)
 	temp = smat4_multiply(smat4_rotation_y(radians), temp);
+
 	// Back to previous position
 	temp.m14 = tr.m14;
 	temp.m24 = tr.m24;

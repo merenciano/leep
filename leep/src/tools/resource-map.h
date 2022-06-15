@@ -1,66 +1,36 @@
 #ifndef __LEEP_TOOLS_RESOURCE_MAP_H__
 #define __LEEP_TOOLS_RESOURCE_MAP_H__
 
-#include "render/geometry.h"
-#include "render/texture.h"
+#include "core/leep-string.h"
 #include "render/Crenderertypes.h"
 #include "core/memory/buddy-alloc-stl.h"
 
 #include <unordered_map>
-#include <future>
 
-namespace leep
+struct THE_ResourceMap
 {
-    struct FuTexture
-    {
-        std::future<void> fut_;
-        Texture tex_;
-    };
+	THE_ResourceMap() = default;
+	~THE_ResourceMap() = default; // TODO: Remove resources from the GPU
+	THE_ResourceMap(const THE_ResourceMap& rm) = delete;
+	THE_ResourceMap(THE_ResourceMap&& rm) = delete;
 
-    class ResourceMap
-    {
-    public:
-        ResourceMap() = default;
-        ~ResourceMap() = default; // TODO: Remove resources from the GPU
-        ResourceMap(const ResourceMap &rm) = delete;
-        ResourceMap(ResourceMap &&rm) = delete;
+	std::unordered_map<
+		leep::String,
+		THE_Mesh,
+		std::hash<leep::String>,
+		std::equal_to<leep::String>,
+		leep::BuddySTL<std::pair<const leep::String, THE_Mesh>>> meshes;
+	std::unordered_map<
+		leep::String,
+		THE_Texture,
+		std::hash<leep::String>,
+		std::equal_to<leep::String>,
+		leep::BuddySTL<std::pair<const leep::String, THE_Texture>>> textures;
+};
 
-        void addGeometry(String name, String path);
-	void addGeometry(String name, THE_Mesh mesh);
-        void addGeometry(String name, Geometry geometry);
-        void addTexture(String name, String path, THE_TexType type);
-        void addTextureAsync(String name, String path, TexType);
-        void addTexture(String name, Texture texture);
-        void addTexture(String name, u32 width, u32 height, THE_TexType type);
-        Geometry getGeometry(String name) const;
-        Texture getTexture(String name) const;
-
-        std::unordered_map<
-            String,
-            Geometry,
-            std::hash<String>,
-            std::equal_to<String>,
-            BuddySTL<std::pair<const String, Geometry>>> geometries_;
-        std::unordered_map<
-            String,
-            FuTexture,
-            std::hash<String>,
-            std::equal_to<String>,
-            BuddySTL<std::pair<const String, FuTexture>>> textures_;
-
-	    std::unordered_map<
-		    String,
-		    THE_Mesh,
-		    std::hash<String>,
-		    std::equal_to<String>,
-		    BuddySTL<std::pair<const String, THE_Mesh>>> meshes;
-	    std::unordered_map<
-		    String,
-		    THE_Texture,
-		    std::hash<String>,
-		    std::equal_to<String>,
-		    BuddySTL<std::pair<const String, THE_Texture>>> textures;
-    };
-}
+void THE_ResourceMapAddMesh(THE_ResourceMap* rm, leep::String name, leep::String path);
+void THE_ResourceMapAddMesh(THE_ResourceMap* rm, leep::String name, THE_Mesh mesh);
+void THE_ResourceMapAddTexture(THE_ResourceMap* rm, leep::String name, leep::String path, THE_TexType type);
+void THE_ResourceMapAddTexture(THE_ResourceMap* rm, leep::String name, u32 width, u32 height, THE_TexType type);
 
 #endif // __LEEP_TOOLS_RESOURCE_MAP_H__

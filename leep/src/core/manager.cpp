@@ -9,8 +9,8 @@
 #include "render/Crenderer.h"
 #include "render/camera.h"
 #include "tools/imgui-tools.h"
-#include "tools/resource-map.h"
 #include "tools/lua-scripting.h"
+#include "tools/resource-map.h"
 
 #include "render/Cinternalresources.h"
 #include "render/Crendercommands.h"
@@ -23,7 +23,7 @@ namespace leep
         Input       input_;
         ImguiTools  ui_tools_;
         Scene       scene_;
-        ResourceMap resource_map_;
+        ::THE_ResourceMap *resource_map_;
         ToolsData   tools_data_;
 
         float       delta_time_;
@@ -43,6 +43,7 @@ namespace leep
         memory_.init(total_mem);
         data_ = memory_.generalAllocT<ManagerData>(1);
         data_->window_.createWindow(kWindowTitle, cnfg.window_width, cnfg.window_height, cnfg.vsync);
+	data_->resource_map_ = memory_.generalAllocT<::THE_ResourceMap>(1);
 	THE_InitRender();
         data_->delta_time_ = 0.16f;
     }
@@ -75,6 +76,6 @@ namespace leep
     Memory&      Manager::memory()        { return memory_; }
     ImguiTools&  Manager::ui_tools()      { return data_->ui_tools_; }
     Scene&       Manager::scene()         { return data_->scene_; }
-    ResourceMap& Manager::resource_map()  { return data_->resource_map_; }
+    ::THE_ResourceMap *Manager::resource_map()  { return data_->resource_map_; }
     ToolsData&   Manager::tools_data()    { return data_->tools_data_; }
 }
