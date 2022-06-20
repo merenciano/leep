@@ -7,7 +7,6 @@
 #include "core/memory/memory.h"
 #include "core/scene.h"
 #include "render/Crenderer.h"
-#include "render/camera.h"
 #include "tools/imgui-tools.h"
 #include "tools/lua-scripting.h"
 #include "tools/resource-map.h"
@@ -32,8 +31,7 @@ namespace leep
 
     void Manager::init(const LeepConfig &cnfg)
     {
-        LEEP_ASSERT(IsPow2(kEntitiesPerChunk),
-            "This constant value must be power of 2");
+        THE_ASSERT(IsPow2(kEntitiesPerChunk) && "This constant value must be power of 2");
 
         size_t total_mem = kMaxBuffers * sizeof(THE_InternalBuffer) + kMaxTextures * sizeof(THE_InternalTexture);
         total_mem += THE_MT_MAX * sizeof(THE_InternalMaterial);

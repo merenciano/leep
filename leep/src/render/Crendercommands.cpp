@@ -108,7 +108,7 @@ void THE_CreateCubemapExecute(THE_CommandData *data)
 		break;
 
 	default:
-		LEEP_CORE_ERROR("Trying to create a cubemap with an invalid format");
+		THE_SLOG_ERROR("Trying to create a cubemap with an invalid format");
 		return;
 	}
 
@@ -290,7 +290,7 @@ void THE_CreateTextureExecute(THE_CommandData *data)
 		break;
 
 	default: 
-		LEEP_CORE_ERROR("Invalid format");
+		THE_SLOG_ERROR("Invalid format");
 		config.format = GL_INVALID_ENUM;
 		config.internal_format = GL_INVALID_ENUM;
 		config.type = GL_INVALID_ENUM;
@@ -553,7 +553,7 @@ void THE_DrawExecute(THE_CommandData *data)
 		break;
 	}
 	default:
-		LEEP_CORE_ERROR("Wrong vertex buffer for draw command.");
+		THE_SLOG_ERROR("Wrong vertex buffer for draw command.");
 		break;
 	}
 
@@ -714,7 +714,7 @@ void THE_RenderOptionsExecute(THE_CommandData *data)
 			break;
 
 		default:
-			LEEP_CORE_ASSERT(false, "RenderOption invalid BlendCommand S value");
+			THE_ASSERT(false && "RenderOption invalid BlendCommand S value");
 			break;
 		}
 
@@ -736,7 +736,7 @@ void THE_RenderOptionsExecute(THE_CommandData *data)
 			break;
 
 		default:
-			LEEP_CORE_ASSERT(false, "RenderOption invalid BlendCommand D value");
+			THE_ASSERT(false && "RenderOption invalid BlendCommand D value");
 			break;
 		}
 
@@ -773,7 +773,7 @@ void THE_RenderOptionsExecute(THE_CommandData *data)
 			break;
 
 		default:
-			LEEP_CORE_ASSERT(false, "RenderOption invalid CullFace value");
+			THE_ASSERT(false && "RenderOption invalid CullFace value");
 			break;
 		}
 	}

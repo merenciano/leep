@@ -16,7 +16,6 @@ void leep::Init(const LeepConfig &cnfg)
     MTR_BEGIN("LEEP", "Init");
     leep::Chrono init_timer;
     init_timer.start();
-    leep::Logger::Init();
     leep::GM.init(cnfg);
     leep::LuaScripting::Init();
 

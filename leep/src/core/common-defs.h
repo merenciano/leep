@@ -1,22 +1,10 @@
 #ifndef __LEEP_CORE_COMMON_DEFS_H__
 #define __LEEP_CORE_COMMON_DEFS_H__
 
-#include "core/logger.h"
-
 #include "../extern/glm/glm.hpp"
 #include "../extern/glm/mat4x4.hpp"
 #include "../extern/glm/gtx/transform.hpp"
 #include "../extern/glm/gtc/type_ptr.hpp"
-
-#ifdef LEEP_DEBUG 
-    #define LEEP_ASSERT(x, ...)      { if(!(x)) { LEEP_ERROR("Assertion failed: {0}",__VA_ARGS__); abort(); }}
-    #define LEEP_CORE_ASSERT(x, ...) { if(!(x)) { LEEP_CORE_ERROR("Assertion failed: {0}",__VA_ARGS__); abort(); }}
-    #define LEEP_CHECK_RESOURCE(r) LEEP_CORE_ASSERT(r.handle() != CommonDefs::UNINIT_HANDLE, "Resource not created")
-#else
-    #define LEEP_ASSERT(x, ...) 
-    #define LEEP_CORE_ASSERT(x, ...) 
-    #define LEEP_CHECK_RESOURCE(r)
-#endif 
 
 #define MAX_INT32_VALUE = 2147483647
 

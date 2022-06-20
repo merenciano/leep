@@ -4,7 +4,6 @@
 #include "core/manager.h"
 #include "core/window.h"
 #include "core/execution.h"
-#include "core/logger.h"
 #include "core/chrono.h"
 #include "core/input.h"
 #include "core/scene.h"
@@ -28,13 +27,6 @@
 #include "ecs/systems/update-transform.h"
 #include "ecs/systems/update-scene-graph.h"
 #include "ecs/systems/delete-released.h"
-
-// RENDER
-#include "render/renderer.h"
-#include "render/camera.h"
-#include "render/texture.h"
-#include "render/display-list.h"
-#include "render/display-list-command.h"
 
 // TOOLS
 #include "tools/imgui-tools.h"

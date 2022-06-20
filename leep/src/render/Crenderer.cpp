@@ -625,7 +625,7 @@ THE_Mesh THE_CreateMeshFromFile_OBJ(const char *path)
 
 	if (!reader.ParseFromFile(std::string(path), reader_config)) {
 		if (!reader.Error().empty()) {
-			LEEP_CORE_ERROR("TinyObjReader: {0}", reader.Error());
+			THE_LOG_ERROR("TinyObjReader: %s", reader.Error().c_str());
 		}
 		ret.index = THE_INVALID;
 		ret.vertex = THE_INVALID;
@@ -633,7 +633,7 @@ THE_Mesh THE_CreateMeshFromFile_OBJ(const char *path)
 	}
 
 	if (!reader.Warning().empty()) {
-		LEEP_CORE_WARNING("TinyObjReader: {0}", reader.Warning());
+		THE_LOG_WARNING("TinyObjReader: %s", reader.Warning().c_str());
 	}
 
 	auto& attrib = reader.GetAttrib();

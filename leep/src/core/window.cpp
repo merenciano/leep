@@ -1,4 +1,5 @@
 #include "window.h"
+#include "core/Cdefinitions.h"
 #include "core/common-defs.h"
 #include "core/manager.h"
 #include "tools/imgui-tools.h"
@@ -63,13 +64,13 @@ namespace leep
 
 	bool Window::windowShouldClose()
 	{
-		LEEP_ASSERT(data_, "The window has not been created yet");
+		THE_ASSERT(data_ && "The window has not been created yet");
 		return glfwWindowShouldClose(data_->window);
 	}
 
 	void Window::swap()
 	{
-		LEEP_ASSERT(data_, "The window has not been created yet");
+		THE_ASSERT(data_ && "The window has not been created yet");
 		glfwSwapBuffers(data_->window);
 	}
 
@@ -80,7 +81,7 @@ namespace leep
 
 	int32_t Window::width() const
 	{
-		LEEP_ASSERT(data_, "The window has not been created yet");
+		THE_ASSERT(data_ && "The window has not been created yet");
 		int32_t width;
 		glfwGetWindowSize(data_->window, &width, NULL);
 		return width;
@@ -88,7 +89,7 @@ namespace leep
 
 	int32_t Window::height() const
 	{
-		LEEP_ASSERT(data_, "The window has not been created yet");
+		THE_ASSERT(data_ && "The window has not been created yet");
 		int32_t height;
 		glfwGetWindowSize(data_->window, nullptr, &height);
 		return height;
@@ -96,7 +97,7 @@ namespace leep
 
 	float Window::fwidth() const
 	{
-		LEEP_ASSERT(data_, "The window has not been created yet");
+		THE_ASSERT(data_ && "The window has not been created yet");
 		int width;
 		glfwGetWindowSize(data_->window, &width, NULL);
 		return (float)width;
@@ -104,7 +105,7 @@ namespace leep
 
 	float Window::fheight() const
 	{
-		LEEP_ASSERT(data_, "The window has not been created yet");
+		THE_ASSERT(data_ && "The window has not been created yet");
 		int height;
 		glfwGetWindowSize(data_->window, nullptr, &height);
 		return (float)height;

@@ -37,7 +37,7 @@ namespace leep
                     return static_cast<C*>(c.blocks_.at(ChunkI(index_))->comps_[i])[EntityI(index_)];
                 }
             }
-            LEEP_ASSERT(false, "The entity does not have this component");
+            THE_ASSERT(false && "The entity does not have this component");
             // Maybe this function should return a pointer but I think it's better to
             // set the assert here instead of checking the return value each time anyone calls this function.
             // This return exists only to remove the compiler warnings. It's after the assert so the method

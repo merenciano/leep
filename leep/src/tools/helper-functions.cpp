@@ -4,7 +4,6 @@
 #include "core/scene.h"
 #include "ecs/entity.h"
 #include "ecs/components/drawable.h"
-#include "render/renderer.h"
 #include "tools/resource-map.h"
 
 void leep::CreateRenderable(String entity_name,
@@ -15,7 +14,7 @@ void leep::CreateRenderable(String entity_name,
     // If it fails
     if (!e.isValid())
     {
-        LEEP_CORE_WARNING("CreateRenderable: The entity couldn't be created");
+        THE_SLOG_WARNING("CreateRenderable: The entity couldn't be created");
         return;
     }
     Drawable &d = e.getComponent<Drawable>();
@@ -31,7 +30,7 @@ void leep::CreateRenderable(String entity_name,
     //d.mesh = GM.resource_map().getGeometry(geometry_name);
     d.mesh = GM.resource_map()->meshes.at(geometry_name);
     d.mat.type = THE_MT_PBR;
-    THE_MaterialSetData(&d.mat, (float*)&pbr, sizeof(PbrData) / 4);
+    THE_MaterialSetData(&d.mat, (float*)&pbr, sizeof(THE_PbrData) / 4);
 //    d.mat.set_data((float*)&pbr, sizeof(PbrData) / 4);
     THE_Texture t[4];
     for (int32_t i = 0; i < 4; ++i)

@@ -27,8 +27,8 @@ namespace leep
 
     void SceneGraph::setParent(LTransform *tr, LTransform *parent)
     {
-        LEEP_ASSERT(exists(tr), "The entity has to have a node");
-        LEEP_ASSERT(exists(parent), "The parent has to have a node");
+        THE_ASSERT(exists(tr) && "The entity has to have a node");
+        THE_ASSERT(exists(parent) && "The parent has to have a node");
         detachFromParent(tr);
         
         map_[tr].parent = parent;

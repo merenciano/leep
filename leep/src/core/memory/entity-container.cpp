@@ -1,4 +1,5 @@
 #include "entity-container.h"
+#include "core/Cdefinitions.h"
 #include "core/common-defs.h"
 #include "core/manager.h"
 #include "core/memory/memory.h"
@@ -17,7 +18,7 @@ namespace leep
         switch (type_)
         {
             case EntityType::NONE:
-                LEEP_ASSERT(false, "Invalid entity type");
+                THE_ASSERT(false && "Invalid entity type");
                 break;
             case EntityType::FALLING_CUBE:
                 blocks_.emplace_back(m.generalAllocT<FallingCubeEntities>(1));

@@ -1,14 +1,12 @@
 #include "delete-released.h"
 
 #include "core/manager.h"
-#include "render/renderer.h"
 
 namespace leep {
 // TODO Redo this system in C sorting the resources by gpu_version
 void DeleteReleased::executeSystem() const
 {
-    Renderer &r = GM.renderer();
-    for (int32_t i = 0; i < r.tex_count_; ++i)
+    /*for (int32_t i = 0; i < r.tex_count_; ++i)
     {
         if (r.textures_[i].gpu_version_ == CommonDefs::DELETED_GPU_RESOURCE)
         {
@@ -35,6 +33,6 @@ void DeleteReleased::executeSystem() const
             break;
         }
         ++i;
-    }
+    }*/
 }
 } // namespace leep

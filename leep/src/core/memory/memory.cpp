@@ -1,5 +1,6 @@
 #include "memory.h"
-#include "render/display-list.h"
+
+#include "core/Cdefinitions.h"
 
 #include <stdlib.h>
 
@@ -27,7 +28,7 @@ void Memory::init(size_t size)
     mem_ = (int8_t*)malloc(size);
     if (!mem_)
     {
-        LEEP_CORE_ERROR("Couldn't allocate Leep's memory");
+        THE_SLOG_ERROR("Couldn't allocate Leep's memory");
         exit(1);
     }
     offset_ = mem_;
@@ -38,10 +39,10 @@ void Memory::init(size_t size)
 
 void *Memory::persistentAlloc(size_t size)
 {
-    LEEP_CORE_ASSERT((size_t)(offset_ + size - mem_) <= capacity_, "Out of memory");
+    THE_ASSERT((size_t)(offset_ + size - mem_) <= capacity_ && "Out of memory");
     if ((size_t)(offset_ + size - mem_) > capacity_)
     {
-        LEEP_CORE_ERROR("Persistent allocation failed, Out of memory!");
+	    THE_SLOG_ERROR("Persistent allocation failed, Out of memory!");
         return nullptr;
     }
     void *mem = (void*)offset_;

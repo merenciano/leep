@@ -1,4 +1,5 @@
 #include "lua-scripting.h"
+#include "core/Cdefinitions.h"
 #include "core/common-defs.h"
 #include "tools/lua-functions.h"
 
@@ -27,7 +28,7 @@ namespace leep
         {
 #ifdef LEEP_DEBUG
             const char *err = lua_tostring(L, -1);
-            LEEP_CORE_ERROR("{0}", err);
+            THE_LOG_ERROR("%s", err);
 #endif
             lua_pop(L, 1);
         }
@@ -39,7 +40,7 @@ namespace leep
         {
 #ifdef LEEP_DEBUG
             const char *err = lua_tostring(L, -1);
-            LEEP_CORE_ERROR("{0}", err);
+            THE_LOG_ERROR("%s", err);
 #endif
             lua_pop(L, 1);
         }

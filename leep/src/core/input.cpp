@@ -1,5 +1,6 @@
 #include "input.h"
 
+#include "core/Cdefinitions.h"
 #include "core/common-defs.h"
 #include "core/manager.h"
 
@@ -30,7 +31,7 @@ namespace leep
             case Button::B4: return GLFW_KEY_LEFT_SHIFT;
             case Button::MOUSE_LEFT: return GLFW_MOUSE_BUTTON_1;
             case Button::MOUSE_RIGHT: return GLFW_MOUSE_BUTTON_2;
-            default: LEEP_CORE_ERROR("Invalid button pressed.\n"); return GLFW_INVALID_ENUM;
+            default: THE_SLOG_ERROR("Invalid button pressed."); return GLFW_INVALID_ENUM;
         }
     }
 
@@ -72,7 +73,7 @@ namespace leep
 
     void Input::set_scroll(float offset)
     {
-        LEEP_ASSERT(data_, "A window is needed");
+        THE_ASSERT(data_ && "A window is needed");
         if (data_->capture_mouse)
         {
             data_->current.scroll = offset;
@@ -81,13 +82,13 @@ namespace leep
 
     float Input::scroll() const
     {
-        LEEP_ASSERT(data_, "A window is needed");
+        THE_ASSERT(data_ && "A window is needed");
         return data_->previous.scroll;
     }
 
     bool Input::isButtonPressed(Button b) const
     {
-        LEEP_ASSERT(data_, "A window is needed");
+        THE_ASSERT(data_ && "A window is needed");
 
         if (!data_->capture_kb)
         {
@@ -106,13 +107,13 @@ namespace leep
             case Button::B4: return data_->current.button_4;
             case Button::MOUSE_LEFT: return data_->current.mouse_left;
             case Button::MOUSE_RIGHT: return data_->current.mouse_right;
-            default: LEEP_CORE_ERROR("isButtonPressed swich default.\n"); return false;
+            default: THE_SLOG_ERROR("isButtonPressed swich default."); return false;
         }
     }
 
     bool Input::isButtonDown(Button b) const
     {
-        LEEP_ASSERT(data_, "A window is needed");
+        THE_ASSERT(data_ && "A window is needed");
 
         if (!isButtonPressed(b))
         {
@@ -131,13 +132,13 @@ namespace leep
             case Button::B4: return !data_->previous.button_4;
             case Button::MOUSE_LEFT: return !data_->previous.mouse_left;
             case Button::MOUSE_RIGHT: return !data_->previous.mouse_right;
-            default: LEEP_CORE_ERROR("isButtonDown swich default.\n"); return false;
+            default: THE_SLOG_ERROR("isButtonDown swich default."); return false;
         }
     }
 
     bool Input::isButtonUp(Button b) const
     {
-        LEEP_ASSERT(data_, "A window is needed");
+        THE_ASSERT(data_ && "A window is needed");
 
         if (!data_->capture_kb)
         {
@@ -161,25 +162,25 @@ namespace leep
             case Button::B4: return data_->previous.button_4;
             case Button::MOUSE_LEFT: return data_->previous.mouse_left;
             case Button::MOUSE_RIGHT: return data_->previous.mouse_right;
-            default: LEEP_CORE_ERROR("isButtonUp swich default.\n"); return false;
+            default: THE_SLOG_ERROR("isButtonUp swich default."); return false;
         }
     }
 
     float Input::mouseX() const
     {
-        LEEP_ASSERT(data_, "A window is needed");
+        THE_ASSERT(data_ && "A window is needed");
         return data_->current.mouse_position_x;
     }
 
     float Input::mouseY() const
     {
-        LEEP_ASSERT(data_, "A window is needed");
+        THE_ASSERT(data_ && "A window is needed");
         return data_->current.mouse_position_y;
     }
 
     void Input::updateInput()
     {
-        LEEP_ASSERT(data_, "A window is needed");
+        THE_ASSERT(data_ && "A window is needed");
         double x, y;
         data_->previous = data_->current;
         data_->current.up = glfwGetKey(data_->window, ToGLFW(Button::UP));
@@ -200,13 +201,13 @@ namespace leep
 
     void Input::disableCursor() const
     {
-        LEEP_ASSERT(data_, "A window is needed");
+        THE_ASSERT(data_ && "A window is needed");
         glfwSetInputMode(data_->window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
     }
 
     void Input::enableCursor() const
     {
-        LEEP_ASSERT(data_, "A window is needed");
+        THE_ASSERT(data_ && "A window is needed");
         glfwSetInputMode(data_->window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
     }
 

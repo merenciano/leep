@@ -5,7 +5,6 @@
 #include "core/input.h"
 #include "core/memory/memory.h"
 #include "core/scene.h"
-#include "render/renderer.h"
 #include "ecs/entity.h"
 #include "ecs/components/ltransform.h"
 #include "ecs/components/drawable.h"
@@ -226,8 +225,8 @@ namespace leep
             switch(it->first)
             {
                 default:
-                    LEEP_ASSERT(false, "EntityInspector: EntityType not implemented")
-                    break;
+			THE_ASSERT(false && "EntityInspector: EntityType not implemented");
+			break;
 
                 case EntityType::NONE:
                     header_name = "";
@@ -312,15 +311,15 @@ namespace leep
             Drawable& dw = e.getComponent<Drawable>();
             if (dw.mat.type == THE_MT_PBR)
             {
-                PbrData *data = (PbrData*)dw.mat.data;
-                ImGui::ColorEdit3   ("Color"            , glm::value_ptr(data->color_));
-                ImGui::InputFloat   ("Texture tiling X" , &data->tiling_x_);
-                ImGui::InputFloat   ("Texture tiling Y" , &data->tiling_y_);
-                ImGui::SliderFloat  ("Use albedo map"   , &data->use_albedo_map_ , 0.0f, 1.0f);
-                ImGui::SliderFloat  ("Use PBR maps"     , &data->use_pbr_maps_   , 0.0f, 1.0f);
-                ImGui::SliderFloat  ("Roughness"        , &data->roughness_      , 0.0f, 1.0f);
-                ImGui::SliderFloat  ("Metallic"         , &data->metallic_       , 0.0f, 1.0f);
-                ImGui::SliderFloat  ("NormalMap intensity", &data->normal_map_intensity_, 0.0f, 1.0f);
+                THE_PbrData *data = (THE_PbrData*)dw.mat.data;
+                ImGui::ColorEdit3   ("Color"            , (float*)(&data->color));
+                ImGui::InputFloat   ("Texture tiling X" , &data->tiling_x);
+                ImGui::InputFloat   ("Texture tiling Y" , &data->tiling_y);
+                ImGui::SliderFloat  ("Use albedo map"   , &data->use_albedo_map , 0.0f, 1.0f);
+                ImGui::SliderFloat  ("Use PBR maps"     , &data->use_pbr_maps   , 0.0f, 1.0f);
+                ImGui::SliderFloat  ("Roughness"        , &data->roughness      , 0.0f, 1.0f);
+                ImGui::SliderFloat  ("Metallic"         , &data->metallic       , 0.0f, 1.0f);
+                ImGui::SliderFloat  ("NormalMap intensity", &data->normal_map_intensity, 0.0f, 1.0f);
             }
         }
 		ImGui::End();

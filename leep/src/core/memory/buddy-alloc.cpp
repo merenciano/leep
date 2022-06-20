@@ -1,5 +1,6 @@
 #include "buddy-alloc.h"
 
+#include "core/Cdefinitions.h"
 #include "core/common-defs.h"
 #include "core/manager.h"
 #include "core/memory/memory.h"
@@ -65,7 +66,7 @@ void BuddyAlloc::init()
 
 inline void BuddyAlloc::updateOffset(int8_t *offset)
 {
-    LEEP_CORE_ASSERT(offset - mem_ <= (int64_t)kMaxAlloc, "Buddy out of space");
+    THE_ASSERT(offset - mem_ <= (int64_t)kMaxAlloc && "Buddy out of space");
     if (offset > mem_offset_)
     {
         mem_offset_ = offset;
@@ -98,7 +99,7 @@ void BuddyAlloc::flipParentSplit(uint32_t index)
 
 uint32_t BuddyAlloc::adequateBlock(size_t request_size)
 {
-    LEEP_CORE_ASSERT(request_size < kMaxAlloc, "Requestez size too big.");
+    THE_ASSERT(request_size < kMaxAlloc && "Requested size too big.");
     uint32_t block = kBlockCount - 1;
     size_t size = kMinAlloc;
 
@@ -150,8 +151,8 @@ void *BuddyAlloc::alloc(size_t size)
     uint32_t original_block;
     uint32_t block;
 
-    LEEP_CORE_ASSERT(mem_ != nullptr, "You must init the buddy alloc");
-    LEEP_CORE_ASSERT(size + kHeaderSize <= kMaxAlloc, "Buddy not big enough");
+    THE_ASSERT(mem_ != nullptr && "You must init the buddy alloc");
+    THE_ASSERT(size + kHeaderSize <= kMaxAlloc && "Buddy not big enough");
 
     block = adequateBlock(size + kHeaderSize);
     original_block = block;
@@ -221,7 +222,7 @@ void *BuddyAlloc::realloc(void *ptr, size_t size)
     }
 
     void *new_ptr = alloc(size);
-    LEEP_CORE_ASSERT(new_ptr, "Error allocating on realloc");
+    THE_ASSERT(new_ptr && "Error allocating on realloc");
     if (!ptr)
     {
         return new_ptr;
@@ -230,39 +231,6 @@ void *BuddyAlloc::realloc(void *ptr, size_t size)
     memcpy(new_ptr, ptr, MIN(old_size, size));
     free(ptr);
     return new_ptr;
-
-    // TODO: Check why the code below ends causing access denied exceptions
-    /*
-    if (!ptr)
-    {
-        LEEP_CORE_ASSERT(size > 0, "Invalid size for NULL ptr");
-        return alloc(size);
-    }
-
-    void *new_ptr = nullptr;
-    size_t old_size = *(size_t*)ptr + kHeaderSize;
-
-    if (size == 0)
-    {
-        free(ptr);
-    }
-    else if (old_size > size)
-    {
-        //memset((int8_t*)ptr + size, 0, old_size - size);
-        new_ptr = ptr;
-    }
-    else if (old_size == size)
-    {
-        new_ptr = ptr;
-    }
-    else
-    {
-        new_ptr = alloc(size);
-        memcpy(new_ptr, ptr, MIN(old_size, size));
-        free(ptr);
-    }
-    return new_ptr;
-    */
 }
 
 void BuddyAlloc::free(void *ptr)

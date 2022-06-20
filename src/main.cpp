@@ -80,7 +80,7 @@ void leep::GameInit()
 		Drawable &dw = e.getComponent<Drawable>();
 		dw.mesh = rm->meshes.at("MatBall");
 		dw.mat.type = THE_MT_PBR;
-		THE_MaterialSetData(&dw.mat, (float*)&pbr, sizeof(PbrData) / 4);
+		THE_MaterialSetData(&dw.mat, (float*)&pbr, sizeof(THE_PbrData) / 4);
 		THE_Texture t[4];
 		t[0] = GM.resource_map()->textures.at("CelticGold_A");
 		t[1] = GM.resource_map()->textures.at("CelticGold_M");
@@ -336,7 +336,7 @@ void leep::GameLogic()
 	usemat->data.usemat.mat = (THE_Material*)THE_AllocateFrameResource(sizeof(THE_Material));
 	THE_InitNewMaterial(usemat->data.usemat.mat);
 	usemat->data.usemat.mat->type = THE_MT_PBR;
-	THE_MaterialSetFrameData(usemat->data.usemat.mat, (float*)&pbr_sd, sizeof(PbrSceneData) / sizeof (float));
+	THE_MaterialSetFrameData(usemat->data.usemat.mat, (float*)&pbr_sd, sizeof(THE_PbrSceneData) / sizeof (float));
 	THE_MaterialSetFrameTexture(usemat->data.usemat.mat, scene_tex, 3, 1);
 	usemat->execute = THE_UseMaterialExecute;
 	clear->next = usemat;
