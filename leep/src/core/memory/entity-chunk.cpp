@@ -36,7 +36,7 @@ namespace leep
 
     void FallingCubeEntities::relocateLast(EntityChunk *a, uint32_t i)
     {
-        THE_ASSERT(a && i < kEntitiesPerChunk && "Wrong parameters");
+        THE_ASSERT(a && i < kEntitiesPerChunk, "Wrong parameters");
         FallingCubeEntities *chunk = static_cast<FallingCubeEntities*>(a);
         // Update pointers in the scene graph
         GM.scene().scene_graph_.changeTransform(
@@ -80,7 +80,7 @@ namespace leep
 
     void RenderableEC::relocateLast(EntityChunk *a, uint32_t i)
     {
-        THE_ASSERT(a && i < kEntitiesPerChunk && "Wrong parameters");
+        THE_ASSERT(a && i < kEntitiesPerChunk, "Wrong parameters");
         RenderableEC *chunk = static_cast<RenderableEC*>(a);
         // Update pointers in the scene graph
         GM.scene().scene_graph_.changeTransform(

@@ -66,7 +66,7 @@ void BuddyAlloc::init()
 
 inline void BuddyAlloc::updateOffset(int8_t *offset)
 {
-    THE_ASSERT(offset - mem_ <= (int64_t)kMaxAlloc && "Buddy out of space");
+    THE_ASSERT(offset - mem_ <= (int64_t)kMaxAlloc, "Buddy out of space");
     if (offset > mem_offset_)
     {
         mem_offset_ = offset;
@@ -99,7 +99,7 @@ void BuddyAlloc::flipParentSplit(uint32_t index)
 
 uint32_t BuddyAlloc::adequateBlock(size_t request_size)
 {
-    THE_ASSERT(request_size < kMaxAlloc && "Requested size too big.");
+    THE_ASSERT(request_size < kMaxAlloc, "Requested size too big.");
     uint32_t block = kBlockCount - 1;
     size_t size = kMinAlloc;
 
@@ -151,8 +151,8 @@ void *BuddyAlloc::alloc(size_t size)
     uint32_t original_block;
     uint32_t block;
 
-    THE_ASSERT(mem_ != nullptr && "You must init the buddy alloc");
-    THE_ASSERT(size + kHeaderSize <= kMaxAlloc && "Buddy not big enough");
+    THE_ASSERT(mem_ != nullptr, "You must init the buddy alloc");
+    THE_ASSERT(size + kHeaderSize <= kMaxAlloc, "Buddy not big enough");
 
     block = adequateBlock(size + kHeaderSize);
     original_block = block;
@@ -222,7 +222,7 @@ void *BuddyAlloc::realloc(void *ptr, size_t size)
     }
 
     void *new_ptr = alloc(size);
-    THE_ASSERT(new_ptr && "Error allocating on realloc");
+    THE_ASSERT(new_ptr, "Error allocating on realloc");
     if (!ptr)
     {
         return new_ptr;

@@ -2,7 +2,6 @@
 
 #include "core/common-defs.h"
 #include "core/manager.h"
-#include "core/input.h"
 #include "core/memory/memory.h"
 #include "core/scene.h"
 #include "ecs/entity.h"
@@ -10,6 +9,8 @@
 #include "ecs/components/drawable.h"
 #include "tools/lua-scripting.h"
 #include "tools/resource-map.h"
+
+#include "core/io.h"
 
 #include "render/Crendercommands.h"
 #include "render/Crenderer.h"
@@ -66,7 +67,7 @@ namespace leep
         ImGuiIO& io = ImGui::GetIO();
         // TODO: One frame late? Check carefully how it's working
         // and improve if necessary
-        GM.input().set_capture_input(!io.WantCaptureMouse, !io.WantCaptureKeyboard);
+	THE_InputCapture(!io.WantCaptureMouse, !io.WantCaptureKeyboard);
 
         if (callback_)
         {
@@ -225,7 +226,7 @@ namespace leep
             switch(it->first)
             {
                 default:
-			THE_ASSERT(false && "EntityInspector: EntityType not implemented");
+			THE_ASSERT(false, "EntityInspector: EntityType not implemented");
 			break;
 
                 case EntityType::NONE:

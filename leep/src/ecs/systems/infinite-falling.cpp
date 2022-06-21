@@ -13,7 +13,7 @@ namespace leep
     {
 #ifdef LEEP_DEBUG
         uint64_t mask = ((1 << COMP_INFINITE_FALLING_LIMITS) | (1 << COMP_LTRANSFORM));
-        THE_ASSERT((container_.mask() & mask) == mask && "This container is not valid for this system");
+        THE_ASSERT((container_.mask() & mask) == mask, "This container is not valid for this system");
 #endif
         for (auto &chunk : container_.blocks_)
         {

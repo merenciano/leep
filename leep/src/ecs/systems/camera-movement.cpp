@@ -1,9 +1,8 @@
 #include "camera-movement.h"
 
+#include "core/io.h"
 #include "core/common-defs.h"
-#include "core/input.h"
 #include "core/manager.h"
-#include "core/window.h"
 #include "ecs/components/ltransform.h"
 #include "render/Crenderer.h"
 #include "render/Ccamera.h"
@@ -33,18 +32,17 @@ namespace leep
 	tr.transform = smat4_inverse(camera.view_mat);
 
         // Rotation
-        if (GM.input().isButtonDown(Button::MOUSE_RIGHT))
-        {
-            mouse_down_pos[0] = GM.input().mouseX();
-            mouse_down_pos[1] = GM.input().mouseY();
+	if (THE_InputIsButtonDown(THE_MOUSE_RIGHT)) {
+		mouse_down_pos[0] = THE_InputGetMouseX();
+		mouse_down_pos[1] = THE_InputGetMouseY();
         }
 
-        if (GM.input().isButtonPressed(Button::MOUSE_RIGHT))
+        if (THE_InputIsButtonPressed(THE_MOUSE_RIGHT))
         {
-            float mouse_offset[2] = {
-                GM.input().mouseX() - mouse_down_pos[0],
-                mouse_down_pos[1] - GM.input().mouseY()
-            }; // Y axis inverted
+		float mouse_offset[2] = {
+			THE_InputGetMouseX() - mouse_down_pos[0],
+			mouse_down_pos[1] - THE_InputGetMouseY()
+		}; // Y axis inverted
 
             mouse_offset[0] *= sensibility_;
             mouse_offset[1] *= sensibility_;
@@ -52,46 +50,46 @@ namespace leep
 	    tr.transform = LTransform::rotateYWorld(tr.transform, -mouse_offset[0]);
 	    tr.transform = smat4_multiply(tr.transform, smat4_rotation_x(mouse_offset[1]));
 
-            mouse_down_pos[0] = GM.input().mouseX();
-            mouse_down_pos[1] = GM.input().mouseY();
+            mouse_down_pos[0] = THE_InputGetMouseX();
+            mouse_down_pos[1] = THE_InputGetMouseY();
         }
 
         // Position
-        if (GM.input().isButtonPressed(Button::UP))
+        if (THE_InputIsButtonPressed(THE_KEY_UP))
         {
 	    tr.transform = smat4_translate(tr.transform, svec3(0.0f, 0.0f, -speed));
         }
 
-        if (GM.input().isButtonPressed(Button::DOWN))
+        if (THE_InputIsButtonPressed(THE_KEY_DOWN))
         {
 	    tr.transform = smat4_translate(tr.transform, svec3(0.0f, 0.0f, speed));
         }
 
-        if (GM.input().isButtonPressed(Button::LEFT))
+        if (THE_InputIsButtonPressed(THE_KEY_LEFT))
         {
 	    tr.transform = smat4_translate(tr.transform, svec3(-speed, 0.0f, 0.0f));
         }
 
-        if (GM.input().isButtonPressed(Button::RIGHT))
+        if (THE_InputIsButtonPressed(THE_KEY_RIGHT))
         {
 	    tr.transform = smat4_translate(tr.transform, svec3(speed, 0.0f, 0.0f));
         }
 
-        if (GM.input().isButtonPressed(Button::B1))
+        if (THE_InputIsButtonPressed(THE_KEY_1))
         {
 	    tr.transform = smat4_translate(tr.transform, svec3(0.0f, speed, 0.0f));
         }
 
-        if (GM.input().isButtonPressed(Button::B4))
+        if (THE_InputIsButtonPressed(THE_KEY_4))
         {
 	    tr.transform = smat4_translate(tr.transform, svec3(0.0f, -speed, 0.0f));
         }
 
-        if (GM.input().scroll() != 0.0f)
+        if (THE_InputGetScroll() != 0.0f)
         {
-            fov -= GM.input().scroll() * scroll_sensibility;
+            fov -= THE_InputGetScroll() * scroll_sensibility;
             fov = glm::clamp(fov, 1.0f, 120.0f);
-	    camera.proj_mat = smat4_perspective(to_radians(fov), (float)GM.window().width() / GM.window().height(), 0.1f, camera.far_value);
+	    camera.proj_mat = smat4_perspective(to_radians(fov), (float)THE_WindowGetWidth() / (float)THE_WindowGetHeight(), 0.1f, camera.far_value);
         }
 
 	camera.view_mat = smat4_inverse(tr.transform);

@@ -5,7 +5,7 @@
 #include "core/memory/memory.h"
 #include "core/memory/buddy-alloc-stl.h"
 #include "core/manager.h"
-#include "core/window.h"
+#include "core/io.h"
 
 #ifndef STB_IMAGE_IMPLEMENTATION
 #define STB_IMAGE_IMPLEMENTATION
@@ -46,19 +46,19 @@ static int8_t frame_switch;
 
 static THE_Buffer AddBuffer()
 {
-	THE_ASSERT(buffer_count < THE_MAX_BUFFERS && "Max buffers reached");
+	THE_ASSERT(buffer_count < THE_MAX_BUFFERS, "Max buffers reached");
 	return buffer_count++;
 }
 
 static THE_Texture AddTexture()
 {
-	THE_ASSERT(texture_count < THE_MAX_TEXTURES && "Max textures reached");
+	THE_ASSERT(texture_count < THE_MAX_TEXTURES, "Max textures reached");
 	return texture_count++;
 }
 
 static THE_Buffer AddFramebuffer()
 {
-	THE_ASSERT(framebuffer_count < THE_MAX_FRAMEBUFFERS && "Max framebuffers reached");
+	THE_ASSERT(framebuffer_count < THE_MAX_FRAMEBUFFERS, "Max framebuffers reached");
 	return framebuffer_count++;
 }
 
@@ -107,7 +107,7 @@ void THE_InitRender()
 	materials[THE_MT_PREFILTER_ENV] = InitInternalMaterial("prefilter-env");
 	materials[THE_MT_LUT_GEN] = InitInternalMaterial("lut-gen");
 
-	THE_CameraInit(&camera, 70.0f, 300.0f, GM.window().width(), GM.window().height(), 0);
+	THE_CameraInit(&camera, 70.0f, 300.0f, THE_WindowGetWidth(), THE_WindowGetHeight(), 0);
 	sun_dir_intensity = svec4(1.0f, -1.0f, 0.0f, 1.0f);
 
 	SPHERE_MESH = THE_CreateSphereMesh(32, 32);
@@ -170,14 +170,14 @@ void THE_SubmitFrame()
 
 THE_RenderCommand *THE_AllocateCommand()
 {
-	THE_ASSERT((next_pool_last - next_pool) < THE_RENDER_QUEUE_CAPACITY - 1 &&
+	THE_ASSERT((next_pool_last - next_pool) < THE_RENDER_QUEUE_CAPACITY - 1,
 		"Not enough memory in the RenderQueue pool");
 	return next_pool_last++;
 }
 
 void *THE_AllocateFrameResource(size_t size)
 {
-	THE_ASSERT(((frame_pool_last + size) - frame_pool[frame_switch]) < THE_FRAME_POOL_SIZE / 2 &&
+	THE_ASSERT(((frame_pool_last + size) - frame_pool[frame_switch]) < THE_FRAME_POOL_SIZE / 2,
 		"Not enough memory in the frame pool");
 	void *ret = frame_pool_last;
 	frame_pool_last += size;
@@ -228,7 +228,7 @@ THE_Buffer THE_CreateBuffer()
 
 THE_Buffer THE_CreateBuffer(void *data, uint32_t count, THE_BufferType type)
 {
-	THE_ASSERT(type != THE_BUFFER_NONE);
+	THE_ASSERT(type != THE_BUFFER_NONE, "Incorrect buffer type");
 	THE_Buffer ret;
 	if (available_buffer != NULL) {
 		THE_AvailableNode *node = available_buffer;
@@ -254,10 +254,10 @@ THE_Buffer THE_CreateBuffer(void *data, uint32_t count, THE_BufferType type)
 
 void THE_SetBufferData(THE_Buffer buff, void *data, uint32_t count, THE_BufferType t)
 {
-	THE_ASSERT(IsValidBuffer(buff));
-	THE_ASSERT(t != THE_BUFFER_NONE && "Invalid buffer type");
-	THE_ASSERT(data != NULL);
-	THE_ASSERT(buffers[buff].vertices == NULL && "There is data to be freed before setting new one");
+	THE_ASSERT(IsValidBuffer(buff), "Invalid buffer");
+	THE_ASSERT(t != THE_BUFFER_NONE , "Invalid buffer type");
+	THE_ASSERT(data != NULL, "Data already points to something");
+	THE_ASSERT(buffers[buff].vertices == NULL, "There is data to be freed before setting new one");
 	buffers[buff].type = t;
 	buffers[buff].count = count;
 	if (t == THE_BUFFER_INDEX) {
@@ -270,13 +270,13 @@ void THE_SetBufferData(THE_Buffer buff, void *data, uint32_t count, THE_BufferTy
 
 THE_BufferType THE_GetBufferType(THE_Buffer buff)
 {
-	THE_ASSERT(IsValidBuffer(buff));
+	THE_ASSERT(IsValidBuffer(buff), "Invalid buffer");
 	return buffers[buff].type;
 }
 
 void THE_ReleaseBuffer(THE_Buffer buff)
 {
-	THE_ASSERT(IsValidBuffer(buff));
+	THE_ASSERT(IsValidBuffer(buff), "Invalid buffer");
 	// TODO System that seeks MARKED FOR DELETE resources and deletes them in GPU
 	// and adds the index to avaiable resource list
 	buffers[buff].cpu_version = THE_MARKED_FOR_DELETE;
@@ -286,7 +286,7 @@ void THE_ReleaseBuffer(THE_Buffer buff)
 
 void THE_FreeBufferData(THE_Buffer buff)
 {
-	THE_ASSERT(IsValidBuffer(buff));
+	THE_ASSERT(IsValidBuffer(buff), "Invalid buffer");
 	leep::GM.memory().generalFree(buffers[buff].vertices);
 	buffers[buff].vertices = NULL;
 	buffers[buff].count = 0;
@@ -320,7 +320,7 @@ s32 IsValidTexture(THE_Texture tex)
 
 THE_Texture THE_CreateTexture(const char *path, THE_TexType t)
 {
-	THE_ASSERT(*path != '\0' && "For empty textures use THE_CreateEmptyTexture");
+	THE_ASSERT(*path != '\0', "For empty textures use THE_CreateEmptyTexture");
 
 	THE_Texture ret = GetAvailableTexture();
         strcpy(textures[ret].path, path);
@@ -338,7 +338,7 @@ THE_Texture THE_CreateTexture(const char *path, THE_TexType t)
 
 THE_Texture THE_CreateEmptyTexture(u32 width, u32 height, THE_TexType t)
 {
-	THE_ASSERT(width != 0 && height != 0);
+	THE_ASSERT(width != 0 && height != 0, "Incorrect dimensions");
 
 	THE_Texture ret = GetAvailableTexture();
 	*(textures[ret].path) = '\0';
@@ -356,7 +356,8 @@ THE_Texture THE_CreateEmptyTexture(u32 width, u32 height, THE_TexType t)
 
 THE_Texture THE_CreateEmptyTextureRelativeToScreen(float width, float height, THE_TexType t)
 {
-	THE_ASSERT(width > 0.0f && height > 0.0f && width <= 1.0f && height <= 1.0f);
+	THE_ASSERT(width > 0.0f && height > 0.0f && width <= 1.0f && height <= 1.0f,
+		   "Incorrect dimensions");
 
 	THE_Texture ret = GetAvailableTexture();
 	*(textures[ret].path) = '\0';
@@ -365,8 +366,8 @@ THE_Texture THE_CreateEmptyTextureRelativeToScreen(float width, float height, TH
 	textures[ret].cpu_version = 1;
 	textures[ret].gpu_version = 0;
 	textures[ret].texture_unit = THE_UNINIT;
-	textures[ret].width = (u32)(leep::GM.window().fwidth() * width);
-	textures[ret].height = (u32)(leep::GM.window().fheight() * height);
+	textures[ret].width = (u32)((float)THE_WindowGetWidth() * width);
+	textures[ret].height = (u32)((float)THE_WindowGetHeight() * height);
 	textures[ret].type = t;
 
 	return ret;
@@ -374,8 +375,8 @@ THE_Texture THE_CreateEmptyTextureRelativeToScreen(float width, float height, TH
 
 void THE_LoadTexture(THE_Texture tex, const char *path)
 {
-	THE_ASSERT(*path != '\0');
-	THE_ASSERT(IsValidTexture(tex));
+	THE_ASSERT(*path != '\0', "Invalid path");
+	THE_ASSERT(IsValidTexture(tex), "Invalid texture");
 
         int width, height, nchannels = 0;
         stbi_set_flip_vertically_on_load(1);
@@ -401,24 +402,24 @@ void THE_LoadTexture(THE_Texture tex, const char *path)
 	case THE_TEX_RGBA_F16:
 	case THE_TEX_LUT:
 		textures[tex].pix = (void*)stbi_loadf(path, &width, &height, &nchannels, 0);
-		THE_ASSERT(textures[tex].pix && "The image couldn't be loaded");
+		THE_ASSERT(textures[tex].pix, "The image couldn't be loaded");
 		break;
 	
 	case THE_TEX_RGB:
 	case THE_TEX_SRGB:
 		nchannels = 3;
 		textures[tex].pix = (void*)stbi_load(path, &width, &height, &nchannels, 3);
-		THE_ASSERT(textures[tex].pix && "The image couldn't be loaded.");
+		THE_ASSERT(textures[tex].pix, "The image couldn't be loaded.");
 		break;
 	
 	case THE_TEX_R:
 		nchannels = 1;
 		textures[tex].pix = (void*)stbi_load(path, &width, &height, &nchannels, 1);
-		THE_ASSERT(textures[tex].pix && "The image couldn't be loaded.");
+		THE_ASSERT(textures[tex].pix, "The image couldn't be loaded.");
 		break;
 
 	default:
-		THE_ASSERT(false && "Default case LoadTexture.");
+		THE_ASSERT(false, "Default case LoadTexture.");
 		//textures[tex].pix = (void*)stbi_load(path, &width, &height, &nchannels, 0);
 		//THE_ASSERT(textures[tex].pix && "The image couldn't be loaded.");
 		break;
@@ -432,7 +433,7 @@ void THE_LoadTexture(THE_Texture tex, const char *path)
 
 void THE_ReleaseTexture(THE_Texture tex)
 {
-	THE_ASSERT(IsValidTexture(tex));
+	THE_ASSERT(IsValidTexture(tex), "Invalid texture");
 	// TODO System that seeks MARKED FOR DELETE resources and deletes them in GPU
 	// and adds the index to avaiable resource list
 	textures[tex].cpu_version = THE_MARKED_FOR_DELETE;
@@ -442,7 +443,7 @@ void THE_ReleaseTexture(THE_Texture tex)
 
 void THE_FreeTextureData(THE_Texture tex)
 {
-	THE_ASSERT(IsValidTexture(tex));
+	THE_ASSERT(IsValidTexture(tex), "Invalid texture");
 	if (textures[tex].pix) {
 		stbi_image_free(textures[tex].pix);
 		textures[tex].pix = NULL;
@@ -526,7 +527,7 @@ THE_Mesh THE_CreateCubeMesh()
 
 THE_Mesh THE_CreateSphereMesh(s32 x_segments, s32 y_segments)
 {
-	THE_ASSERT(x_segments > 0 && y_segments > 0);
+	THE_ASSERT(x_segments > 0 && y_segments > 0, "Invalid number of segments");
 	static const float PI = 3.14159265359f;
 
 	THE_Mesh ret;
@@ -788,7 +789,7 @@ s32 IsValidFramebuffer(THE_Framebuffer fb)
 
 THE_Framebuffer THE_CreateFramebuffer(u32 width, u32 height, u8 color, u8 depth)
 {
-	THE_ASSERT(width > 0 && height > 0);
+	THE_ASSERT(width > 0 && height > 0, "Invalid dimensions");
 
 	THE_Framebuffer ret = GetAvailableFramebuffer();
 
@@ -808,7 +809,7 @@ THE_Framebuffer THE_CreateFramebuffer(u32 width, u32 height, u8 color, u8 depth)
 
 void THE_ReleaseFramebuffer(THE_Framebuffer fb)
 {
-	THE_ASSERT(IsValidFramebuffer(fb));
+	THE_ASSERT(IsValidFramebuffer(fb), "Invalid framebuffer");
 	// TODO System that seeks MARKED FOR DELETE resources and deletes them in GPU
 	// and adds the index to avaiable resource list
 	framebuffers[fb].cpu_version = THE_MARKED_FOR_DELETE;
@@ -845,14 +846,14 @@ void THE_InitNewMaterial(THE_Material* mat)
 
 void THE_MaterialSetModel(THE_Material *mat, float *data)
 {
-	THE_ASSERT(data && "Invalid data parameter");
-	THE_ASSERT(mat->data && "This function expects at least 64B allocated in mat->data");
+	THE_ASSERT(data, "Invalid data parameter");
+	THE_ASSERT(mat->data, "This function expects at least 64B allocated in mat->data");
 	memcpy(mat->data, data, 64);
 }
 
 void THE_MaterialSetFrameData(THE_Material *mat, float* data, s32 count)
 {
-	THE_ASSERT(!mat->data || THE_IsInsideFramePool(mat->data) && 
+	THE_ASSERT(!mat->data || THE_IsInsideFramePool(mat->data),
 		"There are some non-temporary data in this material that must be freed");
 
 	// Align to fvec4
@@ -881,7 +882,7 @@ void THE_MaterialSetData(THE_Material* mat, float* data, s32 count)
 
 void THE_MaterialSetFrameTexture(THE_Material* mat, THE_Texture* tex, s32 count, s32 cube_start)
 {
-	THE_ASSERT(!mat->tex || THE_IsInsideFramePool(mat->tex) &&
+	THE_ASSERT(!mat->tex || THE_IsInsideFramePool(mat->tex),
 		"There are some non-temporary textures in this material that must be freed");
 
 	mat->tex = (THE_Texture*)THE_AllocateFrameResource(count * sizeof(THE_Texture));
@@ -995,14 +996,14 @@ void UseMaterial(THE_Material* mat)
 	GLint u_loc;
 
 	// Load textures
-	THE_ASSERT(mat->tcount < 16 && "So many textures, increase array size");
+	THE_ASSERT(mat->tcount < 16, "So many textures, increase array size");
 	s32 tex_units[16];
 	for (s32 i = 0; i < mat->tcount; ++i)
 	{
 		if (mat->tex[i] != THE_UNINIT)
 		{
-			THE_ASSERT(mat->tex[i] != -1 && "Texture not created");
-			THE_ASSERT(textures[mat->tex[i]].cpu_version != -1 && "Texture released");
+			THE_ASSERT(mat->tex[i] != -1, "Texture not created");
+			THE_ASSERT(textures[mat->tex[i]].cpu_version != -1, "Texture released");
 			if (textures[mat->tex[i]].gpu_version == 0)
 			{
 				THE_CommandData cd;

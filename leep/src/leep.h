@@ -2,10 +2,8 @@
 #include "core/leep-string.h"
 #include "core/common-defs.h"
 #include "core/manager.h"
-#include "core/window.h"
 #include "core/execution.h"
 #include "core/chrono.h"
-#include "core/input.h"
 #include "core/scene.h"
 #include "core/logic-thread.h"
 #include "core/memory/memory.h"
@@ -36,5 +34,6 @@
 
 
 // C
+#include "core/io.h"
 #include "render/Crendercommands.h"
 #include "render/Ccamera.h"

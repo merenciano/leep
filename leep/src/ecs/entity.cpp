@@ -29,7 +29,7 @@ namespace leep
                 cont.blocks_.emplace_back(m.generalAllocT<FallingCubeEntities>(1));
                 break;
 
-            default: THE_ASSERT(false && "Default case CreateEntity"); // TODO: Make new macro for THE_ASSERT(false
+            default: THE_ASSERT(false, "Default case CreateEntity"); // TODO: Make new macro for THE_ASSERT(false
             }
             cont.blocks_.back()->index_ = idx + 1;
         }
@@ -68,7 +68,7 @@ namespace leep
             switch (cont.type())
             {
                 case EntityType::NONE:
-                    THE_ASSERT(false && "RemoveEntity(): Invalid entity type");
+                    THE_ASSERT(false, "RemoveEntity(): Invalid entity type");
                     break;
 
                 case EntityType::FALLING_CUBE:
@@ -90,7 +90,7 @@ namespace leep
     Entity Entity::GetEntity(String name)
     {
         EntityMap &emap = GM.scene().entity_map_;
-        THE_ASSERT(emap.exists(name) && "There isn't any entity with that name");
+        THE_ASSERT(emap.exists(name), "There isn't any entity with that name");
         return Entity(emap.getEntity(name).index, emap.getEntity(name).type);
     }
 

@@ -14,7 +14,7 @@ namespace leep
     {
 #ifdef LEEP_DEBUG
         uint64_t mask = ((1 << COMP_DRAWABLE) | (1 << COMP_GTRANSFORM));
-        THE_ASSERT((container_.mask() & mask) == mask &&
+        THE_ASSERT((container_.mask() & mask) == mask,
 		"This type of entity is not valid for this system");
 #endif
 

@@ -47,8 +47,8 @@ void THE_ClearExecute(THE_CommandData *data)
 void THE_CreateBufferExecute(THE_CommandData *data)
 {
 	THE_InternalBuffer *b = buffers + (data->createbuff.buffer);
-	THE_ASSERT(b->cpu_version > 0 && "This buffer hasn't got any data yet");
-	THE_ASSERT(b->internal_id == THE_UNINIT);
+	THE_ASSERT(b->cpu_version > 0, "This buffer hasn't got any data yet");
+	THE_ASSERT(b->internal_id == THE_UNINIT, "Initialized buffer");
 
 	glGenBuffers(1, &b->internal_id);
 	if (b->type == THE_BUFFER_INDEX) {
@@ -74,10 +74,10 @@ void THE_CreateCubemapExecute(THE_CommandData *data)
 	THE_Texture tex = data->createcubemap.texture;
 	THE_InternalTexture *t = textures + tex;
 
-	THE_ASSERT(IsValidTexture(tex));
-	THE_ASSERT(t->cpu_version > t->gpu_version && "Texture not created on CPU or already created on GPU");
-	THE_ASSERT(tex < 62 && "Start thinking about the max textures");
-	THE_ASSERT(t->internal_id == THE_UNINIT && "Texture already created in the gpu");
+	THE_ASSERT(IsValidTexture(tex), "Invalid texture");
+	THE_ASSERT(t->cpu_version > t->gpu_version, "Texture not created on CPU or already created on GPU");
+	THE_ASSERT(tex < 62, "Start thinking about the max textures");
+	THE_ASSERT(t->internal_id == THE_UNINIT, "Texture already created in the gpu");
 
 	switch (t->type) {
 	case THE_TEX_SKYBOX:
@@ -136,7 +136,7 @@ void THE_CreateCubemapExecute(THE_CommandData *data)
 		stbi_set_flip_vertically_on_load(0);
 		for (u32 i = 0; i < 6; ++i) {
 			u8 *img_data = stbi_load(faces[i], &width, &height, &nchannels, 0);
-			THE_ASSERT(img_data && "Couldn't load the image to the cubemap");
+			THE_ASSERT(img_data, "Couldn't load the image to the cubemap");
 			glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0,
 				config.internal_format, width, height, 0,
 				config.format, config.type, img_data);
@@ -145,7 +145,7 @@ void THE_CreateCubemapExecute(THE_CommandData *data)
 		t->width = width;
 		t->height = height;
 	} else {
-		THE_ASSERT(t->width > 0 && t->height > 0 &&
+		THE_ASSERT(t->width > 0 && t->height > 0,
 			"The texture have to have size for the empty environment");
 		for (u32 i = 0; i < 6; ++i) {
 			glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0,
@@ -175,7 +175,7 @@ void THE_CreateFramebufferExecute(THE_CommandData *data)
 		 textures[ifb->depth_tex].width) ||
 		(textures[ifb->color_tex].height !=
 		 textures[ifb->depth_tex].height)
-		)) && "The size of the color and depth buffer has to be the same");
+		)), "The size of the color and depth buffer has to be the same");
 
 	if (ifb->internal_id == THE_UNINIT) {
 		glGenFramebuffers(1, (GLuint*)&(ifb->internal_id));
@@ -220,10 +220,10 @@ void THE_CreateTextureExecute(THE_CommandData *data)
 	THE_Texture tex = data->createtex.tex;
 	THE_InternalTexture *t = textures + tex;
 
-	THE_ASSERT(IsValidTexture(tex));
-	THE_ASSERT(t->cpu_version == 1 && "Texture created before?");
-	THE_ASSERT(tex < 62 && "Max texture units"); // Tex unit is id + 1
-	THE_ASSERT(t->internal_id == THE_UNINIT && "Texture already created on GPU");
+	THE_ASSERT(IsValidTexture(tex), "Invalid texture");
+	THE_ASSERT(t->cpu_version == 1, "Texture created before?");
+	THE_ASSERT(tex < 62, "Max texture units"); // Tex unit is id + 1
+	THE_ASSERT(t->internal_id == THE_UNINIT, "Texture already created on GPU");
 
 	switch(t->type) {
 	case THE_TEX_R:
@@ -314,7 +314,7 @@ void THE_CreateTextureExecute(THE_CommandData *data)
 			t->width = width;
 			t->height = height;
 		}
-		THE_ASSERT(t->pix && "The image couldn't be loaded");
+		THE_ASSERT(t->pix, "The image couldn't be loaded");
 		glTexImage2D(GL_TEXTURE_2D, 0, config.internal_format, t->width, t->height, 0,
 			config.format, config.type, t->pix);
 		if (data->createtex.release_ram) {
@@ -330,7 +330,7 @@ void THE_CreateTextureExecute(THE_CommandData *data)
 			t->height = height;
 		}
 
-		THE_ASSERT(t->pix && "The image couldn't be loaded");
+		THE_ASSERT(t->pix, "The image couldn't be loaded");
 		glTexImage2D(GL_TEXTURE_2D, 0, config.internal_format, t->width, t->height, 0,
 			config.format, config.type, t->pix);
 		glGenerateMipmap(GL_TEXTURE_2D);
@@ -365,14 +365,14 @@ void THE_SkyboxExecute(THE_CommandData *data)
 	mat->tcount = 1;
 	mat->cube_start = 0;
 
-	THE_ASSERT(CUBE_MESH.vertex != THE_UNINIT &&
+	THE_ASSERT(CUBE_MESH.vertex != THE_UNINIT,
 		"You are trying to draw with an uninitialized vertex buffer");
 
-	THE_ASSERT(CUBE_MESH.index != THE_UNINIT &&
+	THE_ASSERT(CUBE_MESH.index != THE_UNINIT,
 		"You are trying to draw with an uninitialized index buffer");
 
-	THE_ASSERT(buffers[CUBE_MESH.vertex].cpu_version > 0 && "Vertex buffer without data");
-	THE_ASSERT(buffers[CUBE_MESH.index].cpu_version > 0 && "Index buffer without data");
+	THE_ASSERT(buffers[CUBE_MESH.vertex].cpu_version > 0, "Vertex buffer without data");
+	THE_ASSERT(buffers[CUBE_MESH.index].cpu_version > 0, "Index buffer without data");
 
 	// Set the uniforms
 	UseMaterial(mat);
@@ -418,22 +418,22 @@ void THE_SkyboxExecute(THE_CommandData *data)
 
 void THE_DrawExecute(THE_CommandData *data)
 {
-	THE_ASSERT(data->draw.inst_count > 0 && "Set inst count");
+	THE_ASSERT(data->draw.inst_count > 0, "Set inst count");
 	THE_Mesh mesh = data->draw.mesh;
 	THE_Material *mat = data->draw.mat;
 
 	//int32_t vertex_handle = geo.vertex_buffer().handle();
 	//int32_t index_handle = geo.index_buffer().handle();
 
-	THE_ASSERT(mesh.vertex != THE_UNINIT &&
+	THE_ASSERT(mesh.vertex != THE_UNINIT,
 		"You are trying to draw with an uninitialized vertex buffer");
 
-	THE_ASSERT(mesh.index != THE_UNINIT &&
+	THE_ASSERT(mesh.index != THE_UNINIT,
 		"You are trying to draw with an uninitialized index buffer");
 
-	THE_ASSERT(buffers[mesh.vertex].cpu_version > 0 && "Vertex buffer without data");
-	THE_ASSERT(buffers[mesh.index].cpu_version > 0 && "Index buffer without data");
-	THE_ASSERT(mat->type != THE_MT_NONE && "Material type not setted");
+	THE_ASSERT(buffers[mesh.vertex].cpu_version > 0, "Vertex buffer without data");
+	THE_ASSERT(buffers[mesh.index].cpu_version > 0, "Index buffer without data");
+	THE_ASSERT(mat->type != THE_MT_NONE, "Material type not setted");
 
 	// Set the uniforms
 	UseMaterial(mat);
@@ -559,8 +559,8 @@ void THE_DrawExecute(THE_CommandData *data)
 
 	if (data->draw.inst_count > 1U) {
 		THE_Buffer attr = data->draw.inst_attr;
-		THE_ASSERT(attr != THE_UNINIT && "Instance count must be greater than one.");
-		THE_ASSERT(buffers[attr].type == THE_BUFFER_VERTEX_3P &&
+		THE_ASSERT(attr != THE_UNINIT, "Instance count must be greater than one.");
+		THE_ASSERT(buffers[attr].type == THE_BUFFER_VERTEX_3P,
 			"The instance attributes buffer has the wrong type.");
 
 		if (buffers[attr].gpu_version == 0) {
@@ -714,7 +714,7 @@ void THE_RenderOptionsExecute(THE_CommandData *data)
 			break;
 
 		default:
-			THE_ASSERT(false && "RenderOption invalid BlendCommand S value");
+			THE_ASSERT(false, "RenderOption invalid BlendCommand S value");
 			break;
 		}
 
@@ -736,7 +736,7 @@ void THE_RenderOptionsExecute(THE_CommandData *data)
 			break;
 
 		default:
-			THE_ASSERT(false && "RenderOption invalid BlendCommand D value");
+			THE_ASSERT(false, "RenderOption invalid BlendCommand D value");
 			break;
 		}
 
@@ -773,7 +773,7 @@ void THE_RenderOptionsExecute(THE_CommandData *data)
 			break;
 
 		default:
-			THE_ASSERT(false && "RenderOption invalid CullFace value");
+			THE_ASSERT(false, "RenderOption invalid CullFace value");
 			break;
 		}
 	}
@@ -803,7 +803,7 @@ void THE_UseFramebufferExecute(THE_CommandData *data)
 	GLsizei height;
 
 	if (ifb->gpu_version == 0) {
-		THE_ASSERT(data->usefb.fb >= 0 && ifb->cpu_version > 0 && "Framebuffer not created");
+		THE_ASSERT(data->usefb.fb >= 0 && ifb->cpu_version > 0, "Framebuffer not created");
 		glGenFramebuffers(1, (GLuint*)&(ifb->internal_id));
 		THE_CommandData ctcd;
 		ctcd.createtex.release_ram = 0;
@@ -828,7 +828,7 @@ void THE_UseFramebufferExecute(THE_CommandData *data)
 	if (ifb->depth) {
 		if (ifb->color) {
 			THE_ASSERT(width == (GLsizei)textures[ifb->depth_tex].width &&
-                height == (GLsizei)textures[ifb->depth_tex].height &&
+                height == (GLsizei)textures[ifb->depth_tex].height,
 				"Color and depth texture sizes of framebuffer not matching");
 		} else {
 			width = (s32)textures[ifb->depth_tex].width;

@@ -39,7 +39,7 @@ void Memory::init(size_t size)
 
 void *Memory::persistentAlloc(size_t size)
 {
-    THE_ASSERT((size_t)(offset_ + size - mem_) <= capacity_ && "Out of memory");
+    THE_ASSERT((size_t)(offset_ + size - mem_) <= capacity_, "Out of memory");
     if ((size_t)(offset_ + size - mem_) > capacity_)
     {
 	    THE_SLOG_ERROR("Persistent allocation failed, Out of memory!");

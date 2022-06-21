@@ -282,7 +282,7 @@ void leep::GameInit()
 void leep::GameLogic()
 {
 	LuaScripting::ExecuteScript("../assets/scripts/update.lua");
-	GM.input().updateInput();
+	THE_InputUpdate();
 	CameraMovement(1.0f, 1.0f).executeSystem();
 	UpdateTransform(GM.scene().container(EntityType::RENDERABLE)).executeSystem();
 	UpdateSceneGraph().executeSystem();
@@ -400,7 +400,7 @@ int main(int argc, char **argv)
     leep::Init(cnfg);
     leep::LogicThread lt(leep::Logic);
     leep::GM.startFrameTimer();
-    while (!leep::GM.window().windowShouldClose())
+    while (!THE_WindowShouldClose())
     {
 #ifndef LEEP_SINGLE_THREAD
         lt.run();

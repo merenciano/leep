@@ -23,11 +23,6 @@ namespace leep
         void nextFrame();
         void startFrameTimer();
 
-        class Window&      window();
-        class Renderer&    renderer();
-        class Renderer*    rendererptr();
-        //class Camera&      camera(); // TODO: Move camera to renderer
-        class Input&       input();
         class Memory&      memory();
         class ImguiTools&  ui_tools();
         class Scene&       scene();

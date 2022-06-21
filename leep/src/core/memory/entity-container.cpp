@@ -18,7 +18,7 @@ namespace leep
         switch (type_)
         {
             case EntityType::NONE:
-                THE_ASSERT(false && "Invalid entity type");
+                THE_ASSERT(false, "Invalid entity type");
                 break;
             case EntityType::FALLING_CUBE:
                 blocks_.emplace_back(m.generalAllocT<FallingCubeEntities>(1));
