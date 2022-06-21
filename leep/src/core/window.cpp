@@ -7,6 +7,8 @@
 #include "glad/glad.h"
 #include "GLFW/glfw3.h"
 
+static GLFWwindow *internal_window;
+
 namespace leep
 {
 	struct leep::Window::WindowData {

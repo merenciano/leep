@@ -1,6 +1,8 @@
 #include <stdint.h>
 #include <assert.h>
 #include <stdio.h>
+#include <stdbool.h>
+
 extern "C" {
 #include "mathc.h"
 }

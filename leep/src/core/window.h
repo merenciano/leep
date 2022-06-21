@@ -1,7 +1,12 @@
-#ifndef __LEEP_CORE_WINDOW_H__
-#define __LEEP_CORE_WINDOW_H__ 1
+#ifndef __THE_CORE_WINDOW_H__
+#define __THE_CORE_WINDOW_H__
 
 #include <stdint.h>
+
+typedef struct {
+	struct WindowData;
+	WindowData *data;
+} THE_Window;
 
 namespace leep
 {
@@ -24,4 +29,4 @@ namespace leep
     };
 }
 
-#endif // __LEEP_CORE_WINDOW_H__
+#endif
