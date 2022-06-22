@@ -1,6 +1,7 @@
 #include "memory.h"
 
 #include "core/Cdefinitions.h"
+//#include "Cbuddy.h"
 
 #include <stdlib.h>
 
@@ -33,8 +34,8 @@ void Memory::init(size_t size)
     }
     offset_ = mem_;
     capacity_ = size;
-    buddy_.init();
-
+    //buddy_.init();
+	THE_BuddyInit(1U << 29); // 1GB
 }
 
 void *Memory::persistentAlloc(size_t size)
@@ -52,17 +53,25 @@ void *Memory::persistentAlloc(size_t size)
 
 void *Memory::generalAlloc(size_t size)
 {
-    return buddy_.alloc(size);
+	return THE_BuddyAlloc(size);
+    //return buddy_.alloc(size);
+}
+
+void *Memory::generalCalloc(size_t element_count, size_t element_size)
+{
+	return THE_BuddyCalloc(element_count, element_size);
 }
 
 void *Memory::generalRealloc(void *ptr, size_t size)
 {
-    return buddy_.realloc(ptr, size);
+	return THE_BuddyRealloc(ptr, size);
+    //return buddy_.realloc(ptr, size);
 }
 
 void Memory::generalFree(void *ptr)
 {
-    buddy_.free(ptr);
+	THE_BuddyFree(ptr);
+    //buddy_.free(ptr);
 }
 
 void Memory::freeAll()

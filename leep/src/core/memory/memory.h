@@ -5,6 +5,7 @@
 
 #include "core/common-defs.h"
 #include "core/memory/buddy-alloc.h"
+#include "Cbuddy.h"
 
 namespace leep
 {
@@ -19,6 +20,7 @@ namespace leep
         // General alloc wrappers
         void *generalAlloc(size_t size);
         template<typename T> inline T *generalAllocT(size_t count);
+	    void *generalCalloc(size_t element_count, size_t element_size);
         void *generalRealloc(void *ptr, size_t size);
         void generalFree(void *ptr);
 
@@ -36,7 +38,12 @@ namespace leep
     template<typename T>
     T *Memory::generalAllocT(size_t count)
     {
-        return buddy_.allocT<T>(count);
+	    T* mem = (T*)THE_BuddyAlloc(sizeof(T) * count);
+	    for (size_t i = 0; i < count; ++i)
+	    {
+		    new(mem + i) T();
+	    }
+	    return mem;
     }
 }
 
