@@ -9,6 +9,7 @@
 #include "tools/imgui-tools.h"
 #include "tools/lua-scripting.h"
 #include "tools/resource-map.h"
+#include "core/hmap.h"
 
 #include "render/Cinternalresources.h"
 #include "render/Crendercommands.h"
@@ -39,6 +40,7 @@ namespace leep
         data_ = memory_.generalAllocT<ManagerData>(1);
 	THE_IOInit(kWindowTitle, cnfg.window_width, cnfg.window_height, cnfg.vsync);
 	data_->resource_map_ = memory_.generalAllocT<::THE_ResourceMap>(1);
+	data_->resource_map_->meshes = THE_HMapCreate(8, sizeof(THE_Mesh));
 	THE_InitRender();
         data_->delta_time_ = 0.16f;
     }

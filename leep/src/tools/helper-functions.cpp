@@ -28,7 +28,8 @@ void leep::CreateRenderable(String entity_name,
     pbr.roughness = 0.5f;
     pbr.normal_map_intensity = 0.0f;
     //d.mesh = GM.resource_map().getGeometry(geometry_name);
-    d.mesh = GM.resource_map()->meshes.at(geometry_name);
+    //d.mesh = GM.resource_map()->meshes.at(geometry_name);
+    d.mesh = THE_ResourceMapGetMesh(GM.resource_map(), geometry_name.c_str());
     d.mat.type = THE_MT_PBR;
     THE_MaterialSetData(&d.mat, (float*)&pbr, sizeof(THE_PbrData) / 4);
 //    d.mat.set_data((float*)&pbr, sizeof(PbrData) / 4);

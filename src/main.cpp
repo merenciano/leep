@@ -78,7 +78,8 @@ void leep::GameInit()
 		LTransform &tr = e.getComponent<LTransform>();
 		tr.transform_ = glm::translate(tr.transform_, glm::vec3(2.0f, 0.0f, 0.0f));
 		Drawable &dw = e.getComponent<Drawable>();
-		dw.mesh = rm->meshes.at("MatBall");
+		//dw.mesh = rm->meshes.at("MatBall");
+		dw.mesh = THE_ResourceMapGetMesh(rm, "MatBall");
 		dw.mat.type = THE_MT_PBR;
 		THE_MaterialSetData(&dw.mat, (float*)&pbr, sizeof(THE_PbrData) / 4);
 		THE_Texture t[4];

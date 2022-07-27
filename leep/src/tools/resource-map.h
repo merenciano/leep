@@ -4,6 +4,7 @@
 #include "core/leep-string.h"
 #include "render/Crenderertypes.h"
 #include "core/memory/buddy-alloc-stl.h"
+#include "core/hmap.h"
 
 #include <unordered_map>
 
@@ -14,12 +15,14 @@ struct THE_ResourceMap
 	THE_ResourceMap(const THE_ResourceMap& rm) = delete;
 	THE_ResourceMap(THE_ResourceMap&& rm) = delete;
 
-	std::unordered_map<
+	THE_HMap *meshes;
+
+	/*std::unordered_map<
 		leep::String,
 		THE_Mesh,
 		std::hash<leep::String>,
 		std::equal_to<leep::String>,
-		leep::BuddySTL<std::pair<const leep::String, THE_Mesh>>> meshes;
+		leep::BuddySTL<std::pair<const leep::String, THE_Mesh>>> meshes;*/
 	std::unordered_map<
 		leep::String,
 		THE_Texture,
@@ -28,8 +31,9 @@ struct THE_ResourceMap
 		leep::BuddySTL<std::pair<const leep::String, THE_Texture>>> textures;
 };
 
-void THE_ResourceMapAddMesh(THE_ResourceMap* rm, leep::String name, leep::String path);
-void THE_ResourceMapAddMesh(THE_ResourceMap* rm, leep::String name, THE_Mesh mesh);
+void THE_ResourceMapAddMesh(THE_ResourceMap* rm, const char *name, const char *path);
+void THE_ResourceMapAddMesh(THE_ResourceMap* rm, const char *name, THE_Mesh mesh);
+THE_Mesh THE_ResourceMapGetMesh(THE_ResourceMap *rm, const char *name);
 void THE_ResourceMapAddTexture(THE_ResourceMap* rm, leep::String name, leep::String path, THE_TexType type);
 void THE_ResourceMapAddTexture(THE_ResourceMap* rm, leep::String name, u32 width, u32 height, THE_TexType type);
 

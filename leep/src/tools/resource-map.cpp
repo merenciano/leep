@@ -3,29 +3,38 @@
 
 using namespace leep;
 
-void THE_ResourceMapAddMesh(THE_ResourceMap* rm, leep::String name, leep::String path)
+void THE_ResourceMapAddMesh(THE_ResourceMap* rm, const char *name, const char *path)
 {
 	THE_ASSERT(name != "Cube", "There is already a cube named Cube");
 	THE_ASSERT(name != "Sphere", "There is already a sphere named Sphere");
 	THE_ASSERT(name != "Quad", "There is already a quad named Quad");
 
-	THE_Mesh mesh = THE_CreateMeshFromFile_OBJ(path.c_str());
-	if (!rm->meshes.emplace(std::make_pair(name, mesh)).second)
+	THE_Mesh mesh = THE_CreateMeshFromFile_OBJ(path);
+	THE_HMapInsert(rm->meshes, name, &mesh);
+	/*if (!rm->meshes.emplace(std::make_pair(name, mesh)).second)
 	{
-		THE_LOG_ERROR("Mesh %s couldn't be inserted", name.c_str());
-	}
+		THE_LOG_ERROR("Mesh %s couldn't be inserted", name);
+	}*/
 }
 
-void THE_ResourceMapAddMesh(THE_ResourceMap* rm, leep::String name, THE_Mesh mesh)
+void THE_ResourceMapAddMesh(THE_ResourceMap* rm, const char *name, THE_Mesh mesh)
 {
 	THE_ASSERT(name != "Cube", "There is already a cube named Cube");
 	THE_ASSERT(name != "Sphere", "There is already a sphere named Sphere");
 	THE_ASSERT(name != "Quad", "There is already a quad named Quad");
 
-	if (!rm->meshes.emplace(std::make_pair(name, mesh)).second)
+	THE_HMapInsert(rm->meshes, name, &mesh);
+	/*if (!rm->meshes.emplace(std::make_pair(name, mesh)).second)
 	{
 		THE_LOG_ERROR("Mesh %s couldn't be inserted", name.c_str());
-	}
+	}*/
+}
+
+THE_Mesh THE_ResourceMapGetMesh(THE_ResourceMap *rm, const char *name)
+{
+	void *result = THE_HMapGet(rm->meshes, name);
+	THE_ASSERT(result != THE_HMAP_INVALID_VALUE);
+	return *(THE_Mesh*)result;
 }
 
 void THE_ResourceMapAddTexture(THE_ResourceMap* rm, leep::String name, leep::String path, THE_TexType type)
