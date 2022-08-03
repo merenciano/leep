@@ -37,7 +37,8 @@ void leep::CreateRenderable(String entity_name,
     for (int32_t i = 0; i < 4; ++i)
     {
         //t[i] = GM.resource_map().getTexture(texture_name);
-	t[i] = GM.resource_map()->textures.at(texture_name);
+	//t[i] = GM.resource_map()->textures.at(texture_name);
+	t[i] = THE_ResourceMapGetTexture(GM.resource_map(), texture_name.c_str());
     }
     THE_MaterialSetTexture(&d.mat, t, 4);
     //d.mat.set_tex(t, 4);

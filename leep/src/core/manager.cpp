@@ -39,8 +39,9 @@ namespace leep
         memory_.init(total_mem);
         data_ = memory_.generalAllocT<ManagerData>(1);
 	THE_IOInit(kWindowTitle, cnfg.window_width, cnfg.window_height, cnfg.vsync);
-	data_->resource_map_ = memory_.generalAllocT<::THE_ResourceMap>(1);
+	data_->resource_map_ = (THE_ResourceMap*)memory_.generalAlloc(sizeof(THE_ResourceMap));
 	data_->resource_map_->meshes = THE_HMapCreate(8, sizeof(THE_Mesh));
+	data_->resource_map_->textures = THE_HMapCreate(64, sizeof(THE_Texture));
 	THE_InitRender();
         data_->delta_time_ = 0.16f;
     }

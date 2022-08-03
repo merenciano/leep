@@ -83,7 +83,7 @@ void THE_HMapInsert(HMap *hm, const char *key, void *value)
 
 	HMapKey mk;
 	mk.hash = HMapHash(key);
-	printf("Key %s : Hash: %ld\n", key, mk.hash);
+	printf("VOY POR AQUI\n");
 	uint32_t offset = mk.hash & (HMapGetCapacity(hm) - 1);
 
 	HMap *node;
