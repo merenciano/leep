@@ -20,6 +20,10 @@ extern "C" {
 #define THE_MARKED_FOR_DELETE -5002
 #define THE_INVALID -5003
 
+#define KILOBYTES(X) ((X) * 1024)
+#define MEGABYTES(X) (KILOBYTES(X) * 1024)
+#define GIGABYTES(X) (MEGABYTES(X) * 1024)
+
 #define THE_BYTE_TO_KB(X) (X / 1024.0f)
 #define THE_BYTE_TO_MB(X) (X / 1048576.0f)
 

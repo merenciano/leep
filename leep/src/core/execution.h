@@ -6,7 +6,7 @@ namespace leep
     void GameLogic();
     void GameClose();
 
-    void Init(const LeepConfig &cnfg);
+    void Init(const THE_Config &cnfg);
     void Logic();
     void Close();
     void RenderFrame();

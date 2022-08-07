@@ -27,7 +27,7 @@ namespace leep
         Chrono      frame_timer_;
     };
 
-    void Manager::init(const LeepConfig &cnfg)
+    void Manager::init(const THE_Config &cnfg)
     {
         THE_ASSERT(IsPow2(kEntitiesPerChunk), "This constant value must be power of 2");
 

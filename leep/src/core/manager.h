@@ -19,7 +19,7 @@ namespace leep
         // will live until the end of the program
         ~Manager() {}
 
-        void init(const LeepConfig &cnfg);
+        void init(const THE_Config &cnfg);
         void nextFrame();
         void startFrameTimer();
 
