@@ -24,7 +24,7 @@ namespace leep
         ToolsData   tools_data_;
 
         float       delta_time_;
-        Chrono      frame_timer_;
+        THE_Chrono  frame_timer;
     };
 
     void Manager::init(const THE_Config &cnfg)
@@ -57,16 +57,16 @@ namespace leep
 	THE_IOPollEvents();
 	THE_SubmitFrame();
 
-        data_->frame_timer_.end();
-        data_->delta_time_ = data_->frame_timer_.duration() / 1000.0f;
-        data_->frame_timer_.start();
+	THE_ChronoEnd(&data_->frame_timer);
+	data_->delta_time_ = THE_ChronoDurationSec(&data_->frame_timer);
+	THE_ChronoStart(&data_->frame_timer);
 
         LuaScripting::SetGlobal("g_deltatime", data_->delta_time_);
     }
 
     void Manager::startFrameTimer()
     {
-        data_->frame_timer_.start();
+	THE_ChronoStart(&data_->frame_timer);
     }
 
     Memory&      Manager::memory()        { return memory_; }

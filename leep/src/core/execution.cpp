@@ -23,9 +23,8 @@ void leep::Init(const THE_Config &cnfg)
 
     leep::LuaScripting::ExecuteScript("../assets/scripts/init.lua");
     THE_ChronoEnd(&init_timer);
-    timespec dur = THE_ChronoDuration(&init_timer);
-    //leep::GM.tools_data().init_time_ms_ = init_timer.duration();
-    //LEEP_CORE_INFO("Leep initialized in {0} milliseconds.", init_timer.duration());
+    leep::GM.tools_data().init_time_ms_ = THE_ChronoDurationMS(&init_timer);
+    THE_LOG("Leep initialized in %f milliseconds.\n", leep::GM.tools_data().init_time_ms_);
     MTR_END("LEEP", "Init");
 }
 
@@ -39,7 +38,7 @@ void leep::Logic()
     leep::GameLogic();
 
     THE_ChronoEnd(&logic_timer);
-    //leep::GM.ui_tools().calcLogicAverage(logic_timer.duration());
+    leep::GM.ui_tools().calcLogicAverage(THE_ChronoDurationMS(&logic_timer));
     MTR_END("LEEP", "Logic");
 }
 
@@ -52,19 +51,19 @@ void leep::RenderFrame()
 
     leep::GM.ui_tools().update();
     THE_ChronoEnd(&render_timer);
-    //leep::GM.ui_tools().calcRenderAverage(render_timer.duration());
+    leep::GM.ui_tools().calcRenderAverage(THE_ChronoDurationMS(&render_timer));
     MTR_END("LEEP", "Render");
 }
 
 void leep::ShowFrame()
 {
     MTR_BEGIN("LEEP", "Swap_Buffers");
-    leep::Chrono swap_timer;
-    swap_timer.start();
+    THE_Chrono swap_timer;
+    THE_ChronoStart(&swap_timer);
     leep::GM.nextFrame();
-    swap_timer.end();
+    THE_ChronoEnd(&swap_timer);
     // Swap duration adds to render time
-    leep::GM.ui_tools().calcRenderAverage(swap_timer.duration());
+    leep::GM.ui_tools().calcRenderAverage(THE_ChronoDurationMS(&swap_timer));
     MTR_END("LEEP", "Swap_Buffers");
 }
 
