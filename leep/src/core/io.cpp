@@ -4,7 +4,7 @@
 #include "GLFW/glfw3.h"
 
 #include "core/common-defs.h"
-#include "core/manager.h"
+//#include "core/manager.h"
 #include "tools/imgui-tools.h"
 
 static GLFWwindow *internal_window = NULL;
@@ -45,7 +45,8 @@ bool THE_IOInit(const char *title, s32 width, s32 height, bool limit_framerate)
 	}
 
 	glfwSetScrollCallback(internal_window, ScrollCallback);
-	leep::GM.ui_tools().init(internal_window);
+	THE_UIToolsInit(internal_window);
+	//leep::GM.ui_tools().init(internal_window);
 
 	curr.input_bitmap = 0;
 	prev.input_bitmap = 0;

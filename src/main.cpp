@@ -282,7 +282,7 @@ void leep::GameInit()
 
 void leep::GameLogic()
 {
-	LuaScripting::ExecuteScript("../assets/scripts/update.lua");
+	THE_ScriptingExecute("../assets/scripts/update.lua");
 	THE_InputUpdate();
 	CameraMovement(1.0f, 1.0f).executeSystem();
 	UpdateTransform(GM.scene().container(EntityType::RENDERABLE)).executeSystem();

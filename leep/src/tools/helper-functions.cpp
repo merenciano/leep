@@ -6,7 +6,9 @@
 #include "ecs/components/drawable.h"
 #include "tools/resource-map.h"
 
-void leep::CreateRenderable(String entity_name,
+using namespace leep;
+
+void THE_CreateRenderable(String entity_name,
                             String geometry_name,
                             String texture_name)
 {
@@ -44,12 +46,12 @@ void leep::CreateRenderable(String entity_name,
     //d.mat.set_tex(t, 4);
 }
 
-void leep::RemoveEntity(String entity_name)
+void THE_RemoveEntity(String entity_name)
 {
     Entity::RemoveEntity(entity_name);
 }
 
-void leep::SetParent(String entity_name, String parent_name)
+void THE_SetParent(String entity_name, String parent_name)
 {
     LTransform &eltr = Entity::GetEntity(entity_name).getComponent<LTransform>();
     LTransform &pltr = Entity::GetEntity(parent_name).getComponent<LTransform>();
@@ -60,26 +62,26 @@ void leep::SetParent(String entity_name, String parent_name)
     GM.scene().scene_graph_.setParent(&eltr, &pltr);
 }
 
-void leep::DetachFromParent(String entity_name)
+void THE_DetachFromParent(String entity_name)
 {
     LTransform &eltr = Entity::GetEntity(entity_name).getComponent<LTransform>();
     GM.scene().scene_graph_.detachFromParent(&eltr);
 }
 
-void leep::SetLocation(String entity_name, float x, float y, float z)
+void THE_SetLocation(String entity_name, float x, float y, float z)
 {
     LTransform &eltr = Entity::GetEntity(entity_name).getComponent<LTransform>();
     eltr.setLocation(glm::vec3(x, y, z));
 }
 
-void leep::SetSunDirection(float x, float y, float z)
+void THE_SetSunDirection(float x, float y, float z)
 {
 	sun_dir_intensity.x = x;
 	sun_dir_intensity.y = y;
 	sun_dir_intensity.z = z;
 }
 
-void leep::SetSunIntensity(float intensity)
+void THE_SetSunIntensity(float intensity)
 {
 	sun_dir_intensity.w = intensity;
 }

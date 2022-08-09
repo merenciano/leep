@@ -48,7 +48,7 @@ project "TestApp"
         links { "X11", "dl", "pthread"  }
     
     filter "configurations:Debug"
-        defines { "LEEP_DEBUG", }
+        defines { "THE_DEBUG", }
         targetsuffix "-d"
         symbols "On"
     

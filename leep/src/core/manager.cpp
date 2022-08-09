@@ -18,10 +18,9 @@ namespace leep
 {
     struct Manager::ManagerData
     {
-        ImguiTools  ui_tools_;
+        //ImguiTools  ui_tools_;
         Scene       scene_;
         ::THE_ResourceMap *resource_map_;
-        ToolsData   tools_data_;
 
         float       delta_time_;
         THE_Chrono  frame_timer;
@@ -61,7 +60,7 @@ namespace leep
 	data_->delta_time_ = THE_ChronoDurationSec(&data_->frame_timer);
 	THE_ChronoStart(&data_->frame_timer);
 
-        LuaScripting::SetGlobal("g_deltatime", data_->delta_time_);
+        THE_ScriptingSetGlobal("g_deltatime", data_->delta_time_);
     }
 
     void Manager::startFrameTimer()
@@ -70,8 +69,7 @@ namespace leep
     }
 
     Memory&      Manager::memory()        { return memory_; }
-    ImguiTools&  Manager::ui_tools()      { return data_->ui_tools_; }
+    //ImguiTools&  Manager::ui_tools()      { return data_->ui_tools_; }
     Scene&       Manager::scene()         { return data_->scene_; }
     ::THE_ResourceMap *Manager::resource_map()  { return data_->resource_map_; }
-    ToolsData&   Manager::tools_data()    { return data_->tools_data_; }
 }

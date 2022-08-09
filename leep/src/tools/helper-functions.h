@@ -1,21 +1,16 @@
-// Lucas Merenciano Martinez  <lucasmermar@gmail.com>
-
-#ifndef __LEEP_HELPER_FUNCTIONS_H__
-#define __LEEP_HELPER_FUNCTIONS_H__
+#ifndef THE_HELPER_FUNCTIONS_H
+#define THE_HELPER_FUNCTIONS_H
 
 #include "core/leep-string.h"
 
-namespace leep
-{
-    void CreateRenderable(String entity_name,
-                          String geometry_name,
-                          String texture_name);
-    void RemoveEntity(String entity_name);
-    void SetParent(String entity_name, String parent_name);
-    void DetachFromParent(String entity_name);
-    void SetLocation(String entity_name, float x, float y, float z);
-    void SetSunDirection(float x, float y, float z);
-    void SetSunIntensity(float intensity);
-}
+void THE_CreateRenderable(leep::String entity_name,
+	leep::String geometry_name,
+	leep::String texture_name);
+void THE_RemoveEntity(leep::String entity_name);
+void THE_SetParent(leep::String entity_name, leep::String parent_name);
+void THE_DetachFromParent(leep::String entity_name);
+void THE_SetLocation(leep::String entity_name, float x, float y, float z);
+void THE_SetSunDirection(float x, float y, float z);
+void THE_SetSunIntensity(float intensity);
 
-#endif // __LEEP_HELPER_FUNCTIONS_H__
+#endif

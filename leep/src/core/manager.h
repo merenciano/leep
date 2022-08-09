@@ -5,14 +5,21 @@
 
 #include "core/config.h"
 #include "core/memory/memory.h"
+#include "tools/imgui-tools.h"
 
 struct THE_ResourceMap;
+
+
 
 namespace leep 
 {
     class Manager
     {
     public:
+	THE_ToolsData tools_data;
+
+
+
         static Manager& instance() { static Manager m; return m; }
 
         // Not deleting data because this the unique instance of this class
@@ -27,7 +34,7 @@ namespace leep
         class ImguiTools&  ui_tools();
         class Scene&       scene();
         struct THE_ResourceMap* resource_map();
-        struct ToolsData&  tools_data();
+        //struct ToolsData&  tools_data();
         float delta_time() const;
 
 private:
