@@ -1,11 +1,9 @@
-#ifndef __THE_CORE_CHRONO_H__
-#define __THE_CORE_CHRONO_H__
+#ifndef THE_CORE_CHRONO_H
+#define THE_CORE_CHRONO_H
 
-#include "Cdefinitions.h"
 #include <time.h>
 
-typedef struct THE_Chrono
-{
+typedef struct THE_Chrono {
 	timespec start;
 	timespec end;
 } THE_Chrono;

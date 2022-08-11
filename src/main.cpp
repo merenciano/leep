@@ -2,7 +2,9 @@
 
 #define LEEP_SINGLE_THREAD
 
-void leep::GameInit()
+using namespace leep; // TODO(Lucas) borrar
+
+void GameInit()
 {
 	THE_ResourceMap *rm = GM.resource_map();
 	const String tp = "../assets/tex/";
@@ -280,7 +282,7 @@ void leep::GameInit()
 	THE_AddCommands(rendops);
 }
 
-void leep::GameLogic()
+void GameLogic()
 {
 	THE_ScriptingExecute("../assets/scripts/update.lua");
 	THE_InputUpdate();
@@ -390,7 +392,7 @@ void leep::GameLogic()
 	THE_AddCommands(rops);
 }
 
-void leep::GameClose()
+void GameClose()
 {
 
 }
@@ -398,25 +400,28 @@ void leep::GameClose()
 int main(int argc, char **argv)
 {
     THE_Config cnfg;
-    leep::Init(cnfg);
-    leep::LogicThread lt(leep::Logic);
+    cnfg.init_func = GameInit;
+    cnfg.logic_func = GameLogic;
+    cnfg.close_func = GameClose;
+    THE_Init(&cnfg);
+    leep::LogicThread lt(THE_Logic);
     leep::GM.startFrameTimer();
     while (!THE_WindowShouldClose())
     {
 #ifndef LEEP_SINGLE_THREAD
         lt.run();
-        leep::RenderFrame();
+        THE_Render();
         while (lt.running())
         {
             std::this_thread::sleep_for(std::chrono::microseconds(100));
         }
 #else
-        leep::Logic();
-        leep::RenderFrame();
+        THE_Logic();
+        THE_Render();
 #endif
-        leep::ShowFrame();
+        THE_ShowFrame();
     }
-    leep::Close();
+    THE_Close();
 
     return 0;
 }

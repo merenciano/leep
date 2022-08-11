@@ -1,14 +1,12 @@
+#ifndef THE_CORE_EXECUTION_H
+#define THE_CORE_EXECUTION_H
+
 #include "core/config.h"
 
-namespace leep
-{
-    void GameInit();
-    void GameLogic();
-    void GameClose();
+void THE_Init(THE_Config *cnfg);
+void THE_Logic();
+void THE_Close();
+void THE_Render();
+void THE_ShowFrame();
 
-    void Init(const THE_Config &cnfg);
-    void Logic();
-    void Close();
-    void RenderFrame();
-    void ShowFrame();
-}
+#endif

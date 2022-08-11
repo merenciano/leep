@@ -1,5 +1,5 @@
-#ifndef __LEEP_TOOLS_RESOURCE_MAP_H__
-#define __LEEP_TOOLS_RESOURCE_MAP_H__
+#ifndef THE_TOOLS_RESOURCE_MAP_H
+#define THE_TOOLS_RESOURCE_MAP_H
 
 #include "core/hmap.h"
 #include "render/Crenderertypes.h"
@@ -17,4 +17,4 @@ void THE_ResourceMapAddTexture(THE_ResourceMap* rm, const char *name, const char
 void THE_ResourceMapAddTexture(THE_ResourceMap* rm, const char *name, u32 width, u32 height, THE_TexType type);
 THE_Texture THE_ResourceMapGetTexture(THE_ResourceMap *rm, const char *name);
 
-#endif // __LEEP_TOOLS_RESOURCE_MAP_H__
+#endif

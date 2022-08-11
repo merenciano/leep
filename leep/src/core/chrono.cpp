@@ -1,4 +1,5 @@
 #include "chrono.h"
+#include "Cdefinitions.h"
 
 /*
 	Returns the duration of the crono, if THE_ChronoEnd has been called for the chrono

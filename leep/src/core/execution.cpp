@@ -9,7 +9,10 @@
 //#define MTR_ENABLED
 #include "minitrace.h"
 
-void leep::Init(const THE_Config &cnfg)
+static VoidFunc LogicF;
+static VoidFunc CloseF;
+
+void THE_Init(THE_Config *cnfg)
 {
 	mtr_init("leep_trace.json");
 	MTR_META_PROCESS_NAME("Leep_Profiling");
@@ -17,10 +20,12 @@ void leep::Init(const THE_Config &cnfg)
 	MTR_BEGIN("LEEP", "Init");
 	THE_Chrono init_timer;
 	THE_ChronoStart(&init_timer);
-	leep::GM.init(cnfg);
+	leep::GM.init(*cnfg);
 	THE_ScriptingInit();
+	LogicF = cnfg->logic_func;
+	CloseF = cnfg->close_func;
 
-	leep::GameInit();
+	cnfg->init_func();
 
 	THE_ScriptingExecute("../assets/scripts/init.lua");
 	THE_ChronoEnd(&init_timer);
@@ -29,21 +34,21 @@ void leep::Init(const THE_Config &cnfg)
 	MTR_END("LEEP", "Init");
 }
 
-void leep::Logic()
+void THE_Logic()
 {
 	MTR_META_THREAD_NAME("Logic_Thread");
 	MTR_BEGIN("LEEP", "Logic");
 	THE_Chrono logic_timer;
 	THE_ChronoStart(&logic_timer);
 
-	leep::GameLogic();
+	LogicF();
 
 	THE_ChronoEnd(&logic_timer);
 	THE_UIToolsCalcLogicAverage(THE_ChronoDurationMS(&logic_timer));
 	MTR_END("LEEP", "Logic");
 }
 
-void leep::RenderFrame()
+void THE_Render()
 {
 	MTR_BEGIN("LEEP", "Render");
 	THE_Chrono render_timer;
@@ -56,7 +61,7 @@ void leep::RenderFrame()
 	MTR_END("LEEP", "Render");
 }
 
-void leep::ShowFrame()
+void THE_ShowFrame()
 {
 	MTR_BEGIN("LEEP", "Swap_Buffers");
 	THE_Chrono swap_timer;
@@ -68,9 +73,9 @@ void leep::ShowFrame()
 	MTR_END("LEEP", "Swap_Buffers");
 }
 
-void leep::Close()
+void THE_Close()
 {
-	leep::GameClose();
+	CloseF();
 	mtr_flush();
 	mtr_shutdown();
 }
