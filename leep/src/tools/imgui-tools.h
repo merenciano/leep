@@ -11,6 +11,8 @@ typedef struct THE_ToolsData {
 	float render_average_ms;
 } THE_ToolsData;
 
+extern THE_ToolsData tools_data;
+
 void THE_UIToolsInit(void *raw_window);
 void THE_UIToolsUpdate();
 void THE_UIToolsRender();

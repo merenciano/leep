@@ -1,4 +1,6 @@
 #include "Ccamera.h"
+#include "core/io.h"
+#include "ecs/Ctransform.h"
 #include "Cinternalresources.h"
 
 void THE_CameraInit(THE_Camera *cam, float fov, float far, u32 width, u32 height, u8 is_light)
@@ -30,4 +32,82 @@ struct vec3 THE_CameraPosition(THE_Camera *cam)
 THE_Texture THE_CameraOutputColorTexture(THE_Camera *cam)
 {
 	return framebuffers[cam->fb].color_tex;
+}
+
+void THE_CameraMovementSystem(THE_Camera *cam)
+{
+	static const float ksensibility = 1.0f / 1000.0f;
+	static const float kspeed = 1.0f;
+	static const float kscroll_sensibility = 1.0f;
+
+	static float mouse_down_pos[2] = { 0.0, 0.0 };
+	static float fov = 70.0f;
+
+	float speed = kspeed; // TODO: * DeltaTime
+
+	struct mat4 tr = smat4_inverse(cam->view_mat);
+
+	// Rotation
+	if (THE_InputIsButtonDown(THE_MOUSE_RIGHT)) {
+		mouse_down_pos[0] = THE_InputGetMouseX();
+		mouse_down_pos[1] = THE_InputGetMouseY();
+	}
+
+	if (THE_InputIsButtonPressed(THE_MOUSE_RIGHT))
+	{
+		float mouse_offset[2] = {
+			THE_InputGetMouseX() - mouse_down_pos[0],
+			mouse_down_pos[1] - THE_InputGetMouseY()
+		}; // Y axis inverted
+
+		mouse_offset[0] *= ksensibility;
+		mouse_offset[1] *= ksensibility;
+
+		tr = THE_TransformRotateYWorld(tr, -mouse_offset[0]);
+		tr = smat4_multiply(tr, smat4_rotation_x(mouse_offset[1]));
+
+		mouse_down_pos[0] = THE_InputGetMouseX();
+		mouse_down_pos[1] = THE_InputGetMouseY();
+	}
+
+	// Position
+	if (THE_InputIsButtonPressed(THE_KEY_UP))
+	{
+		tr = smat4_translate(tr, svec3(0.0f, 0.0f, -speed));
+	}
+
+	if (THE_InputIsButtonPressed(THE_KEY_DOWN))
+	{
+		tr = smat4_translate(tr, svec3(0.0f, 0.0f, speed));
+	}
+
+	if (THE_InputIsButtonPressed(THE_KEY_LEFT))
+	{
+		tr = smat4_translate(tr, svec3(-speed, 0.0f, 0.0f));
+	}
+
+	if (THE_InputIsButtonPressed(THE_KEY_RIGHT))
+	{
+		tr = smat4_translate(tr, svec3(speed, 0.0f, 0.0f));
+	}
+
+	if (THE_InputIsButtonPressed(THE_KEY_1))
+	{
+		tr = smat4_translate(tr, svec3(0.0f, speed, 0.0f));
+	}
+
+	if (THE_InputIsButtonPressed(THE_KEY_4))
+	{
+		tr = smat4_translate(tr, svec3(0.0f, -speed, 0.0f));
+	}
+
+	// Zoom
+	if (THE_InputGetScroll() != 0.0f)
+	{
+		fov -= THE_InputGetScroll() * kscroll_sensibility;
+		fov = clampf(fov, 1.0f, 120.0f);
+		cam->proj_mat = smat4_perspective(to_radians(fov), (float)THE_WindowGetWidth() / (float)THE_WindowGetHeight(), 0.1f, camera.far_value);
+	}
+
+	cam->view_mat = smat4_inverse(tr);
 }

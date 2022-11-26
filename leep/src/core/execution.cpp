@@ -1,5 +1,5 @@
 #include "execution.h"
-#include "manager.h"
+#include "core/Cmanager.h"
 #include "core/common-defs.h"
 #include "core/chrono.h"
 #include "render/Crenderer.h"
@@ -66,7 +66,7 @@ void THE_ShowFrame()
 	MTR_BEGIN("LEEP", "Swap_Buffers");
 	THE_Chrono swap_timer;
 	THE_ChronoStart(&swap_timer);
-	leep::GM.nextFrame();
+	THE_NextFrame();
 	THE_ChronoEnd(&swap_timer);
 	// Swap duration adds to render time
 	THE_UIToolsCalcRenderAverage(THE_ChronoDurationMS(&swap_timer));

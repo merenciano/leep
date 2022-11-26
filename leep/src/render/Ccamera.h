@@ -13,4 +13,6 @@ THE_Texture THE_CameraOutputColorTexture(THE_Camera *cam);
  */
 struct mat4 THE_CameraStaticViewProjection(THE_Camera *cam);
 
+void THE_CameraMovementSystem(THE_Camera *cam);
+
 #endif

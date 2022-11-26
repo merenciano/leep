@@ -34,6 +34,8 @@
 
 
 // C
+#include "core/Cmanager.h"
 #include "core/io.h"
 #include "render/Crendercommands.h"
 #include "render/Ccamera.h"
+#include "ecs/Centity.h"

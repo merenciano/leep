@@ -10,7 +10,6 @@ namespace leep
     class Render : public System
     {
     public:
-        static bool s_frame_cleared; // TODO: Remove this
         Render() = delete;
         Render(class EntityContainer &container) : container_(container) {}
         class EntityContainer &container_;

@@ -1,63 +1,59 @@
 #include "leep.h"
 
-#define LEEP_SINGLE_THREAD
-
-using namespace leep; // TODO(Lucas) borrar
-
 void GameInit()
 {
-	THE_ResourceMap *rm = GM.resource_map();
-	const String tp = "../assets/tex/";
+	THE_ResourceMap *rm = &resource_map;
+
 	THE_ResourceMapAddMesh(rm, "MatBall", "../assets/obj/matball-n.obj");
 	THE_ResourceMapAddTexture(rm, "Skybox", 1024, 1024, THE_TEX_ENVIRONMENT);
 	THE_ResourceMapAddTexture(rm, "Irradian", 1024, 1024, THE_TEX_ENVIRONMENT);
 	THE_ResourceMapAddTexture(rm, "Prefilte", 128, 128, THE_TEX_PREFILTER_ENVIRONMENT);
 	THE_ResourceMapAddTexture(rm, "LutMap", 512, 512, THE_TEX_LUT);
 
-	THE_ResourceMapAddTexture(rm, "Gold_A" ,(tp + "celtic-gold/celtic-gold_A.png").c_str(), THE_TEX_SRGB);
-	THE_ResourceMapAddTexture(rm, "Gold_N" ,(tp + "celtic-gold/celtic-gold_N.png").c_str(), THE_TEX_RGB);
-	THE_ResourceMapAddTexture(rm, "Gold_M" ,(tp + "celtic-gold/celtic-gold_M.png").c_str(), THE_TEX_R);
-	THE_ResourceMapAddTexture(rm, "Gold_R" ,(tp + "celtic-gold/celtic-gold_R.png").c_str(), THE_TEX_R);
+	THE_ResourceMapAddTexture(rm, "Gold_A" ,"../assets/tex/celtic-gold/celtic-gold_A.png", THE_TEX_SRGB);
+	THE_ResourceMapAddTexture(rm, "Gold_N" ,"../assets/tex/celtic-gold/celtic-gold_N.png", THE_TEX_RGB);
+	THE_ResourceMapAddTexture(rm, "Gold_M" ,"../assets/tex/celtic-gold/celtic-gold_M.png", THE_TEX_R);
+	THE_ResourceMapAddTexture(rm, "Gold_R" ,"../assets/tex/celtic-gold/celtic-gold_R.png", THE_TEX_R);
 
-	THE_ResourceMapAddTexture(rm, "Peel_A", (tp + "peeling/peeling_A.png").c_str(), THE_TEX_SRGB);
-	THE_ResourceMapAddTexture(rm, "Peel_N", (tp + "peeling/peeling_N.png").c_str(), THE_TEX_RGB);
-	THE_ResourceMapAddTexture(rm, "Peel_M", (tp + "peeling/peeling_M.png").c_str(), THE_TEX_R);
-	THE_ResourceMapAddTexture(rm, "Peel_R", (tp + "peeling/peeling_R.png").c_str(), THE_TEX_R);
+	THE_ResourceMapAddTexture(rm, "Peel_A", "../assets/tex/peeling/peeling_A.png", THE_TEX_SRGB);
+	THE_ResourceMapAddTexture(rm, "Peel_N", "../assets/tex/peeling/peeling_N.png", THE_TEX_RGB);
+	THE_ResourceMapAddTexture(rm, "Peel_M", "../assets/tex/peeling/peeling_M.png", THE_TEX_R);
+	THE_ResourceMapAddTexture(rm, "Peel_R", "../assets/tex/peeling/peeling_R.png", THE_TEX_R);
 
-	THE_ResourceMapAddTexture(rm, "Rust_A", (tp + "rusted/rusted_A.png").c_str(), THE_TEX_SRGB);
-	THE_ResourceMapAddTexture(rm, "Rust_N", (tp + "rusted/rusted_N.png").c_str(), THE_TEX_RGB);
-	THE_ResourceMapAddTexture(rm, "Rust_M", (tp + "rusted/rusted_M.png").c_str(), THE_TEX_R);
-	THE_ResourceMapAddTexture(rm, "Rust_R", (tp + "rusted/rusted_R.png").c_str(), THE_TEX_R);
+	THE_ResourceMapAddTexture(rm, "Rust_A", "../assets/tex/rusted/rusted_A.png", THE_TEX_SRGB);
+	THE_ResourceMapAddTexture(rm, "Rust_N", "../assets/tex/rusted/rusted_N.png", THE_TEX_RGB);
+	THE_ResourceMapAddTexture(rm, "Rust_M", "../assets/tex/rusted/rusted_M.png", THE_TEX_R);
+	THE_ResourceMapAddTexture(rm, "Rust_R", "../assets/tex/rusted/rusted_R.png", THE_TEX_R);
 
-	THE_ResourceMapAddTexture(rm, "Tiles_A", (tp + "tiles/tiles_A.png").c_str(), THE_TEX_SRGB);
-	THE_ResourceMapAddTexture(rm, "Tiles_N", (tp + "tiles/tiles_N.png").c_str(), THE_TEX_RGB);
-	THE_ResourceMapAddTexture(rm, "Tiles_M", (tp + "tiles/tiles_M.png").c_str(), THE_TEX_R);
-	THE_ResourceMapAddTexture(rm, "Tiles_R", (tp + "tiles/tiles_R.png").c_str(), THE_TEX_R);
+	THE_ResourceMapAddTexture(rm, "Tiles_A", "../assets/tex/tiles/tiles_A.png", THE_TEX_SRGB);
+	THE_ResourceMapAddTexture(rm, "Tiles_N", "../assets/tex/tiles/tiles_N.png", THE_TEX_RGB);
+	THE_ResourceMapAddTexture(rm, "Tiles_M", "../assets/tex/tiles/tiles_M.png", THE_TEX_R);
+	THE_ResourceMapAddTexture(rm, "Tiles_R", "../assets/tex/tiles/tiles_R.png", THE_TEX_R);
 
-	THE_ResourceMapAddTexture(rm, "Future_A", (tp + "ship-panels/ship-panels_A.png").c_str(), THE_TEX_SRGB);
-	THE_ResourceMapAddTexture(rm, "Future_N", (tp + "ship-panels/ship-panels_N.png").c_str(), THE_TEX_RGB);
-	THE_ResourceMapAddTexture(rm, "Future_M", (tp + "ship-panels/ship-panels_M.png").c_str(), THE_TEX_R);
-	THE_ResourceMapAddTexture(rm, "Future_R", (tp + "ship-panels/ship-panels_R.png").c_str(), THE_TEX_R);
+	THE_ResourceMapAddTexture(rm, "Future_A", "../assets/tex/ship-panels/ship-panels_A.png", THE_TEX_SRGB);
+	THE_ResourceMapAddTexture(rm, "Future_N", "../assets/tex/ship-panels/ship-panels_N.png", THE_TEX_RGB);
+	THE_ResourceMapAddTexture(rm, "Future_M", "../assets/tex/ship-panels/ship-panels_M.png", THE_TEX_R);
+	THE_ResourceMapAddTexture(rm, "Future_R", "../assets/tex/ship-panels/ship-panels_R.png", THE_TEX_R);
 
-	THE_ResourceMapAddTexture(rm, "Shore_A", (tp + "shore/shore_A.png").c_str(), THE_TEX_SRGB);
-	THE_ResourceMapAddTexture(rm, "Shore_N", (tp + "shore/shore_N.png").c_str(), THE_TEX_RGB);
-	THE_ResourceMapAddTexture(rm, "Shore_M", (tp + "shore/shore_M.png").c_str(), THE_TEX_R);
-	THE_ResourceMapAddTexture(rm, "Shore_R", (tp + "shore/shore_R.png").c_str(), THE_TEX_R);
+	THE_ResourceMapAddTexture(rm, "Shore_A", "../assets/tex/shore/shore_A.png", THE_TEX_SRGB);
+	THE_ResourceMapAddTexture(rm, "Shore_N", "../assets/tex/shore/shore_N.png", THE_TEX_RGB);
+	THE_ResourceMapAddTexture(rm, "Shore_M", "../assets/tex/shore/shore_M.png", THE_TEX_R);
+	THE_ResourceMapAddTexture(rm, "Shore_R", "../assets/tex/shore/shore_R.png", THE_TEX_R);
 
-	THE_ResourceMapAddTexture(rm, "Cliff_A", (tp + "cliff/cliff_A.png").c_str(), THE_TEX_SRGB);
-	THE_ResourceMapAddTexture(rm, "Cliff_N", (tp + "cliff/cliff_N.png").c_str(), THE_TEX_RGB);
-	THE_ResourceMapAddTexture(rm, "Cliff_M", (tp + "cliff/cliff_M.png").c_str(), THE_TEX_R);
-	THE_ResourceMapAddTexture(rm, "Cliff_R", (tp + "cliff/cliff_R.png").c_str(), THE_TEX_R);
+	THE_ResourceMapAddTexture(rm, "Cliff_A", "../assets/tex/cliff/cliff_A.png", THE_TEX_SRGB);
+	THE_ResourceMapAddTexture(rm, "Cliff_N", "../assets/tex/cliff/cliff_N.png", THE_TEX_RGB);
+	THE_ResourceMapAddTexture(rm, "Cliff_M", "../assets/tex/cliff/cliff_M.png", THE_TEX_R);
+	THE_ResourceMapAddTexture(rm, "Cliff_R", "../assets/tex/cliff/cliff_R.png", THE_TEX_R);
 
-	THE_ResourceMapAddTexture(rm, "Granit_A", (tp + "granite/granite_A.png").c_str(), THE_TEX_SRGB);
-	THE_ResourceMapAddTexture(rm, "Granit_N", (tp + "granite/granite_N.png").c_str(), THE_TEX_RGB);
-	THE_ResourceMapAddTexture(rm, "Granit_M", (tp + "granite/granite_M.png").c_str(), THE_TEX_R);
-	THE_ResourceMapAddTexture(rm, "Granit_R", (tp + "granite/granite_R.png").c_str(), THE_TEX_R);
+	THE_ResourceMapAddTexture(rm, "Granit_A", "../assets/tex/granite/granite_A.png", THE_TEX_SRGB);
+	THE_ResourceMapAddTexture(rm, "Granit_N", "../assets/tex/granite/granite_N.png", THE_TEX_RGB);
+	THE_ResourceMapAddTexture(rm, "Granit_M", "../assets/tex/granite/granite_M.png", THE_TEX_R);
+	THE_ResourceMapAddTexture(rm, "Granit_R", "../assets/tex/granite/granite_R.png", THE_TEX_R);
 
-	THE_ResourceMapAddTexture(rm, "Foam_A", (tp + "foam/foam_A.png").c_str(), THE_TEX_SRGB);
-	THE_ResourceMapAddTexture(rm, "Foam_N", (tp + "foam/foam_N.png").c_str(), THE_TEX_RGB);
-	THE_ResourceMapAddTexture(rm, "Foam_M", (tp + "foam/foam_M.png").c_str(), THE_TEX_R);
-	THE_ResourceMapAddTexture(rm, "Foam_R", (tp + "foam/foam_R.png").c_str(), THE_TEX_R);
+	THE_ResourceMapAddTexture(rm, "Foam_A", "../assets/tex/foam/foam_A.png", THE_TEX_SRGB);
+	THE_ResourceMapAddTexture(rm, "Foam_N", "../assets/tex/foam/foam_N.png", THE_TEX_RGB);
+	THE_ResourceMapAddTexture(rm, "Foam_M", "../assets/tex/foam/foam_M.png", THE_TEX_R);
+	THE_ResourceMapAddTexture(rm, "Foam_R", "../assets/tex/foam/foam_R.png", THE_TEX_R);
 
 	THE_PbrData pbr;
 	pbr.color = svec3(1.0f, 1.0f, 1.0f);
@@ -72,24 +68,19 @@ void GameInit()
 	sun_dir_intensity = svec4(0.0f, -1.0f, -0.1f, 1.0f);
 	THE_InitMaterial(THE_MT_PBR, "pbr");
 
-	GM.scene().createContainer(EntityType::RENDERABLE);
-
 	// CelticGold
 	{
-		Entity e = Entity::CreateEntity("CelticGold", EntityType::RENDERABLE);
-		LTransform &tr = e.getComponent<LTransform>();
-		tr.transform_ = glm::translate(tr.transform_, glm::vec3(2.0f, 0.0f, 0.0f));
-		Drawable &dw = e.getComponent<Drawable>();
-		//dw.mesh = rm->meshes.at("MatBall");
-		dw.mesh = THE_ResourceMapGetMesh(rm, "MatBall");
-		dw.mat.type = THE_MT_PBR;
-		THE_MaterialSetData(&dw.mat, (float*)&pbr, sizeof(THE_PbrData) / 4);
+		THE_Entity *e = THE_EntityCreate();
+		e->transform = smat4_translation(smat4_identity(), {2.0f, 0.0f, 0.0f});
+		e->mesh = THE_ResourceMapGetMesh(rm, "MatBall");
+		e->mat.type = THE_MT_PBR;
+		THE_MaterialSetData(&e->mat, (float*)&pbr, sizeof(THE_PbrData) / 4);
 		THE_Texture t[4];
 		t[0] = THE_ResourceMapGetTexture(rm, "Gold_A");
 		t[1] = THE_ResourceMapGetTexture(rm, "Gold_M");
 		t[2] = THE_ResourceMapGetTexture(rm, "Gold_R");
 		t[3] = THE_ResourceMapGetTexture(rm, "Gold_N");
-		THE_MaterialSetTexture(&dw.mat, t, 4);
+		THE_MaterialSetTexture(&e->mat, t, 4);
 	}
 
 	// Shore
@@ -97,19 +88,17 @@ void GameInit()
 		pbr.tiling_x = 2.0f;
 		pbr.tiling_y = 2.0f;
 		pbr.normal_map_intensity = 0.5f;
-		Entity e = Entity::CreateEntity("Shore", EntityType::RENDERABLE);
-		LTransform &tr = e.getComponent<LTransform>();
-		tr.transform_ = glm::translate(tr.transform_, glm::vec3(4.0f, 0.0f, 0.0f));
-		Drawable &dw = e.getComponent<Drawable>();
-		dw.mesh = THE_ResourceMapGetMesh(rm, "MatBall");
-		dw.mat.type = THE_MT_PBR;
-		THE_MaterialSetData(&dw.mat, (float*)&pbr, sizeof(THE_PbrData) / 4);
+		THE_Entity *e = THE_EntityCreate();
+		e->transform = smat4_translation(smat4_identity(), {4.0f, 0.0f, 0.0f});
+		e->mesh = THE_ResourceMapGetMesh(rm, "MatBall");
+		e->mat.type = THE_MT_PBR;
+		THE_MaterialSetData(&e->mat, (float*)&pbr, sizeof(THE_PbrData) / 4);
 		THE_Texture t[4];
 		t[0] = THE_ResourceMapGetTexture(rm, "Shore_A");
 		t[1] = THE_ResourceMapGetTexture(rm, "Shore_M");
 		t[2] = THE_ResourceMapGetTexture(rm, "Shore_R");
 		t[3] = THE_ResourceMapGetTexture(rm, "Shore_N");
-		THE_MaterialSetTexture(&dw.mat, t, 4);
+		THE_MaterialSetTexture(&e->mat, t, 4);
 	}
 
 	// Peeling
@@ -117,19 +106,17 @@ void GameInit()
 		pbr.tiling_x = 1.0f;
 		pbr.tiling_y = 1.0f;
 		pbr.normal_map_intensity = 0.7f;
-		Entity e = Entity::CreateEntity("Peeling", EntityType::RENDERABLE);
-		LTransform &tr = e.getComponent<LTransform>();
-		tr.transform_ = glm::translate(tr.transform_, glm::vec3(6.0f, 0.0f, 0.0f));
-		Drawable &dw = e.getComponent<Drawable>();
-		dw.mesh = THE_ResourceMapGetMesh(rm, "MatBall");
-		dw.mat.type = THE_MT_PBR;
-		THE_MaterialSetData(&dw.mat, (float*)&pbr, sizeof(THE_PbrData) / 4);
+		THE_Entity *e = THE_EntityCreate();
+		e->transform = smat4_translation(smat4_identity(), {6.0f, 0.0f, 0.0f});
+		e->mesh = THE_ResourceMapGetMesh(rm, "MatBall");
+		e->mat.type = THE_MT_PBR;
+		THE_MaterialSetData(&e->mat, (float*)&pbr, sizeof(THE_PbrData) / 4);
 		THE_Texture t[4];
 		t[0] = THE_ResourceMapGetTexture(rm, "Peel_A");
 		t[1] = THE_ResourceMapGetTexture(rm, "Peel_M");
 		t[2] = THE_ResourceMapGetTexture(rm, "Peel_R");
 		t[3] = THE_ResourceMapGetTexture(rm, "Peel_N");
-		THE_MaterialSetTexture(&dw.mat, t, 4);
+		THE_MaterialSetTexture(&e->mat, t, 4);
 	}
 
 	// Rusted
@@ -137,19 +124,17 @@ void GameInit()
 		pbr.tiling_x = 1.0f;
 		pbr.tiling_y = 1.0f;
 		pbr.normal_map_intensity = 0.2f;
-		Entity e = Entity::CreateEntity("Rusted", EntityType::RENDERABLE);
-		LTransform &tr = e.getComponent<LTransform>();
-		tr.transform_ = glm::translate(tr.transform_, glm::vec3(2.0f, 0.0f, 2.0f));
-		Drawable &dw = e.getComponent<Drawable>();
-		dw.mesh = THE_ResourceMapGetMesh(rm, "MatBall");
-		dw.mat.type = THE_MT_PBR;
-		THE_MaterialSetData(&dw.mat, (float*)&pbr, sizeof(THE_PbrData) / 4);
+		THE_Entity *e = THE_EntityCreate();
+		e->transform = smat4_translation(smat4_identity(), {2.0f, 0.0f, 2.0f});
+		e->mesh = THE_ResourceMapGetMesh(rm, "MatBall");
+		e->mat.type = THE_MT_PBR;
+		THE_MaterialSetData(&e->mat, (float*)&pbr, sizeof(THE_PbrData) / 4);
 		THE_Texture t[4];
 		t[0] = THE_ResourceMapGetTexture(rm, "Rust_A");
 		t[1] = THE_ResourceMapGetTexture(rm, "Rust_M");
 		t[2] = THE_ResourceMapGetTexture(rm, "Rust_R");
 		t[3] = THE_ResourceMapGetTexture(rm, "Rust_N");
-		THE_MaterialSetTexture(&dw.mat, t, 4);
+		THE_MaterialSetTexture(&e->mat, t, 4);
 	}
 
 	// Tiles
@@ -157,19 +142,17 @@ void GameInit()
 		pbr.tiling_x = 4.0f;
 		pbr.tiling_y = 4.0f;
 		pbr.normal_map_intensity = 1.0f;
-		Entity e = Entity::CreateEntity("Tiles", EntityType::RENDERABLE);
-		LTransform &tr = e.getComponent<LTransform>();
-		tr.transform_ = glm::translate(tr.transform_, glm::vec3(4.0f, 0.0f, 2.0f));
-		Drawable &dw = e.getComponent<Drawable>();
-		dw.mesh = THE_ResourceMapGetMesh(rm, "MatBall");
-		dw.mat.type = THE_MT_PBR;
-		THE_MaterialSetData(&dw.mat, (float*)&pbr, sizeof(THE_PbrData) / 4);
+		THE_Entity *e = THE_EntityCreate();
+		e->transform = smat4_translation(smat4_identity(), {4.0f, 0.0f, 2.0f});
+		e->mesh = THE_ResourceMapGetMesh(rm, "MatBall");
+		e->mat.type = THE_MT_PBR;
+		THE_MaterialSetData(&e->mat, (float*)&pbr, sizeof(THE_PbrData) / 4);
 		THE_Texture t[4];
 		t[0] = THE_ResourceMapGetTexture(rm, "Tiles_A");
 		t[1] = THE_ResourceMapGetTexture(rm, "Tiles_M");
 		t[2] = THE_ResourceMapGetTexture(rm, "Tiles_R");
 		t[3] = THE_ResourceMapGetTexture(rm, "Tiles_N");
-		THE_MaterialSetTexture(&dw.mat, t, 4);
+		THE_MaterialSetTexture(&e->mat, t, 4);
 	}
 
 	// Ship Panels
@@ -177,19 +160,17 @@ void GameInit()
 		pbr.tiling_x = 1.0f;
 		pbr.tiling_y = 1.0f;
 		pbr.normal_map_intensity = 1.0f;
-		Entity e = Entity::CreateEntity("ShipPanels", EntityType::RENDERABLE);
-		LTransform &tr = e.getComponent<LTransform>();
-		tr.transform_ = glm::translate(tr.transform_, glm::vec3(6.0f, 0.0f, 2.0f));
-		Drawable &dw = e.getComponent<Drawable>();
-		dw.mesh = THE_ResourceMapGetMesh(rm, "MatBall");
-		dw.mat.type = THE_MT_PBR;
-		THE_MaterialSetData(&dw.mat, (float*)&pbr, sizeof(THE_PbrData) / 4);
+		THE_Entity *e = THE_EntityCreate();
+		e->transform = smat4_translation(smat4_identity(), {6.0f, 0.0f, 2.0f});
+		e->mesh = THE_ResourceMapGetMesh(rm, "MatBall");
+		e->mat.type = THE_MT_PBR;
+		THE_MaterialSetData(&e->mat, (float*)&pbr, sizeof(THE_PbrData) / 4);
 		THE_Texture t[4];
 		t[0] = THE_ResourceMapGetTexture(rm, "Future_A");
 		t[1] = THE_ResourceMapGetTexture(rm, "Future_M");
 		t[2] = THE_ResourceMapGetTexture(rm, "Future_R");
 		t[3] = THE_ResourceMapGetTexture(rm, "Future_N");
-		THE_MaterialSetTexture(&dw.mat, t, 4);
+		THE_MaterialSetTexture(&e->mat, t, 4);
 	}
 
 	// Cliff
@@ -197,19 +178,17 @@ void GameInit()
 		pbr.tiling_x = 8.0f;
 		pbr.tiling_y = 8.0f;
 		pbr.normal_map_intensity = 1.0f;
-		Entity e = Entity::CreateEntity("Cliff", EntityType::RENDERABLE);
-		LTransform &tr = e.getComponent<LTransform>();
-		tr.transform_ = glm::translate(tr.transform_, glm::vec3(2.0f, 0.0f, 4.0f));
-		Drawable &dw = e.getComponent<Drawable>();
-		dw.mesh = THE_ResourceMapGetMesh(rm, "MatBall");
-		dw.mat.type = THE_MT_PBR;
-		THE_MaterialSetData(&dw.mat, (float*)&pbr, sizeof(THE_PbrData) / 4);
+		THE_Entity *e = THE_EntityCreate();
+		e->transform = smat4_translation(smat4_identity(), {2.0f, 0.0f, 4.0f});
+		e->mesh = THE_ResourceMapGetMesh(rm, "MatBall");
+		e->mat.type = THE_MT_PBR;
+		THE_MaterialSetData(&e->mat, (float*)&pbr, sizeof(THE_PbrData) / 4);
 		THE_Texture t[4];
 		t[0] = THE_ResourceMapGetTexture(rm, "Cliff_A");
 		t[1] = THE_ResourceMapGetTexture(rm, "Cliff_M");
 		t[2] = THE_ResourceMapGetTexture(rm, "Cliff_R");
 		t[3] = THE_ResourceMapGetTexture(rm, "Cliff_N");
-		THE_MaterialSetTexture(&dw.mat, t, 4);
+		THE_MaterialSetTexture(&e->mat, t, 4);
 	}
 
 	// Granite
@@ -217,19 +196,17 @@ void GameInit()
 		pbr.tiling_x = 2.0f;
 		pbr.tiling_y = 2.0f;
 		pbr.normal_map_intensity = 1.0f;
-		Entity e = Entity::CreateEntity("Granite", EntityType::RENDERABLE);
-		LTransform &tr = e.getComponent<LTransform>();
-		tr.translate(4.0f, 0.0f, 4.0f);
-		Drawable &dw = e.getComponent<Drawable>();
-		dw.mesh = THE_ResourceMapGetMesh(rm, "MatBall");
-		dw.mat.type = THE_MT_PBR;
-		THE_MaterialSetData(&dw.mat, (float*)&pbr, sizeof(THE_PbrData) / 4);
+		THE_Entity *e = THE_EntityCreate();
+		e->transform = smat4_translation(smat4_identity(), {4.0f, 0.0f, 4.0f});
+		e->mesh = THE_ResourceMapGetMesh(rm, "MatBall");
+		e->mat.type = THE_MT_PBR;
+		THE_MaterialSetData(&e->mat, (float*)&pbr, sizeof(THE_PbrData) / 4);
 		THE_Texture t[4];
 		t[0] = THE_ResourceMapGetTexture(rm, "Granit_A");
 		t[1] = THE_ResourceMapGetTexture(rm, "Granit_M");
 		t[2] = THE_ResourceMapGetTexture(rm, "Granit_R");
 		t[3] = THE_ResourceMapGetTexture(rm, "Granit_N");
-		THE_MaterialSetTexture(&dw.mat, t, 4);
+		THE_MaterialSetTexture(&e->mat, t, 4);
 	}
 
 	// Foam
@@ -237,19 +214,17 @@ void GameInit()
 		pbr.tiling_x = 2.0f;
 		pbr.tiling_y = 2.0f;
 		pbr.normal_map_intensity = 0.5f;
-		Entity e = Entity::CreateEntity("Foam", EntityType::RENDERABLE);
-		LTransform &tr = e.getComponent<LTransform>();
-		tr.transform_ = glm::translate(tr.transform_, glm::vec3(6.0f, 0.0f, 4.0f));
-		Drawable &dw = e.getComponent<Drawable>();
-		dw.mesh = THE_ResourceMapGetMesh(rm, "MatBall");
-		dw.mat.type = THE_MT_PBR;
-		THE_MaterialSetData(&dw.mat, (float*)&pbr, sizeof(THE_PbrData) / 4);
+		THE_Entity *e = THE_EntityCreate();
+		e->transform = smat4_translation(smat4_identity(), {6.0f, 0.0f, 4.0f});
+		e->mesh = THE_ResourceMapGetMesh(rm, "MatBall");
+		e->mat.type = THE_MT_PBR;
+		THE_MaterialSetData(&e->mat, (float*)&pbr, sizeof(THE_PbrData) / 4);
 		THE_Texture t[4];
 		t[0] = THE_ResourceMapGetTexture(rm, "Foam_A");
 		t[1] = THE_ResourceMapGetTexture(rm, "Foam_M");
 		t[2] = THE_ResourceMapGetTexture(rm, "Foam_R");
 		t[3] = THE_ResourceMapGetTexture(rm, "Foam_N");
-		THE_MaterialSetTexture(&dw.mat, t, 4);
+		THE_MaterialSetTexture(&e->mat, t, 4);
 	}
 
 	THE_RenderCommand *rendops = THE_AllocateCommand();
@@ -286,9 +261,7 @@ void GameLogic()
 {
 	THE_ScriptingExecute("../assets/scripts/update.lua");
 	THE_InputUpdate();
-	CameraMovement(1.0f, 1.0f).executeSystem();
-	UpdateTransform(GM.scene().container(EntityType::RENDERABLE)).executeSystem();
-	UpdateSceneGraph().executeSystem();
+	THE_CameraMovementSystem(&camera);
 
 	// Render commands
 	THE_PbrSceneData pbr_sd;
@@ -302,7 +275,6 @@ void GameLogic()
 	THE_Texture fbtex = THE_CameraOutputColorTexture(&camera); // TODO: Revisar si deberia hacerse en aqui algo tan low level del renderer (algo como link camera to tex?)
 	THE_MaterialSetFrameTexture(full_screen_img, &fbtex, 1);
 
-	//THE_RenderCommand *fbuff = (THE_RenderCommand*)malloc(sizeof(THE_RenderCommand));
 	THE_RenderCommand* fbuff = THE_AllocateCommand();
 	fbuff->data.usefb.fb = camera.fb;
 	fbuff->data.usefb.def = 0;
@@ -331,9 +303,9 @@ void GameLogic()
 	rops->next = clear;
 
 	THE_Texture scene_tex[3];
-	scene_tex[0] = THE_ResourceMapGetTexture(GM.resource_map(), "LutMap");  //GM.resource_map()->textures.at("LutMap");
-	scene_tex[1] = THE_ResourceMapGetTexture(GM.resource_map(), "Irradian"); //GM.resource_map()->textures.at("IrradianceEnv");
-	scene_tex[2] = THE_ResourceMapGetTexture(GM.resource_map(), "Prefilte"); //GM.resource_map()->textures.at("PrefilterSpec");
+	scene_tex[0] = THE_ResourceMapGetTexture(&resource_map, "LutMap");  //GM.resource_map()->textures.at("LutMap");
+	scene_tex[1] = THE_ResourceMapGetTexture(&resource_map, "Irradian"); //GM.resource_map()->textures.at("IrradianceEnv");
+	scene_tex[2] = THE_ResourceMapGetTexture(&resource_map, "Prefilte"); //GM.resource_map()->textures.at("PrefilterSpec");
 
 	THE_RenderCommand *usemat = THE_AllocateCommand();
 	usemat->data.usemat.mat = (THE_Material*)THE_AllocateFrameResource(sizeof(THE_Material));
@@ -347,7 +319,7 @@ void GameLogic()
 
 	THE_AddCommands(fbuff);
 
-	Render(GM.scene().container(EntityType::RENDERABLE)).executeSystem();
+	THE_RenderEntities(THE_GetEntities(), THE_EntitiesSize());
 
 	rops = THE_AllocateCommand();
 	rops->data.renderops.cull_face = THE_CULLFACE_DISABLED;
@@ -355,7 +327,7 @@ void GameLogic()
 	rops->execute = THE_RenderOptionsExecute;
 
 	THE_RenderCommand *sky = THE_AllocateCommand();
-	sky->data.skybox.cubemap = THE_ResourceMapGetTexture(GM.resource_map(), "Skybox"); // GM.resource_map()->textures.at("Skybox");
+	sky->data.skybox.cubemap = THE_ResourceMapGetTexture(&resource_map, "Skybox"); // GM.resource_map()->textures.at("Skybox");
 	sky->execute = THE_SkyboxExecute;
 	rops->next = sky;
 
