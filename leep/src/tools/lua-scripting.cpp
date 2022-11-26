@@ -11,10 +11,7 @@ void THE_ScriptingInit()
 	L = luaL_newstate();
 	luaL_openlibs(L);
 
-	lua_register(L, "CreateRenderable", LUA_CreateRenderable);
-	lua_register(L, "RemoveEntity", LUA_RemoveEntity);
-	lua_register(L, "SetParent", LUA_SetParent);
-	lua_register(L, "DetachFromParent", LUA_DetachFromParent);
+	lua_register(L, "CreateEntity", LUA_CreateEntity);
 	lua_register(L, "SetLocation", LUA_SetLocation);
 	lua_register(L, "SetSunDirection", LUA_SetSunDirection);
 	lua_register(L, "SetSunIntensity", LUA_SetSunIntensity);

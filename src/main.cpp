@@ -1,4 +1,5 @@
-#include "leep.h"
+#include "the.h"
+#include <string.h>
 
 void GameInit()
 {
@@ -375,22 +376,13 @@ int main(int argc, char **argv)
     cnfg.init_func = GameInit;
     cnfg.logic_func = GameLogic;
     cnfg.close_func = GameClose;
+	printf("Init init\n");
     THE_Init(&cnfg);
-    leep::LogicThread lt(THE_Logic);
-    leep::GM.startFrameTimer();
+	THE_StartFrameTimer();
     while (!THE_WindowShouldClose())
     {
-#ifndef LEEP_SINGLE_THREAD
-        lt.run();
-        THE_Render();
-        while (lt.running())
-        {
-            std::this_thread::sleep_for(std::chrono::microseconds(100));
-        }
-#else
         THE_Logic();
         THE_Render();
-#endif
         THE_ShowFrame();
     }
     THE_Close();

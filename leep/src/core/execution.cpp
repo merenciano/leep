@@ -1,6 +1,5 @@
 #include "execution.h"
 #include "core/Cmanager.h"
-#include "core/common-defs.h"
 #include "core/chrono.h"
 #include "render/Crenderer.h"
 #include "tools/imgui-tools.h"
@@ -20,7 +19,7 @@ void THE_Init(THE_Config *cnfg)
 	MTR_BEGIN("LEEP", "Init");
 	THE_Chrono init_timer;
 	THE_ChronoStart(&init_timer);
-	leep::GM.init(*cnfg);
+	THE_InitManager(cnfg);
 	THE_ScriptingInit();
 	LogicF = cnfg->logic_func;
 	CloseF = cnfg->close_func;
@@ -29,8 +28,8 @@ void THE_Init(THE_Config *cnfg)
 
 	THE_ScriptingExecute("../assets/scripts/init.lua");
 	THE_ChronoEnd(&init_timer);
-	leep::GM.tools_data.init_time_ms = THE_ChronoDurationMS(&init_timer);
-	THE_LOG("Leep initialized in %f milliseconds.\n", leep::GM.tools_data.init_time_ms);
+	tools_data.init_time_ms = THE_ChronoDurationMS(&init_timer);
+	THE_LOG("Leep initialized in %f milliseconds.\n", tools_data.init_time_ms);
 	MTR_END("LEEP", "Init");
 }
 

@@ -1,20 +1,17 @@
 #include "imgui-tools.h"
 
 #include "core/Cmanager.h"
-#include "core/memory/memory.h"
 #include "tools/lua-scripting.h"
 #include "tools/resource-map.h"
 
 #include "core/io.h"
+#include "core/Cmem.h"
 
 #include "ecs/Centity.h"
 
 #include "render/Crendercommands.h"
 #include "render/Crenderer.h"
 #include "render/Cinternalresources.h"
-
-#include <vector>
-#include <deque>
 
 #include <ImGui/imgui.h>
 #include <ImGui/imgui_impl_opengl3.h> // TODO: implement it using Leep renderer
@@ -244,7 +241,6 @@ static void THE_UIToolsMemoryUsage()
 		ImGuiTableFlags_RowBg | ImGuiTableFlags_BordersOuter |
 		ImGuiTableFlags_BordersV | ImGuiTableFlags_Resizable |
 		ImGuiTableFlags_Reorderable | ImGuiTableFlags_Hideable;
-	leep::Memory &m = leep::GM.memory();
 	ImGui::SetNextWindowPos(ImVec2(10, 560), ImGuiCond_FirstUseEver);
 	if (!ImGui::Begin("Memory usage", &show_memory_usage, ImGuiWindowFlags_AlwaysAutoResize)) {
 		// Early out if the window is collapsed, as an optimization.
@@ -266,12 +262,11 @@ static void THE_UIToolsMemoryUsage()
 		ImGui::TableSetColumnIndex(0);
 		ImGui::Text("%s", "Leep memory");
 		ImGui::TableSetColumnIndex(1);
-		// mem and offset are (int8_t*) so no need of sizeof here
-		ImGui::Text("%.2f MB", ByteToMega(m.offset_ - m.mem_));
+		ImGui::Text("%.2f MB", THE_BYTE_TO_MB(THE_MemUsedBytes()));
 		ImGui::TableSetColumnIndex(2);
-		ImGui::Text("%.2f MB", ByteToMega(m.capacity_));
+		ImGui::Text("%.2f MB", THE_BYTE_TO_MB(THE_MemCapacity()));
 		ImGui::TableSetColumnIndex(3);
-		ImGui::Text("%.1f %%", ((m.offset_-m.mem_)/(float)m.capacity_) * 100.0f);
+		ImGui::Text("%.1f %%", (THE_MemUsedBytes()/(float)THE_MemCapacity()) * 100.0f);
 
 		// Textures
 		{
@@ -281,9 +276,9 @@ static void THE_UIToolsMemoryUsage()
 			ImGui::TableSetColumnIndex(0);
 			ImGui::Text("%s", "Textures");
 			ImGui::TableSetColumnIndex(1);
-			ImGui::Text("%.2f KB", ByteToKilo(offset));
+			ImGui::Text("%.2f KB", THE_BYTE_TO_KB(offset));
 			ImGui::TableSetColumnIndex(2);
-			ImGui::Text("%.2f KB", ByteToKilo(capacity));
+			ImGui::Text("%.2f KB", THE_BYTE_TO_KB(capacity));
 			ImGui::TableSetColumnIndex(3);
 			ImGui::Text("%.1f %%", (offset/(float)capacity) * 100.0f);
 		}
@@ -296,9 +291,9 @@ static void THE_UIToolsMemoryUsage()
 			ImGui::TableSetColumnIndex(0);
 			ImGui::Text("%s", "Buffers");
 			ImGui::TableSetColumnIndex(1);
-			ImGui::Text("%.2f KB", ByteToKilo(offset));
+			ImGui::Text("%.2f KB", THE_BYTE_TO_KB(offset));
 			ImGui::TableSetColumnIndex(2);
-			ImGui::Text("%.2f KB", ByteToKilo(capacity));
+			ImGui::Text("%.2f KB", THE_BYTE_TO_KB(capacity));
 			ImGui::TableSetColumnIndex(3);
 			ImGui::Text("%.1f %%", (offset/(float)capacity) * 100.0f);
 		}
@@ -324,9 +319,9 @@ static void THE_UIToolsMemoryUsage()
 			ImGui::TableSetColumnIndex(0);
 			ImGui::Text("%s", "Command pool");
 			ImGui::TableSetColumnIndex(1);
-			ImGui::Text("%.2f KB", ByteToKilo(offset));
+			ImGui::Text("%.2f KB", THE_BYTE_TO_KB(offset));
 			ImGui::TableSetColumnIndex(2);
-			ImGui::Text("%.2f KB", ByteToKilo(capacity));
+			ImGui::Text("%.2f KB", THE_BYTE_TO_KB(capacity));
 			ImGui::TableSetColumnIndex(3);
 			ImGui::Text("%.1f %%", (offset / (float)capacity) * 100.0f);
 		}
@@ -346,8 +341,8 @@ static void THE_UIToolsMemoryUsage()
 		    ImGui::Text("%.1f %%", (offset / (float)capacity) * 100.0f);
 		}*/
 
-		// Buddy allocator
-		{
+		// Buddy allocator TODO: descomentar cuando este implementado el buddy.
+		/*{
 			// mem and offset are (int8_t*) so no need of sizeof here
 			size_t used = m.buddy_.mem_used_;
 			ImGui::TableNextRow();
@@ -359,7 +354,7 @@ static void THE_UIToolsMemoryUsage()
 			ImGui::Text("%.2f MB", ByteToMega(leep::kMaxAlloc));
 			ImGui::TableSetColumnIndex(3);
 			ImGui::Text("%.1f %%", (used / (float)leep::kMaxAlloc) * 100.0f);
-		}
+		}*/
 
 		ImGui::EndTable();
 	}    

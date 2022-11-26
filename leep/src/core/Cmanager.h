@@ -7,7 +7,7 @@
 
 extern THE_ResourceMap resource_map;
 
-void THE_Init(THE_Config *config);
+void THE_InitManager(THE_Config *config);
 void THE_NextFrame();
 void THE_StartFrameTimer();
 float THE_DeltaTime();

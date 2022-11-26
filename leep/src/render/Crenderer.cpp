@@ -2,16 +2,14 @@
 #include "Crendercommands.h"
 #include "Cinternalresources.h"
 #include "Ccamera.h"
-#include "core/memory/memory.h"
-#include "core/memory/buddy-alloc-stl.h"
-#include "core/manager.h"
 #include "core/io.h"
+#include "core/Cmem.h"
 
 #ifndef STB_IMAGE_IMPLEMENTATION
 #define STB_IMAGE_IMPLEMENTATION
-#define STBI_MALLOC(sz)           GM.memory().generalAlloc(sz)
-#define STBI_REALLOC(p,newsz)     GM.memory().generalRealloc(p,newsz)
-#define STBI_FREE(p)              GM.memory().generalFree(p)
+#define STBI_MALLOC(sz)           THE_Alloc(sz)
+#define STBI_REALLOC(p,newsz)     THE_Realloc(p,newsz)
+#define STBI_FREE(p)              THE_Free(p)
 #endif
 #include "stb_image.h"
 
@@ -72,9 +70,9 @@ void THE_InitRender()
 	curr_pool_last = curr_pool;
 	next_pool_last = next_pool;
 
-	buffers = (THE_InternalBuffer*)leep::GM.memory().persistentAlloc(sizeof(THE_InternalBuffer) * THE_MAX_BUFFERS);
-	textures = (THE_InternalTexture*)leep::GM.memory().persistentAlloc(sizeof(THE_InternalTexture) * THE_MAX_TEXTURES);
-	framebuffers = (THE_InternalFramebuffer*)leep::GM.memory().persistentAlloc(sizeof(THE_InternalFramebuffer) * THE_MAX_FRAMEBUFFERS);
+	buffers = (THE_InternalBuffer*)THE_PersistentAlloc(sizeof(THE_InternalBuffer) * THE_MAX_BUFFERS);
+	textures = (THE_InternalTexture*)THE_PersistentAlloc(sizeof(THE_InternalTexture) * THE_MAX_TEXTURES);
+	framebuffers = (THE_InternalFramebuffer*)THE_PersistentAlloc(sizeof(THE_InternalFramebuffer) * THE_MAX_FRAMEBUFFERS);
 	buffer_count = 0;
 	texture_count = 0;
 	framebuffer_count = 0;
@@ -100,7 +98,7 @@ void THE_InitRender()
 	frame_switch = 0;
 
 	// InternalMaterial initialization
-	materials = (THE_InternalMaterial*)leep::GM.memory().persistentAlloc(sizeof(THE_InternalMaterial) * THE_MT_MAX);
+	materials = (THE_InternalMaterial*)THE_PersistentAlloc(sizeof(THE_InternalMaterial) * THE_MT_MAX);
 	materials[THE_MT_FULL_SCREEN_IMAGE] = InitInternalMaterial("fullscreen-img");
 	materials[THE_MT_SKYBOX] = InitInternalMaterial("skybox");
 	materials[THE_MT_EQUIREC_TO_CUBE] = InitInternalMaterial("eqr-to-cube");
@@ -212,7 +210,7 @@ THE_Buffer THE_CreateBuffer()
 		THE_AvailableNode *node = available_buffer;
 		available_buffer = available_buffer->next;
 		ret = node->value;
-		leep::GM.memory().generalFree(node);
+		THE_Free(node);
 	} else {
 		ret = AddBuffer();
 	}
@@ -234,7 +232,7 @@ THE_Buffer THE_CreateBuffer(void *data, uint32_t count, THE_BufferType type)
 		THE_AvailableNode *node = available_buffer;
 		available_buffer = available_buffer->next;
 		ret = node->value;
-		leep::GM.memory().generalFree(node);
+		THE_Free(node);
 	} else {
 		ret = AddBuffer();
 	}
@@ -287,7 +285,7 @@ void THE_ReleaseBuffer(THE_Buffer buff)
 void THE_FreeBufferData(THE_Buffer buff)
 {
 	THE_ASSERT(IsValidBuffer(buff), "Invalid buffer");
-	leep::GM.memory().generalFree(buffers[buff].vertices);
+	THE_Free(buffers[buff].vertices);
 	buffers[buff].vertices = NULL;
 	buffers[buff].count = 0;
 }
@@ -300,7 +298,7 @@ static THE_Texture GetAvailableTexture()
 		THE_AvailableNode *node = available_tex;
 		available_tex = available_tex->next;
 		ret = node->value;
-		leep::GM.memory().generalFree(node);
+		THE_Free(node);
 	} else {
 		ret = AddTexture();
 	}
@@ -465,8 +463,8 @@ THE_Mesh THE_CreateCubeMesh()
 	static const s32 IDX_COUNT = 36;
 
 	THE_Mesh ret;
-	float *vert = (float*)GM.memory().generalAlloc(VTX_COUNT * sizeof(float));
-	u32 *ind = (u32*)GM.memory().generalAlloc(IDX_COUNT * sizeof(u32));
+	float *vert = (float*)THE_Alloc(VTX_COUNT * sizeof(float));
+	u32 *ind = (u32*)THE_Alloc(IDX_COUNT * sizeof(u32));
 	float vertices[] = { // TODO: Probar a inicializarlo asi en la memoria reservada para evitar la copia de despues
 		// positions          // normals           // uv 
 		-0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  0.0f,  0.0f,
@@ -531,8 +529,8 @@ THE_Mesh THE_CreateSphereMesh(s32 x_segments, s32 y_segments)
 	static const float PI = 3.14159265359f;
 
 	THE_Mesh ret;
-	float *vert = (float*)GM.memory().generalAlloc(((1 + x_segments) * (1 + y_segments) * 8) * sizeof(float));
-	u32 *ind = (u32*)GM.memory().generalAlloc((x_segments * y_segments * 6) * sizeof(u32));
+	float *vert = (float*)THE_Alloc(((1 + x_segments) * (1 + y_segments) * 8) * sizeof(float));
+	u32 *ind = (u32*)THE_Alloc((x_segments * y_segments * 6) * sizeof(u32));
 	s32 i = 0;
 
 	for (s32 y = 0; y <= y_segments; ++y) {
@@ -584,8 +582,8 @@ THE_Mesh THE_CreateSphereMesh(s32 x_segments, s32 y_segments)
 THE_Mesh THE_CreateQuadMesh()
 {
 	THE_Mesh ret;
-	float *v = (float*)GM.memory().generalAlloc(32 * sizeof(float));
-	u32 *ind = (u32*)GM.memory().generalAlloc(6 * sizeof(u32));
+	float *v = (float*)THE_Alloc(32 * sizeof(float));
+	u32 *ind = (u32*)THE_Alloc(6 * sizeof(u32));
 	float vertices[] {
 		-1.0f, -1.0f, 0.0f, 0.0f, 0.0f, -1.0f, 0.0f,  0.0f,
 		1.0f, -1.0f, 0.0f, 0.0f, 0.0f, -1.0f, 1.0f,  0.0f,
@@ -621,8 +619,8 @@ THE_Mesh THE_CreateMeshFromFile_OBJ(const char *path)
 	reader_config.mtl_search_path = "./"; // Path to material files
 	tinyobj::ObjReader reader;
 
-	std::vector<float, BuddySTL<float>> vertices;
-	std::vector<u32, BuddySTL<u32>> indices;
+	std::vector<float> vertices;
+	std::vector<u32> indices;
 
 	if (!reader.ParseFromFile(std::string(path), reader_config)) {
 		if (!reader.Error().empty()) {
@@ -680,13 +678,13 @@ THE_Mesh THE_CreateMeshFromFile_OBJ(const char *path)
 	        v3[13] = attrib.texcoords[2*idx.texcoord_index+1];
 
 	        // Calculate tangent and bitangent
-	        glm::vec3 delta_p1 = glm::vec3(v2[0], v2[1], v2[2]) - glm::vec3(v1[0], v1[1], v1[2]);
-	        glm::vec3 delta_p2 = glm::vec3(v3[0], v3[1], v3[2]) - glm::vec3(v1[0], v1[1], v1[2]);
-	        glm::vec2 delta_uv1 = glm::vec2(v2[12], v2[13]) - glm::vec2(v1[12], v1[13]);
-	        glm::vec2 delta_uv2 = glm::vec2(v3[12], v3[13]) - glm::vec2(v1[12], v1[13]);
+			struct vec3 delta_p1 = svec3_subtract(svec3(v2[0], v2[1], v2[2]), svec3(v1[0], v1[1], v1[2]));
+			struct vec3 delta_p2 = svec3_subtract(svec3(v3[0], v3[1], v3[2]), svec3(v1[0], v1[1], v1[2]));
+			struct vec2 delta_uv1 = svec2_subtract(svec2(v2[12], v2[13]), svec2(v1[12], v1[13]));
+			struct vec2 delta_uv2 = svec2_subtract(svec2(v3[12], v3[13]), svec2(v1[12], v2[13]));
 	        float r = 1.0f / (delta_uv1.x * delta_uv2.y - delta_uv1.y * delta_uv2.x);
-	        glm::vec3 tan = (delta_p1 * delta_uv2.y - delta_p2 * delta_uv1.y) * r;
-	        glm::vec3 bitan = (delta_p2 * delta_uv1.x - delta_p1 * delta_uv2.x) * r;
+			struct vec3 tan = svec3_multiply_f(svec3_subtract(svec3_multiply_f(delta_p1, delta_uv2.y), svec3_multiply_f(delta_p2, delta_uv1.y)), r);
+			struct vec3 bitan = svec3_multiply_f(svec3_subtract(svec3_multiply_f(delta_p2, delta_uv1.x), svec3_multiply_f(delta_p1, delta_uv2.y)), r);
 
 	        v1[6] = tan.x;
 	        v1[7] = tan.y;
@@ -708,35 +706,35 @@ THE_Mesh THE_CreateMeshFromFile_OBJ(const char *path)
 	        v3[10] = bitan.y;
 	        v3[11] = bitan.z;
 
-	        for (int32_t i = 0; i < 14; ++i)
+	        for (s32 i = 0; i < 14; ++i)
 	        {
 	            vertices.emplace_back(v1[i]);
 	        }
 
-	        for (int32_t i = 0; i < 14; ++i)
+	        for (s32 i = 0; i < 14; ++i)
 	        {
 	            vertices.emplace_back(v2[i]);
 	        }
 
-	        for (int32_t i = 0; i < 14; ++i)
+	        for (s32 i = 0; i < 14; ++i)
 	        {
 	            vertices.emplace_back(v3[i]);
 	        }
 
-	        indices.emplace_back((uint32_t)indices.size());
-	        indices.emplace_back((uint32_t)indices.size());
-	        indices.emplace_back((uint32_t)indices.size());
+	        indices.emplace_back((u32)indices.size());
+	        indices.emplace_back((u32)indices.size());
+	        indices.emplace_back((u32)indices.size());
 	    }
 	}
-	int32_t i = 0;
-	float *v = (float*)GM.memory().generalAlloc((uint32_t)vertices.size() * sizeof(float));
-	uint32_t *ind = (uint32_t*)GM.memory().generalAlloc((uint32_t)indices.size() * sizeof(uint32_t));
+	s32 i = 0;
+	float *v = (float*)THE_Alloc((u32)vertices.size() * sizeof(float));
+	u32*ind = (u32*)THE_Alloc((u32)indices.size() * sizeof(u32));
 	for (float f : vertices)
 	{
 	    v[i++] = f;
 	}
 	i = 0;
-	for (uint32_t u : indices)
+	for (u32 u : indices)
 	{
 	    ind[i++] = u;
 	}
@@ -769,7 +767,7 @@ static THE_Framebuffer GetAvailableFramebuffer()
 		THE_AvailableNode *node = available_fb;
 		available_fb = available_fb->next;
 		ret = node->value;
-		leep::GM.memory().generalFree(node);
+		THE_Free(node);
 	} else {
 		ret = AddFramebuffer();
 	}
@@ -874,8 +872,8 @@ void THE_MaterialSetData(THE_Material* mat, float* data, s32 count)
 	if (offset) {
 		count += 4 - offset;
 	}
-	GM.memory().generalFree(mat->data);
-	mat->data = (float*)GM.memory().generalAlloc(count * sizeof(float));
+	THE_Free(mat->data);
+	mat->data = (float*)THE_Alloc(count * sizeof(float));
 	mat->dcount = count;
 	memcpy(mat->data, data, count * sizeof(float));
 }
@@ -893,8 +891,8 @@ void THE_MaterialSetFrameTexture(THE_Material* mat, THE_Texture* tex, s32 count,
 
 void THE_MaterialSetTexture(THE_Material* mat, THE_Texture* tex, s32 count, s32 cube_start)
 {
-	GM.memory().generalFree(mat->tex);
-	mat->tex = (THE_Texture*)GM.memory().generalAlloc(count * sizeof(THE_Texture));
+	THE_Free(mat->tex);
+	mat->tex = (THE_Texture*)THE_Alloc(count * sizeof(THE_Texture));
 	mat->tcount = count;
 	mat->cube_start = cube_start == -1 ? count : cube_start;
 	memcpy(mat->tex, tex, count * sizeof(THE_Texture));
@@ -915,7 +913,7 @@ static void LoadFile(const char *path, char **buffer)
 		fseek(fp, 0, SEEK_END);
 		length = ftell(fp);
 		fseek(fp, 0, SEEK_SET);
-		*buffer = (char*)leep::GM.memory().generalAlloc(length + 1);
+		*buffer = (char*)THE_Alloc(length + 1);
 		if (*buffer)
 		{
 			memset(*buffer, '\0', length + 1);
@@ -937,7 +935,7 @@ u32 InitInternalMaterial(const char* shader_name)
 	strcpy(frag_path, "../assets/shaders/");
 	strcat(frag_path, shader_name);
 
-#ifdef LEEP_OPENGL
+#ifdef THE_OPENGL
 	strcpy(vert_path, frag_path);
 	strcat(vert_path, "-vert.glsl");
 	strcat(frag_path, "-frag.glsl");
@@ -985,8 +983,8 @@ u32 InitInternalMaterial(const char* shader_name)
 		THE_LOG_ERROR("%s program error:\n%s\n", shader_name, output_log);
 	}
 
-	GM.memory().generalFree(vert);
-	GM.memory().generalFree(frag);
+	THE_Free(vert);
+	THE_Free(frag);
 
 	return program;
 }

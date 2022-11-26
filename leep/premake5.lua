@@ -12,7 +12,7 @@ project "leep"
         "src/extern/"
     }
 
-    defines { "LEEP_" .. _OPTIONS["graphics-api"],
+    defines { "THE_" .. _OPTIONS["graphics-api"],
    	"THE_" .. _OPTIONS["graphics-api"],
 	"THE_OPENGL"
     }
@@ -22,8 +22,6 @@ project "leep"
         "src/*.cpp",
         "src/*/*.h",
         "src/*/*.cpp",
-        "src/*/*/*.h",
-        "src/*/*/*.cpp",
 
         --GLFW
         "./extern/src/GLFW/internal.h",
