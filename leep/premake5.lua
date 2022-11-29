@@ -4,12 +4,16 @@ project "leep"
     language "C++"
     cppdialect "C++17"
     cdialect "C11"
+    linkoptions "-llibcimgui.a"
     targetdir "lib/"
     objdir "build/"
     includedirs {
         "src/",
         "extern/include/",
-        "src/extern/"
+    }
+
+    libdirs {
+        "./extern/lib/"
     }
 
     defines { "THE_" .. _OPTIONS["graphics-api"],

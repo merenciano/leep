@@ -681,10 +681,10 @@ THE_Mesh THE_CreateMeshFromFile_OBJ(const char *path)
 			struct vec3 delta_p1 = svec3_subtract(svec3(v2[0], v2[1], v2[2]), svec3(v1[0], v1[1], v1[2]));
 			struct vec3 delta_p2 = svec3_subtract(svec3(v3[0], v3[1], v3[2]), svec3(v1[0], v1[1], v1[2]));
 			struct vec2 delta_uv1 = svec2_subtract(svec2(v2[12], v2[13]), svec2(v1[12], v1[13]));
-			struct vec2 delta_uv2 = svec2_subtract(svec2(v3[12], v3[13]), svec2(v1[12], v2[13]));
+			struct vec2 delta_uv2 = svec2_subtract(svec2(v3[12], v3[13]), svec2(v1[12], v1[13]));
 	        float r = 1.0f / (delta_uv1.x * delta_uv2.y - delta_uv1.y * delta_uv2.x);
 			struct vec3 tan = svec3_multiply_f(svec3_subtract(svec3_multiply_f(delta_p1, delta_uv2.y), svec3_multiply_f(delta_p2, delta_uv1.y)), r);
-			struct vec3 bitan = svec3_multiply_f(svec3_subtract(svec3_multiply_f(delta_p2, delta_uv1.x), svec3_multiply_f(delta_p1, delta_uv2.y)), r);
+			struct vec3 bitan = svec3_multiply_f(svec3_subtract(svec3_multiply_f(delta_p2, delta_uv1.x), svec3_multiply_f(delta_p1, delta_uv2.x)), r);
 
 	        v1[6] = tan.x;
 	        v1[7] = tan.y;
