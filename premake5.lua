@@ -20,7 +20,7 @@ project "TestApp"
     kind "ConsoleApp"
     language "C++"
     cppdialect "C++17"
-    links "leep"
+    links {"leep", "cimgui"}
     targetdir "bin/"
     objdir "build/"
     includedirs {
@@ -30,6 +30,7 @@ project "TestApp"
     }
     libdirs {
         "leep/lib",
+        "leep/extern/lib/"
     }
 
     files {
