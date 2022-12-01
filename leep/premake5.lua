@@ -1,8 +1,7 @@
 
 project "leep"
     kind "StaticLib"
-    language "C++"
-    cppdialect "C++17"
+    language "C"
     cdialect "C11"
     linkoptions "-llibcimgui.a"
     targetdir "lib/"
@@ -10,6 +9,7 @@ project "leep"
     includedirs {
         "src/",
         "extern/include/",
+        "extern/src"
     }
 
     libdirs {
@@ -23,9 +23,9 @@ project "leep"
 
     files {
         "src/*.h",
-        "src/*.cpp",
+        "src/*.c",
         "src/*/*.h",
-        "src/*/*.cpp",
+        "src/*/*.c",
 
         --GLFW
         "./extern/src/GLFW/internal.h",
@@ -49,9 +49,6 @@ project "leep"
 
         --minitrace
         "./extern/src/minitrace.c",
-
-        --imgui
-        "./extern/src/imgui/*.cpp",
 
         --lua
         "./extern/src/lua/**",
@@ -109,7 +106,7 @@ project "leep"
 
     configuration "gmake"
         defines { "_GLFW_X11", "LUA_USE_POSIX", "LEEP_LINUX", }
-        links { "X11", "dl", "pthread"  }
+        links { "X11", "dl", "pthread", "m" }
         buildoptions { "-Wall",  }
 
         files {
@@ -129,7 +126,7 @@ project "leep"
             "./extern/src/GLFW/linux_joystick.c",
         }
 
-    filter { "files:**/api-impl/*.cpp" }
+    filter { "files:**/api-impl/*.c" }
       flags {"ExcludeFromBuild"}
 
     filter "configurations:Debug"

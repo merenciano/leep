@@ -2,6 +2,7 @@
 #define THE_CORE_CHRONO_H
 
 #include <time.h>
+typedef struct timespec timespec;
 
 typedef struct THE_Chrono {
 	timespec start;

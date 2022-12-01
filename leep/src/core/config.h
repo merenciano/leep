@@ -3,23 +3,20 @@
 
 #include "core/Cdefinitions.h"
 
-const char kWindowTitle[] = "Leep";
-const s32 kMaxTextures = 63;
-const s32 kMaxBuffers = 128;
+extern const char *WINDOW_TITLE;
+extern const s32 MAX_TEXTURES;
+extern const s32 MAX_BUFFERS;
 
 typedef struct THE_Config {
 	VoidFunc init_func;
 	VoidFunc logic_func;
 	VoidFunc close_func;
-	// Memory chunk size for the buddy allocator (in bytes)
-	size_t alloc_capacity = GIGABYTES((u64)1);
-	// Maximum renderable entities in the scene
-	// This is for engine allocation purposes
-	s32 render_queue_capacity = 12000;
-	s32 max_geometries = 128;
-	s32 window_width = 1280;
-	s32 window_height = 720;
-	bool vsync = true;
+	size_t alloc_capacity; // Memory chunk size for the buddy allocator (in bytes).
+	s32 render_queue_capacity; // Maximum renderable entities in the scene. This is for engine allocation purposes.
+	s32 max_geometries;
+	s32 window_width;
+	s32 window_height;
+	bool vsync;
 } THE_Config;
 
 typedef struct THE_GameData {

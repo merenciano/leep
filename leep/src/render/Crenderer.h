@@ -1,5 +1,5 @@
-#ifndef __THE_RENDER_RENDERER_H__
-#define __THE_RENDER_RENDERER_H__
+#ifndef THE_RENDER_RENDERER_H
+#define THE_RENDER_RENDERER_H
 
 #include "core/Cdefinitions.h"
 #include "Crenderertypes.h"
@@ -11,7 +11,7 @@
 #define THE_MAX_BUFFERS 127
 #define THE_MAX_FRAMEBUFFERS 8
 
-struct THE_RenderCommand;
+typedef struct THE_RenderCommand THE_RenderCommand;
 
 typedef struct {
 	THE_RenderCommand *curr;
@@ -38,7 +38,6 @@ size_t THE_RenderQueueUsed();
 
 // Buffer
 THE_Buffer THE_CreateBuffer();
-THE_Buffer THE_CreateBuffer(void *data, uint32_t count, THE_BufferType type);
 void THE_SetBufferData(THE_Buffer buff, void *data, uint32_t count, THE_BufferType t);
 THE_BufferType THE_GetBufferType(THE_Buffer buff);
 void THE_ReleaseBuffer(THE_Buffer buff); // Marks for deletion
@@ -64,8 +63,8 @@ void THE_ReleaseMesh(THE_Mesh mesh);
 void THE_FreeMeshData(THE_Mesh mesh); // Frees the data from Ram (not the VRAM)
 
 // Framebuffer
-THE_Framebuffer THE_CreateFramebuffer(u32 width, u32 height, u8 color = 1, u8 depth = 1);
-void THE_ReleaseFramebuffer(THE_Framebuffer);
+THE_Framebuffer THE_CreateFramebuffer(u32 width, u32 height, bool color, bool depth);
+void THE_ReleaseFramebuffer(THE_Framebuffer fb);
 
 // Material
 void THE_InitMaterial(THE_MaterialType t, const char* name); // name is the name of the shader files without extensions

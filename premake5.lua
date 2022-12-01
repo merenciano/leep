@@ -18,8 +18,8 @@ workspace "TestApp"
 
 project "TestApp"
     kind "ConsoleApp"
-    language "C++"
-    cppdialect "C++17"
+    language "C"
+    cdialect "C11"
     links {"leep", "cimgui"}
     targetdir "bin/"
     objdir "build/"
@@ -34,7 +34,7 @@ project "TestApp"
     }
 
     files {
-        "./src/**.cpp",
+        "./src/**.c",
         "./src/**.h"
     }
 
@@ -46,7 +46,7 @@ project "TestApp"
         defines {"_CRT_SECURE_NO_WARNINGS", "LEEP_WIN", "THE_OPENGL"}
     configuration "gmake"
         defines { "LEEP_LINUX", }
-        links { "X11", "dl", "pthread"  }
+        links { "X11", "dl", "pthread", "m" }
     
     filter "configurations:Debug"
         defines { "THE_DEBUG", }

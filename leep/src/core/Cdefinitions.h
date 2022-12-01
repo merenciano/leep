@@ -1,11 +1,9 @@
+#include "mathc.h"
+
 #include <stdint.h>
 #include <assert.h>
 #include <stdio.h>
 #include <stdbool.h>
-
-extern "C" {
-#include "mathc.h"
-}
 
 #define THE_ASSERT(X, TEXT) assert(X)
 #define THE_LOG_ERROR(FMT, ...) printf("ERROR @ %s(%u): \n\t" FMT "\n", __FILE__, __LINE__, __VA_ARGS__)

@@ -1,5 +1,5 @@
-#ifndef __THE_RENDER_COMMANDS_H__
-#define __THE_RENDER_COMMANDS_H__
+#ifndef THE_RENDER_COMMANDS_H
+#define THE_RENDER_COMMANDS_H
 
 #include "Crenderer.h"
 
@@ -8,19 +8,6 @@
 #define THE_WRITE_DEPTH_BIT    1 << 2
 #define THE_DEPTH_TEST_BIT     1 << 3
 #define THE_CULL_FACE_BIT      1 << 4
-
-/* TODO: Remove this at the end of the C conversion if not needed
-typedef enum {
-	THE_CDT_CLEAR,
-	THE_CDT_CREATE_BUFFER,
-	THE_CDT_CREATE_CUBEMAP,
-	THE_CDT_CREATE_FRAMEBUFFER,
-	THE_CDT_CREATE_TEXTURE,
-	THE_CDT_SKYBOX,
-	THE_CDT_DRAW,
-	THE_CDT_EQUIREC_CUBEMAP,
-} THE_CommandDataType;
- */
 
 typedef struct {
 	float color[4];
@@ -96,12 +83,7 @@ typedef struct {
 	THE_Material *mat;
 } THE_UseMaterialData;
 
-//typedef union {
-typedef union {
-	// TODO: Quitar los putos construc y destruc para que no maree
-	// el IDE pensando que es C++
-	//THE_CommandData() {};
-	//~THE_CommandData() {};
+typedef union THE_CommandData {
 	THE_ClearCommandData clear;
 	THE_CreateBufferCommandData createbuff;
 	THE_CreateCubemapCommandData createcubemap;
@@ -113,13 +95,12 @@ typedef union {
 	THE_RenderOptionsData renderops;
 	THE_UseFramebufferData usefb;
 	THE_UseMaterialData usemat;
-} THE_CommandData;// THE_CommandData;
+} THE_CommandData;
 
 typedef struct THE_RenderCommand {
 	void (*execute)(THE_CommandData* data);
 	THE_RenderCommand* next;
 	THE_CommandData data;
-	//THE_CommandDataType type;
 } THE_RenderCommand;
 
 void THE_ClearExecute(THE_CommandData *data);
