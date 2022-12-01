@@ -13,8 +13,14 @@
 #endif
 #include "stb_image.h"
 
-#define TINYOBJLOADER_IMPLEMENTATION
-#include "tiny_obj_loader.h"
+#ifndef TINYOBJ_LOADER_C_IMPLEMENTATION
+#define TINYOBJ_LOADER_C_IMPLEMENTATION
+#define TINYOBJ_MALLOC THE_Alloc
+#define TINYOBJ_REALLOC THE_Realloc 
+#define TINYOBJ_CALLOC THE_Calloc 
+#define TINYOBJ_FREE THE_Free 
+#endif
+#include "tinyobj_loader_c.h"
 
 THE_Mesh SPHERE_MESH;
 THE_Mesh CUBE_MESH;
@@ -610,72 +616,86 @@ THE_Mesh THE_CreateQuadMesh()
 	return ret;
 }
 
+static void FileReader(void *ctx, const char *path, int is_mtl, const char *obj_path, char **buf, size_t *size)
+{
+	FILE *f = fopen(path, "rb");
+	if (!f)
+		return;
+
+	fseek(f, 0L, SEEK_END);
+	*size = ftell(f);
+	rewind(f);
+
+	*buf = (char*)malloc(*size + 1);
+	THE_ASSERT(*buf, "Allocation failed.");
+
+	if (fread(*buf, *size, 1, f) != 1) {
+		THE_ASSERT(false, "Read failed.");
+	}
+
+	fclose(f);
+}
+
 // TODO: Use tinyObjLoader-C (C version)
 THE_Mesh THE_CreateMeshFromFile_OBJ(const char *path)
 {
 	THE_Mesh ret;
 
-	tinyobj::ObjReaderConfig reader_config;
-	reader_config.mtl_search_path = "./"; // Path to material files
-	tinyobj::ObjReader reader;
+	tinyobj_attrib_t attrib;
+	tinyobj_shape_t *shapes = NULL;
+	size_t shape_count;
+	tinyobj_material_t *mats = NULL;
+	size_t mats_count;
 
-	std::vector<float> vertices;
-	std::vector<u32> indices;
+	s32 result = tinyobj_parse_obj(&attrib, &shapes, &shape_count, &mats, &mats_count,
+		path, FileReader, NULL, TINYOBJ_FLAG_TRIANGULATE);
 
-	if (!reader.ParseFromFile(std::string(path), reader_config)) {
-		if (!reader.Error().empty()) {
-			THE_LOG_ERROR("TinyObjReader: %s", reader.Error().c_str());
-		}
-		ret.index = THE_INVALID;
-		ret.vertex = THE_INVALID;
-		return ret;
-	}
+	THE_ASSERT(result == TINYOBJ_SUCCESS, "Obj loader failed.");
 
-	if (!reader.Warning().empty()) {
-		THE_LOG_WARNING("TinyObjReader: %s", reader.Warning().c_str());
-	}
+	size_t tri_count = attrib.num_face_num_verts;
+	size_t vertices_count = tri_count * 3 * 14;
+	size_t indices_count = tri_count * 3;
+	float *vertices = (float*)THE_Alloc(vertices_count * sizeof(float));
+	u32 *indices = (u32*)THE_Alloc(indices_count * sizeof(u32));
+	float *vit = vertices;
+	size_t ii = 0;
 
-	auto& attrib = reader.GetAttrib();
-	auto& shapes = reader.GetShapes();
-
-	// Loop over shapes
-	for (size_t s = 0; s < shapes.size(); s++)
+	for (size_t i = 0; i < attrib.num_face_num_verts; ++i)
 	{
-	    // Loop over faces(polygon)
-	    int32_t index_offset = 0;
-	    for (size_t f = 0; f < shapes[s].mesh.num_face_vertices.size(); f++)
+	    u32 index_offset = 0;
+	    for (size_t f = 0; f < attrib.face_num_verts[i] / 3; ++f)
 	    {
-	        tinyobj::index_t idx = shapes[s].mesh.indices[index_offset++];
+	        tinyobj_vertex_index_t idx = attrib.faces[3 * f + index_offset++];
 	        float v1[14], v2[14], v3[14];
 
-	        v1[0] = attrib.vertices[3*idx.vertex_index+0]; // Cast the 3 to int64_t in case of overflow (that would be a large obj)
-	        v1[1] = attrib.vertices[3*idx.vertex_index+1];
-	        v1[2] = attrib.vertices[3*idx.vertex_index+2];
-	        v1[3] = attrib.normals[3*idx.normal_index+0];
-	        v1[4] = attrib.normals[3*idx.normal_index+1];
-	        v1[5] = attrib.normals[3*idx.normal_index+2];
-	        v1[12] = attrib.texcoords[2*idx.texcoord_index+0];
-	        v1[13] = attrib.texcoords[2*idx.texcoord_index+1];
+	        v1[0] = attrib.vertices[3 * idx.v_idx + 0]; // Cast the 3 to int64_t in case of overflow (that would be a large obj)
+	        v1[1] = attrib.vertices[3*idx.v_idx+1];
+	        v1[2] = attrib.vertices[3*idx.v_idx+2];
+	        v1[3] = attrib.normals[3*idx.vn_idx+0];
+	        v1[4] = attrib.normals[3*idx.vn_idx+1];
+	        v1[5] = attrib.normals[3*idx.vn_idx+2];
+	        v1[12] = attrib.texcoords[2*idx.vt_idx+0];
+	        v1[13] = attrib.texcoords[2*idx.vt_idx+1];
 
-	        idx = shapes[s].mesh.indices[index_offset++];
-	        v2[0] = attrib.vertices[3*idx.vertex_index+0];
-	        v2[1] = attrib.vertices[3*idx.vertex_index+1];
-	        v2[2] = attrib.vertices[3*idx.vertex_index+2];
-	        v2[3] = attrib.normals[3*idx.normal_index+0];
-	        v2[4] = attrib.normals[3*idx.normal_index+1];
-	        v2[5] = attrib.normals[3*idx.normal_index+2];
-	        v2[12] = attrib.texcoords[2*idx.texcoord_index+0];
-	        v2[13] = attrib.texcoords[2*idx.texcoord_index+1];
+	        idx = attrib.faces[3 * f + index_offset++];
+	        v2[0] = attrib.vertices[3*idx.v_idx+0];
+	        v2[1] = attrib.vertices[3*idx.v_idx+1];
+	        v2[2] = attrib.vertices[3*idx.v_idx+2];
+	        v2[3] = attrib.normals[3*idx.vn_idx+0];
+	        v2[4] = attrib.normals[3*idx.vn_idx+1];
+	        v2[5] = attrib.normals[3*idx.vn_idx+2];
+	        v2[12] = attrib.texcoords[2*idx.vt_idx+0];
+	        v2[13] = attrib.texcoords[2*idx.vt_idx+1];
 
-	        idx = shapes[s].mesh.indices[index_offset++];
-	        v3[0] = attrib.vertices[3*idx.vertex_index+0];
-	        v3[1] = attrib.vertices[3*idx.vertex_index+1];
-	        v3[2] = attrib.vertices[3*idx.vertex_index+2];
-	        v3[3] = attrib.normals[3*idx.normal_index+0];
-	        v3[4] = attrib.normals[3*idx.normal_index+1];
-	        v3[5] = attrib.normals[3*idx.normal_index+2];
-	        v3[12] = attrib.texcoords[2*idx.texcoord_index+0];
-	        v3[13] = attrib.texcoords[2*idx.texcoord_index+1];
+	        idx = attrib.faces[3 * f + index_offset++];
+	        v3[0] = attrib.vertices[3*idx.v_idx+0];
+	        v3[1] = attrib.vertices[3*idx.v_idx+1];
+	        v3[2] = attrib.vertices[3*idx.v_idx+2];
+	        v3[3] = attrib.normals[3*idx.vn_idx+0];
+	        v3[4] = attrib.normals[3*idx.vn_idx+1];
+	        v3[5] = attrib.normals[3*idx.vn_idx+2];
+	        v3[12] = attrib.texcoords[2*idx.vt_idx+0];
+	        v3[13] = attrib.texcoords[2*idx.vt_idx+1];
 
 	        // Calculate tangent and bitangent
 			struct vec3 delta_p1 = svec3_subtract(svec3(v2[0], v2[1], v2[2]), svec3(v1[0], v1[1], v1[2]));
@@ -706,43 +726,35 @@ THE_Mesh THE_CreateMeshFromFile_OBJ(const char *path)
 	        v3[10] = bitan.y;
 	        v3[11] = bitan.z;
 
-	        for (s32 i = 0; i < 14; ++i)
+	        for (s32 j = 0; j < 14; ++j)
 	        {
-	            vertices.emplace_back(v1[i]);
+				*vit++ = v1[j];
 	        }
 
-	        for (s32 i = 0; i < 14; ++i)
+	        for (s32 j = 0; j < 14; ++j)
 	        {
-	            vertices.emplace_back(v2[i]);
+				*vit++ = v2[j];
 	        }
 
-	        for (s32 i = 0; i < 14; ++i)
+	        for (s32 j = 0; j < 14; ++j)
 	        {
-	            vertices.emplace_back(v3[i]);
+				*vit++ = v3[j];
 	        }
 
-	        indices.emplace_back((u32)indices.size());
-	        indices.emplace_back((u32)indices.size());
-	        indices.emplace_back((u32)indices.size());
+			for (s32 j = 0; j < 3; ++j, ++ii)
+			{
+				indices[ii] = ii;
+			}
 	    }
 	}
-	s32 i = 0;
-	float *v = (float*)THE_Alloc((u32)vertices.size() * sizeof(float));
-	u32*ind = (u32*)THE_Alloc((u32)indices.size() * sizeof(u32));
-	for (float f : vertices)
-	{
-	    v[i++] = f;
-	}
-	i = 0;
-	for (u32 u : indices)
-	{
-	    ind[i++] = u;
-	}
+
+	THE_ASSERT(ii == indices_count, "Eeeepa, he calculado mal?.");
+	THE_ASSERT(vit == (vertices + vertices_count), "EEeeepa, he calculado mal o el assert esta mal?.");
 
 	ret.vertex = THE_CreateBuffer();
-	THE_SetBufferData(ret.vertex, v, (u32)vertices.size(), THE_BUFFER_VERTEX_3P_3N_3T_3B_2UV);
+	THE_SetBufferData(ret.vertex, vertices, vertices_count * sizeof(float), THE_BUFFER_VERTEX_3P_3N_3T_3B_2UV);
 	ret.index = THE_CreateBuffer();
-	THE_SetBufferData(ret.index, ind, (u32)indices.size(), THE_BUFFER_INDEX);
+	THE_SetBufferData(ret.index, indices, indices_count * sizeof(u32), THE_BUFFER_INDEX);
 
 	return ret;
 }

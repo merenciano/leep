@@ -14,9 +14,9 @@
 #include "render/Cinternalresources.h"
 
 #define CIMGUI_DEFINE_ENUMS_AND_STRUCTS
+#include "cimgui.h"
 #define CIMGUI_USE_GLFW
 #define CIMGUI_USE_OPENGL3
-#include "cimgui.h"
 #include "cimgui_impl.h"
 
 static s32 selected_entity = -1;

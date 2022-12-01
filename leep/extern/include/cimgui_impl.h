@@ -1,5 +1,8 @@
-#ifdef CIMGUI_USE_GLFW
+#include <stdlib.h>
+#define IM_NEW(TYPE, COUNT) (TYPE*)malloc(sizeof(TYPE) * COUNT);
+#define IM_DELETE(X) free(X)
 
+#ifdef CIMGUI_USE_GLFW
 typedef struct GLFWwindow GLFWwindow;
 typedef struct GLFWmonitor GLFWmonitor;
 struct GLFWwindow;
