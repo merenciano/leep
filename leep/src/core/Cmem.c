@@ -6,7 +6,7 @@ static u8 *mem;
 static u8 *offset;
 static size_t capacity;
 
-void *THE_PersistentAlloc(size_t size)
+void *THE_PersistentAlloc(size_t size, size_t align)
 {
     THE_ASSERT((size_t)(offset + size - mem) <= capacity, "Out of memory");
     if ((size_t)(offset + size - mem) > capacity) {
@@ -16,6 +16,10 @@ void *THE_PersistentAlloc(size_t size)
 
     void *ret_mem = (void*)offset;
     offset += size;
+	if (align != 0 && (size_t)offset % align) //TODO: think about a fancier align method
+	{
+		offset += (align - ((size_t)offset % align));
+	}
     return ret_mem; 
 }
 

@@ -71,16 +71,16 @@ static THE_Buffer AddFramebuffer()
 void THE_InitRender()
 {
 	// TODO Remove cast when compiling with a C compiler.
-	curr_pool = (THE_RenderCommand*)malloc(THE_RENDER_QUEUE_CAPACITY * sizeof (THE_RenderCommand));
-	next_pool = (THE_RenderCommand*)malloc(THE_RENDER_QUEUE_CAPACITY * sizeof (THE_RenderCommand));
+	curr_pool = (THE_RenderCommand*)THE_PersistentAlloc(THE_RENDER_QUEUE_CAPACITY * sizeof (THE_RenderCommand), 0);
+	next_pool = (THE_RenderCommand*)THE_PersistentAlloc(THE_RENDER_QUEUE_CAPACITY * sizeof (THE_RenderCommand), 0);
 	//memset(curr_pool, '\0', THE_RENDER_QUEUE_CAPACITY * sizeof(THE_RenderCommand));
 	//memset(next_pool, '\0', THE_RENDER_QUEUE_CAPACITY * sizeof(THE_RenderCommand));
 	curr_pool_last = curr_pool;
 	next_pool_last = next_pool;
 
-	buffers = (THE_InternalBuffer*)THE_PersistentAlloc(sizeof(THE_InternalBuffer) * THE_MAX_BUFFERS);
-	textures = (THE_InternalTexture*)THE_PersistentAlloc(sizeof(THE_InternalTexture) * THE_MAX_TEXTURES);
-	framebuffers = (THE_InternalFramebuffer*)THE_PersistentAlloc(sizeof(THE_InternalFramebuffer) * THE_MAX_FRAMEBUFFERS);
+	buffers = (THE_InternalBuffer*)THE_PersistentAlloc(sizeof(THE_InternalBuffer) * THE_MAX_BUFFERS, 0);
+	textures = (THE_InternalTexture*)THE_PersistentAlloc(sizeof(THE_InternalTexture) * THE_MAX_TEXTURES, 0);
+	framebuffers = (THE_InternalFramebuffer*)THE_PersistentAlloc(sizeof(THE_InternalFramebuffer) * THE_MAX_FRAMEBUFFERS, 0);
 	buffer_count = 0;
 	texture_count = 0;
 	framebuffer_count = 0;
@@ -106,7 +106,7 @@ void THE_InitRender()
 	frame_switch = 0;
 
 	// InternalMaterial initialization
-	materials = (THE_InternalMaterial*)THE_PersistentAlloc(sizeof(THE_InternalMaterial) * THE_MT_MAX);
+	materials = (THE_InternalMaterial*)THE_PersistentAlloc(sizeof(THE_InternalMaterial) * THE_MT_MAX, 0);
 	materials[THE_MT_FULL_SCREEN_IMAGE] = InitInternalMaterial("fullscreen-img");
 	materials[THE_MT_SKYBOX] = InitInternalMaterial("skybox");
 	materials[THE_MT_EQUIREC_TO_CUBE] = InitInternalMaterial("eqr-to-cube");

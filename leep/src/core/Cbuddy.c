@@ -11,8 +11,8 @@ static struct buddy *buddy = NULL;
 void THE_BuddyInit(size_t size)
 {
 	THE_ASSERT(!buddy_meta && !buddy_chunk && !buddy, "Buddy allocator already initialized");
-	buddy_meta = (u8*)THE_PersistentAlloc(buddy_sizeof(size));
-	buddy_chunk = (u8*)THE_PersistentAlloc(size);
+	buddy_meta = (u8*)THE_PersistentAlloc(buddy_sizeof(size), 16);
+	buddy_chunk = (u8*)THE_PersistentAlloc(size, 16);
 	buddy = buddy_init(buddy_meta, buddy_chunk, size);
 }
 

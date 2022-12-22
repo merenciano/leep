@@ -1,5 +1,6 @@
 #include "Ccamera.h"
 #include "core/io.h"
+#include "core/Cmanager.h"
 #include "ecs/Ctransform.h"
 #include "Cinternalresources.h"
 
@@ -37,38 +38,15 @@ THE_Texture THE_CameraOutputColorTexture(THE_Camera *cam)
 void THE_CameraMovementSystem(THE_Camera *cam)
 {
 	static const float ksensibility = 1.0f / 1000.0f;
-	static const float kspeed = 1.0f;
+	static const float kspeed = 10.0f;
 	static const float kscroll_sensibility = 1.0f;
 
 	static float mouse_down_pos[2] = { 0.0, 0.0 };
 	static float fov = 70.0f;
 
-	float speed = kspeed; // TODO: * DeltaTime
+	float speed = kspeed * THE_DeltaTime();
 
 	struct mat4 tr = smat4_inverse(cam->view_mat);
-
-	// Rotation
-	if (THE_InputIsButtonDown(THE_MOUSE_RIGHT)) {
-		mouse_down_pos[0] = THE_InputGetMouseX();
-		mouse_down_pos[1] = THE_InputGetMouseY();
-	}
-
-	if (THE_InputIsButtonPressed(THE_MOUSE_RIGHT))
-	{
-		float mouse_offset[2] = {
-			THE_InputGetMouseX() - mouse_down_pos[0],
-			mouse_down_pos[1] - THE_InputGetMouseY()
-		}; // Y axis inverted
-
-		mouse_offset[0] *= ksensibility;
-		mouse_offset[1] *= ksensibility;
-
-		tr = THE_TransformRotateYWorld(tr, -mouse_offset[0]);
-		tr = smat4_multiply(tr, smat4_rotation_x(mouse_offset[1]));
-
-		mouse_down_pos[0] = THE_InputGetMouseX();
-		mouse_down_pos[1] = THE_InputGetMouseY();
-	}
 
 	// Position
 	if (THE_InputIsButtonPressed(THE_KEY_UP))
@@ -99,6 +77,29 @@ void THE_CameraMovementSystem(THE_Camera *cam)
 	if (THE_InputIsButtonPressed(THE_KEY_4))
 	{
 		tr = smat4_translate(tr, svec3(0.0f, -speed, 0.0f));
+	}
+
+	// Rotation
+	if (THE_InputIsButtonDown(THE_MOUSE_RIGHT)) {
+		mouse_down_pos[0] = THE_InputGetMouseX();
+		mouse_down_pos[1] = THE_InputGetMouseY();
+	}
+
+	if (THE_InputIsButtonPressed(THE_MOUSE_RIGHT))
+	{
+		float mouse_offset[2] = {
+			THE_InputGetMouseX() - mouse_down_pos[0],
+			mouse_down_pos[1] - THE_InputGetMouseY()
+		}; // Y axis inverted
+
+		mouse_offset[0] *= ksensibility;
+		mouse_offset[1] *= ksensibility;
+
+		//tr = THE_TransformRotateYWorld(tr, -mouse_offset[0]);
+		tr = smat4_multiply(smat4_rotation_x(mouse_offset[1]), tr);
+
+		mouse_down_pos[0] = THE_InputGetMouseX();
+		mouse_down_pos[1] = THE_InputGetMouseY();
 	}
 
 	// Zoom

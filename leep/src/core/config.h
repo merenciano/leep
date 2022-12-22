@@ -19,8 +19,4 @@ typedef struct THE_Config {
 	bool vsync;
 } THE_Config;
 
-typedef struct THE_GameData {
-	float delta_time_;
-} THE_GameData;
-
 #endif
