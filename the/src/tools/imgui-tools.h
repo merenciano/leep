@@ -14,8 +14,8 @@ typedef struct {
 extern THE_ToolsData tools_data;
 
 void THE_UIToolsInit(void *raw_window);
-void THE_UIToolsUpdate();
-void THE_UIToolsRender();
+void THE_UIToolsUpdate(void);
+void THE_UIToolsRender(void);
 
 // Without the average the number change so often
 // that it's impossible to read it 
@@ -24,8 +24,8 @@ void THE_UIToolsCalcLogicAverage(float frame);
 // This function adds 64 values and then div by 32 because
 // each frame it takes 2 values that add together (render and swap times)
 void THE_UIToolsCalcRenderAverage(float frame);
-bool THE_UIToolsWantMouse();
-bool THE_UIToolsWantKeyboard();
+bool THE_UIToolsWantMouse(void);
+bool THE_UIToolsWantKeyboard(void);
 void THE_UIToolsSetCallback(void(*callbackfun)(void));
 
 #endif

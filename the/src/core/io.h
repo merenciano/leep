@@ -25,23 +25,24 @@ typedef struct {
 } THE_InputState;
 
 bool THE_IOInit(const char *title, int32_t width, int32_t height, bool limit_framerate);
-void THE_IOPollEvents();
+void THE_IOPollEvents(void);
 
-s32 THE_WindowShouldClose();
-void THE_WindowSwapBuffers();
-s32 THE_WindowGetWidth();
-s32 THE_WindowGetHeight();
+s32 THE_WindowShouldClose(void);
+void THE_WindowSwapBuffers(void);
+s32 THE_WindowGetWidth(void);
+s32 THE_WindowGetHeight(void);
 
-void THE_InputUpdate();
+void THE_InputUpdate(void);
 void THE_InputSetScroll(float offset);
-float THE_InputGetScroll();
+float THE_InputGetScroll(void);
 bool THE_InputIsButtonPressed(THE_Input button);
 bool THE_InputIsButtonDown(THE_Input button);
 bool THE_InputIsButtonUp(THE_Input button);
-float THE_InputGetMouseX();
-float THE_InputGetMouseY();
-void THE_InputDisableCursor();
-void THE_InputEnableCursor();
+float THE_InputGetMouseX(void);
+float THE_InputGetMouseY(void);
+void THE_InputDisableCursor(void);
+void THE_InputEnableCursor(void);
 void THE_InputCapture(bool mouse, bool kb);
 
 #endif
+

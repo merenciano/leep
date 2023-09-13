@@ -99,7 +99,7 @@ void *buddy_walk(struct buddy *buddy, void *(fp)(void *ctx, void *addr, size_t s
  */
 
 /* Implementation defined */
-static void buddy_debug(FILE *stream, struct buddy *buddy);
+static inline void buddy_debug(FILE *stream, struct buddy *buddy);
 
 struct buddy_tree;
 
@@ -203,7 +203,7 @@ static unsigned int buddy_tree_can_shrink(struct buddy_tree *t);
 static void buddy_tree_debug(FILE *stream, struct buddy_tree *t, struct buddy_tree_pos pos, size_t start_size);
 
 /* Implementation defined */
-static unsigned int buddy_tree_check_invariant(struct buddy_tree *t, struct buddy_tree_pos pos);
+static inline unsigned int buddy_tree_check_invariant(struct buddy_tree *t, struct buddy_tree_pos pos);
 
 /*
  * A char-backed bitset implementation
@@ -232,7 +232,7 @@ static void bitset_shift_right(unsigned char *bitset, size_t from_pos, size_t to
  */
 
 /* Implementation defined */
-static void bitset_debug(FILE *stream, unsigned char *bitset, size_t length);
+static inline void bitset_debug(FILE *stream, unsigned char *bitset, size_t length);
 
 /*
  Bits
@@ -1383,7 +1383,7 @@ static void buddy_tree_debug(FILE *stream, struct buddy_tree *t, struct buddy_tr
                 (int) buddy_tree_depth(pos),
                 "                                                               ");
             fprintf(stream, "pos: %zu status: %zu bitset-len: %zu bitset-at: %zu",
-                pos, pos_status, pos_internal.local_offset, pos_internal.bitset_location);
+                pos.index, pos_status, pos_internal.local_offset, pos_internal.bitset_location);
             if (pos_status == pos_internal.local_offset) {
                 fprintf(stream, " size: %zu\n", pos_size);
             } else {
@@ -1440,7 +1440,7 @@ static unsigned int buddy_tree_check_invariant(struct buddy_tree *t, struct budd
 
                 if (violated) {
                     fail = 1;
-                    fprintf(stdout, "invariant violation at position [ %zu ]!\n", pos);
+                    fprintf(stdout, "invariant violation at position [ %zu ]!\n", pos.index);
                     fprintf(stdout, "current: %zu left %zu right %zu max %zu\n",
                         current_status, left_child_status, right_child_status, current_internal.local_offset);
                 }

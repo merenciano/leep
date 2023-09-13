@@ -1,7 +1,7 @@
 #include "the.h"
 #include <string.h>
 
-void GameInit()
+void GameInit(void)
 {
 	THE_ResourceMap *rm = &resource_map;
 
@@ -258,7 +258,7 @@ void GameInit()
 	THE_AddCommands(rendops);
 }
 
-void GameLogic()
+void GameLogic(void)
 {
 	THE_ScriptingExecute("../assets/scripts/update.lua");
 	THE_InputUpdate();
@@ -365,7 +365,7 @@ void GameLogic()
 	THE_AddCommands(rops);
 }
 
-void GameClose()
+void GameClose(void)
 {
 
 }
@@ -395,3 +395,4 @@ int main(int argc, char **argv)
 
     return 0;
 }
+
