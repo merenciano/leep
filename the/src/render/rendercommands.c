@@ -712,7 +712,7 @@ void THE_RenderOptionsExecute(THE_CommandData *data)
 
 		default:
 			THE_ASSERT(false, "RenderOption invalid BlendCommand S value");
-			break;
+			return;
 		}
 
 		switch(data->renderops.dfactor) {
@@ -734,7 +734,7 @@ void THE_RenderOptionsExecute(THE_CommandData *data)
 
 		default:
 			THE_ASSERT(false, "RenderOption invalid BlendCommand D value");
-			break;
+			return;
 		}
 
 		glBlendFunc(sfac, dfac);

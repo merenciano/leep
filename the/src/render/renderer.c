@@ -398,12 +398,12 @@ void THE_LoadTexture(THE_Texture tex, const char *path)
 
 	default:
 		THE_ASSERT(false, "Default case LoadTexture.");
+		return;
 		//textures[tex].pix = (void*)stbi_load(path, &width, &height, &nchannels, 0);
 		//THE_ASSERT(textures[tex].pix && "The image couldn't be loaded.");
-		break;
 	}
 
-        strcpy(textures[tex].path, path);
+	strcpy(textures[tex].path, path);
 	textures[tex].cpu_version++;
 	textures[tex].width = width;
 	textures[tex].height = height;
@@ -620,10 +620,15 @@ THE_Mesh THE_CreateMeshFromFile_OBJ(const char *path)
 	tinyobj_material_t *mats = NULL;
 	size_t mats_count;
 
-	s32 result = tinyobj_parse_obj(&attrib, &shapes, &shape_count, &mats, &mats_count,
+	int32_t result = tinyobj_parse_obj(&attrib, &shapes, &shape_count, &mats, &mats_count,
 		path, FileReader, NULL, TINYOBJ_FLAG_TRIANGULATE);
 
 	THE_ASSERT(result == TINYOBJ_SUCCESS, "Obj loader failed.");
+	if (result != TINYOBJ_SUCCESS)
+	{
+		THE_LOG_ERROR("Error loading obj. Err: %d", result);
+		return *(THE_Mesh*)&ret; // TODO: Better way to hide warning (uninit var).
+	}
 
 	size_t tri_count = attrib.num_face_num_verts;
 	size_t vertices_count = tri_count * 3 * 14;
