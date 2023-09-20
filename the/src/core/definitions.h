@@ -1,3 +1,6 @@
+#ifndef THE_CORE_DEFINITIONS_H_
+#define THE_CORE_DEFINITIONS_H_
+
 #include "mathc.h"
 
 #include <stdint.h>
@@ -25,6 +28,13 @@
 #define THE_BYTE_TO_KB(X) (X / 1024.0f)
 #define THE_BYTE_TO_MB(X) (X / 1048576.0f)
 
+typedef enum {
+	THE_EC_FAIL = 0,
+	THE_EC_SUCCESS = 1,
+	THE_EC_ALLOC = -100,
+	THE_EC_FILE = -200,
+} THE_ErrorCode;
+
 typedef int64_t s64;
 typedef uint64_t u64;
 typedef int32_t s32;
@@ -35,3 +45,5 @@ typedef int8_t s8;
 typedef uint8_t u8;
 
 typedef void (*VoidFunc)(void);
+
+#endif // THE_CORE_DEFINITIONS_H_

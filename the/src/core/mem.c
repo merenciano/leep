@@ -2,8 +2,8 @@
 #include "buddy.h"
 #include <stdlib.h>
 
-static u8 *mem;
-static u8 *offset;
+static uint8_t *mem;
+static uint8_t *offset;
 static size_t capacity;
 
 void *THE_PersistentAlloc(size_t size, size_t align)

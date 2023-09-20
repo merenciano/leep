@@ -4,57 +4,57 @@
 #include "core/definitions.h"
 #include "renderer.h" // TODO: Solo por THE_BufferType y THE_TexType... revisar
 
-typedef u32 THE_InternalMaterial; // OpenGL program (compiled shaders)
+typedef uint32_t THE_InternalMaterial; // OpenGL program (compiled shaders)
 
 typedef struct {
 	union {
 		float *vertices;
-		u32 *indices;
+		uint32_t *indices;
 	};
-	s32 count;
-	u32 internal_id;
-	s32 cpu_version;
-	s32 gpu_version;
+	int32_t count;
+	uint32_t internal_id;
+	int32_t cpu_version;
+	int32_t gpu_version;
 	THE_BufferType type;
 } THE_InternalBuffer;
 
 typedef struct {
-        char path[64];
-        void *pix;
-        s32 internal_id;
-        s32 cpu_version;
-        s32 gpu_version;
-        u32 texture_unit;
-        u32 width;
-        u32 height;
-        THE_TexType type;
+	char path[64];
+	void *pix;
+	int32_t internal_id;
+	int32_t cpu_version;
+	int32_t gpu_version;
+	uint32_t texture_unit;
+	uint32_t width;
+	uint32_t height;
+	THE_TexType type;
 } THE_InternalTexture;
 
 typedef struct {
-	s32 internal_id;
-	s32 cpu_version;
-	s32 gpu_version;
-	u32 width;
-	u32 height;
+	int32_t internal_id;
+	int32_t cpu_version;
+	int32_t gpu_version;
+	uint32_t width;
+	uint32_t height;
 	THE_Texture color_tex;
 	THE_Texture depth_tex;
-	u8 color;
-	u8 depth;
+	uint8_t color;
+	uint8_t depth;
 } THE_InternalFramebuffer;
 
 extern THE_InternalBuffer *buffers;
 extern THE_InternalTexture *textures;
 extern THE_InternalFramebuffer *framebuffers;
 extern THE_InternalMaterial *materials;
-extern u16 buffer_count;
-extern u16 texture_count;
-extern u16 framebuffer_count;
+extern uint16_t buffer_count;
+extern uint16_t texture_count;
+extern uint16_t framebuffer_count;
 
-s32 IsValidBuffer(THE_Buffer buff);
-s32 IsValidTexture(THE_Texture tex);
-s32 IsValidFramebuffer(THE_Framebuffer fb);
+int32_t IsValidBuffer(THE_Buffer buff);
+int32_t IsValidTexture(THE_Texture tex);
+int32_t IsValidFramebuffer(THE_Framebuffer fb);
 
-u32 InitInternalMaterial(const char* shader_name);
-void UseMaterial(THE_Material* mat);
+uint32_t InitInternalMaterial(const char *shader_name);
+void UseMaterial(THE_Material *mat);
 
 #endif

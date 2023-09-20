@@ -68,17 +68,14 @@ static THE_Buffer AddFramebuffer()
 
 void THE_InitRender()
 {
-	// TODO Remove cast when compiling with a C compiler.
 	curr_pool = THE_PersistentAlloc(THE_RENDER_QUEUE_CAPACITY * sizeof(THE_RenderCommand), 0);
 	next_pool = THE_PersistentAlloc(THE_RENDER_QUEUE_CAPACITY * sizeof(THE_RenderCommand), 0);
-	//memset(curr_pool, '\0', THE_RENDER_QUEUE_CAPACITY * sizeof(THE_RenderCommand));
-	//memset(next_pool, '\0', THE_RENDER_QUEUE_CAPACITY * sizeof(THE_RenderCommand));
 	curr_pool_last = curr_pool;
 	next_pool_last = next_pool;
 
-	buffers = (THE_InternalBuffer*)THE_PersistentAlloc(sizeof(THE_InternalBuffer) * THE_MAX_BUFFERS, 0);
-	textures = (THE_InternalTexture*)THE_PersistentAlloc(sizeof(THE_InternalTexture) * THE_MAX_TEXTURES, 0);
-	framebuffers = (THE_InternalFramebuffer*)THE_PersistentAlloc(sizeof(THE_InternalFramebuffer) * THE_MAX_FRAMEBUFFERS, 0);
+	buffers = THE_PersistentAlloc(sizeof(THE_InternalBuffer) * THE_MAX_BUFFERS, 0);
+	textures = THE_PersistentAlloc(sizeof(THE_InternalTexture) * THE_MAX_TEXTURES, 0);
+	framebuffers = THE_PersistentAlloc(sizeof(THE_InternalFramebuffer) * THE_MAX_FRAMEBUFFERS, 0);
 	buffer_count = 0;
 	texture_count = 0;
 	framebuffer_count = 0;
@@ -86,10 +83,14 @@ void THE_InitRender()
 	available_buffer = NULL;
 	available_tex = NULL;
 	available_fb = NULL;
-	//curr = NULL;
-	//curr_last = NULL;
-	//next = NULL;
-	//next_last = NULL;
+
+	// InternalMaterial initialization
+	materials = THE_PersistentAlloc(sizeof(THE_InternalMaterial) * THE_MT_MAX, 0);
+	materials[THE_MT_FULL_SCREEN_IMAGE] = InitInternalMaterial("fullscreen-img");
+	materials[THE_MT_SKYBOX] = InitInternalMaterial("skybox");
+	materials[THE_MT_EQUIREC_TO_CUBE] = InitInternalMaterial("eqr-to-cube");
+	materials[THE_MT_PREFILTER_ENV] = InitInternalMaterial("prefilter-env");
+	materials[THE_MT_LUT_GEN] = InitInternalMaterial("lut-gen");
 
 	/* 
 	2 Frame allocator (2 frame since is the lifetime of render resources)
@@ -98,18 +99,11 @@ void THE_InitRender()
 	that way we can alternate freeing only one half each frame so it is synced with
 	the render queues
 	*/
-	frame_pool[0] = (int8_t*)malloc(THE_FRAME_POOL_SIZE);
+	frame_pool[0] = THE_PersistentAlloc(THE_FRAME_POOL_SIZE, 0);
 	frame_pool[1] = frame_pool[0] + THE_FRAME_POOL_SIZE / 2;
 	frame_pool_last = frame_pool[0];
 	frame_switch = 0;
 
-	// InternalMaterial initialization
-	materials = (THE_InternalMaterial*)THE_PersistentAlloc(sizeof(THE_InternalMaterial) * THE_MT_MAX, 0);
-	materials[THE_MT_FULL_SCREEN_IMAGE] = InitInternalMaterial("fullscreen-img");
-	materials[THE_MT_SKYBOX] = InitInternalMaterial("skybox");
-	materials[THE_MT_EQUIREC_TO_CUBE] = InitInternalMaterial("eqr-to-cube");
-	materials[THE_MT_PREFILTER_ENV] = InitInternalMaterial("prefilter-env");
-	materials[THE_MT_LUT_GEN] = InitInternalMaterial("lut-gen");
 
 	THE_CameraInit(&camera, 70.0f, 300.0f, THE_WindowGetWidth(), THE_WindowGetHeight(), 0);
 	sun_dir_intensity = svec4(1.0f, -1.0f, 0.0f, 1.0f);
@@ -890,28 +884,36 @@ void THE_MaterialSetTexture(THE_Material* mat, THE_Texture* tex, int32_t count, 
 
 #include "glad/glad.h"
 
-static void LoadFile(const char *path, char **buffer)
+static THE_ErrorCode LoadFile(const char *path, char **buffer)
 {
-	s32 length;
+	int32_t length;
 	FILE* fp = fopen(path, "r");
 
-	if (fp)
-	{
-		fseek(fp, 0, SEEK_END);
-		length = ftell(fp);
-		fseek(fp, 0, SEEK_SET);
-		*buffer = THE_Alloc(length + 1);
-		if (*buffer)
-		{
-			memset(*buffer, '\0', length + 1);
-			fread(*buffer, 1, length, fp);
-			// TODO: Check wtf is happening here because
-			// the fucking VisualStudio is throwing exception
-			// here. When fixed remember to delete the memset call
-			//*buffer[length] = '\0';
-		}
-		fclose(fp);
+	if (!fp) {
+		THE_LOG_ERROR("File %s couldn't be opened.", path);
+		return THE_EC_FILE;
 	}
+
+	fseek(fp, 0, SEEK_END);
+	length = ftell(fp);
+	fseek(fp, 0, SEEK_SET);
+	*buffer = THE_Alloc(length + 1);
+
+	if (!*buffer) {
+		THE_LOG_ERROR("Allocation failed reading file %s.", path);
+		fclose(fp);
+		return THE_EC_ALLOC;
+	}
+
+	memset(*buffer, '\0', length + 1);
+	fread(*buffer, 1, length, fp);
+	// TODO: Check wtf is happening here because
+	// the fucking VisualStudio is throwing exception
+	// here. When fixed remember to delete the memset call
+	//*buffer[length] = '\0';
+	fclose(fp);
+
+	return THE_EC_SUCCESS;
 }
 
 u32 InitInternalMaterial(const char* shader_name)
